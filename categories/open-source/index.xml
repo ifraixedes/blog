@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Open Source on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/categories/open-source/</link>
+    <description>Recent content in Open Source on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Mon, 26 Jan 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/categories/open-source/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>GitEvents a New Community Open Source Project</title>
+      <link>http://blog.fraixed.es/post/gitevents-new-community-open-source-project</link>
+      <pubDate>Mon, 26 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/gitevents-new-community-open-source-project</guid>
+      <description>
+
+&lt;p&gt;Saturday of a couple weeks ago I spent my time in a hackday which ran simultaneously in two places &lt;a href=&#34;http://www.meetup.com/NodeBCN/events/219664616/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Barcelona&lt;/a&gt; hosted by &lt;a href=&#34;http://www.meetup.com/NodeBCN/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;NodeBCN&lt;/a&gt; and &lt;a href=&#34;https://ti.to/opensauce/github-api-hackday&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;London&lt;/a&gt; hosted by &lt;a href=&#34;http://lnug.org/&#34; target=&#34;_blank&#34;&gt;LNUG&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Hackathon had the aim to kickstart a new community Open Source project initially called &lt;em&gt;gitup&lt;/em&gt; owned by &lt;a href=&#34;https://github.com/barcelona-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;BarcelonaJS Github organisation&lt;/a&gt; however due the incredible collaboration that it got by the attendees it&amp;rsquo;s become an itself organisation called &lt;a href=&#34;https://github.com/GitEvents/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;GitEvents&lt;/a&gt; hosting the &lt;a href=&#34;https://github.com/GitEvents/gitevents&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;project&lt;/a&gt; and a bunch of dependant projects which must end up with the first known requirements of the project.&lt;/p&gt;
+
+&lt;p&gt;I had a very good experience seeing how it was born and how it is growing up.&lt;/p&gt;
+
+&lt;p&gt;Here I&amp;rsquo;m going to tell you its first steps:&lt;/p&gt;
+
+&lt;h2 id=&#34;the-idea:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;The idea&lt;/h2&gt;
+
+&lt;p&gt;The idea of the project is backed by &lt;a href=&#34;https://twitter.com/PatrickHeneise&#34;&gt;@PatrickHeneise&lt;/a&gt; with the main aim to automatise and drop down the costs as much as possible the administration of managing Tech meetups using &lt;a href=&#34;https://guides.github.com/features/issues/&#34;&gt;GitHub Issues&lt;/a&gt; as an interface and  &lt;a href=&#34;https://developer.github.com/v3/&#34;&gt;GitHub API&lt;/a&gt; to fire automatic actions which can be without any specific order &lt;em&gt;update the group website&lt;/em&gt;, &lt;em&gt;send a tweet&lt;/em&gt;, &lt;em&gt;send an email&lt;/em&gt;, etc.&lt;/p&gt;
+
+&lt;h2 id=&#34;how-the-idea-spread:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;How the Idea spread&lt;/h2&gt;
+
+&lt;p&gt;I had briefly heard &lt;a href=&#34;https://twitter.com/PatrickHeneise&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;@PatrickHeneise&lt;/a&gt;&amp;rsquo;s idea when I attended to &lt;a href=&#34;http://www.meetup.com/BarcelonaJS/events/219097453/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;BarcelonaJS Meetup&lt;/a&gt; when I was visiting my family for Christmas time, however it was just that, I knew that he was interested in developing it and other NodeJS groups as &lt;a href=&#34;http://berlinjs.org/&#34; target=&#34;_blank&#34;&gt;BerlingJS&lt;/a&gt; were interested as well.&lt;/p&gt;
+
+&lt;p&gt;Without knowing anything more about it, on 6th of January I saw a Patrick&amp;rsquo;s tweet, with less 140 characters ;D, announcing the project and asking for help.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; lang=&#34;en-gb&#34;&gt;&lt;p&gt;Working with the GitHub API to create/update a JSON file for github-meetup integration. &lt;a href=&#34;https://twitter.com/hashtag/helpwanted?src=hash&#34;&gt;#helpwanted&lt;/a&gt; &lt;a href=&#34;https://t.co/6sdvTdtz75&#34;&gt;https://t.co/6sdvTdtz75&lt;/a&gt;&lt;/p&gt;&amp;mdash; Patrick Heneise (@PatrickHeneise) &lt;a href=&#34;https://twitter.com/PatrickHeneise/status/552568103805390848&#34;&gt;January 6, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice, I decided to retweet it and the magic started; @iancrowther expressed his interest in the project and I added sugar on it.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; lang=&#34;en&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/iancrowther&#34;&gt;@iancrowther&lt;/a&gt;, Yes, it is, &lt;a href=&#34;https://twitter.com/PatrickHeneise&#34;&gt;@PatrickHeneise&lt;/a&gt; is the BCN Javascript and &lt;a href=&#34;https://twitter.com/nodejs&#34;&gt;@nodejs&lt;/a&gt; Meetup group organiser, I&amp;#39;ve been in touch in person on Xmas&lt;/p&gt;&amp;mdash; Ivan Fraixedes (@ifraixedes) &lt;a href=&#34;https://twitter.com/ifraixedes/status/552753464544333824&#34;&gt;January 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;and after the introductions, the conversation followed in &lt;a href=&#34;https://gitter.im&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Gitter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; lang=&#34;en&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/PatrickHeneise&#34;&gt;@PatrickHeneise&lt;/a&gt; &lt;a href=&#34;https://twitter.com/ifraixedes&#34;&gt;@ifraixedes&lt;/a&gt; lets move this to gitter: &lt;a href=&#34;https://t.co/WwmHgUzkhT&#34;&gt;https://t.co/WwmHgUzkhT&lt;/a&gt;&lt;/p&gt;&amp;mdash; ツ Ian Crowther (@iancrowther) &lt;a href=&#34;https://twitter.com/iancrowther/status/552774886566146048&#34;&gt;January 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;That conversation brought the idea, by Ian, to organise a hackathon which became a hackathon running in both cities &lt;a href=&#34;http://www.meetup.com/NodeBCN/events/219664616/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Barcelona&lt;/a&gt; and &lt;a href=&#34;https://ti.to/opensauce/github-api-hackday&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;London&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;the-hackathon:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;The Hackathon&lt;/h2&gt;
+
+&lt;p&gt;The hackathon was announced and some people joined in both places, there wasn&amp;rsquo;t a massive number of attendees however people who attended was quite exited about the project and wanted to work in, or at least getting start with &lt;a href=&#34;http://nodejs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;NodeJS&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then the project started to have a community contribution; people followed some documentation and opened issues, with tasks to do, which Patrick and Ian created on the previous days.&lt;/p&gt;
+
+&lt;p&gt;Patrick and Ian were doing some skype calls during the day to know in realtime how the things were going and keeping the two different places in communication, hence transmitting the spirit of the hackathon, +1 guys.&lt;/p&gt;
+
+&lt;p&gt;At the end it was a day of community; some contributors were working in one of the plugins, others in the core and the outcomes were some pull requests sent and merged, more issues opened, some specifications and decisions and so on, pretty amazing to have seen.&lt;/p&gt;
+
+&lt;h2 id=&#34;post-hackathon:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;Post Hackathon&lt;/h2&gt;
+
+&lt;p&gt;After the day of the hackathon, some of the initial contributors are working on; some of them have been working since the following Sunday and so far the project has:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;9 repositories which are in development, 1 is the core and 8 are plugins.&lt;/li&gt;
+&lt;li&gt;8 people, 2 owners and 6 contributors.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;There are several issues opened and people discussing in them the most of the tagged as &lt;em&gt;&amp;ldquo;inprogress&amp;rdquo;&lt;/em&gt; and &lt;em&gt;&amp;ldquo;enhancement&amp;rdquo;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;GitEvent issues after two weeks that project started&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/fb/d2/d5/fbd2d51d5b15f49be2ff7b8882e98e36.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;The biggest challenge starts now, keeping the engagement and the interests of the current contributors, encourage new ones, create interest for the project and create a bigger community.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-wrap-up:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;The Wrap Up&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m really happy to see how an Open Source community starts, even though it is in very early stage Patrick and Ian are very keen to move the project forward and grow a passionate community.&lt;/p&gt;
+
+&lt;p&gt;Being a collaborator, I&amp;rsquo;ve learnt how a community Open Source project is being organised, not just the good things but also all the pains, because organise a distributed team where everybody have opinion is not easy, however very rewarding.&lt;/p&gt;
+
+&lt;p&gt;Hopefully I will keep myself involved on it and make some new contributions as well.&lt;/p&gt;
+
+&lt;p&gt;And you, are you &lt;strong&gt;interested in getting involved?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;don&amp;rsquo;t hesitate to visit &lt;a href=&#34;https://github.com/GitEvents&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;GitEvents&lt;/a&gt; and take a look to the current &lt;a href=&#34;https://github.com/GitEvents/gitevents/issues&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;issues&lt;/a&gt;, see if you can help in any, or just make suggestions, improvements and report bugs whenever the first usable release appear.&lt;/p&gt;
+
+&lt;p&gt;See you in the next post.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

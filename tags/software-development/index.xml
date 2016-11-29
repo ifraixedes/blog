@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Software Development on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/software-development/</link>
+    <description>Recent content in Software Development on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 10 Apr 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/software-development/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #8</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150410/</link>
+      <pubDate>Fri, 10 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150410/</guid>
+      <description>&lt;p&gt;Another short week is almost done and here my 5 favourite tweets of the last 7 days which appeared in my timeline.&lt;/p&gt;
+
+&lt;p&gt;The moment arrived, after several years under development, &lt;strong&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; beta&lt;/strong&gt; has been released and the first stable release has been scheduled for 15th of May, so AWESOME&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Rust 1.0-beta is here!! &lt;a href=&#34;http://t.co/8HTh1jrL69&#34;&gt;http://t.co/8HTh1jrL69&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/584040427508072449&#34;&gt;April 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Very nice web resource to see what ES6 brings and how these new features differ from its predecessor ES5&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;nice hands-on resource for learning ES6: &lt;a href=&#34;http://t.co/VB5WcTT4LR&#34;&gt;http://t.co/VB5WcTT4LR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/584403090259906560&#34;&gt;April 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve go quite old great blog post about &lt;strong&gt;Open Source&lt;/strong&gt; and how delaying to make it open affects, at least when it&amp;rsquo;s created by a governmental organisation&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;another great post by &lt;a href=&#34;https://twitter.com/kfogel&#34;&gt;@kfogel&lt;/a&gt;: Be Open [Source] From Day One &lt;a href=&#34;http://t.co/8hTihlTZNo&#34;&gt;http://t.co/8hTihlTZNo&lt;/a&gt;&lt;/p&gt;&amp;mdash; Aidan Feldman (@aidanfeldman) &lt;a href=&#34;https://twitter.com/aidanfeldman/status/585831168643170304&#34;&gt;April 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A friend of mine tweeted about &lt;strong&gt;[Ghost]&lt;/strong&gt;(&lt;a href=&#34;https://ghost.org/&#34;&gt;https://ghost.org/&lt;/a&gt;) blog post where they&amp;rsquo;ve made public all their revenues metrics, I&amp;rsquo;m very thrilled how some companies, as &lt;strong&gt;Buffer&lt;/strong&gt; &lt;a href=&#34;https://open.bufferapp.com/transparent-pricing-buffer/&#34;&gt;&lt;sup&gt;1&lt;sup&gt;&lt;/a&gt; &lt;a href=&#34;https://open.bufferapp.com/introducing-open-salaries-at-buffer-including-our-transparent-formula-and-all-individual-salaries/&#34;&gt;&lt;sup&gt;2&lt;sup&gt;&lt;/a&gt;, and &lt;strong&gt;Baremetrics&lt;/strong&gt; &lt;a href=&#34;https://baremetrics.com/blog/why-we-spent-250000&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;https://baremetrics.com/blog/bootstrapped-to-funded&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;https://baremetrics.com/blog/stripe-500000-baremetrics&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;, are moving toward the transparency&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;$411,000 in ARR and &lt;a href=&#34;https://twitter.com/TryGhost&#34;&gt;@TryGhost&lt;/a&gt; just made all of their revenue metrics completely public: &lt;a href=&#34;http://t.co/SGH5CFmeQE&#34;&gt;http://t.co/SGH5CFmeQE&lt;/a&gt;&lt;/p&gt;&amp;mdash; BROLΛПDO (@orliesaurus) &lt;a href=&#34;https://twitter.com/orliesaurus/status/586157961346678784&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Javascript is moving to take over the stablished Java and .NET enterprise stacks, we&amp;rsquo;ll see what will happen&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;JavaScript will lead a massive shift in enterprise development &lt;a href=&#34;http://t.co/07XVzu9LgK&#34;&gt;http://t.co/07XVzu9LgK&lt;/a&gt;&lt;/p&gt;&amp;mdash; Paul Krill (@pjkrill) &lt;a href=&#34;https://twitter.com/pjkrill/status/586194173121794050&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a great weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #7</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150403/</link>
+      <pubDate>Fri, 03 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150403/</guid>
+      <description>&lt;p&gt;Working week is gone as we&amp;rsquo;re on Easter, but no time to rest in the blog; so here there it goes the 5 tweets which captivated me the last 7 days.&lt;/p&gt;
+
+&lt;p&gt;Do you love &lt;a href=&#34;https://www.gnu.org/software/make/&#34;&gt;make&lt;/a&gt; as a build tool? Don&amp;rsquo;t miss to take a look to &lt;a href=&#34;https://martine.github.io/ninja/&#34;&gt;Ninja&lt;/a&gt;, it looks promising in terms of speed between other stuff&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Ninja – A small build system with a focus on speed &lt;a href=&#34;https://t.co/VAhyZD6e51&#34;&gt;https://t.co/VAhyZD6e51&lt;/a&gt;&lt;/p&gt;&amp;mdash; Hacker News (@newsycombinator) &lt;a href=&#34;https://twitter.com/newsycombinator/status/581954162050641921&#34;&gt;March 28, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;For a year and a half I&amp;rsquo;ve fallen in love with &lt;a href=&#34;http://www.vim.org/&#34;&gt;Vim&lt;/a&gt;, but I&amp;rsquo;ve really like what &lt;a href=&#34;http://neovim.org/&#34;&gt;neoVim&lt;/a&gt; is bringing &amp;ldquo;the next generation&amp;rdquo;, and one part of that generation is &lt;strong&gt;an integrated terminal emulator&lt;/strong&gt;, which now it has a brief documentation&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Basic documentation for the builtin terminal emulator is now available:  &lt;a href=&#34;http://t.co/1v5LvyU2Et&#34;&gt;http://t.co/1v5LvyU2Et&lt;/a&gt;&lt;/p&gt;&amp;mdash; Neovim (@Neovim) &lt;a href=&#34;https://twitter.com/Neovim/status/582342442445365248&#34;&gt;March 30, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt; helped me to discover another nice command line tool&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Stop using tail -f (mostly) &lt;a href=&#34;http://t.co/J3wuv8WAAq&#34;&gt;http://t.co/J3wuv8WAAq&lt;/a&gt; &amp;#10;&amp;#10;Or use MultiTail &lt;a href=&#34;http://t.co/pNVgPxssQ7&#34;&gt;http://t.co/pNVgPxssQ7&lt;/a&gt;&amp;#10;&amp;#10;&lt;a href=&#34;https://twitter.com/hashtag/Unix?src=hash&#34;&gt;#Unix&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Sysadmin?src=hash&#34;&gt;#Sysadmin&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Linux?src=hash&#34;&gt;#Linux&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/FreeBSD?src=hash&#34;&gt;#FreeBSD&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/IT?src=hash&#34;&gt;#IT&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OSX?src=hash&#34;&gt;#OSX&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/582588210561187840&#34;&gt;March 30, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;https://npmjs.com&#34;&gt;npm&lt;/a&gt; team has created an amazing web site where you can see how the semantic versioning apply to a chosen npm module&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;introducing the npm semantic version calculator: &lt;a href=&#34;http://t.co/MxrxxAm8oy&#34;&gt;http://t.co/MxrxxAm8oy&lt;/a&gt; &lt;a href=&#34;http://t.co/tG4zXoPHob&#34;&gt;pic.twitter.com/tG4zXoPHob&lt;/a&gt;&lt;/p&gt;&amp;mdash; npmbot (@npmjs) &lt;a href=&#34;https://twitter.com/npmjs/status/583665488980500480&#34;&gt;April 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one is about a new &lt;strong&gt;fragment shader sandbox&lt;/strong&gt; which supports &lt;a href=&#34;https://github.com/stackgl/glslify&#34;&gt;glslify&lt;/a&gt;, still work in progress, but it looks amazing&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://t.co/UFY6AIEX5H&#34;&gt;http://t.co/UFY6AIEX5H&lt;/a&gt;: a fragment shader sandbox with glslify support! &lt;a href=&#34;http://t.co/4Zsy06QKp3&#34;&gt;pic.twitter.com/4Zsy06QKp3&lt;/a&gt;&lt;/p&gt;&amp;mdash; Hugh Kennedy (@hughskennedy) &lt;a href=&#34;https://twitter.com/hughskennedy/status/583728671678050305&#34;&gt;April 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;re having nice Easter.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #6</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150327/</link>
+      <pubDate>Fri, 27 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150327/</guid>
+      <description>&lt;p&gt;Yep, this week my timeline came up with these marvelous tweets.&lt;/p&gt;
+
+&lt;p&gt;An awesome tool that take source code TODO comments and create Github issues to remind you that they have to be fixed in not to leave those there for ages&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;nifty tool to convert your TODO comments into Github issues: &lt;a href=&#34;http://t.co/M2gwKz5RvI&#34;&gt;http://t.co/M2gwKz5RvI&lt;/a&gt; - bonus: install as a git precommit hook!&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/580429907521503232&#34;&gt;March 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Opinions are opinions and the battles about preferences between techies is the day to day, don&amp;rsquo;t miss this&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;A Few Notes On Choosing Between Go and D for a Quick Project: &lt;a href=&#34;http://t.co/KfO2C0svlb&#34;&gt;http://t.co/KfO2C0svlb&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/579311506665406464&#34;&gt;March 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Load a web site fast is one of the biggest headache of any web developer, here you can read a new technique that hopefully will help you to get less crazy each time that you must do it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;New JavaScript Techniques for Rapid Page Loads: &lt;a href=&#34;http://t.co/hZJD4LX6Ur&#34;&gt;http://t.co/hZJD4LX6Ur&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/579270070611931138&#34;&gt;March 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Well if you were desiring that Blink implement pointer events, this tweet is good news for you&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Based on feedback from developers &amp;amp; the Pointer Event Working Group, Blink is now reconsidering Pointer Events: &lt;a href=&#34;https://t.co/8uARlPNoVp&#34;&gt;https://t.co/8uARlPNoVp&lt;/a&gt;&lt;/p&gt;&amp;mdash; Chrome Developers (@ChromiumDev) &lt;a href=&#34;https://twitter.com/ChromiumDev/status/580764127691411456&#34;&gt;March 25, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;One example which shows that the decisions are made mustn&amp;rsquo;t be forever, things change and some that was ideal in past doesn&amp;rsquo;t have to be idea for now or for the future&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;«This … makes me wonder what other standard unix programs make design assumptions that aren’t true in 2015…» — this.&amp;#10;&amp;#10;&lt;a href=&#34;http://t.co/LpnWxVIXP1&#34;&gt;http://t.co/LpnWxVIXP1&lt;/a&gt;&lt;/p&gt;&amp;mdash; Michael Klishin (@michaelklishin) &lt;a href=&#34;https://twitter.com/michaelklishin/status/573599284454637568&#34;&gt;March 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you have a great weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #5</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150320/</link>
+      <pubDate>Fri, 20 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150320/</guid>
+      <description>&lt;p&gt;The last 7 days, twitter hasn&amp;rsquo;t only helped me to discover new libraries, techniques, tutorials, etc; it has also brought a quite interesting quote which I agree and cool tool which allows you record your terminal, let&amp;rsquo;s see them in appearing order&lt;/p&gt;
+
+&lt;p&gt;A practical video which show you some tips in how to create Go packages successfully, don&amp;rsquo;t miss to watch it if you are in the wave of Golang(&lt;a href=&#34;http://golang.org&#34;&gt;http://golang.org&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Practical Tips for Creating a Go Package Successfully: &lt;a href=&#34;https://t.co/PVdRndZIEM&#34;&gt;https://t.co/PVdRndZIEM&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/video?src=hash&#34;&gt;#video&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/576723470849064960&#34;&gt;March 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Through a reply of a tweet which asked for tools to make terminal tutorial animations, I&amp;rsquo;ve discovered &lt;a href=&#34;https://asciinema.org/&#34;&gt;asciinema&lt;/a&gt; a wonderful &lt;strong&gt;Open Source&lt;/strong&gt; tool to record your terminal&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/robbyrussell&#34;&gt;@robbyrussell&lt;/a&gt; &lt;a href=&#34;https://t.co/cdNu1UqJFI&#34;&gt;https://t.co/cdNu1UqJFI&lt;/a&gt; is nice&lt;/p&gt;&amp;mdash; Frank Denis (@jedisct1) &lt;a href=&#34;https://twitter.com/jedisct1/status/576766332781363200&#34;&gt;March 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;What about debugging Go in GDB, if you don&amp;rsquo;t know, then you can read this &lt;a href=&#34;http://cevaris.com/2015/03/08/debugging-golang-in-gdb/&#34;&gt;quick tutorial&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Debugging Go in GDB: &lt;a href=&#34;http://t.co/QaszV7pGiT&#34;&gt;http://t.co/QaszV7pGiT&lt;/a&gt; (A quick tutorial on debugging a simple Go program using the popular GNU debugger.)&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/577085866046271488&#34;&gt;March 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;As I&amp;rsquo;ve commented in the introduction of this post, the mentioned quote is&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Working hard for something&amp;hellip; &lt;a href=&#34;http://t.co/3Ncjhys2SY&#34;&gt;pic.twitter.com/3Ncjhys2SY&lt;/a&gt;&lt;/p&gt;&amp;mdash; Juergen R. Bolz (@123top10) &lt;a href=&#34;https://twitter.com/123top10/status/577121077333217280&#34;&gt;March 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last selected one is about how to stress your servers, do you thing that your servers are gods? maybe you want to know their limits&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;How To Stress Test CPU and Memory (VM) On a Linux and Unix With Stress-ng (via &lt;a href=&#34;https://twitter.com/Pocket&#34;&gt;@Pocket&lt;/a&gt;) &lt;a href=&#34;http://t.co/si9jQ3YkH3&#34;&gt;http://t.co/si9jQ3YkH3&lt;/a&gt;&lt;/p&gt;&amp;mdash; Paul B(ü|ue)tow (@plantanran) &lt;a href=&#34;https://twitter.com/plantanran/status/578320627674849280&#34;&gt;March 18, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that your week has been not too bad and you have a wonderful weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #4</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</link>
+      <pubDate>Fri, 13 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</guid>
+      <description>&lt;p&gt;Another 7 days almost gone, hence there it goes the 5 tweets that I&amp;rsquo;ve selected from my Twitter timeline.&lt;/p&gt;
+
+&lt;p&gt;Thanks to &lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt; I&amp;rsquo;ve discovered &lt;a href=&#34;http://en.wikipedia.org/wiki/SSHFS&#34;&gt;SSHFS&lt;/a&gt;, a network file system on top of &lt;a href=&#34;http://en.wikipedia.org/wiki/Secure_Shell&#34;&gt;SSH&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;How To Mount Remote Directory With SSHFS on a Linux &lt;a href=&#34;http://t.co/O0G8MUsXoC&#34;&gt;http://t.co/O0G8MUsXoC&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenBSD?src=hash&#34;&gt;#OpenBSD&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenSSH?src=hash&#34;&gt;#OpenSSH&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/CentOS?src=hash&#34;&gt;#CentOS&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Ubuntu?src=hash&#34;&gt;#Ubuntu&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Debian?src=hash&#34;&gt;#Debian&lt;/a&gt; &lt;a href=&#34;http://t.co/t3YYVa5W5w&#34;&gt;pic.twitter.com/t3YYVa5W5w&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/574355319184359425&#34;&gt;March 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Congratulations to &lt;a href=&#34;https://iojs.org/&#34;&gt;io.js&lt;/a&gt; community to release another version v1.5.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js bugfix release v1.5.1 out now @ &lt;a href=&#34;https://t.co/MKaxWFC8Bn&#34;&gt;https://t.co/MKaxWFC8Bn&lt;/a&gt; CHANGELOG @ &lt;a href=&#34;https://t.co/JwuzQ2hV3B&#34;&gt;https://t.co/JwuzQ2hV3B&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/575000532336668673&#34;&gt;March 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Mozilla released another post related with performance, this time related with SIMD.js (&lt;a href=&#34;http://en.wikipedia.org/wiki/SIMD&#34;&gt;Single Instruction Multiple Data&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;The State of SIMD.js Performance in Firefox: &lt;a href=&#34;https://t.co/I4aHZ9SSTv&#34;&gt;https://t.co/I4aHZ9SSTv&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/575352064122970112&#34;&gt;March 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice Open Source (MIT license) &lt;a href=&#34;http://golang.org/&#34;&gt;Golang&lt;/a&gt; library about arbritrary-precision fixed-point decimal library, which has been implemented and used in production for 6 months by &lt;a href=&#34;https://www.shopspring.com/&#34;&gt;Spring&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Decimal: An Arbitrary-Precision Fixed-point Decimal Library - &lt;a href=&#34;http://t.co/Cx3Dm8kPKa&#34;&gt;http://t.co/Cx3Dm8kPKa&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/576050308616425472&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice post of a great engineering work by &lt;a href=&#34;https://engineering.linkedin.com/&#34;&gt;LinkedIn&lt;/a&gt; to reduce the traffic of their websites over HTTP 1.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;great writeup from LinkedIn on SDCH.. &amp;quot;average additional compression across our static content was about 24%&amp;quot; @ &lt;a href=&#34;http://t.co/Vm2XRPfWLc&#34;&gt;http://t.co/Vm2XRPfWLc&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/576078282384228352&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Enjoy your weekend hacking around!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

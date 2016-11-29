@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Golang interfaces are one of the most powerful feature of the language, their simplicity is charming; don&#39;t miss those ones available in the language package">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="A Walk through Golang Package Interfaces">
+  <meta property="og:url" content="http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces">
+  <meta property="og:description" content="Golang interfaces are one of the most powerful feature of the language, their simplicity is charming; don&#39;t miss those ones available in the language package">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://s-media-cache-ak0.pinimg.com/736x/c1/53/6e/c1536ec3a9bc88e403f0f7e2d6d72557.jpg">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="golang">
+      
+        <meta property="og:tag" content="programming">
+      
+        <meta property="og:tag" content="programming-languages">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>A Walk through Golang Package Interfaces</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces"><h1 class="l-title title">A Walk through Golang Package Interfaces</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">06-01-2016</span>
+    <br>
+    
+
+<p>Golang interface is one of things that people love due its simplicity and how they make possible to create small things which can be composed to create more complex ones.</p>
+
+<p>It&rsquo;s well know that defining interfaces in the implementations make them more flexible and reusable; defining interfaces with just one or a couple of functions signatures is one of the good practices of writing Golang applications, because they make the implementations more modular due they can be composed to get new ones for more specific needs.</p>
+
+<p>Having this big set of small interface give the opportunity to have a bigger set of generic functions because they only constrain the parameters to implement one of those; so they can be use for any user defined type which implements at least that specific interface.</p>
+
+<p>Everything above is well know and there are lots of posts about this matter, hence my goal in this post isn&rsquo;t to add a new one more or extend this topic even more; there already good literature about it that you can find easily.</p>
+
+<p><strong>My goal is to provide the list of interfaces which I&rsquo;ve found, and hopefully I haven&rsquo;t missed any, in Golang 1.5 standard package and highlight few of them</strong> which I think that we have to bear in mind when we are developing common applications or services.</p>
+
+<h2 id="the-ones-useful-for-the-most-common-applications:8299f908315f8a7f26ec77fc52719a89">The ones useful for the most common applications</h2>
+
+<h3 id="sql-package:8299f908315f8a7f26ec77fc52719a89">sql package</h3>
+
+<p>The sql package has two without including the ones defined in the driver subpackage which I&rsquo;ve skipped due that in common applications development is unusual having to implement a new driver.</p>
+
+<ul>
+<li><a href="https://golang.org/pkg/database/sql/#Scanner" target="_blank" >Scanner</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/#Result" target="_blank" >Result</a>
+</li>
+</ul>
+
+<p>These ones gathered my attention due that it isn&rsquo;t that rare to store types in a database which aren&rsquo;t basic types defined in the used database system; while we can do the mapping each time that we read those values from the database, the Scanner interface is very convenient to be implemented and get the benefits to get the mapping automatically when the values are read from the database, by the Scan function.</p>
+
+<p>One example of this case is <a href="https://godoc.org/github.com/satori/go.uuid#UUID.Scan" target="_blank" >go.uuid</a>
+</p>
+
+<h3 id="encoding-package:8299f908315f8a7f26ec77fc52719a89">encoding Package</h3>
+
+<p>The encoding/decoding data is another common operation to perform in common application development. Golang encoding package defines two pairs, marshare/unmarsheler, of interfaces, one for binary and another for text:</p>
+
+<ul>
+<li><a href="https://golang.org/pkg/encoding/#BinaryMarshaler" target="_blank" >BinaryMarshaler</a>
+</li>
+<li><a href="https://golang.org/pkg/encoding/#BinaryUnmarshaler" target="_blank" >BinaryUnmarshaler</a>
+</li>
+<li><a href="https://golang.org/pkg/encoding/#TextMarshaler" target="_blank" >TextMarshaler</a>
+</li>
+<li><a href="https://golang.org/pkg/encoding/#TextUnmarshaler" target="_blank" >TextUnmarshaler</a>
+</li>
+</ul>
+
+<p>It also defines the same pair for specific encodings which usage is very spread</p>
+
+<ul>
+<li><strong>gob</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/encoding/gob/#GobDecoder" target="_blank" >GobDecoder</a>
+</li>
+<li><a href="https://golang.org/pkg/encoding/gob/#GobEncoder" target="_blank" >GobEncoder</a>
+</li>
+</ul></li>
+<li><strong>json</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/encoding/json/#Marshaler" target="_blank" >Marshaler</a>
+</li>
+<li><a href="https://golang.org/pkg/encoding/json/#Unmarshaler" target="_blank" >Unmarshaler</a>
+</li>
+</ul></li>
+<li><strong>xml</strong>: which has one pair to allow to encode/decode attributes
+
+<ul>
+<li><a href="https://golang.org/pkg/encoding/xml/#Marshaler" target="_blank" >Marshaler</a>
+</li>
+<li><a href="https://golang.org/pkg/encoding/xml/#Unmarshaler" target="_blank" >Unmarshaler</a>
+</li>
+<li><a href="https://golang.org/pkg/encoding/xml/#MarshalerAttr" target="_blank" >MarshalerAttr</a>
+</li>
+<li><a href="https://golang.org/pkg/encoding/xml/#UnmarshalerAttr" target="_blank" >UnmarshalerAttr</a>
+</li>
+</ul></li>
+</ul>
+
+<p>And one more for binary encoding
+* <a href="https://golang.org/pkg/encoding/binary/#ByteOrder" target="_blank" >ByteOrder</a>
+</p>
+
+<h3 id="flag-package:8299f908315f8a7f26ec77fc52719a89">flag package</h3>
+
+<p>Another common stuff is to pass argument to our application when it starts; <em>flag package</em> contains two interface which allow to define types to map values passed through command line arguments.</p>
+
+<ul>
+<li><a href="https://golang.org/pkg/flag/#Getter" target="_blank" >Getter</a>
+</li>
+<li><a href="https://golang.org/pkg/flag/#Value" target="_blank" >Value</a>
+</li>
+</ul>
+
+<h3 id="fmt-package:8299f908315f8a7f26ec77fc52719a89">fmt package</h3>
+
+<p>The fmt package defines a set of interfaces to format I/O, which is another functionality which can be needed in common applications development.</p>
+
+<ul>
+<li><a href="https://golang.org/pkg/fmt/#Formatter" target="_blank" >Formatter</a>
+</li>
+<li><a href="https://golang.org/pkg/fmt/#GoStringer" target="_blank" >GoStringer</a>
+</li>
+<li><a href="https://golang.org/pkg/fmt/#ScanState" target="_blank" >ScanState</a>
+</li>
+<li><a href="https://golang.org/pkg/fmt/#Scanner" target="_blank" >Scanner</a>
+</li>
+<li><a href="https://golang.org/pkg/fmt/#State" target="_blank" >State</a>
+</li>
+<li><a href="https://golang.org/pkg/fmt/#Stringer" target="_blank" >Stringer</a>
+</li>
+</ul>
+
+<h3 id="sort-package:8299f908315f8a7f26ec77fc52719a89">sort package</h3>
+
+<p>Some applications also requires to sort element in slices, so the types which implement sort interface can use after the routines of sort package to be sorted.</p>
+
+<ul>
+<li><a href="https://golang.org/pkg/sort/#Interface" target="_blank" >Interface</a>
+</li>
+</ul>
+
+<h2 id="the-rest:8299f908315f8a7f26ec77fc52719a89">The rest</h2>
+
+<p><strong>Compress package</strong></p>
+
+<ul>
+<li><strong>flate</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/compress/flate/#Reader" target="_blank" >falate/Reader</a>
+</li>
+<li><a href="https://golang.org/pkg/compress/flate/#Resetter" target="_blank" >falate/Resetter</a>
+</li>
+</ul></li>
+<li><strong>zlib</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/compress/zlib/#Resetter" target="_blank" >Resetter</a>
+</li>
+</ul></li>
+</ul>
+
+<p><strong>Heap package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/container/heap/#Interface" target="_blank" >Interface</a>
+</li>
+</ul>
+
+<p><strong>Crypto package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/crypto/#Decrypter" target="_blank" >Decrypter</a>
+</li>
+<li><a href="https://golang.org/pkg/crypto/#Signer" target="_blank" >Signer</a>
+</li>
+<li><a href="https://golang.org/pkg/crypto/#SignerOpts" target="_blank" >SignerOpts</a>
+</li>
+<li><strong>cipher</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/crypto/cipher/#AEAD" target="_blank" >AEAD</a>
+</li>
+<li><a href="https://golang.org/pkg/crypto/cipher/#Block" target="_blank" >Block</a>
+</li>
+<li><a href="https://golang.org/pkg/crypto/cipher/#BlockMode" target="_blank" >BlockMode</a>
+</li>
+<li><a href="https://golang.org/pkg/crypto/cipher/#Stream" target="_blank" >Stream</a>
+</li>
+</ul></li>
+<li><strong>elliptic</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/crypto/elliptic/#Curve" target="_blank" >Curve</a>
+</li>
+<li><a href="https://golang.org/pkg/crypto/tls/#ClientSessionCache" target="_blank" >ClientSessionCache</a>
+</li>
+</ul></li>
+</ul>
+
+<p><strong>sql/driver package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/database/sql/driver/#ColumnConverter" target="_blank" >ColumnConverter</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#Conn" target="_blank" >Conn</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#Driver" target="_blank" >Driver</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#Execer" target="_blank" >Execer</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#Queryer" target="_blank" >Queryer</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#Result" target="_blank" >Result</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#Stmt" target="_blank" >Stmt</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#Tx" target="_blank" >Tx</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#Value" target="_blank" >Value</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#ValueConverter" target="_blank" >ValueConverter</a>
+</li>
+<li><a href="https://golang.org/pkg/database/sql/driver/#Valuer" target="_blank" >Valuer</a>
+</li>
+</ul>
+
+<p><strong>debug package</strong></p>
+
+<ul>
+<li><strong>dwarf</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/debug/dwarf/#Type" target="_blank" >Type</a>
+</li>
+</ul></li>
+<li><strong>macho</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/debug/macho/#Load" target="_blank" >Load</a>
+</li>
+</ul></li>
+</ul>
+
+<p><strong>expvar package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/expvar/#Var" target="_blank" >Var</a>
+</li>
+</ul>
+
+<p><strong>ast package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/go/ast/#Decl" target="_blank" >Decl</a>
+</li>
+<li><a href="https://golang.org/pkg/go/ast/#Expr" target="_blank" >Expr</a>
+</li>
+<li><a href="https://golang.org/pkg/go/ast/#Node" target="_blank" >Node</a>
+</li>
+<li><a href="https://golang.org/pkg/go/ast/#Spec" target="_blank" >Spec</a>
+</li>
+<li><a href="https://golang.org/pkg/go/ast/#Stmt" target="_blank" >Stmt</a>
+</li>
+<li><a href="https://golang.org/pkg/go/ast/#Visitor" target="_blank" >Visitor</a>
+</li>
+</ul>
+
+<p><strong>constant package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/go/constant/#Value" target="_blank" >Value</a>
+</li>
+</ul>
+
+<p><strong>types package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/go/types/#Importer" target="_blank" >Importer</a>
+</li>
+<li><a href="https://golang.org/pkg/go/types/#Object" target="_blank" >Object</a>
+</li>
+<li><a href="https://golang.org/pkg/go/types/#Sizes" target="_blank" >Sizes</a>
+</li>
+<li><a href="https://golang.org/pkg/go/types/#Type" target="_blank" >Type</a>
+</li>
+</ul>
+
+<p><strong>hash package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/hash/#Hash" target="_blank" >Hash</a>
+</li>
+<li><a href="https://golang.org/pkg/hash/#Hash" target="_blank" >Hash</a>
+</li>
+<li><a href="https://golang.org/pkg/hash/#Hash64" target="_blank" >Hash64</a>
+</li>
+</ul>
+
+<p><strong>image package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/image/#Image" target="_blank" >Image</a>
+</li>
+<li><a href="https://golang.org/pkg/image/#PalettedImage" target="_blank" >PalettedImage</a>
+</li>
+<li><strong>color</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/image/color/#Color" target="_blank" >Color</a>
+</li>
+<li><a href="https://golang.org/pkg/image/color/#Model" target="_blank" >Model</a>
+</li>
+</ul></li>
+<li><strong>draw</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/image/draw/#Drawer" target="_blank" >Drawer</a>
+</li>
+<li><a href="https://golang.org/pkg/image/draw/#Image" target="_blank" >Image</a>
+</li>
+<li><a href="https://golang.org/pkg/image/draw/#Quantizer" target="_blank" >Quantizer</a>
+</li>
+</ul></li>
+<li><strong>jpeg</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/image/jpeg/#Reader" target="_blank" >Reader</a>
+</li>
+</ul></li>
+</ul>
+
+<p><strong>io package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/io/#ByteReader" target="_blank" >ByteReader</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#ByteScanner" target="_blank" >ByteScanner</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#ByteWriter" target="_blank" >ByteWriter</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#Closer" target="_blank" >Closer</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#ReadCloser" target="_blank" >ReadCloser</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#ReadSeeker" target="_blank" >ReadSeeker</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#ReadWriteCloser" target="_blank" >ReadWriteCloser</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#ReadWriteSeeker" target="_blank" >ReadWriteSeeker</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#ReadWriter" target="_blank" >ReadWriter</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#Reader" target="_blank" >Reader</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#ReaderAt" target="_blank" >ReaderAt</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#ReaderFrom" target="_blank" >ReaderFrom</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#RuneReader" target="_blank" >RuneReader</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#RuneScanner" target="_blank" >RuneScanner</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#Seeker" target="_blank" >Seeker</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#WriteCloser" target="_blank" >WriteCloser</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#WriteSeeker" target="_blank" >WriteSeeker</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#Writer" target="_blank" >Writer</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#WriterAt" target="_blank" >WriterAt</a>
+</li>
+<li><a href="https://golang.org/pkg/io/#WriterTo" target="_blank" >WriterTo</a>
+</li>
+</ul>
+
+<p><strong>math/rand package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/math/rand/#Source" target="_blank" >Source</a>
+</li>
+</ul>
+
+<p><strong>mine/multipart package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/mime/multipart/#File" target="_blank" >File</a>
+</li>
+</ul>
+
+<p><strong>net package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/net/#Addr" target="_blank" >Addr</a>
+</li>
+<li><a href="https://golang.org/pkg/net/#Conn" target="_blank" >Conn</a>
+</li>
+<li><a href="https://golang.org/pkg/net/#Error" target="_blank" >Error</a>
+</li>
+<li><a href="https://golang.org/pkg/net/#Listener" target="_blank" >Listener</a>
+</li>
+<li><a href="https://golang.org/pkg/net/#PacketConn" target="_blank" >PacketConn</a>
+</li>
+<li><strong>http</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/net/http/#CloseNotifier" target="_blank" >CloseNotifier</a>
+</li>
+<li><a href="https://golang.org/pkg/net/http/#CookieJar" target="_blank" >CookieJar</a>
+</li>
+<li><a href="https://golang.org/pkg/net/http/#File" target="_blank" >File</a>
+</li>
+<li><a href="https://golang.org/pkg/net/http/#FileSystem" target="_blank" >FileSystem</a>
+</li>
+<li><a href="https://golang.org/pkg/net/http/#Flusher" target="_blank" >Flusher</a>
+</li>
+<li><a href="https://golang.org/pkg/net/http/#Handler" target="_blank" >Handler</a>
+</li>
+<li><a href="https://golang.org/pkg/net/http/#Hijacker" target="_blank" >Hijacker</a>
+</li>
+<li><a href="https://golang.org/pkg/net/http/#ResponseWriter" target="_blank" >ResponseWriter</a>
+</li>
+<li><a href="https://golang.org/pkg/net/http/#RoundTripper" target="_blank" >RoundTripper</a>
+</li>
+<li><strong>cookiejar</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/net/http/cookiejar/#PublicSuffixList" target="_blank" >PublicSuffixList</a>
+</li>
+</ul></li>
+<li><strong>rpc</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/net/rpc/#ClientCodec" target="_blank" >ClientCodec</a>
+</li>
+<li><a href="https://golang.org/pkg/net/rpc/#ServerCodec" target="_blank" >ServerCodec</a>
+</li>
+</ul></li>
+<li><strong>smtp</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/net/smtp/#Auth" target="_blank" >Auth</a>
+</li>
+</ul></li>
+<li><strong>os</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/os/#FileInfo" target="_blank" >FileInfo</a>
+</li>
+<li><a href="https://golang.org/pkg/os/#Signal" target="_blank" >Signal</a>
+</li>
+</ul></li>
+</ul></li>
+</ul>
+
+<p><strong>reflect package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/reflect/#Type" target="_blank" >Type</a>
+</li>
+</ul>
+
+<p><strong>runtime package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/runtime/#Error" target="_blank" >Error</a>
+</li>
+</ul>
+
+<p><strong>sync package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/sync/#Locker" target="_blank" >Locker</a>
+</li>
+</ul>
+
+<p><strong>syscall package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/syscall/#Sockaddr" target="_blank" >Sockaddr</a>
+</li>
+</ul>
+
+<p><strong>tesing package</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/testing/#TB" target="_blank" >TB</a>
+</li>
+<li><strong>quick</strong>
+
+<ul>
+<li><a href="https://golang.org/pkg/testing/quick/#Generator" target="_blank" >Generator</a>
+</li>
+</ul></li>
+</ul>
+
+<p><strong>text/template/parse</strong></p>
+
+<ul>
+<li><a href="https://golang.org/pkg/text/template/parse/#Node" target="_blank" >Node</a>
+</li>
+</ul>
+
+<h2 id="conclusion:8299f908315f8a7f26ec77fc52719a89">Conclusion</h2>
+
+<p>Golang interfaces are the most powerful and simple feature that the language expose to create modular and reusable implementations.</p>
+
+<p>Golang standard library contains a bunch of already defined interfaces which can be implemented by our applications or services without having to think in new ones for the same purpose besides to ease and speed up to any Golang developer to understand our implementations.</p>
+
+<p>Collecting all of them in in this post allowed me to discover some of them which I haven&rsquo;t seen before even though I&rsquo;ve been developing in Golang for one year and a half. Some of them I had never seen because I haven&rsquo;t had to use them, others I had seen when I was reading a specific package documentation and other I saw at some point but I didn&rsquo;t assimilate at the first glance, so this post has been a good exercise.</p>
+
+<p>If I&rsquo;ve missed any and you know which ones, please let me know with an innocent comment.</p>
+
+<p>Thanks for reading it.</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

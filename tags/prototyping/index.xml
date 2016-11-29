@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Prototyping on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/prototyping/</link>
+    <description>Recent content in Prototyping on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Mon, 02 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/prototyping/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>3 Little Things in NodeJS which Help When You Have to Refactor</title>
+      <link>http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor</link>
+      <pubDate>Mon, 02 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor</guid>
+      <description>
+
+&lt;p&gt;We can say that in software development the concept of &lt;a href=&#34;http://martinfowler.com/books/refactoring.html&#34; target=&#34;_blank&#34;&gt;refactoring&lt;/a&gt; is present all the time; it seems that is in its nature.&lt;/p&gt;
+
+&lt;p&gt;We refactor code for several purposes, having a list with all of them, can be tricky, however here there are some:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We are building a prototype and we iterate over it to add, remove or change features.&lt;/li&gt;
+&lt;li&gt;We must clean code which was created in some point in a rush or it was created in the prototype cycle.&lt;/li&gt;
+&lt;li&gt;We must fix a bug.&lt;/li&gt;
+&lt;li&gt;We must upgrade dependencies which have changed the exposed API.&lt;/li&gt;
+&lt;li&gt;We must fix a performance issue.&lt;/li&gt;
+&lt;li&gt;We&amp;rsquo;ve come up with a new way/idea to get a cleaner or optimised implementation.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In my case, we are doing code refactoring almost everyday, even though, in my case, when I&amp;rsquo;m working in a new feature over a existent code base, sometimes I find some existent part which may have a little refactoring, and then I do, or if I&amp;rsquo;m working in a totally new implementation, I usually start from a roughly idea, which I &lt;a href=&#34;http://www.extremeprogramming.org/rules/spike.html&#34; target=&#34;_blank&#34;&gt;create a spike&lt;/a&gt; and then I refactor iteratively.&lt;/p&gt;
+
+&lt;p&gt;In this post, I&amp;rsquo;m going to mention 3 little things that I&amp;rsquo;ve learnt of refactoring NodeJS code bases, personal and professional ones, therefore I&amp;rsquo;ve learnt some of them from my own mistakes.&lt;/p&gt;
+
+&lt;h2 id=&#34;extracting-options-object-parameter-at-the-beginning-of-the-function:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Extracting &lt;code&gt;options&lt;/code&gt; object parameter at the beginning of the function&lt;/h2&gt;
+
+&lt;p&gt;One of the common implementation pattern that I use a lot in NodeJS is creating scripts that expose a function which receives only one parameter, an options object, e.g.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #888888&#34;&gt;// @param {Object} opts&lt;/span&gt;
+  module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;// Do whatever&lt;/span&gt;
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+      tell&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; tell
+    };
+  };
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; tell(somebody, message) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Hey &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; somebody &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;, Ivan wants to tell you: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; message;
+  }
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This pattern help me to prototype implementations because I can add more functionalities which require some options without changing the expose signature of the function, nonetheless don&amp;rsquo;t take me how it has to be used everywhere or keep it as the pattern to use to expose any API.&lt;/p&gt;
+
+&lt;p&gt;Ok, the pattern is great and if the function only has a few lines it is easy to take it to use in another prototype which may reuse it, however if the implementation is larger in number of lines or complex, for example it performs asynchronous operations (if you use callbacks then I would add, to the function of the example, a second parameter to pass the callback) then, knowing what options the function requires is painful, if they are accessed any where in the function.&lt;/p&gt;
+
+&lt;p&gt;One solution for that is to add a block comment on top of the function declaration with all the options parameters required and optional, nonetheless it isn&amp;rsquo;t in my likes, because if you&amp;rsquo;re prototyping, it&amp;rsquo;ll require to keep update when one parameter is added, removed or swapped from required to optional or vice versa, therefore it is prone to be outdated, hence useless.&lt;/p&gt;
+
+&lt;p&gt;A second solution, which is in my preferences, is extracting the options parameters just at the beginning of the function, just after you make all the validations of the required options or having a function with that purpose, which returns an opts object with the required values if opts pass the needed validations; you may already know what I mean, nonetheless let&amp;rsquo;s see an example:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// @param {Object} opts&lt;/span&gt;
+module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (opts) {
+  &lt;span style=&#34;color: #888888&#34;&gt;// Having a helper function for the validations is&lt;/span&gt;
+  &lt;span style=&#34;color: #888888&#34;&gt;// worthwhile when there are several options to check&lt;/span&gt;
+  &lt;span style=&#34;color: #888888&#34;&gt;// values and/or types&lt;/span&gt;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #333333&#34;&gt;!&lt;/span&gt;opts) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;opts is required&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; greeting &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; opts.greeting &lt;span style=&#34;color: #333333&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Hey&amp;#39;&lt;/span&gt;;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; teller &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; opts.teller &lt;span style=&#34;color: #333333&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+    tell&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; tell.bind(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, greeting, teller)
+  };
+};
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; tell(greeting, teller, somebody, message) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; greeting &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; somebody &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;, &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; teller &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; wants to tell you: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; message;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If the function is used internally and the options values are set by our implementation, validations are very basic, then extracting is clearer; hence as a rule of thumb keep the extraction in only one place because, with a quick glance, you can figure out in the future what option parameters the function needs.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, the good news is that ECMAScript 6 (ES6) will bring a destructuring feature, which allow to do something like this but compacted in the function signature, besides other cool stuff. You can read about it in the awesome Alex Rauschmayer blog post called &lt;a href=&#34;http://www.2ality.com/2015/01/es6-destructuring.html&#34; target=&#34;_blank&#34;&gt;Destructuring and parameter handling in ECMAScript 6&lt;/a&gt; to know deeply about ES6 destructuring and &lt;a href=&#34;http://www.2ality.com/2015/01/es6-destructuring.html#simulating_named_parameters_in_javascript&#34; href=&#34;_blank&#34;&gt;Simulating Named Parameters in JavaScript&lt;/a&gt; section to see the exposed case.&lt;/p&gt;
+
+&lt;h2 id=&#34;environment-variables-can-be-evil:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Environment variables can be evil&lt;/h2&gt;
+
+&lt;p&gt;Environment variables can be very useful to parametrise your applications and change the application behaviour however using too many or not to add them into documentation easy to find, can be a nightmare if they are accessed across all the code base.&lt;/p&gt;
+
+&lt;p&gt;However if they are used with awareness, only using a few and very identified then, they avoid to have a burden configuration file which has to be versioned for different environments.&lt;/p&gt;
+
+&lt;p&gt;In NodeJS, there is the famous NODE_ENV environment variable and it&amp;rsquo;s fine to define change the behaviour of your application or library (if it is justified), however I&amp;rsquo;ve found that not always is good to rely on it due that some npm packages use it to operate differently in production than development or testing environments.&lt;/p&gt;
+
+&lt;p&gt;The cases that I&amp;rsquo;ve found they are better to use other variable than NODE_ENV to specify the environment is when you have something that only has to run exclusively in production, for example, you  would like to set NODE_ENV to production to do load testing of your application, but you don&amp;rsquo;t want to send errors message to a central service that you use to collect them, because obviously you&amp;rsquo;re testing it in a controlled environment and don&amp;rsquo;t want to pollute your productions logs.&lt;/p&gt;
+
+&lt;p&gt;Anyway if your implementations need environment variables, I would pull all of them out in one place and would spread them as a property of an options object parameter, similar what I exposed in the previous section; unifying to one place where the application take them, eases to see in quick view what environment variables your application needs and what default values are assigned if they could be not specified, then know easily what values to set in other environments when the default values aren&amp;rsquo;t appropriated.&lt;/p&gt;
+
+&lt;h2 id=&#34;use-absolute-url-computed-into-variables:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Use absolute URL computed into variables&lt;/h2&gt;
+
+&lt;p&gt;This is a recommendation bound to &lt;a href=&#34;http://expressjs.com/4x/api.html&#34; target=&#34;_blank&#34;&gt;express 4.x&lt;/a&gt;, specifically to &lt;a href=&#34;http://expressjs.com/4x/api.html#router&#34; target=&#34;_blank&#34;&gt;Router&lt;/a&gt; feature which is available since version 4, nonetheless it may apply for others Web frameworks in a similar way.&lt;/p&gt;
+
+&lt;p&gt;Router is one of the awesome features that express 4 has brought, it allows to create mini-applications which specify their routes, middlewares included; they offer the possibility to reuse your implemented routes in different applications, obviously if they are quite generic and you developed them bearing in mind that autonomy.&lt;/p&gt;
+
+&lt;p&gt;However, I created some of them bearing in mind that, but I missed one thing. My routes render views rather than to send JSON, however it could apply to JSON if you have to send URLs to follow, and they need to link one to another and vice versa.&lt;/p&gt;
+
+&lt;p&gt;Because route can be mounted by other &lt;a href=&#34;http://expressjs.com/4x/api.html#app.use&#34; target=&#34;_blank&#34;&gt;Routers and a App&lt;/a&gt; you cannot hardcode an absolute URL, then I thought use relative URLs.&lt;/p&gt;
+
+&lt;p&gt;For example, having this two routes in a router:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  router.get(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/user/:id&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res, next) { ... });
+  router.get(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/group/:id&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res, next) { ... })
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Then each route view has a link to each other, e.g.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;user view&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;a&lt;/span&gt; &lt;span style=&#34;color: #0000CC&#34;&gt;href=&lt;/span&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;group/10&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #007700&#34;&gt;&amp;gt;&lt;/span&gt;NodeJS developers&lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;group view&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;a&lt;/span&gt; &lt;span style=&#34;color: #0000CC&#34;&gt;href=&lt;/span&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;user/0&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #007700&#34;&gt;&amp;gt;&lt;/span&gt;Group Administrator&lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Then I got in troubles because the links don&amp;rsquo;t work, because if you are, for example, in a users view, your browser url could be something &lt;code&gt;http://communi.ty/user/10&lt;/code&gt;, then when you press the link to the group &amp;ldquo;NodeJS developers&amp;rdquo; your browser will request &lt;code&gt;http://communi.ty/user/group/10&lt;/code&gt;, then the URL does not match with the &amp;ldquo;group&amp;rdquo; route of the Router.&lt;/p&gt;
+
+&lt;p&gt;In front of it, you can think to use absolute URLs, however if you use that Router in another application or your mount it in another path, then they won&amp;rsquo;t work. Perhaps, you decide that the views are not portable and they have to be implemented on each application, well&amp;hellip; that make sense, views are very bound to the application and they cannot probably be reused but you still have the issue that if you mount the Router under another path in the same application, because you are prototyping then you could realise that a new path fits better, then you would have to update your views without haven&amp;rsquo;t ported your router to another application; even worse, in the JSON case that I mentioned above, using relative URLs will require to update the Router, then it wouldn&amp;rsquo;t be reusable.&lt;/p&gt;
+
+&lt;p&gt;The solutions is easy, always compute the links with their absolute URL in the route and pass them to the render as variables, and likewise when you send JSON.&lt;/p&gt;
+
+&lt;p&gt;You can get the absolute URL even though you are in a Router&amp;rsquo;s route with &lt;a href=&#34;http://expressjs.com/4x/api.html#req.originalUrl&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;req.originalUrl&lt;/code&gt;&lt;/a&gt; and then you can compute the URLs to the other routes; in this example, stripping &amp;ldquo;/group/&lt;em&gt;&amp;rdquo; and &amp;ldquo;/user/&lt;/em&gt;&amp;rdquo; and after appending whatever is needed in each case would be enough to get the expected result.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;As software developers, we are refactoring all the time, software always can be better or it has to change for any reason; sometimes we have to prototype and move the prototypes to a product as soon as possible hence we don&amp;rsquo;t have time enough to spend thinking all the cases that our applications will face, even we&amp;rsquo;d have it, we&amp;rsquo;d probably fail, for that reason I guess that agile methodologies appeared; then in front of of this situation, we can craft software as better as we can and apply tiny things that we learn throughout our experience to make those refactoring less painful.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

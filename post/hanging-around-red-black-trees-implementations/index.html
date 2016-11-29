@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The beginning a multi programming language red-black tree data structure implementation">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Hanging around with red-black tree implementations: the beginnings">
+  <meta property="og:url" content="http://blog.fraixed.es/post/hanging-around-red-black-trees-implementations">
+  <meta property="og:description" content="The beginning a multi programming language red-black tree data structure implementation">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="red-black tree">
+      
+        <meta property="og:tag" content="trees">
+      
+        <meta property="og:tag" content="data structures">
+      
+        <meta property="og:tag" content="computer science">
+      
+        <meta property="og:tag" content="c">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/hanging-around-red-black-trees-implementations">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Hanging around with red-black tree implementations: the beginnings</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/hanging-around-red-black-trees-implementations"><h1 class="l-title title">Hanging around with red-black tree implementations: the beginnings</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">02-03-2015</span>
+    <br>
+    
+
+<p>This last weekend I&rsquo;ve spent my time taking a look one thing that I have in mind for several months ago, to implement a <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree" target="_blank">red-black tree data structure</a> in several languages; obviously not all of them in two days, I usually try to sleep some hours a day ;D</p>
+
+<p>The reason, which I came up with this idea, is because for more than one year <strong>I&rsquo;ve been tinkering with several programming languages</strong> during part of my spare time, some, without exclusion, in personal projects, other in <a href="https://github.com/ifraixedes/hack-datahack14" target="_blank" rel="nofollow">hackathons</a> and others in <a href="https://www.coursera.org/course/proglang" target="_blank" rel="nofollow">courses</a>; I&rsquo;ve also read some amount of content, in some of them more than others, and in some of them I&rsquo;ve only read, hence I&rsquo;ve never got my hands dirty with those last few.</p>
+
+<p>I know that it may not be the more funny activity to do in a weekend, however continue reading if you want to know why and what I&rsquo;ve got so far, and what will be my path, and also, you may get the chance to see it&rsquo;s not that boring.</p>
+
+<h2 id="why-i-ve-chosen-to-implement-a-red-black-tree:e7525e97030abe2f5ebcb298339524db">Why I&rsquo;ve chosen to implement a red-black tree</h2>
+
+<p>Well life is hard and trees solve a lot of problems, hahaha, I&rsquo;m joking.</p>
+
+<p><strong>Why do I want to implement a red-black tree?</strong> being honest, I don&rsquo;t have any preference rather than we had to implement one where I&rsquo;m currently working, hence I could choose another data structure or even another type of <a href="http://en.wikipedia.org/wiki/Tree_%28data_structure%29">tree</a>, but that experience was the excuse to choose it.</p>
+
+<p>That implementation was in javascript, concretely in <a href="http://nodejs.org/" target="_blank" rel="nofollow">NodeJS</a>, basically because we needed to use in the environment where the component is running; moreover it was not a basic structure, it was targeting production, therefore it has to  store and get the values from external sources; then it is difficult to follow easily the red-black tree algorithm and the focus of it is for the purpose to achieve; furthermore I didn&rsquo;t almost do any part of the implementation, rather using it and implemented the stuff around, basically it means that I don&rsquo;t discard to implement it in javascript in some point too, but I&rsquo;m not very encouraged to do soon, as I regard to spend enough time with this programming language the most of the my days.</p>
+
+<p><strong>Why don&rsquo;t I implement something useful for the humanity?</strong></p>
+
+<ul>
+<li>First of all I should find something useful for the humanity that has not been implemented or has been but it can be, at least, improved in the most of the languages that now, I bear in mind to use.</li>
+<li>Secondly if I find it, I wouldn&rsquo;t probably have the time to do the implementation for all of those, then I&rsquo;ve simplified the problem to choose something quite small and academic (the most of the professional jobs never require to implement any tree or another data structure), however I don&rsquo;t want to implement a &ldquo;hello world!&rdquo; so it&rsquo;d be to copy and paste the examples of any language.</li>
+<li>Thirdly, I don&rsquo;t want to implement a HTTP service, they are almost the same, they rely in using a library which does everything and you only have to write the route and it&rsquo;s response based in the received request, moreover nowadays there may have enough on every language, hence it wasn&rsquo;t going to provide anything useful for the humanity, anyway. I want to use some of the language properties, types, &ldquo;structures&rdquo; and so on, than one of its libraries or packages.</li>
+</ul>
+
+<p>Then it won&rsquo;t provide anything useful for the humanity.</p>
+
+<p><strong>are those implementations going to be for production/optimised?</strong> I don&rsquo;t think so, this is a spare time toy, it means, I spend my free time doing this and also all other obligations, responsibilities, geek activities and human beings needs, then if the amount of time is already quite limited to implement those in basic and non-optimised way, and the probability to end with some of the languages implementations isn&rsquo;t quite high, then I don&rsquo;t think that I could achieve to do them in a well tested optimised way, that a production environment may need.</p>
+
+<p>then, <strong>what may the implementations be?</strong> they&rsquo;ll be the basic implementation of ta tree which contains nodes of integer key and values; continue reading to know a little bit more about this.</p>
+
+<h2 id="what-i-ve-got-so-far:e7525e97030abe2f5ebcb298339524db">What I&rsquo;ve got so far</h2>
+
+<p>Not that much. I&rsquo;ve taken a look to the basic <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree" target="_blank">algorithm</a> which drove me a <strong><a href="http://en.literateprograms.org/Red-black_tree_%28C%29" target="_blank">c implementation</a></strong> and <a href="http://en.literateprograms.org/Red-black_tree_%28Java%29" target="_blank">Java one</a> which I haven&rsquo;t taken a look so far.</p>
+
+<p>I&rsquo;ve decided <strong>to take the c</strong> one; sorry but I&rsquo;ve fallen in love of the minimalist, nonetheless it doesn&rsquo;t mean that I never skip it, if its opposite make sense because it simplify the solution and save time; nonetheless this is my spare time toy and I&rsquo;ve preferred to take the c one and have some good remembers; obviously in the time being, I don&rsquo;t think to do the c implementation, basically it will be the base.</p>
+
+<p>Then I&rsquo;ve downloaded it, I&rsquo;ve created a basic <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/blob/master/c/makefile" target="_blank" rel="nofollow">makefile</a>, and I compiled it and ran its test.</p>
+
+<p>After that, I found that I had to generated some data which I can provide to the several future implementations; the c implementation that I&rsquo;ve borrowed, it doesn&rsquo;t read the data from any input source, its test auto-generate the random data which are inserted in the tree and after removed, to be able to test the implementation; therefore, I had to implement it to be able to test the same input and output data with the future implementations.</p>
+
+<p>Then, I started the fun time, getting back to c after I don&rsquo;t remember how many years I did wrote something, without taking in account the time that I spent in its big powerful but incontrollable brother (<a href="http://en.wikipedia.org/wiki/C%2B%2B" target="_blank" rel="nofollow">c++</a>) but anyway it was long time ago.</p>
+
+<p>At the end, I haven&rsquo;t only implemented something that read a <strong>very basic input file</strong> to take integer pairs of keys and values (example <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/blob/master/fixtures/25-pairs.csv" target="_blank" rel="nofollow">of 25 pairs</a> and more in <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/tree/master/fixtures" target="_blank" rel="nofollow">this folder</a>) but I&rsquo;ve also implemented to generate the random pairs in the same binary (implemented in <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/blob/master/c/src/main.c" target="_blank" rel="nofollow">this main file</a>) which create 3 output files, in the case that it&rsquo;s been specified when it&rsquo;s executed; one file is the pairs if they&rsquo;ve been auto-generated (postfixed with <code>-pairs.csv</code>) when a number of pairs has been specified without no input file; another is the tree&rsquo;s nodes (key, value and color) file (postfixed with <code>-nodes.csv</code>) in <a href="http://en.wikipedia.org/wiki/Tree_traversal#In-order_.28symmetric.29" target="_blank">depth-first in-order traversal</a> and the last one, the &ldquo;visualisation&rdquo; of a tree in a text file (postfixed with <code>-tree.txt</code>) which I&rsquo;ve partly stolen from the test file of the taken implementation.</p>
+
+<p>After I could test it and compare the results with this two visual representations of a red-black tree
+ <img alt="wikipedia red-black tree representation" src="http://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Red-black_tree_example.svg/1350px-Red-black_tree_example.svg.png" class="graphic-medium graphic-medium-centre"></p>
+
+<p>corresponds to these files <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/blob/master/fixtures/example-01-pair.csv">pairs</a>, <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/blob/master/fixtures/example-01-nodes.csv">nodes</a> and <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/blob/master/fixtures/example-01-tree.txt">tree</a>.</p>
+
+<p>And this other</p>
+
+<p><img alt="www.cs.auckland.ac.nz red-black tree representation" src="https://www.cs.auckland.ac.nz/software/AlgAnim/fig/rb_tree1.gif" class="graphic-medium graphic-medium-centre"></p>
+
+<p>corresponds to these other files <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/blob/master/fixtures/example-02-pair.csv" target="_blank" rel="nofollow">pairs</a>, <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/blob/master/fixtures/example-02-nodes.csv" target="_blank" rel="nofollow">nodes</a> and <a href="https://github.com/ifraixedes/multi-lang-red-black-tree/blob/master/fixtures/example-02-tree.txt" target="_blank" rel="nofollow">nodes</a>.</p>
+
+<p>And surprisingly you can see how the results that I&rsquo;ve got from the c implementation are not equal to those visual examples, right? well, then if we take a look to the <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree" target="_blank">definition of red-back tree</a>, we can read:</p>
+
+<blockquote>
+<p>The balancing of the tree is not perfect but it is good enough to allow it to guarantee searching in O(log n) time, where n is the total number of elements in the tree.</p>
+</blockquote>
+
+<p>so they&rsquo;re not perfectly balanced, however the results are right, those fulfill the <a href="http://en.wikipedia.org/wiki/Red%E2%80%93black_tree#Properties" target="_blank">red-black tree properties</a>.</p>
+
+<p>you can also read this <a href="http://stackoverflow.com/questions/28531044/is-red-black-tree-balanced" target="_blank" rel="nofollow">stack overflow question</a> where somebody got the same issue, in another implementation, and have a better clarification.</p>
+
+<h2 id="what-s-the-next:e7525e97030abe2f5ebcb298339524db">What&rsquo;s the next</h2>
+
+<p>I&rsquo;ve already commented above, but let&rsquo;s refresh it; my aim is to implement this data structure in several programming languages:</p>
+
+<ul>
+<li><strong>Which one is the next?</strong> I don&rsquo;t know for now, probably I&rsquo;ll find out when I get the time which I encourage to spend on it, which will also define it.</li>
+<li><strong>When?</strong> As I&rsquo;ve just said, when I get a time that I encourage to do it.</li>
+<li><strong>is this serious?</strong> Probably no, chill out dude, it&rsquo;s my spare time, :P</li>
+</ul>
+
+<h2 id="to-wrap-up:e7525e97030abe2f5ebcb298339524db">To wrap up</h2>
+
+<p>I want to do a basic implementation of something, which I may achieve in terms of time, in some of the languages that I&rsquo;ve been hacking around for more than one year; it&rsquo;s a red-black tree data structure implementation.</p>
+
+<p><code>what and when the first one == undefined</code></p>
+
+<p>See you next week.</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

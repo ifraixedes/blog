@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Iojs on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/iojs/</link>
+    <description>Recent content in Iojs on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 15 May 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/iojs/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #13</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150515/</link>
+      <pubDate>Fri, 15 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150515/</guid>
+      <description>&lt;p&gt;This week I&amp;rsquo;ve been half away, however I&amp;rsquo;ve collected several tweets and my choice has driven to centre the topic in &lt;strong&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;Rust&lt;/a&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;a href=&#34;https://iojs.org/en/index.html&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;As usual in my last post about &amp;ldquo;my 5 favourite weekly tweets&amp;rdquo;, I&amp;rsquo;ve got a blog post about Rust which help me to learn more about it in a passive way, in this case &lt;strong&gt;&lt;a href=&#34;http://huonw.github.io/blog/2015/05/finding-closure-in-rust/&#34; target=&#34;_blank&#34;&gt;about Closures in Rust&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Finding Closure in Rust  &lt;a href=&#34;http://t.co/M4m21WgY2i&#34;&gt;http://t.co/M4m21WgY2i&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/596781802204884992&#34;&gt;May 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Now that I&amp;rsquo;m using go professionally a lot of doubts have bubble up with my colleagues in how to approach the implementation of several general parts of the system/application/serive, so I&amp;rsquo;ve seen this post &lt;strong&gt;&lt;a href=&#34;https://joeshaw.org/net-context-and-http-handler/&#34; target=&#34;_blank&#34;&gt;which compares several approaches about net/context and http.Handler&lt;/a&gt; very interesting&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Go&amp;#39;s net/context and http.Handler: &lt;a href=&#34;https://t.co/vxKnSbsQLZ&#34;&gt;https://t.co/vxKnSbsQLZ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/597017175086518272&#34;&gt;May 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Another post about Go got into my favourites ones, this time about something that I&amp;rsquo;d already known from a conference that &lt;a href=&#34;https://www.cloudflare.com/&#34; target=&#34;_blank&#34;&gt;CloudFlare&lt;/a&gt;&amp;rsquo;s team has been working on, a &lt;strong&gt;&lt;a href=&#34;https://blog.cloudflare.com/go-crypto-bridging-the-performance-gap/&#34; target=&#34;_blank&#34;&gt;cryptography library to boost performance&lt;/a&gt;&lt;/strong&gt; due the Go crypto package isn&amp;rsquo;t fast enough as existing solutions in other techs.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Go Crypto: Bridging The Performance Gap - &lt;a href=&#34;https://t.co/jNEJjz6MQm&#34;&gt;https://t.co/jNEJjz6MQm&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/597431194054189056&#34;&gt;May 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Another Rust blog post, in this case from its &lt;a href=&#34;http://blog.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;official blog&lt;/a&gt;, which teaches about &lt;strong&gt;&lt;a href=&#34;http://blog.rust-lang.org/2015/05/11/traits.html&#34; target=&#34;_blank&#34;&gt;traits and how they allows to abstract without an important overhead&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Abstraction without overhead: traits in &lt;a href=&#34;https://twitter.com/hashtag/rustlang?src=hash&#34;&gt;#rustlang&lt;/a&gt; &lt;a href=&#34;http://t.co/yzDfHNCQaW&#34;&gt;http://t.co/yzDfHNCQaW&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/597818818224750592&#34;&gt;May 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one it&amp;rsquo;s about the &lt;strong&gt;agreement between iojs and Node Foundation to unify forces&lt;/strong&gt; to empower Node&amp;rsquo;s ecosystem and community&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;The &lt;a href=&#34;https://twitter.com/official_iojs&#34;&gt;@official_iojs&lt;/a&gt; just agreed to move into the Node Foundation and rename the &amp;quot;iojs&amp;quot; org on GitHub to &amp;quot;nodejs&amp;quot; &lt;a href=&#34;http://t.co/W1cCakBgLy&#34;&gt;http://t.co/W1cCakBgLy&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/598605393636429825&#34;&gt;May 13, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a nice spring weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #12</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</link>
+      <pubDate>Fri, 08 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</guid>
+      <description>&lt;p&gt;Another &amp;ldquo;working&amp;rdquo; week is gone and as usual you can take a look here to my 5 favourite tweets of the week&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve got a nice post about &lt;a href=&#34;http://www.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;Rust&lt;/a&gt; Iterators, don&amp;rsquo;t missed if you&amp;rsquo;ve started to be curious about this language that will be for production use in a few days after this post&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;A Journey into Iterators &lt;a href=&#34;http://t.co/tuR0cIIG12&#34;&gt;http://t.co/tuR0cIIG12&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/594624260599058434&#34;&gt;May 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Hacking is not my topic, however I&amp;rsquo;m always interested in news about it, so this tweet about Javascript-Based DDoS got my attention&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;An Introduction to JavaScript-Based DDoS: &lt;a href=&#34;https://t.co/V6VU7agXOC&#34;&gt;https://t.co/V6VU7agXOC&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/594925681714143232&#34;&gt;May 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The amazing community behind &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt; has made a big step to move forward releasing 2.0 version, they deserved to add this tweet here&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;io.js 2.0 Released: &lt;a href=&#34;https://t.co/hcF5CxV1yV&#34;&gt;https://t.co/hcF5CxV1yV&lt;/a&gt; (V8 upgraded to 4.8, npm to 2.9.0 &amp;amp; more, see &lt;a href=&#34;https://t.co/flwmTNnJvP&#34;&gt;https://t.co/flwmTNnJvP&lt;/a&gt; )&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/595575488371937281&#34;&gt;May 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The Linux distribution called &lt;a href=&#34;https://www.kali.org/&#34; target=&#34;_blank&#34;&gt;Kali&lt;/a&gt;, has updated 3 packages related with Wireless Penetration Testing, so good news if you love to play around with wireless connections&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Pixiewps, Reaver &amp;amp; Aircrack-ng - wireless penetration testing tool updates in Kali and what they mean for you  - &lt;a href=&#34;https://t.co/jgXn4t9nE1&#34;&gt;https://t.co/jgXn4t9nE1&lt;/a&gt;&lt;/p&gt;&amp;mdash; muts (@kalilinux) &lt;a href=&#34;https://twitter.com/kalilinux/status/595217837792178176&#34;&gt;May 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://dave.cheney.net/&#34; target=&#34;_blank&#34;&gt;Dave Cheney&lt;/a&gt; has created a new build tool for &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt;, called &lt;a href=&#34;http://getgb.io/&#34; target=&#34;_blank&#34;&gt;gd&lt;/a&gt; which should solve the problem of a reproducible builds; one of thing that me and many other people miss in &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt; is an appropriated tool to manage dependencies so I&amp;rsquo;ll take a look to this totally different approach of others I&amp;rsquo;ve seen and tested, hence this tweet provided me this amazing discovery&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Building Go projects with &amp;#39;gb&amp;#39;: &lt;a href=&#34;https://t.co/f9igUiQOQP&#34;&gt;https://t.co/f9igUiQOQP&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/596654809404538880&#34;&gt;May 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a lovely weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Private Members on ES6 Classes with Proxies</title>
+      <link>http://blog.fraixed.es/post/private-members-es6-classes-with-proxies</link>
+      <pubDate>Wed, 06 May 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/private-members-es6-classes-with-proxies</guid>
+      <description>
+
+&lt;p&gt;ES6 is getting close to its official release, the &lt;a href=&#34;http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts&#34; target=&#34;_blank&#34;&gt;last Revision, no. 38, is the last Final Draft&lt;/a&gt;, however &lt;a href=&#34;https://kangax.github.io/compat-table/es6/&#34; target=&#34;_blank&#34;&gt;Browsers, Runtimes and Compilers/Polyfills&lt;/a&gt; haven&amp;rsquo;t implemented all the features that the specification defines.&lt;/p&gt;
+
+&lt;p&gt;In this post I&amp;rsquo;m going to go through over a hacky idea about to create objects with &lt;strong&gt;ES6 Classes with private members without using closures as in ES5&lt;/strong&gt;, which is possible as you probably know, nonetheless that topic is very well explained in articles, blog posts, etc., so no point to write another blog post to talk about it, again.&lt;/p&gt;
+
+&lt;h2 id=&#34;es6-classes:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;ES6 Classes&lt;/h2&gt;
+
+&lt;p&gt;As you may already know, ES6 brings the concept of Object Oriented Programming Classes to Javascript.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;ES6 Classes&lt;/strong&gt; allows to create classes without having to specify functions and its prototype property; the syntax and everything that you need to know can be found in a very thorough post named &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Classes in ECMAScript 6 (final semantics)&amp;rdquo;&lt;/a&gt; that &lt;a href=&#34;http://rauschma.de/&#34; target=&#34;_blank&#34;&gt;Dr. Axel Rauschmayer&lt;/a&gt; has written and where he also concluded &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html#does_javascript_need_classes%3F&#34; target=&#34;_blank&#34;&gt;a few clear benefits about ES6 Classes&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve already read his blog post or you&amp;rsquo;ve also known from any other source, ES6 classes doesn&amp;rsquo;t have property scope as many, if not all, &lt;a href=&#34;http://en.wikipedia.org/wiki/Object-oriented_programming&#34; target=&#34;_blank&#34;&gt;Object Oriented Programming&lt;/a&gt; languages have, then you still need the &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures#Emulating_private_methods_with_closures&#34; target=&#34;_blank&#34;&gt;closures workaround to define private properties in objects&lt;/a&gt;, at least if you don&amp;rsquo;t use any of the working approaches that I show bellow.&lt;/p&gt;
+
+&lt;h2 id=&#34;es6-proxies:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;ES6 Proxies&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Proxies is a ES6 mechanism that allows to register traps over an object&lt;/strong&gt;, so they allows to specify custom behavior for fundamental object operations (assignment, iteration, property lookup, etc).&lt;/p&gt;
+
+&lt;p&gt;Proxies is a less mature ES6 feature than classes, at least for the environment that I&amp;rsquo;ve used in this post which you&amp;rsquo;ll read below.&lt;/p&gt;
+
+&lt;p&gt;Because you can find several resources to figure out what ES6 proxies allow to do, I&amp;rsquo;m not going to tell their details here; if you&amp;rsquo;re lazy to look for them, &lt;a href=&#34;http://rauschma.de/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Axel&lt;/a&gt; has also written a &lt;a href=&#34;http://www.2ality.com/2014/12/es6-proxies.html&#34; target=&#34;_blank&#34;&gt;very thorough post about them&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-hack:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The hack&lt;/h2&gt;
+
+&lt;p&gt;After the brief introduction about the two ES6 features that I&amp;rsquo;ve used to create a hacky idea to define private members in objects, I&amp;rsquo;m going to walk through what I&amp;rsquo;ve used to get it works and the different approaches that I&amp;rsquo;ve tried until I found the one that I felt quite satisfied.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-used-environment:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The used environment&lt;/h3&gt;
+
+&lt;p&gt;My first thought was to use &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Babel&lt;/a&gt; to be able to transpile ES6 to ES5 and be able to use this hack everywhere, however it couldn&amp;rsquo;t be because, according to Babel, &lt;a href=&#34;http://babeljs.io/docs/learn-es6/#proxies&#34; target=&#34;_blank&#34;&gt;no way to transpile ES6 proxies to ES5&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;So my alternative has been to use &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;iojs&lt;/a&gt; with &lt;a href=&#34;https://www.npmjs.com/package/harmony-reflect&#34; target=&#34;_blank&#34;&gt;harmony-reflect&lt;/a&gt; module.&lt;/p&gt;
+
+&lt;p&gt;Therefore if you want to run any piece of code of this post, then install &lt;code&gt;iojs-1.8.1&lt;/code&gt; (version which I&amp;rsquo;ve used so I really know for sure that it works), install harmony-reflect &lt;a href=&#34;https://www.npmjs.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;npm&lt;/a&gt; module and execute iojs with &lt;code&gt;--harmony&lt;/code&gt; and &lt;code&gt;--harmony_proxies&lt;/code&gt; flags (&lt;code&gt;iojs --harmony --harmony_proxies the-script.js&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h3 id=&#34;class-declaration:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Class declaration&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve created a very simple class to show the proof of concept of this hack, nothing clever here, however it&amp;rsquo;s useful to get a better understanding wha I&amp;rsquo;ll show you below.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;use strict&amp;#39;&lt;/span&gt;;
+
+require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;harmony-reflect&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Usual class&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;class&lt;/span&gt; Person {
+  constructor(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  get name() {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name;
+  }
+  set name(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  greeting(person) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;hi ${person.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;;
+  }
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Create an object from an usual class&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Person(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a Person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPerson.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #888888&#34;&gt;// _name property is accessible because JS classes doesn&amp;#39;t have access scope&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a Person instance ${ivanPerson._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+ 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Very clear what I&amp;rsquo;ve coded, moreover with the comments I don&amp;rsquo;t think that it needs any clarification; note the &lt;code&gt;require(&#39;harmony-reflect&#39;)&lt;/code&gt; import, otherwise the following lines of code won&amp;rsquo;t work.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-possible-approaches:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The possible approaches&lt;/h3&gt;
+
+&lt;p&gt;Before going to see some of the approaches that I&amp;rsquo;ve come up, you must know that I&amp;rsquo;ve chosen as a convention that any property (values or method) whose name starts with &lt;code&gt;_&lt;/code&gt; is private, even though my proof of concept only show the access to a property value with a defined getter, it also works for properties values without getters and property methods.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-the-base-class-not-working-solution:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify the Base Class (not working solution)&lt;/h4&gt;
+
+&lt;p&gt;I already knew that it wasn&amp;rsquo;t probably going to work, because if you know a little bit how Classes works or you inspect a very slightly them, you&amp;rsquo;ll see that &lt;strong&gt;a ES6 Class it&amp;rsquo;s an object with Function prototype&lt;/strong&gt;, besides, Proxies only trap the calls to the target object, so wrapping a Class with a Proxy will protect the Class, no the instances created from them; however I gave a try because never hurt and you make sure that your thoughts are right.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// Let&amp;#39;s try to protect class object&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ProtectedPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(Person, {
+  get(target, name) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;calling getter in Person wrapped by a proxy&amp;#39;&lt;/span&gt;);
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+    }
+  }
+});
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Let&amp;#39;s create an instance of the class that we wrapped with a proxy&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanProtectedPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; ProtectedPerson(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt; person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanProtectedPerson.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #888888&#34;&gt;// _name still accessible due proxy wrapped class Person;&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// a class is a Function with prototype object, proxy trap calls to the&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// class itself hence the target is the class, not its instances&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt; person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanProtectedPerson._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Thoughts confirmed, &lt;code&gt;_name&lt;/code&gt; on any instance of &lt;code&gt;Person&lt;/code&gt; still accessible; what the Proxy traps, are the properties of &lt;code&gt;Person&lt;/code&gt; class which is a instance of &lt;code&gt;Function&lt;/code&gt;; you can test it yourself if you don&amp;rsquo;t believe me.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-the-class-instances:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify the Class instances&lt;/h4&gt;
+
+&lt;p&gt;The obvious solution is to define a proxy for each &lt;code&gt;Person&lt;/code&gt; instance, and it works as a charm, let&amp;rsquo;s see the example:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// let&amp;#39;s protect a base class instance&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPersonProtected &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(ivanPerson, {
+  get(target, name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+    }
+  }
+})
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a person instance which has been &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtected.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;try&lt;/span&gt; {
+  &lt;span style=&#34;color: #888888&#34;&gt;// _name property call gets trapped by the proxy&lt;/span&gt;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a person instance which has been &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtected._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+} &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;catch&lt;/span&gt; (e) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (e.message &lt;span style=&#34;color: #333333&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Proxy did its job!!&amp;#39;&lt;/span&gt;);
+  } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; e;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The solution works and it&amp;rsquo;s great, however it&amp;rsquo;s repetitive having to create a proxy each time that an instance of &lt;code&gt;Person&lt;/code&gt; is created; it&amp;rsquo;s true that we can create a function which wrap the two operations and it&amp;rsquo;ll solve the problem, however I would like to use Classes to create instances as expected, so using &lt;code&gt;new&lt;/code&gt; operator, for that reason I squashed my brain a little bit more and I&amp;rsquo;ve found the next solution which works and I guess that it&amp;rsquo;s the most interesting part of this post.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-this-instances:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify &lt;code&gt;this&lt;/code&gt; instances&lt;/h4&gt;
+
+&lt;p&gt;The idea has been based in the concept of how Javascript&amp;rsquo;s constructors (i.e. Functions) behave.&lt;/p&gt;
+
+&lt;p&gt;Javascript&amp;rsquo;s constructors  return &lt;code&gt;this&lt;/code&gt; object if they don&amp;rsquo;t have a return statement in its body (usual and expected the most of the times) otherwise they return the value of the &lt;code&gt;return&lt;/code&gt; statement.&lt;/p&gt;
+
+&lt;p&gt;In ES6, Classes are Functions and constructors are allowed to have return statements and their behaviour, is totally the same than in ES5, according Axel, they have the same behaviour for &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html#safety_checks&#34;&gt;backwards compatibility&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Bearing in mind that concept, we can do the following:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// However it&amp;#39;s painful, having to wrap in a proxy every single instance of a class&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// is a repeatable tiring task, so let&amp;#39;s try to creata a class that protect its&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// object instances&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;class&lt;/span&gt; PersonProtected {
+  constructor(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+    &lt;span style=&#34;color: #888888&#34;&gt;// In es6 it also works as in es5: remember es6 class is nothing more than a Function&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// and `new` call the function defined by `constructor`;&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// in es5 works because when you call a `new` on a function the value retuned is the&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// value returned inside the function if it&amp;#39;s an object otherwise returns `this`;&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// in es6 remains the same for backward compatibility&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, {
+      get(target, name) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+        } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+        }
+      }
+    });
+  }
+  get name() {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name;
+  }
+  set name(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  greeting(person) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;hi ${person.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;;
+  }
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPersonProtectedInstance &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; PersonProtected(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a PersonProtected instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtectedInstance.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;try&lt;/span&gt; {
+  &lt;span style=&#34;color: #888888&#34;&gt;// _name property call gets trapped by the proxy&lt;/span&gt;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a PersonProtected instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtectedInstance._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+} &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;catch&lt;/span&gt; (e) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (e.message &lt;span style=&#34;color: #333333&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Class which proxy `this` did its job!!&amp;#39;&lt;/span&gt;);
+  } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; e;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;As you can see in the previous snippet of code, it&amp;rsquo;s as simple as moving the Proxy call inside the constructor and pass &lt;code&gt;this&lt;/code&gt; as a target and returns the returned object by the Proxy call, so it takes advantage of the strange behaviour of Javascript&amp;rsquo;s constructors which has been kept in ES6 Classes.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s clean, works and we can keep the Class instantiation syntax as it is, with the ability to define private properties just starting their names with &lt;code&gt;_&lt;/code&gt;, convention that I&amp;rsquo;ve chosen.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;ES6 Classes don&amp;rsquo;t have any mechanism to define private properties, however with the help of Proxies and the backwards compatibility kept with ES5 we can create a clean mechanism based in naming conventions to define private objects&amp;rsquo; properties.&lt;/p&gt;
+
+&lt;p&gt;Remind you that it&amp;rsquo;s a hack, Proxies aren&amp;rsquo;t even available in iojs, besides I have no clue the performance about this approach, so it isn&amp;rsquo;t for production if you lover yourself.&lt;/p&gt;
+
+&lt;p&gt;All the code of the post, just in case that you&amp;rsquo;d like to check it out, is under this &lt;a href=&#34;https://gist.github.com/ifraixedes/e9311748c961f1dbb93e&#34; target=&#34;_blank&#34;&gt;gist&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Do you have any other idea to get something similar with the features that ES6 brings? if you have, please share them in the comments.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #4</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</link>
+      <pubDate>Fri, 13 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</guid>
+      <description>&lt;p&gt;Another 7 days almost gone, hence there it goes the 5 tweets that I&amp;rsquo;ve selected from my Twitter timeline.&lt;/p&gt;
+
+&lt;p&gt;Thanks to &lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt; I&amp;rsquo;ve discovered &lt;a href=&#34;http://en.wikipedia.org/wiki/SSHFS&#34;&gt;SSHFS&lt;/a&gt;, a network file system on top of &lt;a href=&#34;http://en.wikipedia.org/wiki/Secure_Shell&#34;&gt;SSH&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;How To Mount Remote Directory With SSHFS on a Linux &lt;a href=&#34;http://t.co/O0G8MUsXoC&#34;&gt;http://t.co/O0G8MUsXoC&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenBSD?src=hash&#34;&gt;#OpenBSD&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenSSH?src=hash&#34;&gt;#OpenSSH&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/CentOS?src=hash&#34;&gt;#CentOS&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Ubuntu?src=hash&#34;&gt;#Ubuntu&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Debian?src=hash&#34;&gt;#Debian&lt;/a&gt; &lt;a href=&#34;http://t.co/t3YYVa5W5w&#34;&gt;pic.twitter.com/t3YYVa5W5w&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/574355319184359425&#34;&gt;March 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Congratulations to &lt;a href=&#34;https://iojs.org/&#34;&gt;io.js&lt;/a&gt; community to release another version v1.5.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js bugfix release v1.5.1 out now @ &lt;a href=&#34;https://t.co/MKaxWFC8Bn&#34;&gt;https://t.co/MKaxWFC8Bn&lt;/a&gt; CHANGELOG @ &lt;a href=&#34;https://t.co/JwuzQ2hV3B&#34;&gt;https://t.co/JwuzQ2hV3B&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/575000532336668673&#34;&gt;March 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Mozilla released another post related with performance, this time related with SIMD.js (&lt;a href=&#34;http://en.wikipedia.org/wiki/SIMD&#34;&gt;Single Instruction Multiple Data&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;The State of SIMD.js Performance in Firefox: &lt;a href=&#34;https://t.co/I4aHZ9SSTv&#34;&gt;https://t.co/I4aHZ9SSTv&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/575352064122970112&#34;&gt;March 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice Open Source (MIT license) &lt;a href=&#34;http://golang.org/&#34;&gt;Golang&lt;/a&gt; library about arbritrary-precision fixed-point decimal library, which has been implemented and used in production for 6 months by &lt;a href=&#34;https://www.shopspring.com/&#34;&gt;Spring&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Decimal: An Arbitrary-Precision Fixed-point Decimal Library - &lt;a href=&#34;http://t.co/Cx3Dm8kPKa&#34;&gt;http://t.co/Cx3Dm8kPKa&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/576050308616425472&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice post of a great engineering work by &lt;a href=&#34;https://engineering.linkedin.com/&#34;&gt;LinkedIn&lt;/a&gt; to reduce the traffic of their websites over HTTP 1.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;great writeup from LinkedIn on SDCH.. &amp;quot;average additional compression across our static content was about 24%&amp;quot; @ &lt;a href=&#34;http://t.co/Vm2XRPfWLc&#34;&gt;http://t.co/Vm2XRPfWLc&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/576078282384228352&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Enjoy your weekend hacking around!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #3</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150306/</link>
+      <pubDate>Fri, 06 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150306/</guid>
+      <description>&lt;p&gt;This week I got my 5 favourite tweets of my twitter timeline almost the last two days; I&amp;rsquo;ve also been very busy this week, however I walked through in my timeline at the end of the each day and I&amp;rsquo;ve selected:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://iojs.org/en/index.html&#34;&gt;io.js&lt;/a&gt; team is working very hard, the open governance applied to the project, one of the main reason they forked &lt;a href=&#34;http://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt;, seems that works quite well and they&amp;rsquo;re moving forward pretty fast; this tweet talks itself about it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js v2.x is probably closer than you think &lt;a href=&#34;https://t.co/mXYpmyRQW0&#34;&gt;https://t.co/mXYpmyRQW0&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/573260340856795136&#34;&gt;March 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Quite amazing &lt;a href=&#34;http://opensource.org/licenses/MIT&#34;&gt;MIT&lt;/a&gt; open source project witch brings the ability to compile and execute c code in one go&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;C – Compile and execute C “scripts” in one go &lt;a href=&#34;https://t.co/Q7pzgO5Ku9&#34;&gt;https://t.co/Q7pzgO5Ku9&lt;/a&gt;&lt;/p&gt;&amp;mdash; Hacker News (@newsycombinator) &lt;a href=&#34;https://twitter.com/newsycombinator/status/573151372432031744&#34;&gt;March 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve discovered &lt;a href=&#34;http://inikulin.github.io/parse5/&#34;&gt;parse5&lt;/a&gt;, an npm module released under &lt;a href=&#34;http://opensource.org/licenses/MIT&#34;&gt;MIT&lt;/a&gt; as well, which I considered that it looks interesting&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Parse5: WHATWG HTML5-Compliant HTML Parsing/Serialization Toolset for Node - &lt;a href=&#34;http://t.co/atODyW5Y0m&#34;&gt;http://t.co/atODyW5Y0m&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/573126517422727168&#34;&gt;March 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;One disclosed bug in OpenSSL always is quite interesting due the number of apps, systems, libraries, etc, which use it, however the versions with this issues are older than the version used by &lt;a href=&#34;https://iojs.org/en/index.html&#34;&gt;io.js&lt;/a&gt; and &lt;a href=&#34;http://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt; production releases (0.12.0 and 0.10.36)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Are &lt;a href=&#34;https://twitter.com/hashtag/nodejs?src=hash&#34;&gt;#nodejs&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/hashtag/iojs?src=hash&#34;&gt;#iojs&lt;/a&gt; affected by the “FREAK Attack” OpenSSL vulnerability? &lt;a href=&#34;http://t.co/DQi5sgDUev&#34;&gt;http://t.co/DQi5sgDUev&lt;/a&gt;&lt;/p&gt;&amp;mdash; StrongLoop (@StrongLoop) &lt;a href=&#34;https://twitter.com/StrongLoop/status/572900126890467328&#34;&gt;March 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And lastly I&amp;rsquo;ve selected a tweet which brought me to read a research experiment done by &lt;a href=&#34;https://www.mozilla.org/e&#34;&gt;Mozilla&lt;/a&gt;; definitely, it deserves to have a read&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;The Emterpreter: Running Code Before It Can Be Parsed - &lt;a href=&#34;https://t.co/MYU8VuElOn&#34;&gt;https://t.co/MYU8VuElOn&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/572885177527107585&#34;&gt;March 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And that&amp;rsquo;s it of my part, have you got any interesting tweet that you&amp;rsquo;d like to share? drop it in a comment, I would like to read it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #2</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150227/</link>
+      <pubDate>Sat, 28 Feb 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150227/</guid>
+      <description>&lt;p&gt;This week I&amp;rsquo;ve been delighted of&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust lang&lt;/a&gt; released a new version 1.0.0-alpha.2, it&amp;rsquo;s the language that I want to take to write some lines of code, however until that moment, I&amp;rsquo;m following the evolution and reading some tips that I collect from the community&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Rust 1.0.0.alpha.2 &lt;a href=&#34;http://t.co/S72HcYo6t3&#34;&gt;http://t.co/S72HcYo6t3&lt;/a&gt; SO FREAKING EXCITING! &lt;a href=&#34;https://twitter.com/hashtag/rustlang?src=hash&#34;&gt;#rustlang&lt;/a&gt;&lt;/p&gt;&amp;mdash; Community Opener (@flaper87) &lt;a href=&#34;https://twitter.com/flaper87/status/568874641923698690&#34;&gt;February 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve got the chance to have a read to an amazing technical blog post about &lt;a href=&#34;https://methane.github.io/2015/02/reduce-allocation-in-go-code/&#34;&gt;how to reduce Go allocations&lt;/a&gt; which drove me to read other two posts in &lt;a href=&#34;blog.golang.org&#34;&gt;golang blog&lt;/a&gt; which allowed me to learn more about the internals&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Reducing Allocations in Go Code: &lt;a href=&#34;http://t.co/ODHknUsNU3&#34;&gt;http://t.co/ODHknUsNU3&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/569594226041872385&#34;&gt;February 22, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve discovered a nice so nice open source service implemented in Go, &lt;a href=&#34;http://gogs.io/&#34;&gt;Gogs, a self-hosted Git service&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Gogs: A Self-Hosted Git Service Written in Go - &lt;a href=&#34;http://t.co/juisUGaCPN&#34;&gt;http://t.co/juisUGaCPN&lt;/a&gt; (Think GitHub-lite.)&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/569853209671565314&#34;&gt;February 23, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I could know the tradeoffs of why a big corporate, as Walmart, &lt;a href=&#34;http://todogroup.org/blog/why-we-run-an-open-source-program-walmart-labs/&#34;&gt;decide to run open source software&lt;/a&gt;, reading the first post of a new series&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Why we run an open source program - Walmart Labs &amp;#10;&lt;a href=&#34;http://t.co/Ihy9dN2YLs&#34;&gt;http://t.co/Ihy9dN2YLs&lt;/a&gt; via HN&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/570478864859840512&#34;&gt;February 25, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://iojs.org/en/index.html&#34;&gt;iojs&lt;/a&gt; released a new version 1.4.1 with delightful promise/process, streams with TLS, new event for &lt;code&gt;http&lt;/code&gt;, &lt;a href=&#34;https://code.google.com/p/v8/&#34;&gt;v8&lt;/a&gt;, &lt;a href=&#34;https://github.com/libuv/libuv&#34;&gt;libuv&lt;/a&gt; &amp;amp; &lt;a href=&#34;https://npmjs.org&#34;&gt;npmjs&lt;/a&gt; update; the community behind this &lt;a href=&#34;http://nodejs.org&#34;&gt;NodeJS&lt;/a&gt; fork never ceases to amaze us with their &lt;a href=&#34;https://github.com/iojs/io.js/blob/v1.x/GOVERNANCE.md#readme&#34;&gt;open governance model&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js v1.4.1 is out @ &lt;a href=&#34;https://t.co/MKaxWFkxcN&#34;&gt;https://t.co/MKaxWFkxcN&lt;/a&gt; incl new &amp;quot;unhandledRejection&amp;quot; &amp;amp; &amp;quot;rejectionHandled&amp;quot; events and more: &lt;a href=&#34;https://t.co/9LPbP6VQxu&#34;&gt;https://t.co/9LPbP6VQxu&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/571078034670772224&#34;&gt;February 26, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you could enjoy with some of them as I did.&lt;/p&gt;
+
+&lt;p&gt;Have a lovely geeky weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #1</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150220/</link>
+      <pubDate>Fri, 20 Feb 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150220/</guid>
+      <description>&lt;p&gt;Today, Friday, I&amp;rsquo;ve decided to start this &lt;strong&gt;serie of weekly posts&lt;/strong&gt; where I will publish my &lt;strong&gt;5 favourite tweets&lt;/strong&gt; that I&amp;rsquo;ll have got from my twitter timeline since Friday of previous week until Thursday of the current week.&lt;/p&gt;
+
+&lt;p&gt;You should find here &lt;strong&gt;every Friday, by 1pm&lt;/strong&gt; a post with those 5 tweets that I&amp;rsquo;ve selected, so to check it by Friday afternoon or in your geeky weekend to discover something new that you may have missed.&lt;/p&gt;
+
+&lt;p&gt;This week, I&amp;rsquo;ve selected&lt;/p&gt;
+
+&lt;p&gt;Something cool with &lt;a href=&#34;https://github.com/substack/watchify&#34;&gt;watchify&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;more experiments with &amp;quot;script injection&amp;quot; in Chrome, much faster with watchify &amp;#10;&lt;a href=&#34;https://t.co/6MUwWsNPRZ&#34;&gt;https://t.co/6MUwWsNPRZ&lt;/a&gt;&amp;#10;/ &lt;a href=&#34;https://twitter.com/substack&#34;&gt;@substack&lt;/a&gt; &lt;a href=&#34;https://twitter.com/dan_abramov&#34;&gt;@dan_abramov&lt;/a&gt;&lt;/p&gt;&amp;mdash; Matt DesLauriers (@mattdesl) &lt;a href=&#34;https://twitter.com/mattdesl/status/566790923884183552&#34;&gt;February 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;iojs is looking forward to adding HTTP2&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;With Chrome ditching SPDY and going full on HTTP2, io.js &lt;em&gt;may&lt;/em&gt; follow with core HTTP2 support, discussion here: &lt;a href=&#34;https://t.co/pVcyyQ1Vyw&#34;&gt;https://t.co/pVcyyQ1Vyw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/564973319942721537&#34;&gt;February 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A very good and deep technical post about the final semantics of ECMAScript 6 classes&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Classes in ECMAScript 6: The Final Semantics - &lt;a href=&#34;http://t.co/56RQIkUYAN&#34;&gt;http://t.co/56RQIkUYAN&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/567665264469508096&#34;&gt;February 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Being aware about security stuff is never time wasted, then check those 10 immutable Laws of Security&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;10 immutable Laws of Security: &lt;a href=&#34;http://t.co/WDj66fXI9A&#34;&gt;http://t.co/WDj66fXI9A&lt;/a&gt; - great read, lots of hard won wisdom.&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/568098163933868032&#34;&gt;February 18, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A very nice tool to analyse web logs, written in &lt;a href=&#34;http://golang.org/&#34;&gt;golang&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;GoAccess – Terminal-Based Visual Web Log Analyzer - &lt;a href=&#34;http://t.co/VnwgBT9pxP&#34;&gt;http://t.co/VnwgBT9pxP&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/golang?src=hash&#34;&gt;#golang&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/sysadmin?src=hash&#34;&gt;#sysadmin&lt;/a&gt; (cc &lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt;)&lt;/p&gt;&amp;mdash; Nabil ZADVAT (@NabilZADVAT) &lt;a href=&#34;https://twitter.com/NabilZADVAT/status/568107738951233537&#34;&gt;February 18, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope one of them was in your interests.&lt;/p&gt;
+
+&lt;p&gt;Have a nice weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Performance Execution on JS Objects Created in Different Ways</title>
+      <link>http://blog.fraixed.es/post/performance-js-objects-created-different-ways</link>
+      <pubDate>Mon, 26 Jan 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/performance-js-objects-created-different-ways</guid>
+      <description>
+
+&lt;p&gt;In JS (javascript) there are different approaches to create objects which differ in somehow not only syntax but in small things that you can achieve.&lt;/p&gt;
+
+&lt;p&gt;My aim in this post is not to talk of those different approaches in the sense how they differ in terms of &lt;a href=&#34;http://en.wikipedia.org/wiki/Information_hiding&#34; target=&#34;_blank&#34;&gt;encapsulation&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code&#34; target=&#34;_blank&#34;&gt;code readability&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Programming_paradigm&#34; target=&#34;_blank&#34;&gt;programming paradigm&lt;/a&gt; approach, best practices, likes and preferences; I think that there are enough posts, articles, resources, etc, with full details, well explained and good quality about this topic on Internet.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m going to show some &lt;strong&gt;basic performance tests&lt;/strong&gt; that I&amp;rsquo;ve done with an object created with those different approaches; just to have fund and because I was curious about it.&lt;/p&gt;
+
+&lt;h2 id=&#34;test-implementations:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Test implementations&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve implemented a silly example of those different approaches and after I executed a performance test in different platforms (Browsers, &lt;a href=&#34;http://nodejs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Node&lt;/a&gt; and &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;iojs&lt;/a&gt;); let&amp;rsquo;s see first the used object creation approaches implementations:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Usual Constructor Function&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPrototype() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+}
+
+ContentPrototype.prototype.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; text;
+};
+
+ContentPrototype.prototype.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text;
+};
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Usual Constructor Function &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPrototypeNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+}
+
+ContentPrototypeNull.prototype.__proto__ &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+ContentPrototypeNull.prototype.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; text;
+};
+
+ContentPrototypeNull.prototype.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text;
+};
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Constructor Function which uses &lt;code&gt;Object.defineProperty&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentProperty() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.defineProperty(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;content&amp;#39;&lt;/span&gt;, {
+    set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+      }
+
+      text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+    },
+    get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Constructor Function which uses &lt;code&gt;Object.defineProperty&lt;/code&gt; &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPropertyNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.defineProperty(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;content&amp;#39;&lt;/span&gt;, {
+    set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+      }
+
+      text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+    },
+    get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+    }
+  });
+}
+
+ContentPropertyNull.prototype.__proto__ &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Usual Object Literal&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunction() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+            &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+  };
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object Literal &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; obj &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;);
+
+  obj.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+    }
+
+    text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+  };
+
+  obj.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+  };
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; obj;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object created by &lt;code&gt;Object.create&lt;/code&gt; defining properties&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionObjCreate() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;, {
+    content&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object created by &lt;code&gt;Object.create&lt;/code&gt; defining properties &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionObjCreateNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, {
+    content&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;After I wrote those examples, I also wrote little test for each one to check that they have the same behaviour in both operations (read and write), however I haven&amp;rsquo;t added here to avoid noise.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance-execution-tests:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Performance Execution Tests&lt;/h2&gt;
+
+&lt;p&gt;Thereafter I&amp;rsquo;ve created two performance test scripts to run in Node and iojs in my laptop (8 cores):&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;My own simple implementation which basically execute each operation a bunch of times in a loop, stores the individual values and calculates the time execution average; you can find it in this &lt;a href=&#34;https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-simple-average-time-metrics-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Another one which uses &lt;a href=&#34;http://benchmarkjs.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;benchmark.js&lt;/a&gt; with &lt;a href=&#34;https://github.com/wadey/node-microtime&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;microtime&lt;/a&gt; whose script you can find in this &lt;a href=&#34;https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-benchmark-metics-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In the case of the browsers, I&amp;rsquo;ve used &lt;a href=&#34;http://jsperf.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;jsperf&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then I&amp;rsquo;ve executed the performance execution test in the mentioned platforms to see how the objects, created with each different approach, perform in terms of writing and reading an object&amp;rsquo;s property value.&lt;/p&gt;
+
+&lt;h3 id=&#34;iojs:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;iojs&lt;/h3&gt;
+
+&lt;p&gt;I used the last iojs version available so far, which is 1.1.0.&lt;/p&gt;
+
+&lt;p&gt;My own script returned these results&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;iojs v1.1.0 simple average time&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/65/d6/66/65d666c5bf4aa1063ba2b42e299ceba8.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Benchmarjs script returned these ones&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;iojs v1.1.0 benchmark&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/9a/76/18/9a7618386ca59477e6069f1b086f1be5.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;node:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Node&lt;/h3&gt;
+
+&lt;p&gt;I used the last production Node version available so far, which is 0.12.0, YES v0.12 has been finally released.&lt;/p&gt;
+
+&lt;p&gt;My own script returned these results&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;node v0.12.0 simple average time&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/f1/b1/9a/f1b19a2b89f0daf73ee83ebbcc3c5165.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Benchmarjs script returned these ones&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;node v0.12.0 benchmark&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/de/36/a1/de36a16e9216edaf3f6e4afaaafa0b81.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;browser:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Browser&lt;/h3&gt;
+
+&lt;p&gt;In the browser you can find two tests, which are the same than the iojs and Node ones, but I had to split them in two, one to run the writing property operation and another for the reading one, to offer better results readability.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve run each one in three browsers, Chrome, Firefox and Safari and two different versions in the case of Chrome, one of them the current Chrome Canary; however &lt;strong&gt;I encourage you to run with your browsers&lt;/strong&gt; to have more samples of the same borwser/version and/or new ones from different browsers/versions.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://jsperf.com/proto-defineprop-obj-set/2&#34; target=&#34;_blank&#34;&gt;writing property value test&lt;/a&gt; showed me the next chart which I took an screenshot&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;browsers writing property jsperf chart&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/84/97/7e/84977e5a4415963462f7aa98c72f9e54.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://jsperf.com/prototype-vs-defineproperty-vs-object-get/3&#34; target=&#34;_blank&#34;&gt;reading property value test&lt;/a&gt; and its screenshot that I took&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;browsers reading property jsperf chart&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/d6/21/d2/d621d29ce5176a6a119d4b65abca3e84.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;my-analysis:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;My Analysis&lt;/h2&gt;
+
+&lt;p&gt;Due that Node and iojs benchmark don&amp;rsquo;t make more difference between running the benchmark test asynchronous and synchronous, I&amp;rsquo;ve just needed to take one of them in both cases to compare.&lt;/p&gt;
+
+&lt;p&gt;Having the comparison of writing and reading an object property value between them using benchmark script is not quite clear about the differences, more or less they perform similar and one is a little bit faster than other in some cases and vice versa.&lt;/p&gt;
+
+&lt;p&gt;If I have to asses them using &lt;strong&gt;my own script&lt;/strong&gt;, I can see that overall, &lt;strong&gt;Node performs around 5% faster than iojs&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;However both are consistent in what create object approaches perform faster in terms of writing and reading values.&lt;/p&gt;
+
+&lt;p&gt;We can see that Node and iojs, writes and reads perform better with objects whose properties have been defined using &lt;code&gt;Object.defineProperty&lt;/code&gt; or defining them through &lt;code&gt;Object.create&lt;/code&gt;; the approach that performs worse is any kind of constructors and in the middle we have the object literals; we cannot see much difference between inherit from Object prototype than without.&lt;/p&gt;
+
+&lt;p&gt;Having the &lt;strong&gt;difference between the best approach and the worst one&lt;/strong&gt; we can get gains around &lt;strong&gt;40% in writing&lt;/strong&gt; and &lt;strong&gt;200% in reading&lt;/strong&gt;, so not bad to have thought.&lt;/p&gt;
+
+&lt;p&gt;In the case of the browsers, we&amp;rsquo;ve got that the performance between the different approaches is the same for writing and reading.&lt;/p&gt;
+
+&lt;p&gt;Between them, &lt;strong&gt;Firefox and Safari perform very good with object literals&lt;/strong&gt;; Firefox does, in second place with constructors and so bad with objects created with &lt;code&gt;Object.create&lt;/code&gt; and/or having the properties set by &lt;code&gt;Object.defineProperty&lt;/code&gt; and Safari the opposite.&lt;/p&gt;
+
+&lt;p&gt;Surprisingly &lt;strong&gt;Chrome performs equally with all of them less object literals&lt;/strong&gt;, and &lt;strong&gt;Chrome Canary&lt;/strong&gt; increases those with constructors, maintains the same with object literals and &lt;strong&gt;decrease so much with objects created by &lt;code&gt;Object.create&lt;/code&gt;&lt;/strong&gt; which define their properties with it.&lt;/p&gt;
+
+&lt;p&gt;In the browser, you can see easily, thanks to the charts showed by &lt;a href=&#34;http://jsperf.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;jsperf&lt;/a&gt;, the roughly percentage of gain between approaches and browsers.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Having these result you can decide what approach to use in your implementations to boost the performance, however you may only get a benefit of it if you are writing and reading values on objects properties that you&amp;rsquo;ve created their implementation; nonetheless I only assessed CPU so, profiling the amount of memory spend with the different approaches when you have to create a lot of them, would also be important to keep the best balance.&lt;/p&gt;
+
+&lt;p&gt;Moreover in the time being the results are those, but mostly, browsers are updated fast and these results may change in the near future.&lt;/p&gt;
+
+&lt;p&gt;From my point of view, &lt;strong&gt;it isn&amp;rsquo;t worthwhile to focus in performance&lt;/strong&gt; and &lt;strong&gt;forget &lt;a href=&#34;http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code&#34; target=&#34;_blank&#34;&gt;code readability&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Programming_paradigm&#34; target=&#34;_blank&#34;&gt;programming paradigm&lt;/a&gt; and best practices&lt;/strong&gt; to keep the implementation simple and clear to ease the maintainability; hence after I&amp;rsquo;ve written it, I suggest to read these two rules of the Unix philosophy:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.faqs.org/docs/artu/ch01s06.html#id2877610&#34; target=&#34;_blank&#34;&gt;Rule of Clarity: Clarity is better than cleverness&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.faqs.org/docs/artu/ch01s06.html#rule_of_optimization&#34; target=&#34;_blank&#34;&gt;Rule of Optimization: Prototype before polishing. Get it working before you optimize it&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;ve enjoyed.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

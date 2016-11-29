@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Macos on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/macos/</link>
+    <description>Recent content in Macos on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 17 Apr 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/macos/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #9</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</link>
+      <pubDate>Fri, 17 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</guid>
+      <description>&lt;p&gt;This week security, programming languages and Linux, go ahead to see what tweets I&amp;rsquo;ve chosen.&lt;/p&gt;
+
+&lt;p&gt;New security issue on Apple OS X 10.10.2, so if you use OSX 10.10 and yo haven&amp;rsquo;t updated, you should do ASAP because you&amp;rsquo;re already late.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/hashtag/rootpipe?src=hash&#34;&gt;#rootpipe&lt;/a&gt; Full disclosure of a privilege escalation to root in Apple OS X 10.10.2 (and earlier): &lt;a href=&#34;https://t.co/mT6EvSYqWh&#34;&gt;https://t.co/mT6EvSYqWh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Emil Kvarnhammar (@emilkvarnhammar) &lt;a href=&#34;https://twitter.com/emilkvarnhammar/status/586147583552266240&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A blog post about &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; and concurrency has been released, after it&amp;rsquo;s in beta and it&amp;rsquo;ll be for production soon, it&amp;rsquo;s worth to read what feature the language has to implement some interesting patterns&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Fearless Concurrency with Rust &lt;a href=&#34;http://t.co/RzmGXuPAcD&#34;&gt;http://t.co/RzmGXuPAcD&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/586566688109367297&#34;&gt;April 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I wasn&amp;rsquo;t aware of the &lt;a href=&#34;https://elementary.io/&#34;&gt;Elementary Linux distribution&lt;/a&gt;, I don&amp;rsquo;t have any plan to use but I&amp;rsquo;ve like the concept of it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Elementary Linux released:&amp;#10;32bit &lt;a href=&#34;http://t.co/6I07CZ6IIe&#34;&gt;http://t.co/6I07CZ6IIe&lt;/a&gt;&amp;#10;&amp;#10;64bit &lt;a href=&#34;http://t.co/pewrEkzjWE&#34;&gt;http://t.co/pewrEkzjWE&lt;/a&gt;&amp;#10;&amp;#10;More &lt;a href=&#34;https://t.co/lV7wdkrXlZ&#34;&gt;https://t.co/lV7wdkrXlZ&lt;/a&gt; &lt;a href=&#34;http://t.co/5dwrDqIC6Q&#34;&gt;pic.twitter.com/5dwrDqIC6Q&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586946813573201920&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Indoctrinate people to Linux is always good, and making it free remove all the barriers, so I support this cause and I&amp;rsquo;ve decided to share it here; furthermore the author is the creator of one of the distributions that I used quite a bit in the past, &lt;a href=&#34;https://www.gentoo.org/&#34;&gt;Gentoo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Please RT. The best &amp;quot;Linux Fundamentals&amp;quot; course, by Daniel Robbins the creator of Gentoo Linux &lt;a href=&#34;http://t.co/uQMmw2w7yQ&#34;&gt;http://t.co/uQMmw2w7yQ&lt;/a&gt; No registration needed&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586935862635528194&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve really found very interesting about a blog post written by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;, because lastly I&amp;rsquo;ve got in the same thoughts about having too many features which some of them are redundant in programming languages, frameworks, etc., rather than help in long term, they annoy.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Less is more: removing language features to leave nowhere for bugs to hide. &lt;a href=&#34;http://t.co/6q3MHSkAe9&#34;&gt;http://t.co/6q3MHSkAe9&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Tim Ruffles (@timruffles) &lt;a href=&#34;https://twitter.com/timruffles/status/587893747385556992&#34;&gt;April 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a wonderful weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

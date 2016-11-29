@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Know why linting your javascript code is so important and learn how to lint your javascript code with the power ESLint">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Linting Javascript with ESLint">
+  <meta property="og:url" content="http://blog.fraixed.es/post/linting-javascript-with-eslint">
+  <meta property="og:description" content="Know why linting your javascript code is so important and learn how to lint your javascript code with the power ESLint">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://s-media-cache-ak0.pinimg.com/originals/41/0a/14/410a14e6f68619b3ebfc10abf1f611a9.png">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="javascript">
+      
+        <meta property="og:tag" content="programming">
+      
+        <meta property="og:tag" content="best-practices">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/linting-javascript-with-eslint">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Linting Javascript with ESLint</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/linting-javascript-with-eslint"><h1 class="l-title title">Linting Javascript with ESLint</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">11-06-2016</span>
+    <br>
+    
+
+<h2 id="linting-javascript:3f19ef4d03d4a9ec65f88b35f2e2c128">Linting Javascript</h2>
+
+<p>Javascript as you well known, is a dynamic and untyped language; characteristics that have their advantages but which also have a few drawbacks which lead to easily introduce trivial bugs in the implementations.</p>
+
+<p>For the good or the bad of the Javascript language, nowadays is quite difficult to escape from it because any website with a good UX requires quite certain amount of Javascript code, moreover, if we&rsquo;re talking about of Single Page Application the numbers of lines of code of Javascript increase drastically.</p>
+
+<p>On the other hand, the big popularity of NodeJS has made Javascript a server side programming language, however if you aren&rsquo;t supporter of it, you can scape of it because on server side there are many options, without having the drawbacks that in Web frontend code you can face when choosing one of the transpilers to escape of it.</p>
+
+<p>If you are supporter of Javascript or you may not, but you don&rsquo;t have the chance to replace it with anything else, then you must use a linter. Linters aren&rsquo;t new in Javascript, they haven&rsquo;t been for awhile, from the first famous one <a href="https://github.com/douglascrockford/JSLint" target="_blank" >JSLint</a>
+ created by Douglas Crockford, its fork <a href="https://github.com/jshint/jshint" target="_blank" >JSHint</a>
+ and <a href="http://eslint.org/" target="_blank" >ESLint</a>
+, between some others.</p>
+
+<p>A Javascript linter make our codebase more maintainable, because it does a static analysis of the codebase to enforces syntax rules for formatting, which is quite important to keep the code base consistent across the team members, and, even more important, to detect potential errors, without executing the code.</p>
+
+<h2 id="the-eslint-benefits:3f19ef4d03d4a9ec65f88b35f2e2c128">The ESLint benefits</h2>
+
+<p>ESlint marked a difference between the previous linters, reason why it looks the best option today, if you are not looking for the fastest one.</p>
+
+<p>The main difference between ESLint and its predecessors are:</p>
+
+<ul>
+<li>It uses an AST to evaluate patterns in code.</li>
+<li>It is completely pluggable, every single rule is a plugin and you can add more at runtime.</li>
+</ul>
+
+<p>Let&rsquo;s go one by one to see how they benefit to us.</p>
+
+<p>ESLint uses Espree to construct an AST of the codebase which is used to evaluate all the rules; this is a big difference in how others linters operates (for example JSHint), which they only do a lexical analysis, being faster but at the same time they are limited to check only a set of rules, because some of them are not possible to do it without constructing the AST, for example, &ldquo;Require Consistent This&rdquo;</p>
+
+<p>The drawback of doing so it&rsquo;s that the the linter is slower, but if the number of rules used aren&rsquo;t huge, it&rsquo;s totally acceptable and the benefits are worth.</p>
+
+<p>Being pluggable allow us to enable and disable any rule, so we can configure to fit our team needs or just set in place in current implementations where some rules are constrained to it than the option that we would desire. There are several plugins available, some of them allows to uses lint code for some frameworks, for example, <a href="https://github.com/babel/babel-eslint" target="_blank" >ES7 features</a>
+, <a href="https://github.com/Gillespie59/eslint-plugin-angular" target="_blank" >AngularJS</a>
+, <a href="https://github.com/zertosh/eslint-plugin-flow-vars" target="_blank" >flow type annotations</a>
+, etc.</p>
+
+<p>ESLint also allows to extend configuration files, so we can extend set of rules a defined file and add or override certain rules to fit in our configuration file using the ones listed in the <a href="http://eslint.org/docs/rules/" target="_blank" >its long list</a>
+, using new ones which has been created  by the community or implement our ones if there isn&rsquo;t any which fits what we need.</p>
+
+<h2 id="eslint-setup:3f19ef4d03d4a9ec65f88b35f2e2c128">ESLint Setup</h2>
+
+<p>Setting up ESLint in your Javascript project is pretty straightforward, as it&rsquo;s available as an <a href="https://www.npmjs.com" target="_blank" >NPM</a>
+ package.</p>
+
+<p>Assuming that you have installed, an add to your PATH, <a href="https://nodejs.org" target="_blank" >NodeJS</a>
+ which brings NPM, let&rsquo;s see how to proceed to setup ESLint and configure it.</p>
+
+<ul>
+<li>Go to the folder where you have your JS project;</li>
+<li>For simplicity, we install ESLint globally in the machine with <code>npm install -g eslint</code>; however it&rsquo;s advisable to install it locally to the project to have more control of the version to use, which is very helpful if you have other projects than use an old version of ESLint or you start now with this but in future project you end up using a newer version, to do so, make sure that you have a <code>package.json</code> in the project or create one with <code>npm init</code> and after execute <code>npm install --save-dev eslint</code>.</li>
+<li>Create a minimal ESLint configuration file executing <code>eslint --init</code>; reply the question that ESLint asks in order to set the minimum rules which fit to your code style, if you use ES6 or JSX, define the environment where JS executes, the Browser or NodeJS and choose the format that you want between JS, JSON or YAML to store the configuration; you also have the option to set this configuration in <code>package.json</code> file with the property <code>eslintConfig</code>.</li>
+<li>Right now you should see that you have a file in your folder named <code>.eslintrc.*</code> where <code>*</code> is the extension used for the format that you have chosen. It&rsquo;s worth to mention that JSON &amp; YAML formats support JS commends to make them more human-friendly, however they aren&rsquo;t supported in <code>package.json</code> file.</li>
+</ul>
+
+<p>The basic file which has been generated probably contains only a few properties which ESLint support; probably you&rsquo;ll have the <code>env</code> which define the environment where code is executed, which module system is used and ES6 version is used. To see all the options that you can set in this property check <a href="http://eslint.org/docs/user-guide/configuring#specifying-environments" target="_blank" >Specifying Environments in the documentation</a>
+.</p>
+
+<p>This basic file extends the rules from the <code>eslint:recommended</code> configuration as you can see in the value of <code>extends</code> property, but just leaved it this for now and see the <code>rules</code> property.</p>
+
+<p><code>rules</code> property contains the rules that we want to use to lint our code base; as commented above, if we extend them from another then we can set ones that the base version doesn&rsquo;t set to cover parts that the base configuration doesn&rsquo;t and set the same one than base configuration has in order to override the rule configuration.</p>
+
+<p>If you never seen how the <code>rules</code> are specified in ESLint, you may thing that the format it&rsquo;s odd; they use the name of the rule as a property name, which is very usual, and the value can be an array; they value is the part that it can looks odd because, you can see sometimes an string, an integer or an array, but nothing is weird when you know what they define.</p>
+
+<p>The rule values can have the next string values:
+* &ldquo;off&rdquo;: The rules doesn&rsquo;t apply. By default ESLint doesn&rsquo;t apply any rule so all they are off, however it&rsquo;s useful to set a rule to off when you extends from a base configuration and you want to disable some of the rules.
+* &ldquo;warn&rdquo;: The rules applies with a warning; when ESLint finds parts of the code base where a rule set as a warning, it shows the output message as warning and it ignores them in terms of the exit code, hence ESLint exits with 0 if only rules set as a warning aren&rsquo;t respected in the code base.
+* &ldquo;error&rdquo;: The rules set as error, are show in the output message an an error and if any of them are found during the linting process, then ESLint exit with 1.</p>
+
+<p>Ok, but what an integer means as value then? they can only be 0, 1, 2 and they have the same meaning than above, 0 = &ldquo;off&rdquo;, 1 =&ldquo;warn&rdquo; and 2 =&ldquo;error&rdquo;</p>
+
+<p>The last form of value for a rule is an array. Arrays are used when the rule accepts options, the first value of the array is a string or integer as defined above and the rest depends of the rule, for example the <a href="http://eslint.org/docs/rules/quote-props" target="_blank" >rule &#34;quote-props&#34;</a>
+ allows to define if we allow to surround the object properties by quotes, the first option (second position in the array) is to set how ESLint should interpret the rules and depending of which value is selected as a first option, it is possible to define the behavior, which is set as a sub-option (third position in the array).</p>
+
+<p>Let&rsquo;s see the next simple snipped which shows an example of a basic <code>.eslintrc.json</code> file, using the different value formats commented</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%">{
+  <span style="color: #007700">&quot;env&quot;</span>: {
+    <span style="color: #007700">&quot;browser&quot;</span>: <span style="color: #008800; font-weight: bold">true</span>,
+    <span style="color: #007700">&quot;commonjs&quot;</span>: <span style="color: #008800; font-weight: bold">true</span>,
+    <span style="color: #007700">&quot;es6&quot;</span>: <span style="color: #008800; font-weight: bold">true</span>
+  },
+  <span style="color: #007700">&quot;extends&quot;</span>: <span style="background-color: #fff0f0">&quot;eslint:recommended&quot;</span>,
+  <span style="color: #007700">&quot;rules&quot;</span>: {
+    <span style="color: #007700">&quot;indent&quot;</span>: [<span style="background-color: #fff0f0">&quot;error&quot;</span>, <span style="color: #0000DD; font-weight: bold">2</span>],
+    <span style="color: #007700">&quot;linebreak-style&quot;</span>: [<span style="color: #0000DD; font-weight: bold">2</span>, <span style="background-color: #fff0f0">&quot;unix&quot;</span>],
+    <span style="color: #007700">&quot;quotes&quot;</span>: <span style="color: #0000DD; font-weight: bold">2</span>,
+    <span style="color: #007700">&quot;semi&quot;</span>: [<span style="color: #0000DD; font-weight: bold">1</span>, <span style="background-color: #fff0f0">&quot;never&quot;</span>],
+    <span style="color: #007700">&quot;quote-props&quot;</span>: [<span style="background-color: #fff0f0">&quot;warn&quot;</span>, <span style="background-color: #fff0f0">&quot;consistent-as-needed&quot;</span>, { <span style="color: #007700">&quot;keywords&quot;</span>: <span style="color: #008800; font-weight: bold">true</span> }],
+    <span style="color: #007700">&quot;brace-style&quot;</span>: <span style="background-color: #fff0f0">&quot;off&quot;</span>
+  }
+}
+</pre></div>
+
+
+<p>ESLint has other setting for more advanced tweaking, for example, options to set to the parser, parser to use and so on; <a href="http://eslint.org/docs/developer-guide/working-with-plugins" target="_blank" >it also has plugins which allow to define, not just rules and environments but how to process non pure JS files</a>
+.</p>
+
+<p>On the other hand, ESLint also allows <a href="http://eslint.org/docs/user-guide/configuring#ignoring-files-and-directories" target="_blank" >to ignore files and directories as git does, through a `.eslintignore` file</a>
+ and <a href="http://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments" target="_blank" >to define settings to apply only in parts of the source code using comments</a>
+, for example <code>/* eslint-disable semi */</code> will disable the rule from the line of this comment until the end of the file.</p>
+
+<h2 id="running-eslint:3f19ef4d03d4a9ec65f88b35f2e2c128">Running ESLint</h2>
+
+<p>Once you setup ESLint in you project you have to execute it.</p>
+
+<p>The command line interface of ESLint is as usual as any other command line; you can see the help information with <code>-h</code> option an see all the options that you can pass it.</p>
+
+<p>If you have set the configuration in any of the files which ESLint detect, then you can can run the command an pass the path to sources files or folder where the source files are; the paths are defined with globs so you can set a root folder and it recursively will check all the sources files contained in the folder and the children folders, for example <code>eslint src/**/*</code> will check all the source files in src and all the folder subtree inside of it.</p>
+
+<p><a href="http://eslint.org/docs/user-guide/configuring#using-configuration-files" target="_blank" >With `-c` option you can specify a specific configuration file</a>
+; this option is quite useful when you want different configurations for different parts of a project;  however if you are using the configurations files or <code>package.json</code> property mentioned in the previous version, it will use them automatically and moreover you can have several of them in different subfolders of the root filesystem to walk specifying different configurations for the sources contained in the subtree and it will use the closest one found to the analyzed source file, see an example of this case in the <a href="http://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy" target="_blank" >documentation</a>
+</p>
+
+<p>Another important option to use to speed up the linting process is <code>--cache</code>; enabling it ESLint store information about the processed files in order to only check the ones that have been modified in the following runs. The cache file is store in the root directory with the name <code>.eslintcache</code> but you can configure the location with the <code>--cache-location</code> option.</p>
+
+<p>ESLint documentation has a dedicated page for <a href="http://eslint.org/docs/user-guide/command-line-interface" target="_blank" >its command line interface</a>
+, check it if you want to know all the other options which accepts.</p>
+
+<p>That&rsquo;s all for today folks</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

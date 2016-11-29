@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Frameworks on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/categories/frameworks/</link>
+    <description>Recent content in Frameworks on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Tue, 30 Jun 2015 11:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/categories/frameworks/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Mercury &amp; its marvelous modularity</title>
+      <link>http://blog.fraixed.es/post/mercury-and-its-marvelous-modularity</link>
+      <pubDate>Tue, 30 Jun 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/mercury-and-its-marvelous-modularity</guid>
+      <description>
+
+&lt;p&gt;Long time ago, I&amp;rsquo;ve discovered &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt;; at that moment, Virtual-DOM started to be hot due the increasing popularity of React, highly influenced by the world wide known Facebook, and I got curious to search if there was anything else which also take advantage of the Virtual-DOM mechanism.&lt;/p&gt;
+
+&lt;p&gt;As it isn&amp;rsquo;t surprisingly, there were at that moment &lt;a target=&#34;_blank&#34; href=&#34;http://facebook.github.io/react/&#34;&gt;React&lt;/a&gt; and &lt;a target=&#34;__blank_&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; and also a bunch of others&lt;sup&gt;1&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Disclaimer&lt;/strong&gt;: I&amp;rsquo;m not experienced in React, I&amp;rsquo;ve just read several post of it and things related with it and watched some videos, on the other hand, this post isn&amp;rsquo;t about XXX is better than YYY, there&amp;rsquo;re always some subjective aspects of choosing frameworks, tools, etc, as other important non-technical stuff, as the aim to achieve, which strongly influence on what to choose/use to do that what actually really matters, to achieve the goal.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-context:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;The Context&lt;/h2&gt;
+
+&lt;p&gt;My first step into Mercury has only been to implement a &lt;strong&gt;very tiny&lt;/strong&gt; &lt;a target=&#34;_blank&#34; href=&#34;https://en.wikipedia.org/wiki/Single-page_application&#34;&gt; SPA (single web application)&lt;/a&gt; for the  topic of the hackathon which I participated; &lt;strong&gt;tiny&lt;/strong&gt; because 24 hours it isn&amp;rsquo;t much time and moreover when we were a two people team, with all the development load for one of them, in this case my self.&lt;/p&gt;
+
+&lt;p&gt;Anyway, the hackathon isn&amp;rsquo;t important for the purpose of this post, it&amp;rsquo;s only to put you in context about the first time which I stepped into &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;modularity-matters:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;Modularity Matters&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m into modularity, it&amp;rsquo;s my choice and it doesn&amp;rsquo;t to be the best choice, as every approach, philosophy or whatever else has its tradeoffs, so depending of the situation, personality, relations, influence and so on, you prefer one over another because you feel that you get less painful situations, solve better your problems, fulfill your requirements or basically you&amp;rsquo;re more comfortable, but again, I&amp;rsquo;m as well into &amp;ldquo;the right tool for each case&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;In &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; modularity is something that &lt;strong&gt;nobody can say that it&amp;rsquo;s bullshit marketing&lt;/strong&gt;, just take a look to &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury/blob/649410edca7236c5b99ec45f5b139c01528022d8/index.js#L13L66&#34; rel=&#34;nofollow&#34;&gt;the main module file&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Basically, Mercury, at the time of this blog, is &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury/blob/649410edca7236c5b99ec45f5b139c01528022d8/index.js&#34; rel=&#34;nofollow&#34;&gt;just a javascript file of 126 LOC&lt;/a&gt; which basically export a bunch of other tiny modules (each one exactly does one thing).&lt;/p&gt;
+
+&lt;p&gt;Its modularity has been one of the main points to actually want to spend my &lt;strong&gt;spare time&lt;/strong&gt; hacking with it in front of any other one which isn&amp;rsquo;t pure modular.&lt;/p&gt;
+
+&lt;h2 id=&#34;how-to-start:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;How to Start&lt;/h2&gt;
+
+&lt;p&gt;&lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; doesn&amp;rsquo;t have a shiny website, a thorough documentation or bunch of people messing around with it, so you have to start in the &lt;strong&gt;&lt;em&gt;hard way&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;re &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury/tree/master/examples/&#34; rel=&#34;nofollow&#34;&gt;several examples in the same repository&lt;/a&gt;, however no tons of documentation, so you basically must read the code.&lt;/p&gt;
+
+&lt;p&gt;I think that the best way to start, it&amp;rsquo;s reading the simple easiest implemented examples, which are only a few lines of code, so they&amp;rsquo;re not that hard to having a overall understanding how it works.&lt;/p&gt;
+
+&lt;p&gt;After that or at the same time, you can check some of the &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury/tree/master/docs&#34; rel=&#34;nofollow&#34;&gt;docs&lt;/a&gt;, not all of them, because there&amp;rsquo;re some which are advance topics that you shouldn&amp;rsquo;t use for your first step into; however if you have time, having a quick read doesn&amp;rsquo;t hurt; in my case so far I skipped the docs in &amp;ldquo;modules&amp;rdquo; subdirectory.&lt;/p&gt;
+
+&lt;p&gt;After that, you should start to implement a tiny application, probably bigger that a &amp;ldquo;Hello World&amp;rdquo;, integrating some functionality as pull some data from a server and displaying in a table or a structured HTML than inside of a DOM element as &lt;code&gt;p&lt;/code&gt;, to get the chance to taste the Virtual-DOM and probably &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Matt-Esch/virtual-dom#example---creating-a-vtree-using-virtual-hyperscript&#34; rel=&#34;nofollow&#34;&gt;Virtual-Hyperscript&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;During your implementation, you&amp;rsquo;ll probably check the code of the examples and the docs several times; you may also try some changes that you may feel that it&amp;rsquo;d be nice if they work because they allow to organise and structure better your code, however if something stop to work, you&amp;rsquo;ll have to spend time finding what is wrong and why actually it doesn&amp;rsquo;t work, nonetheless I believe that it&amp;rsquo;s the best way to learn because you&amp;rsquo;ll discover things that they don&amp;rsquo;t work and if you&amp;rsquo;re curious, as I&amp;rsquo;m, you&amp;rsquo;ll try to understand why they don&amp;rsquo;t work than solving it with no clue why it&amp;rsquo;s started to work again.&lt;/p&gt;
+
+&lt;h2 id=&#34;advantages-of-its-modularity:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;Advantages of its Modularity&lt;/h2&gt;
+
+&lt;p&gt;As I&amp;rsquo;ve mentioned above, Mercury isn&amp;rsquo;t a popular framework as many other are, you probably think to skipped due the lack of tons of documentation, shiny website and all this kind of stuff.&lt;/p&gt;
+
+&lt;p&gt;I think that even though all those stuff are important, I feel that I haven&amp;rsquo;t needed them, I could jump into it and used only with the examples and docs and checking its code and submodules, which are exactly where the meat is, to have an overall understanding in how to use it and its internals.&lt;/p&gt;
+
+&lt;p&gt;Being at that level of modularity allows to browser the code and find very easily each module which does actually one thing, so you can dig more on each modules when you feel that you want to know more about the internals, without getting lost as I&amp;rsquo;ve felt several times with big code bases, which are not composed by several modules and in case that they&amp;rsquo;re, the most of the times, they don&amp;rsquo;t reach this level due that the modules have been build for the purpose of the code base hence they lose the concept of module when they aren&amp;rsquo;t thought to be used out of the main code base.&lt;/p&gt;
+
+&lt;h2 id=&#34;my-footprint:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;My Footprint&lt;/h2&gt;
+
+&lt;p&gt;As I&amp;rsquo;ve mentioned before, the implementation that I&amp;rsquo;ve done with &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34;&gt;Mercury&lt;/a&gt; was for a topic of a hackathon, because I always want to have some reward of my time, in this case at the end, only, has been the learning one.&lt;/p&gt;
+
+&lt;p&gt;The application isn&amp;rsquo;t fancy at all, in terms of any thing, I had to do all the implementation, server, a little bit the styling and the frontend in Mercury, so I had to learn it as well.&lt;/p&gt;
+
+&lt;p&gt;I got the first issues that everybody may have which are how you organise your code and make it more modular to avoid a massive large scripts, I did some splitting and no a lot of more for two reasons:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;We had to rush up to to be able to present.&lt;/li&gt;
+&lt;li&gt;At that moment, I didn&amp;rsquo;t know how to split more, however after the hackathon has finished, I had a second read to the docs and I had a better understanding of some parts which in my first read I couldn&amp;rsquo;t get them, hence now I&amp;rsquo;ve got them and I&amp;rsquo;ve known how to do it ;D&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;If you&amp;rsquo;re interested you can see the code in this &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/ifraixedes/hack-destination-london-2015&#34; rel=&#34;nofollow&#34;&gt;repository&lt;/a&gt;, however, bear in mind that the examples in &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; repository may be more useful.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Modularity is something very important for me at the moment to choose a framework, because it allow me to understand the internals in less time. I believe that knowing the internals is king to solve future problems, do crazy stuff or increase the performance when you need it.&lt;/p&gt;
+
+&lt;p&gt;Now, I totally agree with the sentence which appear in the README, &lt;strong&gt;&lt;em&gt;&amp;ldquo;A truly modular frontend framework&amp;rdquo;&lt;/em&gt;&lt;/strong&gt;, &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; is about that, it isn&amp;rsquo;t bullshit marketing.&lt;/p&gt;
+
+&lt;p&gt;Getting into it, allowed me to achieve my aim, which was having a better understanding about Virtual-DOM strategy and how it works than using a framework to build something and just only learn the public interface of the framework, because I don&amp;rsquo;t see that much value on it if I&amp;rsquo;m not going to use for several projects, which isn&amp;rsquo;t too bad if they have another aim, as making money, fulfill a business requirement and so on.&lt;/p&gt;
+
+&lt;p&gt;Hope that you find this post more interesting than another massive post about something related with one of the currently famous framework, being good or bad.&lt;/p&gt;
+
+&lt;p&gt;Have you tinkered with &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt;? please share you comments if you have.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;1&lt;/sup&gt; I may have realised very late of React, it may have been there for a while, but at least people surrounding myself in the virtual/physical world weren&amp;rsquo;t talking about it as they&amp;rsquo;re talking at this time.&lt;p&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

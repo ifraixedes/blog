@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Having a body in a GET request doesn&#39;t fulfill the current HTTP/1.1 standard, take a look here to know why">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Clarifying My Mistake about GET Requests with Body">
+  <meta property="og:url" content="http://blog.fraixed.es/post/clarifying-my-mistake-get-requests-with-body">
+  <meta property="og:description" content="Having a body in a GET request doesn&#39;t fulfill the current HTTP/1.1 standard, take a look here to know why">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="API">
+      
+        <meta property="og:tag" content="Software Engineering">
+      
+        <meta property="og:tag" content="REST">
+      
+        <meta property="og:tag" content="Implementation">
+      
+        <meta property="og:tag" content="HTTP">
+      
+        <meta property="og:tag" content="Communication Protocol">
+      
+        <meta property="og:tag" content="Standard">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/clarifying-my-mistake-get-requests-with-body">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Clarifying My Mistake about GET Requests with Body</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/clarifying-my-mistake-get-requests-with-body"><h1 class="l-title title">Clarifying My Mistake about GET Requests with Body</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">13-04-2015</span>
+    <br>
+    
+
+<p>Just the same week after I wrote the post <a href="http://blog.fraixed.es/post/thoughts-about-current-apis-implementations" target="_blank">Thoughts about current APIs implementations</a>, I had a discussion, with one of my colleagues, about if sending a body in a <strong>GET Request</strong> fulfills with the current <a href="https://tools.ietf.org/html/rfc7231">HTTP/1.1 Standard</a>, which it&rsquo;s something that I commented on that post and I mentioned that it was the way to make requests with quite few parameters rather than use POST and not having a very large and ugly URL.</p>
+
+<p>After that conversation, he made me see my mistake showing me that doing that it&rsquo;s no appropriated; here you can read why not and the possible solutions which fulfill the standard.</p>
+
+<h3 id="clarifying-the-current-http-1-1-standard:aed8bbde438906019947db64f4a59505">Clarifying the Current HTTP/1.1 Standard</h3>
+
+<p>My colleague brought on the table a response sent by <a href="http://en.wikipedia.org/wiki/Roy_Fielding" target="_blank">Roy T. Fielding</a>, one of the principal authors of HTTP specification <a href="http://www.w3.org/Protocols/rfc2616/rfc2616.html" target="_blank">RFC2616 appeared in June 1999</a> which has been superseded by multiples RFCs <a href="https://tools.ietf.org/html/rfc7230" target="_blank">7230</a>, <a href="https://tools.ietf.org/html/rfc7231" target="_blank">7231</a>, <a href="https://tools.ietf.org/html/rfc7232" target="_blank">7232</a>, <a href="https://tools.ietf.org/html/rfc7233" target="_blank">7233</a>, <a href="https://tools.ietf.org/html/rfc7234" target="_blank">7234</a>, <a href="https://tools.ietf.org/html/rfc7235" target="_blank">7235</a>, <a href="https://tools.ietf.org/html/rfc7236" target="_blank">7236</a> and <a href="https://tools.ietf.org/html/rfc7237" target="_blank">7237</a>.</p>
+
+<p>The <a href="https://groups.yahoo.com/neo/groups/rest-discuss/conversations/messages/9962" target="_blank" rel="nofollow">response</a> says</p>
+
+<blockquote>
+<p>Yes. In other words, any HTTP request message is allowed to contain
+a message body, and thus must parse messages with that in mind.
+Server semantics for GET, however, are restricted such that a body,
+if any, has no semantic meaning to the request. The requirements
+on parsing are separate from the requirements on method semantics.</p>
+
+<p>So, yes, you can send a body with GET, and no, it is never useful
+to do so.</p>
+
+<p>This is part of the layered design of HTTP/1.1 that will become
+clear again once the spec is partitioned (work in progress).</p>
+
+<p>&hellip;.Roy</p>
+</blockquote>
+
+<p>Then my interpretations about <strong>&ldquo;GET request message has no defined semantics&rdquo;</strong> which I extracted from the paragraph</p>
+
+<blockquote>
+<p>A payload within a GET request message has no defined semantics;
+  sending a payload body on a GET request might cause some existing
+  implementations to reject the request.</p>
+</blockquote>
+
+<p>which you can find in <a href="https://tools.ietf.org/html/rfc7231#section-4.3.1" target="_blank">7231#4.3.1</a> <strong>was wrong</strong>.</p>
+
+<p>As I mentioned, it&rsquo;s not wrong to send a payload (a.k.a body) in a GET request, however because it doesn&rsquo;t have semantics, means that the doing <strong>two or more requests with the same URI with different payload should return the same response</strong>, due that it&rsquo;ll be ignored, hence body will never change what is requested.</p>
+
+<h3 id="what-are-the-possibilities:aed8bbde438906019947db64f4a59505">What are the possibilities</h3>
+
+<p>If we stick to the standard there are basically two solutions</p>
+
+<ol>
+<li>All the parameters are in the URL, considering part of the path and query parameters.</li>
+<li>Use a POST request with the parameters, then the server must create a response which store in somehow a response back with a URI to access to it, allowing the client to make a GET request with that URI to retrieve the generated response, refer to <a href="http://stackoverflow.com/questions/4203686/how-can-i-deal-with-http-get-query-string-length-limitations-and-still-want-to-b" target="_blank">this Stack Overflow response for more details</a>.</li>
+</ol>
+
+<p>As I also mentioned in my <a href="http://blog.fraixed.es/post/thoughts-about-current-apis-implementations" target="_blank">previous post</a>, if we add all the parameters in the URI then we get ugly URLs and perhaps, they aren&rsquo;t ideal, but in the case of REST APIs is something that doesn&rsquo;t matter due machines deal with them besides, obviously, we don&rsquo;t need to consider <a href="http://en.wikipedia.org/wiki/Web_crawler" target="_blank">web crawlers</a>, so they may only annoy us in our logs.</p>
+
+<p>The second solutions, from my point of view, it&rsquo;s awkward and I&rsquo;d only use as exception, when the amount of parameters generate a large URI which may be rejected, even though the current <a href="https://tools.ietf.org/html/rfc3986" target="_blank">URI standard, RFC 3986</a> and the <a href="https://tools.ietf.org/html/rfc7230#section-3.1.1" target="_blank">URI standard, RFC 3986</a> don&rsquo;t have any length limitation, they&rsquo;ve found, in the real world, some limitations and the recommendations for senders and recipients is to support at least 8000 bytes which are quite a few to generate a large URI.</p>
+
+<p>To see a very good clarification of it, considering real world URI&rsquo;s length limitations, read <a href="http://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers" target="_blank">this another Stack Overflow response</a>.</p>
+
+<h3 id="conclusion:aed8bbde438906019947db64f4a59505">Conclusion</h3>
+
+<p>The standard isn&rsquo;t quite clear and doesn&rsquo;t ban to send payload even though it means nothing.</p>
+
+<p>The URIs are not that short that we can think and the web browsers have, so using GET with a long URLs should almost solve all the use cases, for those that fall outside the solution is the awkward two step request POST and GET, but if you want to stick to the standard don&rsquo;t use POST as single GET.</p>
+
+<p>I hope that you&rsquo;ve got to be clearer about this topic when you decide/have/must design an REST API, as I&rsquo;ve got.</p>
+
+<p>Have a nice week!</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

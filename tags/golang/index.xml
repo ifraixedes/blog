@@ -1,0 +1,1623 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Golang on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/golang/</link>
+    <description>Recent content in Golang on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Tue, 15 Mar 2016 19:30:46 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Talk at Golang BCN about Profiling Go Programs</title>
+      <link>http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs</link>
+      <pubDate>Tue, 15 Mar 2016 19:30:46 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs</guid>
+      <description>
+
+&lt;p&gt;This post has two main purposes:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Have a kind of script for my talk, at &lt;a href=&#34;http://golangbcn.org/&#34; target=&#34;_blank&#34; &gt;Golang BCN&lt;/a&gt;
+, for the topic mentioned in the title of this post&lt;/li&gt;
+&lt;li&gt;The place where the attendees and followers of Golang BCN can access to the material used in my talk&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;My talk doesn&amp;rsquo;t have any slide, I think that&amp;rsquo;s better to spend my time mentioning the code to run and what I do to use the profiler with the basic implementation which I&amp;rsquo;ve created for this purpose.&lt;/p&gt;
+
+&lt;h2 id=&#34;get-ready:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Get Ready&lt;/h2&gt;
+
+&lt;p&gt;To follow me you have first to make sure that you have installed in your machine:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Golang 1.6; probably an early close version would work too, however I used that one because it was the last stable release at the time that I prepared the talk.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.graphviz.org/&#34; target=&#34;_blank&#34; &gt;Graphviz&lt;/a&gt;
+ which is required to be able to generate &lt;code&gt;svg&lt;/code&gt; with &lt;code&gt;pprof&lt;/code&gt; (The tool offered by Golang out of the box to profile your programs)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;NOTE that I used a linux machine to run it; I haven&amp;rsquo;t done anything which doesn&amp;rsquo;t look cross platform, but bear in mind that you may have issues run it on other operative system&lt;/p&gt;
+
+&lt;p&gt;Get the code, cloning this &lt;a href=&#34;https://gist.github.com/ifraixedes/fd8b585c3da6dacb6385&#34; target=&#34;_blank&#34; &gt;gist&lt;/a&gt;
+ in your &lt;code&gt;GOPATH&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;basic-implementation-examples:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Basic implementation examples&lt;/h2&gt;
+
+&lt;p&gt;To give this introductory talk to Golan profiler, I&amp;rsquo;ve implemented 4 flavors of a &lt;a href=&#34;https://en.wikipedia.org/wiki/Power_of_two&#34; target=&#34;_blank&#34; &gt;Power of 2 function&lt;/a&gt;
+ and 4 flavors of function which returns &lt;a href=&#34;https://en.wikipedia.org/wiki/Fibonacci_number&#34; target=&#34;_blank&#34; &gt;Fibonacci numbers&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The implementation have a test for each function, to make sure that they work as expected, some benchmarks which will use to profile the 8 mentioned functions and a basic server with 2 endpoints to show how &lt;code&gt;net/http/pprof&lt;/code&gt; package expose profile information on an http server just only importing it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve also added a &lt;code&gt;Makefile&lt;/code&gt; as helper to run the most of the commands which I need to profile the benchmarks and the basic http server.&lt;/p&gt;
+
+&lt;h2 id=&#34;profiling-benchmarks:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Profiling benchmarks&lt;/h2&gt;
+
+&lt;p&gt;To profile benchmarks, we need to run the benchmarks with some flags to get profile metrics data files; we also have to get the compiled binary, because, thereafter, we can match the profile metrics with the function names and the lines of the source code where those metrics refer.&lt;/p&gt;
+
+&lt;p&gt;So we do something like &lt;code&gt;go test -bench . -benchmem -memprofile mem.out -cpuprofile cpu.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;With the previous command, run the benchmarks and output a memory and cpu profile data; the binary is also generated with an auto-generated name, pass &lt;code&gt;-o mybin&lt;/code&gt; to give it the name that you would like.&lt;/p&gt;
+
+&lt;p&gt;With the output generated in our terminal, we already know which flavor function (on each functions set) is the fastest. However, having the profiling data we can know from each function, which are the cost of their internal operations; for this simple functions isn&amp;rsquo;t worth as they only have a few instructions, however in large programs where there are quite a few nested function calls, we can see which are the cost of each call and deepen in those ones which are the most costly and know where the bottlenecks are to see if we can change the implementation for more optimized ones.&lt;/p&gt;
+
+&lt;p&gt;The profiling data can be analyzed using &lt;code&gt;pprof&lt;/code&gt; tool, executing something like &lt;code&gt;go tool pprof mybin cpu.out&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;When we run pprof in that way, we get into a &amp;ldquo;repl&amp;rdquo; where we can execute commands to read the the different information which profile data file contains and see some of them next to the line of the implementation which they refer&lt;/p&gt;
+
+&lt;p&gt;Another way, which probably is the most practical, is to generate a flow graph of the function calls with the cost of each (or the most costly if there are too many) function call; we can get that executing something like &lt;code&gt;go tool pprof -svg -output cpu.svg mybin cpu.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;And we are ready to open &lt;code&gt;cpu.svg&lt;/code&gt; and see where are our bottlenecks.&lt;/p&gt;
+
+&lt;h2 id=&#34;profiling-a-service:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Profiling a service&lt;/h2&gt;
+
+&lt;p&gt;A service is an application that, ideally, will run forever, exposing an interface which other applications (clients) can request to perform the exposed operations. Due they behavior, they have to offer an interface to get the profile data or they have to export it on a defined intervals of time.&lt;/p&gt;
+
+&lt;p&gt;Golang has the package &lt;code&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/pprof/&#34; target=&#34;_blank&#34; &gt;net/http/pprof&lt;/a&gt;
+&lt;/code&gt; which allows to expose, automatically, a few HTTP endpoints to collect the profile data, if the service has an http server, otherwise we can create one HTTP only for that purpose.&lt;/p&gt;
+
+&lt;p&gt;The exposed endpoints are listed under &lt;code&gt;/debug/pprof/&lt;/code&gt; path and to collect the profile data we execute &lt;code&gt;pprof&lt;/code&gt; pointing to the specific path, for example&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;cpu: &lt;code&gt;go tool pprof http://localhost:8000/debug/pprof/profile&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;heap: &lt;code&gt;go tool pprof http://localhost:8000/debug/pprof/heap&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;goroutine block: &lt;code&gt;go tool pprof http://localhost:8000/debug/pprof/block&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Each of those calls generate an output profile data file as we has got from the benchmark and with those you can use &lt;code&gt;pprof&lt;/code&gt; in the same way to analyze the data.&lt;/p&gt;
+
+&lt;p&gt;This is all for now!&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Related links&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The main reference about profiling Go programs posted in the Golang official Blog: &lt;a href=&#34;http://blog.golang.org/profiling-go-programs&#34; target=&#34;_blank&#34; &gt;Profiling Go Programs&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;I wrote a couple of post in my early days in Golang; I used the profiler to drop my curiosity about the performance of values and pointers passed as a parameter, so you can read other place how to use the profiler, &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics/&#34; target=&#34;_blank&#34; &gt;gathering the metrics&lt;/a&gt;
+ and &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics/&#34; target=&#34;_blank&#34; &gt;analyzing them&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Walk through Golang Package Interfaces</title>
+      <link>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</link>
+      <pubDate>Wed, 06 Jan 2016 08:24:56 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</guid>
+      <description>
+
+&lt;p&gt;Golang interface is one of things that people love due its simplicity and how they make possible to create small things which can be composed to create more complex ones.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s well know that defining interfaces in the implementations make them more flexible and reusable; defining interfaces with just one or a couple of functions signatures is one of the good practices of writing Golang applications, because they make the implementations more modular due they can be composed to get new ones for more specific needs.&lt;/p&gt;
+
+&lt;p&gt;Having this big set of small interface give the opportunity to have a bigger set of generic functions because they only constrain the parameters to implement one of those; so they can be use for any user defined type which implements at least that specific interface.&lt;/p&gt;
+
+&lt;p&gt;Everything above is well know and there are lots of posts about this matter, hence my goal in this post isn&amp;rsquo;t to add a new one more or extend this topic even more; there already good literature about it that you can find easily.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;My goal is to provide the list of interfaces which I&amp;rsquo;ve found, and hopefully I haven&amp;rsquo;t missed any, in Golang 1.5 standard package and highlight few of them&lt;/strong&gt; which I think that we have to bear in mind when we are developing common applications or services.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-ones-useful-for-the-most-common-applications:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The ones useful for the most common applications&lt;/h2&gt;
+
+&lt;h3 id=&#34;sql-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sql package&lt;/h3&gt;
+
+&lt;p&gt;The sql package has two without including the ones defined in the driver subpackage which I&amp;rsquo;ve skipped due that in common applications development is unusual having to implement a new driver.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These ones gathered my attention due that it isn&amp;rsquo;t that rare to store types in a database which aren&amp;rsquo;t basic types defined in the used database system; while we can do the mapping each time that we read those values from the database, the Scanner interface is very convenient to be implemented and get the benefits to get the mapping automatically when the values are read from the database, by the Scan function.&lt;/p&gt;
+
+&lt;p&gt;One example of this case is &lt;a href=&#34;https://godoc.org/github.com/satori/go.uuid#UUID.Scan&#34; target=&#34;_blank&#34; &gt;go.uuid&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;encoding-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;encoding Package&lt;/h3&gt;
+
+&lt;p&gt;The encoding/decoding data is another common operation to perform in common application development. Golang encoding package defines two pairs, marshare/unmarsheler, of interfaces, one for binary and another for text:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryMarshaler&#34; target=&#34;_blank&#34; &gt;BinaryMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryUnmarshaler&#34; target=&#34;_blank&#34; &gt;BinaryUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextMarshaler&#34; target=&#34;_blank&#34; &gt;TextMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextUnmarshaler&#34; target=&#34;_blank&#34; &gt;TextUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It also defines the same pair for specific encodings which usage is very spread&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;gob&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobDecoder&#34; target=&#34;_blank&#34; &gt;GobDecoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobEncoder&#34; target=&#34;_blank&#34; &gt;GobEncoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;json&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;xml&lt;/strong&gt;: which has one pair to allow to encode/decode attributes
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#MarshalerAttr&#34; target=&#34;_blank&#34; &gt;MarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#UnmarshalerAttr&#34; target=&#34;_blank&#34; &gt;UnmarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And one more for binary encoding
+* &lt;a href=&#34;https://golang.org/pkg/encoding/binary/#ByteOrder&#34; target=&#34;_blank&#34; &gt;ByteOrder&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;flag-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;flag package&lt;/h3&gt;
+
+&lt;p&gt;Another common stuff is to pass argument to our application when it starts; &lt;em&gt;flag package&lt;/em&gt; contains two interface which allow to define types to map values passed through command line arguments.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Getter&#34; target=&#34;_blank&#34; &gt;Getter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;fmt-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;fmt package&lt;/h3&gt;
+
+&lt;p&gt;The fmt package defines a set of interfaces to format I/O, which is another functionality which can be needed in common applications development.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Formatter&#34; target=&#34;_blank&#34; &gt;Formatter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#GoStringer&#34; target=&#34;_blank&#34; &gt;GoStringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#ScanState&#34; target=&#34;_blank&#34; &gt;ScanState&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#State&#34; target=&#34;_blank&#34; &gt;State&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Stringer&#34; target=&#34;_blank&#34; &gt;Stringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;sort-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sort package&lt;/h3&gt;
+
+&lt;p&gt;Some applications also requires to sort element in slices, so the types which implement sort interface can use after the routines of sort package to be sorted.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sort/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-rest:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The rest&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Compress package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;flate&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Reader&#34; target=&#34;_blank&#34; &gt;falate/Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Resetter&#34; target=&#34;_blank&#34; &gt;falate/Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;zlib&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/zlib/#Resetter&#34; target=&#34;_blank&#34; &gt;Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Heap package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/container/heap/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Crypto package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Decrypter&#34; target=&#34;_blank&#34; &gt;Decrypter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Signer&#34; target=&#34;_blank&#34; &gt;Signer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#SignerOpts&#34; target=&#34;_blank&#34; &gt;SignerOpts&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cipher&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#AEAD&#34; target=&#34;_blank&#34; &gt;AEAD&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Block&#34; target=&#34;_blank&#34; &gt;Block&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#BlockMode&#34; target=&#34;_blank&#34; &gt;BlockMode&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Stream&#34; target=&#34;_blank&#34; &gt;Stream&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;elliptic&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/elliptic/#Curve&#34; target=&#34;_blank&#34; &gt;Curve&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/tls/#ClientSessionCache&#34; target=&#34;_blank&#34; &gt;ClientSessionCache&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sql/driver package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ColumnConverter&#34; target=&#34;_blank&#34; &gt;ColumnConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Driver&#34; target=&#34;_blank&#34; &gt;Driver&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Execer&#34; target=&#34;_blank&#34; &gt;Execer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Queryer&#34; target=&#34;_blank&#34; &gt;Queryer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Tx&#34; target=&#34;_blank&#34; &gt;Tx&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ValueConverter&#34; target=&#34;_blank&#34; &gt;ValueConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Valuer&#34; target=&#34;_blank&#34; &gt;Valuer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;debug package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;dwarf&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/dwarf/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;macho&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/macho/#Load&#34; target=&#34;_blank&#34; &gt;Load&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;expvar package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/expvar/#Var&#34; target=&#34;_blank&#34; &gt;Var&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;ast package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Decl&#34; target=&#34;_blank&#34; &gt;Decl&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Expr&#34; target=&#34;_blank&#34; &gt;Expr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Spec&#34; target=&#34;_blank&#34; &gt;Spec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Visitor&#34; target=&#34;_blank&#34; &gt;Visitor&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;constant package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/constant/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;types package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Importer&#34; target=&#34;_blank&#34; &gt;Importer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Object&#34; target=&#34;_blank&#34; &gt;Object&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Sizes&#34; target=&#34;_blank&#34; &gt;Sizes&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;hash package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash64&#34; target=&#34;_blank&#34; &gt;Hash64&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;image package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#PalettedImage&#34; target=&#34;_blank&#34; &gt;PalettedImage&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;color&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Color&#34; target=&#34;_blank&#34; &gt;Color&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Model&#34; target=&#34;_blank&#34; &gt;Model&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;draw&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Drawer&#34; target=&#34;_blank&#34; &gt;Drawer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Quantizer&#34; target=&#34;_blank&#34; &gt;Quantizer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;jpeg&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/jpeg/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;io package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteReader&#34; target=&#34;_blank&#34; &gt;ByteReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteScanner&#34; target=&#34;_blank&#34; &gt;ByteScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteWriter&#34; target=&#34;_blank&#34; &gt;ByteWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Closer&#34; target=&#34;_blank&#34; &gt;Closer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadCloser&#34; target=&#34;_blank&#34; &gt;ReadCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadSeeker&#34; target=&#34;_blank&#34; &gt;ReadSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteCloser&#34; target=&#34;_blank&#34; &gt;ReadWriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteSeeker&#34; target=&#34;_blank&#34; &gt;ReadWriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriter&#34; target=&#34;_blank&#34; &gt;ReadWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderAt&#34; target=&#34;_blank&#34; &gt;ReaderAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderFrom&#34; target=&#34;_blank&#34; &gt;ReaderFrom&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneReader&#34; target=&#34;_blank&#34; &gt;RuneReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneScanner&#34; target=&#34;_blank&#34; &gt;RuneScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Seeker&#34; target=&#34;_blank&#34; &gt;Seeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteCloser&#34; target=&#34;_blank&#34; &gt;WriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteSeeker&#34; target=&#34;_blank&#34; &gt;WriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Writer&#34; target=&#34;_blank&#34; &gt;Writer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterAt&#34; target=&#34;_blank&#34; &gt;WriterAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterTo&#34; target=&#34;_blank&#34; &gt;WriterTo&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;math/rand package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/math/rand/#Source&#34; target=&#34;_blank&#34; &gt;Source&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;mine/multipart package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/mime/multipart/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;net package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Addr&#34; target=&#34;_blank&#34; &gt;Addr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Listener&#34; target=&#34;_blank&#34; &gt;Listener&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#PacketConn&#34; target=&#34;_blank&#34; &gt;PacketConn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;http&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CloseNotifier&#34; target=&#34;_blank&#34; &gt;CloseNotifier&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CookieJar&#34; target=&#34;_blank&#34; &gt;CookieJar&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#FileSystem&#34; target=&#34;_blank&#34; &gt;FileSystem&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Flusher&#34; target=&#34;_blank&#34; &gt;Flusher&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Handler&#34; target=&#34;_blank&#34; &gt;Handler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Hijacker&#34; target=&#34;_blank&#34; &gt;Hijacker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#ResponseWriter&#34; target=&#34;_blank&#34; &gt;ResponseWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#RoundTripper&#34; target=&#34;_blank&#34; &gt;RoundTripper&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cookiejar&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/cookiejar/#PublicSuffixList&#34; target=&#34;_blank&#34; &gt;PublicSuffixList&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;rpc&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ClientCodec&#34; target=&#34;_blank&#34; &gt;ClientCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ServerCodec&#34; target=&#34;_blank&#34; &gt;ServerCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;smtp&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/smtp/#Auth&#34; target=&#34;_blank&#34; &gt;Auth&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;os&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#FileInfo&#34; target=&#34;_blank&#34; &gt;FileInfo&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#Signal&#34; target=&#34;_blank&#34; &gt;Signal&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;reflect package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/reflect/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;runtime package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/runtime/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sync package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sync/#Locker&#34; target=&#34;_blank&#34; &gt;Locker&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;syscall package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/syscall/#Sockaddr&#34; target=&#34;_blank&#34; &gt;Sockaddr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;tesing package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/#TB&#34; target=&#34;_blank&#34; &gt;TB&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;quick&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/quick/#Generator&#34; target=&#34;_blank&#34; &gt;Generator&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;text/template/parse&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/text/template/parse/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;conclusion:8299f908315f8a7f26ec77fc52719a89&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Golang interfaces are the most powerful and simple feature that the language expose to create modular and reusable implementations.&lt;/p&gt;
+
+&lt;p&gt;Golang standard library contains a bunch of already defined interfaces which can be implemented by our applications or services without having to think in new ones for the same purpose besides to ease and speed up to any Golang developer to understand our implementations.&lt;/p&gt;
+
+&lt;p&gt;Collecting all of them in in this post allowed me to discover some of them which I haven&amp;rsquo;t seen before even though I&amp;rsquo;ve been developing in Golang for one year and a half. Some of them I had never seen because I haven&amp;rsquo;t had to use them, others I had seen when I was reading a specific package documentation and other I saw at some point but I didn&amp;rsquo;t assimilate at the first glance, so this post has been a good exercise.&lt;/p&gt;
+
+&lt;p&gt;If I&amp;rsquo;ve missed any and you know which ones, please let me know with an innocent comment.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Rack Style Golang HTTP Handlers</title>
+      <link>http://blog.fraixed.es/post/rack-style-golang-http-handlers</link>
+      <pubDate>Wed, 03 Jun 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/rack-style-golang-http-handlers</guid>
+      <description>
+
+&lt;p&gt;A couple of weeks ago &lt;a href=&#34;http://blog.fraixed.es/post/thoughts-about-golang-action-responses&#34; target=&#34;_blank&#34;&gt;I published a blog post with some thoughts&lt;/a&gt; about  &lt;strong&gt;&lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;actions&amp;rdquo; HTTP Handlers in Golang&lt;/a&gt;&lt;/strong&gt;, which specifies an opinionated way to have a handler function signature to define common responses for HTTP applications.&lt;/p&gt;
+
+&lt;p&gt;In my blog post, I also showed the results of a tiny benchmark test about how the approach performs over a &lt;a href=&#34;http://golang.org/pkg/net/http/#Handler&#34; target=&#34;_blank&#34;&gt;Standard HTTP Handlers&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;After that and getting the firsts steps of a web service implementation with the approach, with a few changes that we had to do to afford several needs, I&amp;rsquo;ve been thinking how to get another approach which keeps the befits of the original one, besides to have a central point for error management, to be able to perform global tasks as Logging, common responses for those errors avoiding to leak system information, and so on.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-i-m-talking-about:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;What I&amp;rsquo;m Talking About&lt;/h2&gt;
+
+&lt;p&gt;After the title and the introduction probably the most of you are wondering &amp;ldquo;what exactly I&amp;rsquo;m talking about&amp;rdquo;, &amp;ldquo;a new revolutionary way?&amp;rdquo;&amp;ldquo;, actually no, this isn&amp;rsquo;t the heaven ;D&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s first start with the firs sentence that we can read in &lt;strong&gt;&lt;a href=&#34;http://rack.github.io/&#34; target=&#34;_blank&#34;&gt;Ruby Rack&amp;rsquo;s web site&lt;/a&gt;&lt;/strong&gt;: &lt;strong&gt;&lt;em&gt;To use Rack, provide an &amp;lsquo;app&amp;rsquo;: an object that responds to the call method, taking the environment hash as a parameter, and returning an Array with three elements&amp;rdquo;&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The interesting words, for the purpose of the approach which I&amp;rsquo;m talking about are: &lt;strong&gt;returning and Array with three elements&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, that sucks in Golang, do you know?; Golang is type checking, so you cannot mix &amp;amp; match different types in an &lt;a href=&#34;https://blog.golang.org/slices&#34; target=&#34;_blank&#34;&gt;Array or Slice&lt;/a&gt;, sure nonetheless it has a very nice feature which I really love, &amp;ldquo;&lt;strong&gt;&lt;a href=&#34;https://golang.org/doc/effective_go.html#multiple-returns&#34; blank=&#34;_blank&#34;&gt;Functions can return Multiple Values&lt;/a&gt;&lt;/strong&gt;&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Bearing in mind that we can have the same concept than Rack, even better we get the type checking guarantee, so great to get some programming errors at compiling time.&lt;/p&gt;
+
+&lt;p&gt;That was great to me to go through, however I&amp;rsquo;ve had a thought later on, which I feel as it&amp;rsquo;s more in the Go&amp;rsquo;s way, so I&amp;rsquo;ve come up with the idea to add a fourth value to return, which is an &lt;strong&gt;&lt;a href=&#34;http://golang.org/pkg/builtin/#error&#34; target=&#34;_blank&#34;&gt;Error type&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;some-code-doesn-t-hurt:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;Some Code doesn&amp;rsquo;t Hurt&lt;/h2&gt;
+
+&lt;p&gt;Probably, I could skip to write any code in this post, so it may not needed; every one who&amp;rsquo;s read the previous section, has understood the concept, at least if they have read &lt;a href=&#34;http://blog.fraixed.es/post/thoughts-about-golang-action-responses&#34; target=&#34;_blank&#34;&gt;my previous blog post&lt;/a&gt; and &lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Go Actions&amp;rdquo; blog post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;However I think that adding a few line of code doesn&amp;rsquo;t hurt and I guess that it helps to digest the concept moreover if you&amp;rsquo;ve landed into it with no clue about the mentioned posts; therefore there it goes&lt;sup&gt;1&lt;sup&gt;&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; RackHandler &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt;(&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;http.Request) (status &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;int&lt;/span&gt;, headers [][&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;, body []&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;byte&lt;/span&gt;, err &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;error&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; Wrap(action RackHandler) http.Handler {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; http.HandlerFunc(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt;(w http.ResponseWriter, r &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;http.Request) {
+		s, hs, b, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; action(r)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			&lt;span style=&#34;color: #888888&#34;&gt;// Do something with the error. e.g. logging&lt;/span&gt;
+			&lt;span style=&#34;color: #888888&#34;&gt;// Using a switch statement to perform different actions depending status code&lt;/span&gt;
+			&lt;span style=&#34;color: #888888&#34;&gt;// If error happens, body should contain only user friendly information which&lt;/span&gt;
+			&lt;span style=&#34;color: #888888&#34;&gt;// doesn&amp;#39;t leak any system information&lt;/span&gt;
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;switch&lt;/span&gt; s {
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; http.StatusInternalServerError:
+				&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;fallthrough&lt;/span&gt;
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;default&lt;/span&gt;:
+				hs = &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+				s = http.StatusInternalServerError
+				b = &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+			}
+		}
+
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; hs &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			header &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; w.Header()
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; _, h &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; hs {
+				header.Add(h[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;], h[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;])
+			}
+		}
+
+		w.WriteHeader(s)
+
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; b &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			w.Write(b)
+		}
+	})
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Pretty much the concept is that simple; of course you&amp;rsquo;ll probably have to add more stuff to afford all the functionalities that a serious HTTP application needs, as the previous snippet is only a bare implementation.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see, as well, how an &amp;ldquo;actions&amp;rdquo; looks&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; responseCounter = &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; HelloBuddy(req &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;http.Request) (&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;int&lt;/span&gt;, [][&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;, []&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;byte&lt;/span&gt;, &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;error&lt;/span&gt;) {
+	responseCounter&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt;
+	op &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; responseCounter &lt;span style=&#34;color: #333333&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;switch&lt;/span&gt; op {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;:
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;200&lt;/span&gt;,
+			[][&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;{{&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;Content-Type&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;text/html&amp;quot;&lt;/span&gt;}},
+			[]&lt;span style=&#34;color: #007020&#34;&gt;byte&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;`&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;			&amp;lt;html&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;				&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Hello&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;				&amp;lt;body&amp;gt;&amp;lt;h1&amp;gt;Hello Buddy!&amp;lt;/h1&amp;gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;			&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;		`&lt;/span&gt;), &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;default&lt;/span&gt;:
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; http.StatusInternalServerError, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;, errors.New(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;Odd request&amp;quot;&lt;/span&gt;)
+	}
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Sorry, for the silly functionality of the &amp;ldquo;action&amp;rdquo;, I hope that you understand that it is not about what it does, is how it looks besides that it matches with the &lt;a href=&#34;https://gist.github.com/ifraixedes/056175e0cf312db88f0e#file-response-go-L71&#34; target=&#34;_blank&#34;&gt;same one implemented for the benchmark test of my previous post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;a-few-comments-about-the-approach:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;A Few Comments about The Approach&lt;/h2&gt;
+
+&lt;p&gt;The implementation, from my point of view, it looks a little bit simpler, because it doesn&amp;rsquo;t need a struct to wrap the response, nonetheless it&amp;rsquo;s my personal opinion.&lt;/p&gt;
+
+&lt;p&gt;The place where I see a benefit is the &lt;code&gt;Wrap&lt;/code&gt; function, because it can check if the &amp;ldquo;action&amp;rdquo; returns an error and do general tasks, as I&amp;rsquo;ve already mentioned, &amp;ldquo;logging&amp;rdquo;, returning defined errors which don&amp;rsquo;t have any important information of the infrastructure behind the HTTP application, and so on.&lt;/p&gt;
+
+&lt;p&gt;Having a returned error value we can use &lt;strong&gt;&lt;a href=&#34;http://blog.golang.org/errors-are-values&#34; target=&#34;_blank&#34;&gt;defined values&lt;/a&gt;&lt;/strong&gt; and/or &lt;strong&gt;&lt;a href=&#34;http://blog.golang.org/error-handling-and-go&#34; target=&#34;_blank&#34;&gt;specific types&lt;/a&gt;&lt;/strong&gt; to execute different actions and having homogeneous error responses for defined issues.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, an inconvenient, for somebody, can be, in the return statement of the &amp;ldquo;actions&amp;rdquo;, they may look rare and/or verbose, but you know, there is always some tradeoffs.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Go Actions&amp;rdquo;&lt;/a&gt; looks as a nice approach, however I&amp;rsquo;ve felt a little bit uncomfourtable&lt;sup&gt;2&lt;/sup&gt; having a struct which wraps the response to send back to the client.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, I&amp;rsquo;ve prefer error values and types to be able to have a central point to manage the errors and send back the response to the client than having to create different functions to return different error responses, nonetheless that can be achieved in &amp;ldquo;Go Actions&amp;rdquo; just adding an second error type return value to the &amp;ldquo;action&amp;rdquo; function signature.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Go Action&amp;rdquo; approach is used, with some tweaks, in the implementation of a real HTTP Application which we&amp;rsquo;re building, however I&amp;rsquo;m feeling that we&amp;rsquo;re getting some pains that the &amp;ldquo;Rack&amp;rdquo; approach could solve or a least making those less painful, however it hasn&amp;rsquo;t been used under the same scenario, so far, hence I&amp;rsquo;m not really sure if it can be better or worse.&lt;/p&gt;
+
+&lt;p&gt;Do you have any thought about these approaches or a new ones that aren&amp;rsquo;t popular? I&amp;rsquo;ll appreciate if you have some, you share them though the comments.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;1&lt;/sup&gt; code of this post is released under &lt;a href=&#34;http://www.wtfpl.net/txt/copying/&#34; target=&#34;_blank&#34;&gt;WTFPL&lt;/a&gt;&lt;/p&gt;
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;2&lt;/sup&gt; It&#39;s my own personal opinion&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Thoughts about Golang Action Responses</title>
+      <link>http://blog.fraixed.es/post/thoughts-about-golang-action-responses</link>
+      <pubDate>Wed, 20 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/thoughts-about-golang-action-responses</guid>
+      <description>
+
+&lt;p&gt;A few weeks ago one of my colleagues found a blog post about &lt;strong&gt;&lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;a different approach to implement &amp;ldquo;actions&amp;rdquo; HTTP Handlers in Golang&lt;/a&gt;&lt;/strong&gt;, which differs in how the most of the current Golang Web frameworks do which are heavily inspired in the interface offered by &lt;a href=&#34;http://golang.org/pkg/net/http/#HandlerFunc&#34; target=&#34;_blank&#34;&gt;Golang HTTP official package&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/karlseguin&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Karl Seguin&lt;/a&gt; (the author of the post) commented that the approach gives a natural way to implement HTTP handlers returning response than passing them as an argument, something that works when the consumer not to need to have a full access control over the response, which are in most of the cases.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve read this post and I&amp;rsquo;ve spend some time analysing it, because my colleagues asked to the rest of team to have a view and share our thoughts; at that moment I just replied him &amp;ldquo;&lt;a href=&#34;#my-first-thoughts:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;my first thoughts&lt;/a&gt;&amp;rdquo; and &amp;ldquo;&lt;a href=&#34;#what-i-don-t-like:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;what I don&amp;rsquo;t like&lt;/a&gt;&amp;rdquo; but I didn&amp;rsquo;t have any substantial argument around my thoughts, so I&amp;rsquo;ve take part of my spare time to consolidate them and add some tangible metrics and write this post about it.&lt;/p&gt;
+
+&lt;h2 id=&#34;my-first-thoughts:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;My First Thoughts&lt;/h2&gt;
+
+&lt;p&gt;My first impression was good, it &lt;strong&gt;provides a way to have a less verbose, hence easy to read, implementations&lt;/strong&gt; for the Handlers which deals with the logic of the request (called &amp;ldquo;actions&amp;rdquo;), it means that commong/global Handlers, usually called &amp;ldquo;middlewares&amp;rdquo;, aren&amp;rsquo;t contemplated.&lt;/p&gt;
+
+&lt;p&gt;The approach focus in &amp;ldquo;actions&amp;rdquo;, making emphasis on increasing the readability of their implementations and common operations across them; it makes sense as a big web application has a lot of more &amp;ldquo;actions&amp;rdquo; than &amp;ldquo;middlewares&amp;rdquo; then developers spend the most of their time dealing with them, hence readability matters.&lt;/p&gt;
+
+&lt;p&gt;Here it&amp;rsquo;s nothing new, basically I agree with Karl.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-i-don-t-like:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;What I don&amp;rsquo;t like&lt;/h2&gt;
+
+&lt;p&gt;To clarify before to comment what I don&amp;rsquo;t like from the approach, I want to say that &amp;ldquo;I don&amp;rsquo;t like&amp;rdquo; doesn&amp;rsquo;t mean &amp;ldquo;I hate&amp;rdquo; or &amp;ldquo;the approach is discarded for those reasons&amp;rdquo;, as usual there are tradeoffs on each approach and depending of the situation some tradeoffs ares less important than others and those define what approach to use for it.&lt;/p&gt;
+
+&lt;p&gt;The approach defines a struct &amp;ldquo;NormalResponse&amp;rdquo; which holds the content of a HTTP response, status code, headers and body; it helps to avoid any write on HTTP ResponseWriter until the &amp;ldquo;action&amp;rdquo; ends therefore it&amp;rsquo;s possible to deal with errors without moving the responsibility to the developers who implement the &amp;ldquo;actions&amp;rdquo; which may drive to have inconsistent response, e.g. Send 200 status code when error happened.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;NormalResponse&amp;rdquo; struct is great for that, however &lt;strong&gt;it introduces some overhead&lt;/strong&gt;; each action &lt;strong&gt;create a new instance of a struct which is used to hold the values to send throw the wire&lt;/strong&gt;, hence those values must copied from &amp;ldquo;NormalResponse&amp;rdquo; instance to ResponseWriter; it means that for each request we introduce a new instance which must be garbage collected, therefore we introduce a performance penalty on our web application.&lt;/p&gt;
+
+&lt;h2 id=&#34;how-performance-matters:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;How Performance Matters&lt;/h2&gt;
+
+&lt;p&gt;As you may know, garbage collector isn&amp;rsquo;t the best part of Golang and giving to it too much work could drive your application to screw up or at least not to get that response time that you desire; actually I&amp;rsquo;ve seen this possible tradeoff straightaway, due quite a few posts and library implementations which I&amp;rsquo;ve read where the authors are proud about zero or at least low number of allocations, so it nailed in my brain to be always aware.&lt;/p&gt;
+
+&lt;p&gt;Golang team is improving the garbage collector and they&amp;rsquo;re going to release a &lt;a href=&#34;http://llvm.cc/t/go-1-4-garbage-collection-plan-and-roadmap-golang-org/33&#34; target=&#34;_blank&#34;&gt;new improved version with the next release 1.5&lt;/a&gt;, however it&amp;rsquo;s outside of the topic of this post, the present is 1.4 release and a garbage-collected language doesn&amp;rsquo;t mean you can ignore memory allocation issues.&lt;/p&gt;
+
+&lt;p&gt;As I&amp;rsquo;ve commented in other posts, like &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics#conclusions:674e6dc579e95f2506494215d826638f&#34; target=&#34;_blank&#34;&gt;this&lt;/a&gt; and &lt;a href=&#34;http://blog.fraixed.es/post/performance-js-objects-created-different-ways#conclusions:6714155ea9f1aa8bfca3db0c3355ca1c&#34; target=&#34;_blank&#34;&gt;this&lt;/a&gt;, performance is important but &lt;strong&gt;there are many other things which can be more important than performance&lt;/strong&gt; in a lot of situations besides to be more important to find where are the bottle necks before removing the dust; hence this argument, as I&amp;rsquo;ve already commented above, doesn&amp;rsquo;t discard the approach at all, but it&amp;rsquo;s worth bearing in mind.&lt;/p&gt;
+
+&lt;h2 id=&#34;let-s-see-some-numbers:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;Let&amp;rsquo;s See some Numbers&lt;/h2&gt;
+
+&lt;p&gt;Because Golang offers a bunch of good tools to benchmark and profile your implementations (I used them in these two post series &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics&#34; target=&#34;_blank&#34;&gt;1&lt;/a&gt; and &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics&#34; target=&#34;_blank&#34;&gt;2&lt;/a&gt;), I&amp;rsquo;ve made a simple &amp;ldquo;action&amp;rdquo; implementation, one using the &amp;ldquo;NormalResponse&amp;rdquo; approach and another with a standard handler to see if my thoughts were right or wrong.&lt;/p&gt;
+
+&lt;p&gt;The results that I&amp;rsquo;ve got are&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;spike ➜  go test -v -bench . -benchtime 10s -benchmem
+testing: warning: no tests to run
+PASS
+BenchmarkResponse       10000000              1908 ns/op             728 B/op          6 allocs/op
+BenchmarkStd            10000000              1357 ns/op             504 B/op          5 allocs/op
+ok      spike   36.009s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As we can see, &amp;ldquo;NormalResponse&amp;rdquo; needs, roughly, 40% more nanoseconds per operation than a standard handler.&lt;/p&gt;
+
+&lt;p&gt;To compare the pprof graphs, cpu usage and memory consumption, I&amp;rsquo;ve executed the benchmark individually to have separated graphs; so I&amp;rsquo;ve executed those as previously but changing &lt;code&gt;-bench .&lt;/code&gt; by &lt;code&gt;-bench Response&lt;/code&gt; and &lt;code&gt;-bench Std&lt;/code&gt;, for &amp;ldquo;NormalResponse&amp;rdquo; and &amp;ldquo;Standard Handler&amp;rdquo;, respectively; both benchmarks run the same amount of times, as before &amp;ldquo;10000000&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;for &amp;ldquo;NormalResponse&amp;rdquo;, I&amp;rsquo;ve got (CPU first and memory second)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/71/40/d1/7140d1c8694e9a2ec1780f232327a96c.png&#34; alt=&#34;NormalResponse CPU profile graph&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/68/11/d7/6811d7cbe2d7fe949cad4621ba72183b.png&#34; alt=&#34;NormalResponse Memory Allocation Space&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And for &amp;ldquo;Standard Handler&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/01/7f/4d/017f4dc3ab76f4c189e8bda8cbfc6705.png&#34; alt=&#34;Standard Handler CPU profile graph&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/92/4d/13/924d13cb99fb7fdb6c6d54f7f3fe660a.png&#34; alt=&#34;Standard Handler Memory Allocation Space&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Taking a look to the CPU graphs, we can see that the &amp;ldquo;External Code&amp;rdquo; triggered by GC and System are the heavy load part of both executions so &amp;ldquo;ResponseNormal&amp;rdquo; doesn&amp;rsquo;t introduce overhead in the garbage collection job, then my thoughts were wrong; however the &lt;strong&gt;two phases response, &amp;ldquo;action&amp;rdquo; and &lt;code&gt;WriteTo&lt;/code&gt; call makes the difference with a standard Handler and the bottle neck is the Map operations&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;In case of the memory consumption, we can see in the graphs how &amp;ldquo;NormalResponse&amp;rdquo; needs more memory, mostly, that difference is due &lt;code&gt;WriteTo&lt;/code&gt; function and specifically the memory consumption are the operations on the Header type which is a Golang Map, again.&lt;/p&gt;
+
+&lt;p&gt;My first thoughts about the performance penalty that &amp;ldquo;NomralResponse&amp;rdquo; approach may haven&amp;rsquo;t been right; it has a performance penalty, however it isn&amp;rsquo;t due GC operations, it&amp;rsquo;s about Map operations. Knowing where the bottle neck is we may introduce improvement, for example changing the type used by &amp;ldquo;NormalResponse&amp;rdquo; to store the headers to send and revaluate to see the gain.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Performance matters however it isn&amp;rsquo;t the only important thing to take care for all the implementation. Depending what you&amp;rsquo;re implementing, the situation and requirements, performance may have less relevance than other stuff as readability, maintainability, etc.&lt;/p&gt;
+
+&lt;p&gt;Benchmarks are king to know how your implementations perform in front of others, nonetheless you should always &lt;strong&gt;profile your code to see if you implementations can be improve without removing a big part of their advantages or at least you&amp;rsquo;ll consolidate or refute your thoughts&lt;/strong&gt; (it&amp;rsquo;s my case here) why your implementation performs different.&lt;/p&gt;
+
+&lt;p&gt;By the way you can find the implementation of this benchmark in this &lt;a href=&#34;https://gist.github.com/ifraixedes/056175e0cf312db88f0e&#34; target=&#34;_blank&#34;&gt;gist&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;ve got something from here.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #13</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150515/</link>
+      <pubDate>Fri, 15 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150515/</guid>
+      <description>&lt;p&gt;This week I&amp;rsquo;ve been half away, however I&amp;rsquo;ve collected several tweets and my choice has driven to centre the topic in &lt;strong&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;Rust&lt;/a&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;a href=&#34;https://iojs.org/en/index.html&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;As usual in my last post about &amp;ldquo;my 5 favourite weekly tweets&amp;rdquo;, I&amp;rsquo;ve got a blog post about Rust which help me to learn more about it in a passive way, in this case &lt;strong&gt;&lt;a href=&#34;http://huonw.github.io/blog/2015/05/finding-closure-in-rust/&#34; target=&#34;_blank&#34;&gt;about Closures in Rust&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Finding Closure in Rust  &lt;a href=&#34;http://t.co/M4m21WgY2i&#34;&gt;http://t.co/M4m21WgY2i&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/596781802204884992&#34;&gt;May 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Now that I&amp;rsquo;m using go professionally a lot of doubts have bubble up with my colleagues in how to approach the implementation of several general parts of the system/application/serive, so I&amp;rsquo;ve seen this post &lt;strong&gt;&lt;a href=&#34;https://joeshaw.org/net-context-and-http-handler/&#34; target=&#34;_blank&#34;&gt;which compares several approaches about net/context and http.Handler&lt;/a&gt; very interesting&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Go&amp;#39;s net/context and http.Handler: &lt;a href=&#34;https://t.co/vxKnSbsQLZ&#34;&gt;https://t.co/vxKnSbsQLZ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/597017175086518272&#34;&gt;May 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Another post about Go got into my favourites ones, this time about something that I&amp;rsquo;d already known from a conference that &lt;a href=&#34;https://www.cloudflare.com/&#34; target=&#34;_blank&#34;&gt;CloudFlare&lt;/a&gt;&amp;rsquo;s team has been working on, a &lt;strong&gt;&lt;a href=&#34;https://blog.cloudflare.com/go-crypto-bridging-the-performance-gap/&#34; target=&#34;_blank&#34;&gt;cryptography library to boost performance&lt;/a&gt;&lt;/strong&gt; due the Go crypto package isn&amp;rsquo;t fast enough as existing solutions in other techs.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Go Crypto: Bridging The Performance Gap - &lt;a href=&#34;https://t.co/jNEJjz6MQm&#34;&gt;https://t.co/jNEJjz6MQm&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/597431194054189056&#34;&gt;May 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Another Rust blog post, in this case from its &lt;a href=&#34;http://blog.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;official blog&lt;/a&gt;, which teaches about &lt;strong&gt;&lt;a href=&#34;http://blog.rust-lang.org/2015/05/11/traits.html&#34; target=&#34;_blank&#34;&gt;traits and how they allows to abstract without an important overhead&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Abstraction without overhead: traits in &lt;a href=&#34;https://twitter.com/hashtag/rustlang?src=hash&#34;&gt;#rustlang&lt;/a&gt; &lt;a href=&#34;http://t.co/yzDfHNCQaW&#34;&gt;http://t.co/yzDfHNCQaW&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/597818818224750592&#34;&gt;May 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one it&amp;rsquo;s about the &lt;strong&gt;agreement between iojs and Node Foundation to unify forces&lt;/strong&gt; to empower Node&amp;rsquo;s ecosystem and community&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;The &lt;a href=&#34;https://twitter.com/official_iojs&#34;&gt;@official_iojs&lt;/a&gt; just agreed to move into the Node Foundation and rename the &amp;quot;iojs&amp;quot; org on GitHub to &amp;quot;nodejs&amp;quot; &lt;a href=&#34;http://t.co/W1cCakBgLy&#34;&gt;http://t.co/W1cCakBgLy&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/598605393636429825&#34;&gt;May 13, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a nice spring weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #12</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</link>
+      <pubDate>Fri, 08 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</guid>
+      <description>&lt;p&gt;Another &amp;ldquo;working&amp;rdquo; week is gone and as usual you can take a look here to my 5 favourite tweets of the week&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve got a nice post about &lt;a href=&#34;http://www.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;Rust&lt;/a&gt; Iterators, don&amp;rsquo;t missed if you&amp;rsquo;ve started to be curious about this language that will be for production use in a few days after this post&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;A Journey into Iterators &lt;a href=&#34;http://t.co/tuR0cIIG12&#34;&gt;http://t.co/tuR0cIIG12&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/594624260599058434&#34;&gt;May 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Hacking is not my topic, however I&amp;rsquo;m always interested in news about it, so this tweet about Javascript-Based DDoS got my attention&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;An Introduction to JavaScript-Based DDoS: &lt;a href=&#34;https://t.co/V6VU7agXOC&#34;&gt;https://t.co/V6VU7agXOC&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/594925681714143232&#34;&gt;May 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The amazing community behind &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt; has made a big step to move forward releasing 2.0 version, they deserved to add this tweet here&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;io.js 2.0 Released: &lt;a href=&#34;https://t.co/hcF5CxV1yV&#34;&gt;https://t.co/hcF5CxV1yV&lt;/a&gt; (V8 upgraded to 4.8, npm to 2.9.0 &amp;amp; more, see &lt;a href=&#34;https://t.co/flwmTNnJvP&#34;&gt;https://t.co/flwmTNnJvP&lt;/a&gt; )&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/595575488371937281&#34;&gt;May 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The Linux distribution called &lt;a href=&#34;https://www.kali.org/&#34; target=&#34;_blank&#34;&gt;Kali&lt;/a&gt;, has updated 3 packages related with Wireless Penetration Testing, so good news if you love to play around with wireless connections&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Pixiewps, Reaver &amp;amp; Aircrack-ng - wireless penetration testing tool updates in Kali and what they mean for you  - &lt;a href=&#34;https://t.co/jgXn4t9nE1&#34;&gt;https://t.co/jgXn4t9nE1&lt;/a&gt;&lt;/p&gt;&amp;mdash; muts (@kalilinux) &lt;a href=&#34;https://twitter.com/kalilinux/status/595217837792178176&#34;&gt;May 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://dave.cheney.net/&#34; target=&#34;_blank&#34;&gt;Dave Cheney&lt;/a&gt; has created a new build tool for &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt;, called &lt;a href=&#34;http://getgb.io/&#34; target=&#34;_blank&#34;&gt;gd&lt;/a&gt; which should solve the problem of a reproducible builds; one of thing that me and many other people miss in &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt; is an appropriated tool to manage dependencies so I&amp;rsquo;ll take a look to this totally different approach of others I&amp;rsquo;ve seen and tested, hence this tweet provided me this amazing discovery&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Building Go projects with &amp;#39;gb&amp;#39;: &lt;a href=&#34;https://t.co/f9igUiQOQP&#34;&gt;https://t.co/f9igUiQOQP&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/596654809404538880&#34;&gt;May 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a lovely weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #10</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150424/</link>
+      <pubDate>Fri, 24 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150424/</guid>
+      <description>&lt;p&gt;This week, my first favourite tweet is not about tech, rare? where I have a few other interests as well, however don&amp;rsquo;t worry, the next four are tech, so go ahead&lt;/p&gt;
+
+&lt;p&gt;Starting a business from scratch isn&amp;rsquo;t probably the easiest thing to do, probably the opposite, so knowing from the experience of others is very valuable&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Starting a business from Scratch - hints and tips from &lt;a href=&#34;https://twitter.com/dan_jenkins&#34;&gt;@dan_jenkins&lt;/a&gt; after he founded &lt;a href=&#34;https://twitter.com/nimbleapeltd&#34;&gt;@nimbleapeltd&lt;/a&gt; &lt;a href=&#34;http://t.co/Uz9JG1Zhom&#34;&gt;http://t.co/Uz9JG1Zhom&lt;/a&gt;&lt;/p&gt;&amp;mdash; Nimble Ape Ltd (@nimbleapeltd) &lt;a href=&#34;https://twitter.com/nimbleapeltd/status/589087461864779778&#34;&gt;April 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; is getting my attention, so learning language features through blog post is quite passive to get into it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Mixing, matching, mutation and moves &lt;a href=&#34;http://t.co/YFE1702wiD&#34;&gt;http://t.co/YFE1702wiD&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/589119747293220864&#34;&gt;April 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I love Internet, so I love the Web, reading about the new browser features is always in my todo list&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Chrome Stable (42) now with Push Notifications and Add to Home screen for all users.&amp;#10;&amp;#10;&lt;a href=&#34;http://t.co/tw2A9dt7uJ&#34;&gt;http://t.co/tw2A9dt7uJ&lt;/a&gt; &lt;a href=&#34;http://t.co/prEOJmC0uQ&#34;&gt;pic.twitter.com/prEOJmC0uQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Chrome Developers (@ChromiumDev) &lt;a href=&#34;https://twitter.com/ChromiumDev/status/590169593110335488&#34;&gt;April 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been very happy of the new features that &lt;a href=&#34;https://www.npmjs.com/&#34;&gt;npm&lt;/a&gt; release, with the amount of package that it hosts, it was something that so many people were expecting, and happy they&amp;rsquo;ve got solve a hard problem&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;solving npm’s hard problem: naming packages &lt;a href=&#34;http://t.co/126RkmZaef&#34;&gt;http://t.co/126RkmZaef&lt;/a&gt; &lt;a href=&#34;http://t.co/voENvgIiA7&#34;&gt;pic.twitter.com/voENvgIiA7&lt;/a&gt;&lt;/p&gt;&amp;mdash; npmbot (@npmjs) &lt;a href=&#34;https://twitter.com/npmjs/status/590307732042973184&#34;&gt;April 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I think that this series of blog posts about &lt;a href=&#34;http://adampresley.com/2015/04/12/writing-a-lexer-and-parser-in-go-part-1.html&#34;&gt;&amp;ldquo;Writing a Lexer and Parser in Go&amp;rdquo;&lt;/a&gt; will very good, because they teach &lt;a href=&#34;http://golang.org&#34;&gt;golang&lt;/a&gt; based in a very familiar topic about computer science besides that the example is simple, so easy to step into, and based in a Rob Pike presentation.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Writing a Lexer and Parser in Go - Part 1: &lt;a href=&#34;http://t.co/EvhFBi6L2X&#34;&gt;http://t.co/EvhFBi6L2X&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/590183203736068097&#34;&gt;April 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a crazy weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #6</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150327/</link>
+      <pubDate>Fri, 27 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150327/</guid>
+      <description>&lt;p&gt;Yep, this week my timeline came up with these marvelous tweets.&lt;/p&gt;
+
+&lt;p&gt;An awesome tool that take source code TODO comments and create Github issues to remind you that they have to be fixed in not to leave those there for ages&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;nifty tool to convert your TODO comments into Github issues: &lt;a href=&#34;http://t.co/M2gwKz5RvI&#34;&gt;http://t.co/M2gwKz5RvI&lt;/a&gt; - bonus: install as a git precommit hook!&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/580429907521503232&#34;&gt;March 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Opinions are opinions and the battles about preferences between techies is the day to day, don&amp;rsquo;t miss this&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;A Few Notes On Choosing Between Go and D for a Quick Project: &lt;a href=&#34;http://t.co/KfO2C0svlb&#34;&gt;http://t.co/KfO2C0svlb&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/579311506665406464&#34;&gt;March 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Load a web site fast is one of the biggest headache of any web developer, here you can read a new technique that hopefully will help you to get less crazy each time that you must do it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;New JavaScript Techniques for Rapid Page Loads: &lt;a href=&#34;http://t.co/hZJD4LX6Ur&#34;&gt;http://t.co/hZJD4LX6Ur&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/579270070611931138&#34;&gt;March 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Well if you were desiring that Blink implement pointer events, this tweet is good news for you&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Based on feedback from developers &amp;amp; the Pointer Event Working Group, Blink is now reconsidering Pointer Events: &lt;a href=&#34;https://t.co/8uARlPNoVp&#34;&gt;https://t.co/8uARlPNoVp&lt;/a&gt;&lt;/p&gt;&amp;mdash; Chrome Developers (@ChromiumDev) &lt;a href=&#34;https://twitter.com/ChromiumDev/status/580764127691411456&#34;&gt;March 25, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;One example which shows that the decisions are made mustn&amp;rsquo;t be forever, things change and some that was ideal in past doesn&amp;rsquo;t have to be idea for now or for the future&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;«This … makes me wonder what other standard unix programs make design assumptions that aren’t true in 2015…» — this.&amp;#10;&amp;#10;&lt;a href=&#34;http://t.co/LpnWxVIXP1&#34;&gt;http://t.co/LpnWxVIXP1&lt;/a&gt;&lt;/p&gt;&amp;mdash; Michael Klishin (@michaelklishin) &lt;a href=&#34;https://twitter.com/michaelklishin/status/573599284454637568&#34;&gt;March 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you have a great weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Profiling Golang Slices of Structs vs Pointers: Analysing Metrics</title>
+      <link>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics</link>
+      <pubDate>Mon, 23 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics</guid>
+      <description>
+
+&lt;p&gt;This is the second part of a two post series about the performance of Golang slices between those which contain structs and those which contain pointers to the same structs and how they are populated through different struct &amp;ldquo;constructor&amp;rdquo; and &amp;ldquo;converter&amp;rdquo; implementations, hence you need to read the &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics&#34; target=_blank&gt;previous post&lt;/a&gt; to understand this.&lt;/p&gt;
+
+&lt;p&gt;After gathering the profiling metrics from &lt;a href=&#34;https://gist.github.com/ifraixedes/f11fba231ac8cb4cb1d4#file-structs_test-go&#34; target=&#34;_blank&#34;&gt;benchmarks&lt;/a&gt; and &lt;a href=&#34;https://gist.github.com/ifraixedes/f11fba231ac8cb4cb1d4#file-main-go&#34; target=_blank&gt;&lt;code&gt;main&lt;/code&gt;&lt;/a&gt; executions, I&amp;rsquo;m going to go through them to see how the different implemented approaches performs and hopefully to get some conclusions about them to have a better decision making for future Golang developments.&lt;/p&gt;
+
+&lt;h2 id=&#34;benchmarks:674e6dc579e95f2506494215d826638f&#34;&gt;Benchmarks&lt;/h2&gt;
+
+&lt;p&gt;Executing the benchmark, &lt;code&gt;go test -v -bench . -benchtime 10s -benchmem -memprofile mem.out  -cpuprofile cpu.out&lt;/code&gt;, we get an terminal output with some numbers besides of two files which contain CPU and memory profiling metrics.&lt;/p&gt;
+
+&lt;p&gt;The terminal output looks like this&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/01/1c/6d/011c6dc4f064a6265d03e591aab1fe51.jpg&#34; alt=&#34;benchmarks results terminal output&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;With that, we already have what of them performs better and what is the worst, however, in my case I&amp;rsquo;m getting the opposite that initially I expected to find. I was expecting that avoiding memory copy between struct constructors which return pointers and slices which store pointers, the gain should be notorious better than copying values across the memory.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s, first, generate some graphs with the profiling data with pprof and see if we can be clearer about the results that we&amp;rsquo;ve got.&lt;/p&gt;
+
+&lt;p&gt;With &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu.png perf.test cpu.out&lt;/code&gt; we get a graph with the CPU profiling metrics, which looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/12/56/6f/12566f2f1dbbd3d1ade1c80f5cc74c69.jpg&#34; alt=&#34;benchmarks CPU graph&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And the allocated space with &lt;code&gt;go tool pprof -png -alloc_space -output  ~/Workspace/tmp/blog/mem-alloc-space.png perf.test mem.out&lt;/code&gt;, which looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/02/4c/64/024c6488103261951d5a82d2b12d51fb.jpg&#34; alt=&#34;benchmarks space allocation graph&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At first glance, I&amp;rsquo;m confused, so the &lt;strong&gt;benchmarks&amp;rsquo; output shows different results than the profiling graphs&lt;/strong&gt;, which the best and worse approaches are switched around, however that&amp;rsquo;s not really the case; &lt;strong&gt;graphs show the accumulated of the benchmarks execution&lt;/strong&gt;, which run each approach a different number of times until they can measure an average time of each iteration; therefore the &lt;strong&gt;&lt;em&gt;benchamkars output the average results per loop&lt;/em&gt;&lt;/strong&gt;, and graphs the whole accumulation of the whole execution. To confirm that, I&amp;rsquo;ve created spreadsheet where I&amp;rsquo;ve pulled the data from them, I&amp;rsquo;ve made the calculations from the accumulated data from the graphs to iterations besides to work out some comparisons between the approaches, to be clear the differences between them&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://goo.gl/jIkeZp&#34; target=_blank&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/5c/b7/78/5cb77848806bdd9ada1a0f5214d5994e.jpg&#34; alt=&#34;spreadsheet benchmark comparison table&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Click in the image to jump to the spreadsheet if you wish to see it.&lt;/p&gt;
+
+&lt;p&gt;Clearly, we can see the winner, with no pointers at all, we get the best CPU performance and the same memory performance that the slices of structs but using a constructor which returns pointer to a struct, which are 50% less memory usage than the other two approaches.&lt;/p&gt;
+
+&lt;h2 id=&#34;main:674e6dc579e95f2506494215d826638f&#34;&gt;Main&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve also implemented a &lt;code&gt;main&lt;/code&gt; function, right?, maybe because I though that the benchmarks could show a different reality due the warm-up, therefore, let&amp;rsquo;s analyse the &lt;code&gt;main&lt;/code&gt; profiling data with each different approach.&lt;/p&gt;
+
+&lt;p&gt;Following the order that I&amp;rsquo;ve used in the spreadsheet, we have&lt;/p&gt;
+
+&lt;p&gt;The &amp;ldquo;struct&amp;rdquo; method CPU &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu-struct.png main cpu-struct.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/1d/22/bd/1d22bdb662f2b849bdf45bb277b6dd30.jpg&#34; alt=&#34;CPU profiling graph of &amp;quot;struct&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and the &amp;ldquo;used memory space&amp;rdquo; &lt;code&gt;go tool pprof -png -inuse_space -output  ~/Workspace/tmp/blog/mem-inuse-space-struct.png main mem-struct.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/6a/ef/13/6aef13daa6b952e05fb9830e87e2aa97.jpg&#34; alt=&#34;memory usage graph of &amp;quot;struct&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &amp;ldquo;hybrid&amp;rdquo; method CPU &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu-hybrid.png main cpu-hybrid.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/ee/6f/47/ee6f47baac71aea04ceee502d66402b1.jpg&#34; alt=&#34;CPU profiling graph of &amp;quot;hybrid&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and its memory usage &lt;code&gt;go tool pprof -png -inuse_space -output  ~/Workspace/tmp/blog/mem-inuse-space-hybrid.png main mem-hybrid.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/b4/dd/a5/b4dda54b0bcda8d88ed32df29476e96e.jpg&#34; alt=&#34;memory usage graph of &amp;quot;hybrid&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &amp;ldquo;pointer&amp;rdquo; one &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu-pointer.png main cpu-pointer.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/79/cb/57/79cb5731eebdeb63068233256b601c6f.jpg&#34; alt=&#34;CPU profiling graph of &amp;quot;pointer&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and its memory usage &lt;code&gt;go tool pprof -png -inuse_space -output  ~/Workspace/tmp/blog/mem-inuse-space-pointer.png main mem-pointer.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/b4/dd/a5/b4dda54b0bcda8d88ed32df29476e96e.jpg&#34; alt=&#34;memory usage graph of &amp;quot;pointer&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and the last one, the no-pointers, CPU &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu-no-pointers.png main cpu-no-pointers.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/38/b3/77/38b3775ce311060259c07d054c583c45.jpg&#34; alt=&#34;CPU profiling graph of &amp;quot;no-pointers&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and memory usage &lt;code&gt;go tool pprof -png -inuse_space -output  ~/Workspace/tmp/blog/mem-inuse-space-no-pointers.png main mem-no-pointers.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/6a/ef/13/6aef13daa6b952e05fb9830e87e2aa97.jpg&#34; alt=&#34;memory usage graph of &amp;quot;no-pointers&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;analysis:674e6dc579e95f2506494215d826638f&#34;&gt;Analysis&lt;/h2&gt;
+
+&lt;p&gt;We can discard the memory usage because the heap frames in &lt;code&gt;main&lt;/code&gt; executions don&amp;rsquo;t provide a consistent information when the slice stores structs or pointers; in the other hand, we&amp;rsquo;ve got the same results for the CPU performance between &lt;code&gt;main&lt;/code&gt; and benchmark executions for all the approaches. I&amp;rsquo;ve also used pprof command line to list top 10 and list the functions, however I haven&amp;rsquo;t found anything useful or something that we cannot see in the graphs, so I haven&amp;rsquo;t included here to avoid fuzz.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Surprisingly the fastest implementation is the one that doesn&amp;rsquo;t involve pointers at all&lt;/strong&gt;, because the used constructor creates structs that are returned by copy, because it doesn&amp;rsquo;t return a pointer, and the used slice stores structs rather than pointers, so another copy should be done in the assignation between the constructor return value and the position referenced by the slice&amp;rsquo;s index.&lt;/p&gt;
+
+&lt;p&gt;I was expecting to find just the opposite, using pointers, hence just changing pointers addresses over copying values between memory spaces should be the fasters solution, however it&amp;rsquo;s the slowest one.&lt;/p&gt;
+
+&lt;p&gt;Taking a look to the CPU graphs of the &lt;code&gt;main&lt;/code&gt; execution with the two methods that use pointers, &amp;ldquo;pointer&amp;rdquo; and &amp;ldquo;hybrid&amp;rdquo;, we can see how the &lt;code&gt;main&lt;/code&gt; runtime and the function that &lt;code&gt;main&lt;/code&gt; executes, don&amp;rsquo;t even appear, because the CPU time is spent in two linked boxes named &amp;ldquo;System&amp;rdquo; and &amp;ldquo;External Code&amp;rdquo; and in the case of &amp;ldquo;pointer&amp;rdquo; method, we can also see two more related with the &amp;ldquo;gc&amp;rdquo; (garbage collector).&lt;/p&gt;
+
+&lt;p&gt;After this I can extract some conclusions and some doubts as well, so let&amp;rsquo;s see then.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:674e6dc579e95f2506494215d826638f&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Making assumptions based in theories (references versus values) is a kind of making blind decisions&lt;/strong&gt; when we don&amp;rsquo;t exactly know how compilers and runtimes perform operations; hence &lt;strong&gt;implementing benchmark and collecting profiling metrics of our developments are good practices&lt;/strong&gt; that we should consider when the performance matters or whenever we&amp;rsquo;re worry about it.&lt;/p&gt;
+
+&lt;p&gt;Golang has native packages and tools that allows to achieve them in not than painful way as other languages may be, besides it promotes them as a good development practice.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, &lt;strong&gt;this proof of concept doesn&amp;rsquo;t mean that the right method to implement in every scenario&lt;/strong&gt; is not to use pointers (addresses) and return and assign copies every where, due to this two fair facts:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;The structs used here are very small structs, one of them only contains one &lt;code&gt;uint64&lt;/code&gt; and the other one, two &lt;code&gt;uint32&lt;/code&gt;, so the memory copy can be very optimised for those types or for small size structs, however it&amp;rsquo;s something that I don&amp;rsquo;t really know and they&amp;rsquo;re only my thoughts.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The implementation is a process that runs and ends, which I consider that it can be different for a process which runs for long time (in theory infintely) and it has to deal with different loads, as a service or server could be; those services may need to optimise memory space sacrificing the CPU usage or vice versa, but again, those are my thoughts and each scenario must be assessed individually.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;If you want to see a more complex implementation example and its performance analysis take a look to this &lt;a href=&#34;http://blog.golang.org/profiling-go-programs&#34; target=_blank&gt;post in Golang blog&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;As I said, this is a proof of concept, it&amp;rsquo;s not any experience in running something in production or the steps followed to find bottle necks or performance improvements, furthermore I don&amp;rsquo;t have years of experience with Golang and I&amp;rsquo;m not a performance analysis expert; I may be wrong in some of the metrics gathering, analysis or conclusions, and I will appreciate that if you realise about those or you have a better explanation or you thing that you can contribute in something, please write a comment and share them with others.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve hope that you&amp;rsquo;ve got something interesting from here.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #5</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150320/</link>
+      <pubDate>Fri, 20 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150320/</guid>
+      <description>&lt;p&gt;The last 7 days, twitter hasn&amp;rsquo;t only helped me to discover new libraries, techniques, tutorials, etc; it has also brought a quite interesting quote which I agree and cool tool which allows you record your terminal, let&amp;rsquo;s see them in appearing order&lt;/p&gt;
+
+&lt;p&gt;A practical video which show you some tips in how to create Go packages successfully, don&amp;rsquo;t miss to watch it if you are in the wave of Golang(&lt;a href=&#34;http://golang.org&#34;&gt;http://golang.org&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Practical Tips for Creating a Go Package Successfully: &lt;a href=&#34;https://t.co/PVdRndZIEM&#34;&gt;https://t.co/PVdRndZIEM&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/video?src=hash&#34;&gt;#video&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/576723470849064960&#34;&gt;March 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Through a reply of a tweet which asked for tools to make terminal tutorial animations, I&amp;rsquo;ve discovered &lt;a href=&#34;https://asciinema.org/&#34;&gt;asciinema&lt;/a&gt; a wonderful &lt;strong&gt;Open Source&lt;/strong&gt; tool to record your terminal&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/robbyrussell&#34;&gt;@robbyrussell&lt;/a&gt; &lt;a href=&#34;https://t.co/cdNu1UqJFI&#34;&gt;https://t.co/cdNu1UqJFI&lt;/a&gt; is nice&lt;/p&gt;&amp;mdash; Frank Denis (@jedisct1) &lt;a href=&#34;https://twitter.com/jedisct1/status/576766332781363200&#34;&gt;March 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;What about debugging Go in GDB, if you don&amp;rsquo;t know, then you can read this &lt;a href=&#34;http://cevaris.com/2015/03/08/debugging-golang-in-gdb/&#34;&gt;quick tutorial&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Debugging Go in GDB: &lt;a href=&#34;http://t.co/QaszV7pGiT&#34;&gt;http://t.co/QaszV7pGiT&lt;/a&gt; (A quick tutorial on debugging a simple Go program using the popular GNU debugger.)&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/577085866046271488&#34;&gt;March 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;As I&amp;rsquo;ve commented in the introduction of this post, the mentioned quote is&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Working hard for something&amp;hellip; &lt;a href=&#34;http://t.co/3Ncjhys2SY&#34;&gt;pic.twitter.com/3Ncjhys2SY&lt;/a&gt;&lt;/p&gt;&amp;mdash; Juergen R. Bolz (@123top10) &lt;a href=&#34;https://twitter.com/123top10/status/577121077333217280&#34;&gt;March 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last selected one is about how to stress your servers, do you thing that your servers are gods? maybe you want to know their limits&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;How To Stress Test CPU and Memory (VM) On a Linux and Unix With Stress-ng (via &lt;a href=&#34;https://twitter.com/Pocket&#34;&gt;@Pocket&lt;/a&gt;) &lt;a href=&#34;http://t.co/si9jQ3YkH3&#34;&gt;http://t.co/si9jQ3YkH3&lt;/a&gt;&lt;/p&gt;&amp;mdash; Paul B(ü|ue)tow (@plantanran) &lt;a href=&#34;https://twitter.com/plantanran/status/578320627674849280&#34;&gt;March 18, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that your week has been not too bad and you have a wonderful weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Profiling Golang Slices of Structs vs Pointers: Gathering Metrics</title>
+      <link>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics</link>
+      <pubDate>Mon, 16 Mar 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics</guid>
+      <description>
+
+&lt;p&gt;After the post that I wrote last week about &lt;a href=&#34;http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma target=&#34;_blank&#34;&gt;Golang slices&lt;/a&gt;, and what type of slices to use when we use &amp;ldquo;constructor&amp;rdquo; functions, I&amp;rsquo;ve got a huge curiosity to know the difference, in performance wise, what are the differences of using slices which contain literally structs versus the ones which contain pointers to the same types of structs, and how it can be affected depending of which of them is used.&lt;/p&gt;
+
+&lt;p&gt;The possible combinations are, having a &amp;ldquo;constructor&amp;rdquo; function which given a struct of type A, returns a struct of type B, which can be a struct (copied retruned) or pointer (reference returned) and storing the B structs into slices of B structs (copied on each assignation) or pointers of B structs (referenced in each assignation); I know that this explanation is a mess, however go ahead to be clear what I mean.&lt;/p&gt;
+
+&lt;p&gt;To know about it, I&amp;rsquo;ve written a silly specific Golang example which will allows us to gather some &lt;strong&gt;benchmarking and profiling metrics&lt;/strong&gt;; the motivation is due by how easy can be implemented and analised through the tool set that Golang natively brings; if  you aren&amp;rsquo;t aware about them, take a look to &lt;a href=&#34;http://golang.org/pkg/testing/#hdr-Benchmarks&#34; target=&#34;_blank&#34;&gt;Benchmark function in testing package&lt;/a&gt; and &lt;a href=&#34;http://golang.org/pkg/runtime/pprof/&#34; target=&#34;_blank&#34;&gt;CPU and memory profiling can be done with runtime/pprof package&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In this post, I&amp;rsquo;ll show the implementation and the process to gather performance metrics, and in the following post, we&amp;rsquo;ll analyse them.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-implementation:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Implementation&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve taken as base, the same example that I wrote last week about slices and I&amp;rsquo;ve added all the different cases to compare.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s take a look to the main parts of the implementation to be in context when we analyse the results.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-types:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Types&lt;/h3&gt;
+
+&lt;p&gt;The types are the same, of my previous post, plus one more, however I&amp;rsquo;ve renamed one to hopefully, avoid confusion between them in the results.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	id &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	upper &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+	lower &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStructSlice []fromStruct
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStructSlice []toStruct
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStructSliceP []&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id=&#34;the-struct-types-constructors:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Struct Types Constructors&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve created two constructors, one that I&amp;rsquo;d already implemented in my pervious post, which returns a reference to the struct created inside, and one that I&amp;rsquo;ve added here, which returns a copy of the struct (which should perform worse, but we&amp;rsquo;ll see exactly what, in the analysis part).&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; newToStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; toAStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id=&#34;the-slices-converters:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Slices Converters&lt;/h3&gt;
+
+&lt;p&gt;For the slices converters, I&amp;rsquo;ve had to work a little bit more, because we have more combinations; again, one of them has been copied from my previous post and renamed, too.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSlice(fss fromStructSlice) (tss toStructSlice) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSlice, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSliceTmpP(fss fromStructSlice) (tss toStructSlice) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSlice, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; ts &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		ts = newToStruct(fs.id)
+		tss[i] = &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;ts
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSliceP(fss fromStructSlice) (tss toStructSliceP) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSliceP, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSliceNoPointers(fss fromStructSlice) (tss toStructSlice) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSlice, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = toAStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Be aware, that I&amp;rsquo;ve added one, &lt;code&gt;fromStructSliceToStructSliceTmpP&lt;/code&gt; which is almost the same than &lt;code&gt;fromStructSliceToStructSlice&lt;/code&gt;, however it doesn&amp;rsquo;t do the assignation to the slice straightaway and uses a local variable; the reason is, because I&amp;rsquo;ve thought that having an indirection, perhaps, the compiler doesn&amp;rsquo;t optimise the assignation that it may do in the other one, detecting the returned pointer which the pointed content is going to be copied in another part of memory, then why cannot it be a little bit smart and put the values into the memory part hold by the slice? OK, I&amp;rsquo;ve know that it is a paranoia, but adding that case was not too much work and we&amp;rsquo;ll have one case more to compare even though it is a awkward implementation.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-benchmarks:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Benchmarks&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve written a benchmark for each slices converter and also tests for them and the constructors, however I&amp;rsquo;m not going to add the tests heres because I&amp;rsquo;ve written them to test the implementations and they don&amp;rsquo;t provide anything interesting for the purpose of this post series, which is the performance.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; BenchmarkFromStructSliceToStructSlice(b &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;testing.B) {
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;; i &amp;lt; b.N; i&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt; {
+		fromStructSliceToStructSlice(fss)
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; BenchmarkFromStructSliceToStructSliceTmpP(b &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;testing.B) {
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;; i &amp;lt; b.N; i&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt; {
+		fromStructSliceToStructSliceTmpP(fss)
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; BenchmarkFromStructSliceToStructSliceP(b &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;testing.B) {
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;; i &amp;lt; b.N; i&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt; {
+		fromStructSliceToStructSliceP(fss)
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; BenchmarkFromStructSliceToStructSliceNotPointers(b &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;testing.B) {
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;; i &amp;lt; b.N; i&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt; {
+		fromStructSliceToStructSliceNoPointers(fss)
+	}
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;You can see nothing fancy in them as I&amp;rsquo;ve kept them simple.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-main:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Main&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;main&lt;/code&gt; wasn&amp;rsquo;t required to implement if the package isn&amp;rsquo;t named &lt;code&gt;main&lt;/code&gt;; actually I named it different beforehand, nonetheless later, I thought that it was not too bad, to implement a main function which allows to execute each case individually and output the CPU and Heap to files to be able to analyse them with &lt;code&gt;pprof&lt;/code&gt;, and to have the results of a normal execution than only the benchmarks ones. Therefore I&amp;rsquo;ve renamed the package to &amp;ldquo;main&amp;rdquo; and I&amp;rsquo;ve implemented it.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;package&lt;/span&gt; main
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;import&lt;/span&gt; (
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;flag&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;fmt&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;log&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;os&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;runtime/pprof&amp;quot;&lt;/span&gt;
+)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; numElems &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt; = &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;24&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; transformMethod &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; init() {
+	flag.StringVar(&lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;transformMethod, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;method&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;the method to execute to transform values from one slice type to another: struct, pointer, hybrid or no-pointers&amp;quot;&lt;/span&gt;)
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; profileMem(suffix &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;) {
+	f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(fmt.Sprintf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;mem-%s.out&amp;quot;&lt;/span&gt;, suffix))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+		log.Fatal(err)
+	}
+	pprof.WriteHeapProfile(f)
+	f.Close()
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; main() {
+	flag.Parse()
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;switch&lt;/span&gt; transformMethod {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;struct&amp;quot;&lt;/span&gt;:
+		f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;cpu-struct.out&amp;quot;&lt;/span&gt;)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;defer&lt;/span&gt; pprof.StopCPUProfile()
+
+		res &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; fromStructSliceToStructSlice(fss)
+		profileMem(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;struct&amp;quot;&lt;/span&gt;)
+		log.Printf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(res))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;pointer&amp;quot;&lt;/span&gt;:
+		f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;cpu-pointer.out&amp;quot;&lt;/span&gt;)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;defer&lt;/span&gt; pprof.StopCPUProfile()
+
+		res &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; fromStructSliceToStructSliceP(fss)
+		profileMem(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;pointer&amp;quot;&lt;/span&gt;)
+		log.Printf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(res))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;hybrid&amp;quot;&lt;/span&gt;:
+		f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;cpu-hybrid.out&amp;quot;&lt;/span&gt;)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;defer&lt;/span&gt; pprof.StopCPUProfile()
+
+		res &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; fromStructSliceToStructSliceTmpP(fss)
+		profileMem(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;hybrid&amp;quot;&lt;/span&gt;)
+		log.Printf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(res))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;no-pointers&amp;quot;&lt;/span&gt;:
+		f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;cpu-no-pointers.out&amp;quot;&lt;/span&gt;)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;defer&lt;/span&gt; pprof.StopCPUProfile()
+
+		res &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; fromStructSliceToStructSliceNoPointers(fss)
+		profileMem(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;no-pointers&amp;quot;&lt;/span&gt;)
+		log.Printf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(res))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;default&lt;/span&gt;:
+		log.Fatal(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;invalid method&amp;quot;&lt;/span&gt;)
+	}
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;the-execution:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Execution&lt;/h2&gt;
+
+&lt;p&gt;The execution of the benchmarks is as easy as executing the tests through &lt;code&gt;go test&lt;/code&gt; command but with one flag.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;go test -v -bench . -benchtime 10s -benchmem -memprofile mem.out  -cpuprofile cpu.out .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The only required parameter to execute them, is &lt;code&gt;-bench&lt;/code&gt;, which return the time spent in each iteration and the number of iterations that have been run as samples to figure the result.&lt;/p&gt;
+
+&lt;p&gt;In my case, I&amp;rsquo;ve also added the &lt;code&gt;-benchtime 10s&lt;/code&gt; to run them 10 seconds than the default time, which is 1 second, &lt;code&gt;-benchmen&lt;/code&gt; to get the memory allocation statistics and &lt;code&gt;-memprofile&lt;/code&gt; and &lt;code&gt;-cpuprofile&lt;/code&gt; to output the results to files be able to analyse them afterwards, with &lt;em&gt;pprof&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;You can read about the available &lt;code&gt;go test&lt;/code&gt; flags, &lt;a href=&#34;http://golang.org/cmd/go/#hdr-Description_of_testing_flags&#34; target=&#34;_blank&#34;&gt;&lt;a href=&#34;http://golang.org/pkg/runtime/pprof/&#34;&gt;http://golang.org/pkg/runtime/pprof/&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;On the other hand, I&amp;rsquo;ve built &amp;ldquo;main&amp;rdquo; rather than only running it with &lt;code&gt;go run&lt;/code&gt;, because to analyse the output data with pprof, the binary is required, hence I&amp;rsquo;ve built it with &lt;code&gt;go build main.go structs.go&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To execute main, it&amp;rsquo;s just &lt;code&gt;./main -method {which-one}&lt;/code&gt; where &lt;code&gt;{which-one}&lt;/code&gt; must be &lt;code&gt;struct&lt;/code&gt;, &lt;code&gt;pointer&lt;/code&gt;, &lt;code&gt;hybrid&lt;/code&gt; or &lt;code&gt;no-pointers&lt;/code&gt; which are the values that &lt;code&gt;main&lt;/code&gt; checks for the only available flag, &lt;code&gt;-method&lt;/code&gt;, although you may probably know about it from the above &lt;code&gt;main&lt;/code&gt; implementation. Each method, output two filenames, &amp;ldquo;mem-xxx.out&amp;rdquo; and &amp;ldquo;cpu-xxx.out&amp;rdquo;, where &amp;ldquo;xxx&amp;rdquo; are the values of the &lt;code&gt;-method&lt;/code&gt; flag, to avoid to override a previous execution with different method.&lt;/p&gt;
+
+&lt;p&gt;All these outputs files are the files that we&amp;rsquo;ll use to analyse the profiler data, through pprof, to see how the performance is affected by the different approaches.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Golang has natively support to build benchmarks and packages to profile the CPU and Heap, so those tasks are not tedious to use as may be with another language.&lt;/p&gt;
+
+&lt;p&gt;Here I&amp;rsquo;ve used them to get profiling metrics of different ways to achieve the same, on the post [Profiling Golang Slices of Structs vs Pointers: Analyzing Metrics]http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics you can read how I analyze the outputs of the benchmarks and how I use pprof to know the % of CPU used by the internal function calls, so don&amp;rsquo;t miss to have a look onto it.&lt;/p&gt;
+
+&lt;p&gt;By the way, &lt;strong&gt;all the code is available in &lt;a href=&#34;http://goo.gl/tC60Yl&#34; target=&#34;_blank&#34;&gt;this gist&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that it has been interesting.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #4</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</link>
+      <pubDate>Fri, 13 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</guid>
+      <description>&lt;p&gt;Another 7 days almost gone, hence there it goes the 5 tweets that I&amp;rsquo;ve selected from my Twitter timeline.&lt;/p&gt;
+
+&lt;p&gt;Thanks to &lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt; I&amp;rsquo;ve discovered &lt;a href=&#34;http://en.wikipedia.org/wiki/SSHFS&#34;&gt;SSHFS&lt;/a&gt;, a network file system on top of &lt;a href=&#34;http://en.wikipedia.org/wiki/Secure_Shell&#34;&gt;SSH&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;How To Mount Remote Directory With SSHFS on a Linux &lt;a href=&#34;http://t.co/O0G8MUsXoC&#34;&gt;http://t.co/O0G8MUsXoC&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenBSD?src=hash&#34;&gt;#OpenBSD&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenSSH?src=hash&#34;&gt;#OpenSSH&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/CentOS?src=hash&#34;&gt;#CentOS&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Ubuntu?src=hash&#34;&gt;#Ubuntu&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Debian?src=hash&#34;&gt;#Debian&lt;/a&gt; &lt;a href=&#34;http://t.co/t3YYVa5W5w&#34;&gt;pic.twitter.com/t3YYVa5W5w&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/574355319184359425&#34;&gt;March 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Congratulations to &lt;a href=&#34;https://iojs.org/&#34;&gt;io.js&lt;/a&gt; community to release another version v1.5.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js bugfix release v1.5.1 out now @ &lt;a href=&#34;https://t.co/MKaxWFC8Bn&#34;&gt;https://t.co/MKaxWFC8Bn&lt;/a&gt; CHANGELOG @ &lt;a href=&#34;https://t.co/JwuzQ2hV3B&#34;&gt;https://t.co/JwuzQ2hV3B&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/575000532336668673&#34;&gt;March 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Mozilla released another post related with performance, this time related with SIMD.js (&lt;a href=&#34;http://en.wikipedia.org/wiki/SIMD&#34;&gt;Single Instruction Multiple Data&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;The State of SIMD.js Performance in Firefox: &lt;a href=&#34;https://t.co/I4aHZ9SSTv&#34;&gt;https://t.co/I4aHZ9SSTv&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/575352064122970112&#34;&gt;March 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice Open Source (MIT license) &lt;a href=&#34;http://golang.org/&#34;&gt;Golang&lt;/a&gt; library about arbritrary-precision fixed-point decimal library, which has been implemented and used in production for 6 months by &lt;a href=&#34;https://www.shopspring.com/&#34;&gt;Spring&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Decimal: An Arbitrary-Precision Fixed-point Decimal Library - &lt;a href=&#34;http://t.co/Cx3Dm8kPKa&#34;&gt;http://t.co/Cx3Dm8kPKa&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/576050308616425472&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice post of a great engineering work by &lt;a href=&#34;https://engineering.linkedin.com/&#34;&gt;LinkedIn&lt;/a&gt; to reduce the traffic of their websites over HTTP 1.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;great writeup from LinkedIn on SDCH.. &amp;quot;average additional compression across our static content was about 24%&amp;quot; @ &lt;a href=&#34;http://t.co/Vm2XRPfWLc&#34;&gt;http://t.co/Vm2XRPfWLc&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/576078282384228352&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Enjoy your weekend hacking around!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Slices of Structs or Slices of Pointers to Structs Dilemma</title>
+      <link>http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma</link>
+      <pubDate>Mon, 09 Mar 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Golang&lt;/a&gt; is a &lt;a href=&#34;http://golang.org/doc/faq#ancestors&#34; target=&#34;_blank&#34;&gt;C family language&lt;/a&gt; which has brought me, again, the ability to use memory references through pointers, even though with some significant differences: &lt;a href=&#34;http://golang.org/doc/faq#no_pointer_arithmetic&#34; target=&#34;_blank&#34;&gt;no pointers arithmetic&lt;/a&gt; and &lt;a href=&#34;http://golang.org/doc/faq#garbage_collection&#34; target=&#34;_blank&#34;&gt;garbage collector&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Its similarities with C, drove me, in the beginning, to some confusions about using pointers or values in one of its native internal powerful types, &lt;a href=&#34;http://blog.golang.org/slices&#34; target=&#34;_blank&#34;&gt;slices&lt;/a&gt;, here I&amp;rsquo;m going to talk about those.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-context:3653a82367ee70ab851135843e3e77ae&#34;&gt;The context&lt;/h3&gt;
+
+&lt;p&gt;Some months ago, I&amp;rsquo;ve started to read a little bit &lt;a href=&#34;http://golang.org/doc/effective_go.html&#34;&gt;Go documentation&lt;/a&gt;, visit its &lt;a href=&#34;http://tour.golang.org/&#34; target=&#34;_blank&#34;&gt;tour&lt;/a&gt; and tinker it with some small implementations, just to get use with the syntax, types and quirks.&lt;/p&gt;
+
+&lt;p&gt;The last five months I&amp;rsquo;ve been increasing the number of hours to spend with it; following some resources which provide me good resources as videos, blog posts and marvelous repositories and at the same time to have the chance to use that theoretical knowledge in my professional environment.&lt;/p&gt;
+
+&lt;p&gt;Quite a few times a more active activity than consuming good resources, has been reading code, making small refactorings or adding small features and reviewing code; however that code has been generated for us (my own team members) and everyone are embracing Go roughly for the same period of time, even though some of them worked in the first implementation of one of the main company services, therefore the experience on hands on it is slightly different.&lt;/p&gt;
+
+&lt;p&gt;With this is small introductions to read and write lines of code inside of a small team with not that much experience in Go, allowed us to have the chance to discuss easily things as &amp;ldquo;why A and not B&amp;rdquo; when we&amp;rsquo;ve read something that we&amp;rsquo;ve seen that it&amp;rsquo;s odd, messy, awkward or basically because some of us (myself included) don&amp;rsquo;t understand why the author wrote it. Even though the author has reasons for for it, we have raised some doubts about &lt;strong&gt;code organisation&lt;/strong&gt;, how to write more &lt;strong&gt;comprehensible and clear code&lt;/strong&gt;, how &lt;strong&gt;to use Go idioms&lt;/strong&gt;, what can &lt;strong&gt;perform better&lt;/strong&gt; and so on.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-concerns-about-slices-of-structs:3653a82367ee70ab851135843e3e77ae&#34;&gt;The concerns about slices of structs&lt;/h3&gt;
+
+&lt;p&gt;In the first instance, due the &lt;strong&gt;nature of the &lt;a href=&#34;http://blog.golang.org/go-slices-usage-and-internals&#34; target=&#34;_blank&#34;&gt;slices&lt;/a&gt;&lt;/strong&gt; is easy to think that it doesn&amp;rsquo;t matter if you store into them, structs or pointers to structs, because slices are structures &amp;ldquo;which point to their elements&amp;rdquo;, and it they are passed as a parameter to a function or returned from it, there wouldn&amp;rsquo;t be any difference in terms of performance,  because their elements are not copied due they contain a reference to the memory space which the elements are alocated.&lt;/p&gt;
+
+&lt;p&gt;Nonetheless it isn&amp;rsquo;t very strange to have, or find, a &lt;strong&gt;function which creates a new type struct&lt;/strong&gt; to wrap all the operations needed to initialised it than have to do them manually each time that one has to be created. Basically it&amp;rsquo;s very usual to have one function that create a structure when it&amp;rsquo;s not a straightforward struct where some of there values are initialised, worked out, composed or converted from other types or they have methods defined; several native Go packages use this approach for example &lt;a href=&#34;http://golang.org/pkg/net/http/#NewRequest&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Request&lt;/a&gt;, moreover it&amp;rsquo;s part of the &lt;a href=&#34;http://golang.org/doc/effective_go.html#package-names&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;constructors convention&amp;rdquo;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We probably agree that those &lt;strong&gt;&amp;ldquo;constructors&amp;rdquo; clearly perform better returning  a pointer to the struct than the itself struct&lt;/strong&gt;; returning those by value doesn&amp;rsquo;t make sense because they&amp;rsquo;d be copied and those copies don&amp;rsquo;t provide any benefit because they have been created inside of the function hence any other reference to them exist at that moment, at least if nothing crazy has been implemented, as passing a pointer which will be pointed to it moreover to return it and we&amp;rsquo;d like to keep their independent then to return a copy would offer that independence, however let&amp;rsquo;s forget the crazy scenarios that the most of the time they don&amp;rsquo;t probably make sense.&lt;/p&gt;
+
+&lt;p&gt;Considering those &lt;strong&gt;&amp;ldquo;constructors&amp;rdquo; functions&lt;/strong&gt;, if we need to &lt;strong&gt;create slices&lt;/strong&gt; of those types structs then, the most obvious thing is to have slices of pointers, because when we have to create room for the slice, we&amp;rsquo;ll only allocate memory for those pointers, otherwise we&amp;rsquo;d allocate memory for those structs and thereafter, when the constructor return a new one, the values should be copied from the pointer returned by the constructor to the struct allocated in the slice.&lt;/p&gt;
+
+&lt;p&gt;Here there is a simple snipped of code with this concept&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	id &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	upper &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+	lower &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Return pointer to a struct to avoid to&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;//return a copy of it which has been created inside&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; newToStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Return a slice of pointer to a struct because they structs are created&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// by a constructor function then added to the slice, and having pointers&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// we avoid to copy their values, each time that one is added&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSlice(fss []fromStruct) (tss []&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;([]&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With &lt;strong&gt;this prospect everything is quite clear&lt;/strong&gt; and the &lt;strong&gt;answer is to use slice of pointers to structs&lt;/strong&gt;, nonetheless I didn&amp;rsquo;t find that conclusion straightaway when I didn&amp;rsquo;t have that perspective and when I read several lines of code where slices of pointers to struct are passed to functions, because my first thought was that who wrote them, used pointers to struct to avoid to pass copies of those to functions, due as easy is as to get confused between &lt;a href=&#34;http://blog.golang.org/go-slices-usage-and-internals&#34;&gt;slices and arrays&lt;/a&gt; which is &lt;a href=&#34;http://golang.org/doc/effective_go.html#allocation_make&#34; target=&#34;blank&#34;&gt;mentioned in the documentation&lt;/a&gt; but when it&amp;rsquo;s read in one go is easy not to assimilate the concept in the first read; by the way, when I read and that though raised, I asked about it, however I didn&amp;rsquo;t get the previously exposed prospect and the answer was that probably were for that confusing reason what slices really are and at that moment to write that implementation, the concept was unknown.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Reading some open source code&lt;/strong&gt;, I&amp;rsquo;ve discover a &lt;strong&gt;simple and elegant way to avoid to see stars between the square brackets and the type name&lt;/strong&gt;; defining a type for slices of pointer to structs free your function declaration of several brackets and start. Applying this in the code snipped that I&amp;rsquo;ve written perviously, it looks as&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	id &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	upper &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+	lower &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStructSlice []fromStruct
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStructSlice []&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; newToStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSlice(fss fromStructSlice) (tss toStructSlice) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSlice, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If you want to see an example of one open source project, you can see it, in one of the &lt;a href=&#34;https://github.com/spf13/hugo/blob/91d16fbba09d3552af7b5327797dd2b5d9861b35/hugolib/pagination.go#L31&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;hugo packages&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:3653a82367ee70ab851135843e3e77ae&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;In Go, whenever you have a type struct, which is created through a &amp;ldquo;constructor&amp;rdquo; function, which will be used into slices, use slices of pointers to structs and define types for those if you don&amp;rsquo;t like to see lots of stars and brackets in your function declarations.&lt;/p&gt;
+
+&lt;p&gt;Hope that you read before you have had to figure yourself.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #3</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150306/</link>
+      <pubDate>Fri, 06 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150306/</guid>
+      <description>&lt;p&gt;This week I got my 5 favourite tweets of my twitter timeline almost the last two days; I&amp;rsquo;ve also been very busy this week, however I walked through in my timeline at the end of the each day and I&amp;rsquo;ve selected:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://iojs.org/en/index.html&#34;&gt;io.js&lt;/a&gt; team is working very hard, the open governance applied to the project, one of the main reason they forked &lt;a href=&#34;http://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt;, seems that works quite well and they&amp;rsquo;re moving forward pretty fast; this tweet talks itself about it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js v2.x is probably closer than you think &lt;a href=&#34;https://t.co/mXYpmyRQW0&#34;&gt;https://t.co/mXYpmyRQW0&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/573260340856795136&#34;&gt;March 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Quite amazing &lt;a href=&#34;http://opensource.org/licenses/MIT&#34;&gt;MIT&lt;/a&gt; open source project witch brings the ability to compile and execute c code in one go&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;C – Compile and execute C “scripts” in one go &lt;a href=&#34;https://t.co/Q7pzgO5Ku9&#34;&gt;https://t.co/Q7pzgO5Ku9&lt;/a&gt;&lt;/p&gt;&amp;mdash; Hacker News (@newsycombinator) &lt;a href=&#34;https://twitter.com/newsycombinator/status/573151372432031744&#34;&gt;March 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve discovered &lt;a href=&#34;http://inikulin.github.io/parse5/&#34;&gt;parse5&lt;/a&gt;, an npm module released under &lt;a href=&#34;http://opensource.org/licenses/MIT&#34;&gt;MIT&lt;/a&gt; as well, which I considered that it looks interesting&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Parse5: WHATWG HTML5-Compliant HTML Parsing/Serialization Toolset for Node - &lt;a href=&#34;http://t.co/atODyW5Y0m&#34;&gt;http://t.co/atODyW5Y0m&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/573126517422727168&#34;&gt;March 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;One disclosed bug in OpenSSL always is quite interesting due the number of apps, systems, libraries, etc, which use it, however the versions with this issues are older than the version used by &lt;a href=&#34;https://iojs.org/en/index.html&#34;&gt;io.js&lt;/a&gt; and &lt;a href=&#34;http://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt; production releases (0.12.0 and 0.10.36)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Are &lt;a href=&#34;https://twitter.com/hashtag/nodejs?src=hash&#34;&gt;#nodejs&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/hashtag/iojs?src=hash&#34;&gt;#iojs&lt;/a&gt; affected by the “FREAK Attack” OpenSSL vulnerability? &lt;a href=&#34;http://t.co/DQi5sgDUev&#34;&gt;http://t.co/DQi5sgDUev&lt;/a&gt;&lt;/p&gt;&amp;mdash; StrongLoop (@StrongLoop) &lt;a href=&#34;https://twitter.com/StrongLoop/status/572900126890467328&#34;&gt;March 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And lastly I&amp;rsquo;ve selected a tweet which brought me to read a research experiment done by &lt;a href=&#34;https://www.mozilla.org/e&#34;&gt;Mozilla&lt;/a&gt;; definitely, it deserves to have a read&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;The Emterpreter: Running Code Before It Can Be Parsed - &lt;a href=&#34;https://t.co/MYU8VuElOn&#34;&gt;https://t.co/MYU8VuElOn&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/572885177527107585&#34;&gt;March 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And that&amp;rsquo;s it of my part, have you got any interesting tweet that you&amp;rsquo;d like to share? drop it in a comment, I would like to read it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #2</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150227/</link>
+      <pubDate>Sat, 28 Feb 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150227/</guid>
+      <description>&lt;p&gt;This week I&amp;rsquo;ve been delighted of&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust lang&lt;/a&gt; released a new version 1.0.0-alpha.2, it&amp;rsquo;s the language that I want to take to write some lines of code, however until that moment, I&amp;rsquo;m following the evolution and reading some tips that I collect from the community&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Rust 1.0.0.alpha.2 &lt;a href=&#34;http://t.co/S72HcYo6t3&#34;&gt;http://t.co/S72HcYo6t3&lt;/a&gt; SO FREAKING EXCITING! &lt;a href=&#34;https://twitter.com/hashtag/rustlang?src=hash&#34;&gt;#rustlang&lt;/a&gt;&lt;/p&gt;&amp;mdash; Community Opener (@flaper87) &lt;a href=&#34;https://twitter.com/flaper87/status/568874641923698690&#34;&gt;February 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve got the chance to have a read to an amazing technical blog post about &lt;a href=&#34;https://methane.github.io/2015/02/reduce-allocation-in-go-code/&#34;&gt;how to reduce Go allocations&lt;/a&gt; which drove me to read other two posts in &lt;a href=&#34;blog.golang.org&#34;&gt;golang blog&lt;/a&gt; which allowed me to learn more about the internals&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Reducing Allocations in Go Code: &lt;a href=&#34;http://t.co/ODHknUsNU3&#34;&gt;http://t.co/ODHknUsNU3&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/569594226041872385&#34;&gt;February 22, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve discovered a nice so nice open source service implemented in Go, &lt;a href=&#34;http://gogs.io/&#34;&gt;Gogs, a self-hosted Git service&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Gogs: A Self-Hosted Git Service Written in Go - &lt;a href=&#34;http://t.co/juisUGaCPN&#34;&gt;http://t.co/juisUGaCPN&lt;/a&gt; (Think GitHub-lite.)&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/569853209671565314&#34;&gt;February 23, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I could know the tradeoffs of why a big corporate, as Walmart, &lt;a href=&#34;http://todogroup.org/blog/why-we-run-an-open-source-program-walmart-labs/&#34;&gt;decide to run open source software&lt;/a&gt;, reading the first post of a new series&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Why we run an open source program - Walmart Labs &amp;#10;&lt;a href=&#34;http://t.co/Ihy9dN2YLs&#34;&gt;http://t.co/Ihy9dN2YLs&lt;/a&gt; via HN&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/570478864859840512&#34;&gt;February 25, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://iojs.org/en/index.html&#34;&gt;iojs&lt;/a&gt; released a new version 1.4.1 with delightful promise/process, streams with TLS, new event for &lt;code&gt;http&lt;/code&gt;, &lt;a href=&#34;https://code.google.com/p/v8/&#34;&gt;v8&lt;/a&gt;, &lt;a href=&#34;https://github.com/libuv/libuv&#34;&gt;libuv&lt;/a&gt; &amp;amp; &lt;a href=&#34;https://npmjs.org&#34;&gt;npmjs&lt;/a&gt; update; the community behind this &lt;a href=&#34;http://nodejs.org&#34;&gt;NodeJS&lt;/a&gt; fork never ceases to amaze us with their &lt;a href=&#34;https://github.com/iojs/io.js/blob/v1.x/GOVERNANCE.md#readme&#34;&gt;open governance model&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js v1.4.1 is out @ &lt;a href=&#34;https://t.co/MKaxWFkxcN&#34;&gt;https://t.co/MKaxWFkxcN&lt;/a&gt; incl new &amp;quot;unhandledRejection&amp;quot; &amp;amp; &amp;quot;rejectionHandled&amp;quot; events and more: &lt;a href=&#34;https://t.co/9LPbP6VQxu&#34;&gt;https://t.co/9LPbP6VQxu&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/571078034670772224&#34;&gt;February 26, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you could enjoy with some of them as I did.&lt;/p&gt;
+
+&lt;p&gt;Have a lovely geeky weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

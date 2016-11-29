@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Running a NodeJS HTTPS server is easy, however when you have to create the SSL certificates, it becomes a tedious task, so in this post I wrapped it up">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Generating OpenSSL certificates to run a NodeJS HTTPS Server">
+  <meta property="og:url" content="http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server">
+  <meta property="og:description" content="Running a NodeJS HTTPS server is easy, however when you have to create the SSL certificates, it becomes a tedious task, so in this post I wrapped it up">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="SSL">
+      
+        <meta property="og:tag" content="HTTPS">
+      
+        <meta property="og:tag" content="OpenSSL">
+      
+        <meta property="og:tag" content="programming">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Generating OpenSSL certificates to run a NodeJS HTTPS Server</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server"><h1 class="l-title title">Generating OpenSSL certificates to run a NodeJS HTTPS Server</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">22-04-2015</span>
+    <br>
+    
+
+<p>The last few days I&rsquo;ve had to implement a simple HTTP/HTTPS client wrapper for NodeJS, which returns a <a href="https://promisesaplus.com/" target="_blank">Promise</a>) for each request call and do some basic management for the common body structure that the APIs, which we&rsquo;re building, respond.</p>
+
+<p>Nonetheless, I&rsquo;m not writing this post for the itself implementation because the purpose doesn&rsquo;t matter to tell about the process to generate the SSL certificates to use for a iojs/NodeJS HTTPS server which you may need, as I needed, to test a HTTPS client.</p>
+
+<p>As you may know and/or think, <a href="https://www.openssl.org" target="_blank">OpenSSL</a> isn&rsquo;t the most friendly library, or in this case command line tool, that you&rsquo;ve ever been used, however I&rsquo;m not complaining about it, it provides a useful functionality which, you may think the same than me, is not the most funny thing that you would like to implement, for that reason and because it&rsquo;s Open Source, I much appreciate the people how contribute to it, <a href="http://en.wikipedia.org/wiki/OpenSSL" target="_blank">as many others may do</a></p>
+
+<p>After the introduction, let&rsquo;s go for the interesting part of the post.</p>
+
+<h2 id="generating-the-openssl-certificates:c33229e92ddb13d55167dfc4871f68b0">Generating the OpenSSL certificates</h2>
+
+<p>To create a certificate which it&rsquo;s not self signed, to be able to emulate more how the real world works and avoid that the client report <code>self signed certificate</code> SSL/TLS error, first of all we have to have a <a href="http://en.wikipedia.org/wiki/Certificate_authority" target="_blank">CA (Certificate Authority)</a>.</p>
+
+<p>The CAs&rsquo; role is to emit certificates providing the trust (as a trusted third party) of the certificates that the serves use to proof that they&rsquo;re who they really are.</p>
+
+<p>In the real world, the trusted CAs are regulated, in someway which guarantee that the world (a.k.a us) can trust on them due the security requirements that they fulfill; obviously for our test environment we don&rsquo;t need to know about all the bureaucracy.</p>
+
+<p>Hence, first we have to <strong>create the CA certificate</strong>, in this case with one, the root, will be enough, so it must be self signed, because it&rsquo;s the root. In the real world the root CAs don&rsquo;t usually sign end certificates, they sign certificates for other CAs creating an hierarchy chain where the CAs from some certain bottom level sign the end certificates, the ones used by server/clients to prove their authenticity.</p>
+
+<p>To generate it with OpenSSL, we just use <a href="https://www.openssl.org/docs/apps/req.html" target="_blank"><code>req</code> utility</a></p>
+
+<pre><code>openssl req -batch -newkey rsa:2048 -nodes -keyout \
+  root-ca.key -days 3650 -x509 -out root-ca.crt
+</code></pre>
+
+<p>Let&rsquo;s clarify some of the used options:</p>
+
+<ul>
+<li><code>batch</code>: We avoid the interactive mode, so we execute and get.</li>
+<li><code>nodes</code>: Specify not to encrypt the private key, so server can read it without any passphrase or key agent.</li>
+<li><code>x509</code>: Generate a self signed certificate rather than a certificate request (we&rsquo;ll see this in a moment).</li>
+</ul>
+
+<p>Now, we have our CA, then let&rsquo;s create the certificate that we need for our server; first we have to create a <strong>certificate request</strong> with our private key; I&rsquo;d just like to remind you that your private keys are generate by yourself and <strong>never are sent anywhere</strong>, which is the basis of a PKI (Public Key Infrastructure), share your public key and non-disclose never your private key.</p>
+
+<pre><code>openssl req -newkey rsa:2048 -batch -nodes \
+  -config openssl.cnf -out localhost.csr -keyout localhost.key
+</code></pre>
+
+<p>Let&rsquo;s clarify some of the used options for this, as well</p>
+
+<ul>
+<li><code>newkey</code>: Generate a new private key besides the certificate request; if we&rsquo;d already had one, we&rsquo;d remove this option and will provide another one to specify the file which contains the key, but with this, we save the call to another command.</li>
+<li><code>config</code>: It provides a OpenSSL configuration file where we can specify what values and default values; it&rsquo;s important here because I want to specify <code>localhost</code> as domain name (in an Open SSL certificate is the &ldquo;common name&rdquo;) to match with the host used in the test&rsquo;s requests but at the same time I want to assign in automatically without having to reply interactive questions (<code>-batch</code>)</li>
+</ul>
+
+<p>The configuration file, in this case <code>openssl.cnf</code>, for the purpose that I want, only needs two fields, in the format that OpenSSL expect (if I&rsquo;m not wrong it accepts other ones, but I know exactly this); it looks like this</p>
+
+<pre><code>[ req ]
+distinguished_name     = req_distinguished_name
+
+[ req_distinguished_name ]
+ commonName                      = Common Name (eg, your name or your server's hostname)
+ commonName_default              = localhost
+</code></pre>
+
+<p>And finally, let&rsquo;s give the certificate request to the CA to generate the certificate for our server through <a href="https://www.openssl.org/docs/apps/x509.html" target="_blank"><code>x509</code> utility</a></p>
+
+<pre><code>openssl x509 -req -CAkey root-ca.key -CA root-ca.crt \
+  -CAcreateserial -in localhost.csr -days 3650 -out localhost.crt
+</code></pre>
+
+<p>And the options clarification</p>
+
+<ul>
+<li><code>req</code>: Specify that the input is a certificate request than a certificate</li>
+<li><code>CAcreateserial</code>: Generate a serial number file if doesn&rsquo;t exist, so if we run this for first time, it will, otherwise will read from it the serial number and increment it for the next time.</li>
+</ul>
+
+<p>And we&rsquo;re done with OpenSSL; in my case I add this in a <code>makefile target</code> not to have to remember all of this each time that I have to generate them.</p>
+
+<h2 id="running-a-nodejs-https-server:c33229e92ddb13d55167dfc4871f68b0">Running a NodeJS HTTPS server</h2>
+
+<p>Running a HTTPS server with <a href="https://iojs.org/api/https.html#https_https_createserver_options_requestlistener" taget="_blank">iojs</a> / <a href="https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener" target="_blank">NodeJS</a> is pretty straightforward as a HTTP one.</p>
+
+<p>I could save this section however, because the API documentation example is quite clear however, I thought that it doesn&rsquo;t hurt to add here to provide a better understanding to the post.</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">var</span> https <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;https&#39;</span>);
+<span style="color: #008800; font-weight: bold">var</span> fs <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;fs&#39;</span>);
+<span style="color: #008800; font-weight: bold">var</span> path <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;path&#39;</span>);
+
+<span style="color: #008800; font-weight: bold">var</span> options <span style="color: #333333">=</span> {
+  key<span style="color: #333333">:</span> fs.readFileSync(path.join(__dirname, <span style="background-color: #fff0f0">&#39;localhost.key&#39;</span>)),
+  cert<span style="color: #333333">:</span> fs.readFileSync(path(__dirname, <span style="background-color: #fff0f0">&#39;localhost.crt&#39;</span>))
+};
+
+https.createServer(options, <span style="color: #008800; font-weight: bold">function</span> (req, res) {
+  res.writeHead(<span style="color: #0000DD; font-weight: bold">200</span>);
+  res.end(<span style="background-color: #fff0f0">&quot;hello world\n&quot;</span>);
+}).listen(<span style="color: #0000DD; font-weight: bold">8000</span>);
+</pre></div>
+
+
+<h2 id="requesting-the-server-from-nodejs-https-client:c33229e92ddb13d55167dfc4871f68b0">Requesting the server from NodeJS HTTPS client</h2>
+
+<p>Requesting the server from HTTPS <a href="https://iojs.org/api/https.html#https_https_request_options_callback" target="_blank">iojs</a> / <a href="https://nodejs.org/api/https.html#https_https_request_options_callback" target="_blank">NodeJS</a> client is pretty straightforward as well, however I have to provide the CA which signed the certificate used by the server, otherwise client will report an error saying that the certificate is wrong, basically because it cannot trust in a certificate which has been emitted for an unknown CA.</p>
+
+<p>Therefore, on each request we must specify the <code>ca</code> property in the options object with the CA&rsquo;s certificate, maybe it&rsquo;s annoying, but better than adding the certificate to the OS keychain, due that the <a href="https://nodejs.org/api/https.html#https_https_globalagent" target="_blank"><code>globalAgen</code></a> ignores the <a href="https://nodejs.org/api/tls.html#tls_tls_connect_options_callback" target="_blank"><code>tls.connect</code></a> options.</p>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">var</span> https <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;https&#39;</span>);
+<span style="color: #008800; font-weight: bold">var</span> fs <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;fs&#39;</span>);
+<span style="color: #008800; font-weight: bold">var</span> path <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;path&#39;</span>);
+
+<span style="color: #008800; font-weight: bold">var</span> options <span style="color: #333333">=</span> {
+  hostname<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&#39;localhost&#39;</span>,
+  port<span style="color: #333333">:</span> <span style="color: #0000DD; font-weight: bold">8000</span>,
+  path<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&#39;/&#39;</span>,
+  method<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&#39;GET&#39;</span>,
+  ca<span style="color: #333333">:</span> fs.readFileSync(path(__dirname, <span style="background-color: #fff0f0">&#39;root-ca.crt&#39;</span>))
+};
+
+<span style="color: #008800; font-weight: bold">var</span> req <span style="color: #333333">=</span> https.request(options, <span style="color: #008800; font-weight: bold">function</span>(res) {
+  console.log(<span style="background-color: #fff0f0">&quot;statusCode: &quot;</span>, res.statusCode);
+  console.log(<span style="background-color: #fff0f0">&quot;headers: &quot;</span>, res.headers);
+
+  res.on(<span style="background-color: #fff0f0">&#39;data&#39;</span>, <span style="color: #008800; font-weight: bold">function</span>(d) {
+    process.stdout.write(d);
+  });
+});
+req.end();
+
+req.on(<span style="background-color: #fff0f0">&#39;error&#39;</span>, <span style="color: #008800; font-weight: bold">function</span>(e) {
+  console.error(e);
+});
+</pre></div>
+</p>
+
+<p>And done!</p>
+
+<p>Another solution to avoid to pass the CA certificate to the client is to use the <code>rejectUnauthorized</code> options property to false, but in that case you are authorising everything, so I prefer to add the used CA and limit the authorisation for non-official CAs to only the create one.</p>
+
+<h2 id="conclusion:c33229e92ddb13d55167dfc4871f68b0">Conclusion</h2>
+
+<p>Generating our certificate for our development/test environment with OpenSSL is a little bit tedious if you have to figure out how, however when you have how, it can be added to your &ldquo;task runner&rdquo; of your project and forget about the process.</p>
+
+<p>On the other hand, running a HTTPS server and making HTTPS request with iojs/NodeJS are pretty straightforward, knowing a bit about the server and client requirements, because when you don&rsquo;t, finding out what happens with the error messages that OpenSSL sometimes gives, isn&rsquo;t a nice task.</p>
+
+<p>I&rsquo;ve hope that you&rsquo;ve found this useful.</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

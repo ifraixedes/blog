@@ -1,0 +1,1750 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Software Development on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/categories/software-development/</link>
+    <description>Recent content in Software Development on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Sat, 11 Jun 2016 23:12:07 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/categories/software-development/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Linting Javascript with ESLint</title>
+      <link>http://blog.fraixed.es/post/linting-javascript-with-eslint</link>
+      <pubDate>Sat, 11 Jun 2016 23:12:07 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/linting-javascript-with-eslint</guid>
+      <description>
+
+&lt;h2 id=&#34;linting-javascript:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;Linting Javascript&lt;/h2&gt;
+
+&lt;p&gt;Javascript as you well known, is a dynamic and untyped language; characteristics that have their advantages but which also have a few drawbacks which lead to easily introduce trivial bugs in the implementations.&lt;/p&gt;
+
+&lt;p&gt;For the good or the bad of the Javascript language, nowadays is quite difficult to escape from it because any website with a good UX requires quite certain amount of Javascript code, moreover, if we&amp;rsquo;re talking about of Single Page Application the numbers of lines of code of Javascript increase drastically.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, the big popularity of NodeJS has made Javascript a server side programming language, however if you aren&amp;rsquo;t supporter of it, you can scape of it because on server side there are many options, without having the drawbacks that in Web frontend code you can face when choosing one of the transpilers to escape of it.&lt;/p&gt;
+
+&lt;p&gt;If you are supporter of Javascript or you may not, but you don&amp;rsquo;t have the chance to replace it with anything else, then you must use a linter. Linters aren&amp;rsquo;t new in Javascript, they haven&amp;rsquo;t been for awhile, from the first famous one &lt;a href=&#34;https://github.com/douglascrockford/JSLint&#34; target=&#34;_blank&#34; &gt;JSLint&lt;/a&gt;
+ created by Douglas Crockford, its fork &lt;a href=&#34;https://github.com/jshint/jshint&#34; target=&#34;_blank&#34; &gt;JSHint&lt;/a&gt;
+ and &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;ESLint&lt;/a&gt;
+, between some others.&lt;/p&gt;
+
+&lt;p&gt;A Javascript linter make our codebase more maintainable, because it does a static analysis of the codebase to enforces syntax rules for formatting, which is quite important to keep the code base consistent across the team members, and, even more important, to detect potential errors, without executing the code.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-eslint-benefits:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;The ESLint benefits&lt;/h2&gt;
+
+&lt;p&gt;ESlint marked a difference between the previous linters, reason why it looks the best option today, if you are not looking for the fastest one.&lt;/p&gt;
+
+&lt;p&gt;The main difference between ESLint and its predecessors are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It uses an AST to evaluate patterns in code.&lt;/li&gt;
+&lt;li&gt;It is completely pluggable, every single rule is a plugin and you can add more at runtime.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let&amp;rsquo;s go one by one to see how they benefit to us.&lt;/p&gt;
+
+&lt;p&gt;ESLint uses Espree to construct an AST of the codebase which is used to evaluate all the rules; this is a big difference in how others linters operates (for example JSHint), which they only do a lexical analysis, being faster but at the same time they are limited to check only a set of rules, because some of them are not possible to do it without constructing the AST, for example, &amp;ldquo;Require Consistent This&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;The drawback of doing so it&amp;rsquo;s that the the linter is slower, but if the number of rules used aren&amp;rsquo;t huge, it&amp;rsquo;s totally acceptable and the benefits are worth.&lt;/p&gt;
+
+&lt;p&gt;Being pluggable allow us to enable and disable any rule, so we can configure to fit our team needs or just set in place in current implementations where some rules are constrained to it than the option that we would desire. There are several plugins available, some of them allows to uses lint code for some frameworks, for example, &lt;a href=&#34;https://github.com/babel/babel-eslint&#34; target=&#34;_blank&#34; &gt;ES7 features&lt;/a&gt;
+, &lt;a href=&#34;https://github.com/Gillespie59/eslint-plugin-angular&#34; target=&#34;_blank&#34; &gt;AngularJS&lt;/a&gt;
+, &lt;a href=&#34;https://github.com/zertosh/eslint-plugin-flow-vars&#34; target=&#34;_blank&#34; &gt;flow type annotations&lt;/a&gt;
+, etc.&lt;/p&gt;
+
+&lt;p&gt;ESLint also allows to extend configuration files, so we can extend set of rules a defined file and add or override certain rules to fit in our configuration file using the ones listed in the &lt;a href=&#34;http://eslint.org/docs/rules/&#34; target=&#34;_blank&#34; &gt;its long list&lt;/a&gt;
+, using new ones which has been created  by the community or implement our ones if there isn&amp;rsquo;t any which fits what we need.&lt;/p&gt;
+
+&lt;h2 id=&#34;eslint-setup:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;ESLint Setup&lt;/h2&gt;
+
+&lt;p&gt;Setting up ESLint in your Javascript project is pretty straightforward, as it&amp;rsquo;s available as an &lt;a href=&#34;https://www.npmjs.com&#34; target=&#34;_blank&#34; &gt;NPM&lt;/a&gt;
+ package.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have installed, an add to your PATH, &lt;a href=&#34;https://nodejs.org&#34; target=&#34;_blank&#34; &gt;NodeJS&lt;/a&gt;
+ which brings NPM, let&amp;rsquo;s see how to proceed to setup ESLint and configure it.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go to the folder where you have your JS project;&lt;/li&gt;
+&lt;li&gt;For simplicity, we install ESLint globally in the machine with &lt;code&gt;npm install -g eslint&lt;/code&gt;; however it&amp;rsquo;s advisable to install it locally to the project to have more control of the version to use, which is very helpful if you have other projects than use an old version of ESLint or you start now with this but in future project you end up using a newer version, to do so, make sure that you have a &lt;code&gt;package.json&lt;/code&gt; in the project or create one with &lt;code&gt;npm init&lt;/code&gt; and after execute &lt;code&gt;npm install --save-dev eslint&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Create a minimal ESLint configuration file executing &lt;code&gt;eslint --init&lt;/code&gt;; reply the question that ESLint asks in order to set the minimum rules which fit to your code style, if you use ES6 or JSX, define the environment where JS executes, the Browser or NodeJS and choose the format that you want between JS, JSON or YAML to store the configuration; you also have the option to set this configuration in &lt;code&gt;package.json&lt;/code&gt; file with the property &lt;code&gt;eslintConfig&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Right now you should see that you have a file in your folder named &lt;code&gt;.eslintrc.*&lt;/code&gt; where &lt;code&gt;*&lt;/code&gt; is the extension used for the format that you have chosen. It&amp;rsquo;s worth to mention that JSON &amp;amp; YAML formats support JS commends to make them more human-friendly, however they aren&amp;rsquo;t supported in &lt;code&gt;package.json&lt;/code&gt; file.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The basic file which has been generated probably contains only a few properties which ESLint support; probably you&amp;rsquo;ll have the &lt;code&gt;env&lt;/code&gt; which define the environment where code is executed, which module system is used and ES6 version is used. To see all the options that you can set in this property check &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;Specifying Environments in the documentation&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;This basic file extends the rules from the &lt;code&gt;eslint:recommended&lt;/code&gt; configuration as you can see in the value of &lt;code&gt;extends&lt;/code&gt; property, but just leaved it this for now and see the &lt;code&gt;rules&lt;/code&gt; property.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;rules&lt;/code&gt; property contains the rules that we want to use to lint our code base; as commented above, if we extend them from another then we can set ones that the base version doesn&amp;rsquo;t set to cover parts that the base configuration doesn&amp;rsquo;t and set the same one than base configuration has in order to override the rule configuration.&lt;/p&gt;
+
+&lt;p&gt;If you never seen how the &lt;code&gt;rules&lt;/code&gt; are specified in ESLint, you may thing that the format it&amp;rsquo;s odd; they use the name of the rule as a property name, which is very usual, and the value can be an array; they value is the part that it can looks odd because, you can see sometimes an string, an integer or an array, but nothing is weird when you know what they define.&lt;/p&gt;
+
+&lt;p&gt;The rule values can have the next string values:
+* &amp;ldquo;off&amp;rdquo;: The rules doesn&amp;rsquo;t apply. By default ESLint doesn&amp;rsquo;t apply any rule so all they are off, however it&amp;rsquo;s useful to set a rule to off when you extends from a base configuration and you want to disable some of the rules.
+* &amp;ldquo;warn&amp;rdquo;: The rules applies with a warning; when ESLint finds parts of the code base where a rule set as a warning, it shows the output message as warning and it ignores them in terms of the exit code, hence ESLint exits with 0 if only rules set as a warning aren&amp;rsquo;t respected in the code base.
+* &amp;ldquo;error&amp;rdquo;: The rules set as error, are show in the output message an an error and if any of them are found during the linting process, then ESLint exit with 1.&lt;/p&gt;
+
+&lt;p&gt;Ok, but what an integer means as value then? they can only be 0, 1, 2 and they have the same meaning than above, 0 = &amp;ldquo;off&amp;rdquo;, 1 =&amp;ldquo;warn&amp;rdquo; and 2 =&amp;ldquo;error&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;The last form of value for a rule is an array. Arrays are used when the rule accepts options, the first value of the array is a string or integer as defined above and the rest depends of the rule, for example the &lt;a href=&#34;http://eslint.org/docs/rules/quote-props&#34; target=&#34;_blank&#34; &gt;rule &amp;#34;quote-props&amp;#34;&lt;/a&gt;
+ allows to define if we allow to surround the object properties by quotes, the first option (second position in the array) is to set how ESLint should interpret the rules and depending of which value is selected as a first option, it is possible to define the behavior, which is set as a sub-option (third position in the array).&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see the next simple snipped which shows an example of a basic &lt;code&gt;.eslintrc.json&lt;/code&gt; file, using the different value formats commented&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;browser&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;commonjs&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;es6&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;
+  },
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;extends&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;eslint:recommended&amp;quot;&lt;/span&gt;,
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;rules&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;indent&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;error&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;linebreak-style&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;unix&amp;quot;&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;quotes&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;semi&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;never&amp;quot;&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;quote-props&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;warn&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;consistent-as-needed&amp;quot;&lt;/span&gt;, { &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;keywords&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt; }],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;brace-style&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;off&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;ESLint has other setting for more advanced tweaking, for example, options to set to the parser, parser to use and so on; &lt;a href=&#34;http://eslint.org/docs/developer-guide/working-with-plugins&#34; target=&#34;_blank&#34; &gt;it also has plugins which allow to define, not just rules and environments but how to process non pure JS files&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, ESLint also allows &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#ignoring-files-and-directories&#34; target=&#34;_blank&#34; &gt;to ignore files and directories as git does, through a `.eslintignore` file&lt;/a&gt;
+ and &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments&#34; target=&#34;_blank&#34; &gt;to define settings to apply only in parts of the source code using comments&lt;/a&gt;
+, for example &lt;code&gt;/* eslint-disable semi */&lt;/code&gt; will disable the rule from the line of this comment until the end of the file.&lt;/p&gt;
+
+&lt;h2 id=&#34;running-eslint:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;Running ESLint&lt;/h2&gt;
+
+&lt;p&gt;Once you setup ESLint in you project you have to execute it.&lt;/p&gt;
+
+&lt;p&gt;The command line interface of ESLint is as usual as any other command line; you can see the help information with &lt;code&gt;-h&lt;/code&gt; option an see all the options that you can pass it.&lt;/p&gt;
+
+&lt;p&gt;If you have set the configuration in any of the files which ESLint detect, then you can can run the command an pass the path to sources files or folder where the source files are; the paths are defined with globs so you can set a root folder and it recursively will check all the sources files contained in the folder and the children folders, for example &lt;code&gt;eslint src/**/*&lt;/code&gt; will check all the source files in src and all the folder subtree inside of it.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#using-configuration-files&#34; target=&#34;_blank&#34; &gt;With `-c` option you can specify a specific configuration file&lt;/a&gt;
+; this option is quite useful when you want different configurations for different parts of a project;  however if you are using the configurations files or &lt;code&gt;package.json&lt;/code&gt; property mentioned in the previous version, it will use them automatically and moreover you can have several of them in different subfolders of the root filesystem to walk specifying different configurations for the sources contained in the subtree and it will use the closest one found to the analyzed source file, see an example of this case in the &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy&#34; target=&#34;_blank&#34; &gt;documentation&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Another important option to use to speed up the linting process is &lt;code&gt;--cache&lt;/code&gt;; enabling it ESLint store information about the processed files in order to only check the ones that have been modified in the following runs. The cache file is store in the root directory with the name &lt;code&gt;.eslintcache&lt;/code&gt; but you can configure the location with the &lt;code&gt;--cache-location&lt;/code&gt; option.&lt;/p&gt;
+
+&lt;p&gt;ESLint documentation has a dedicated page for &lt;a href=&#34;http://eslint.org/docs/user-guide/command-line-interface&#34; target=&#34;_blank&#34; &gt;its command line interface&lt;/a&gt;
+, check it if you want to know all the other options which accepts.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s all for today folks&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Nunjucks extension to compile RiotJS tags</title>
+      <link>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</link>
+      <pubDate>Wed, 02 Mar 2016 16:05:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</guid>
+      <description>
+
+&lt;p&gt;On the way to London, meanwhile I was flying, I wanted to take advantage of the dead time without internet to write this short blog post about a &lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+, &lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ and a Nunjucks extension that I&amp;rsquo;ve implemented, for a side project that I&amp;rsquo;m working on, to render RiotJS tags on the server.&lt;/p&gt;
+
+&lt;h2 id=&#34;nunjucks:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Nunjucks&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+ is a template engine (yes, another one!) for NodeJS and the browser which is heavily inspired by &lt;a href=&#34;http://jinja.pocoo.org/&#34; target=&#34;_blank&#34; &gt;jinja2&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;d never used before and probably I had heard about it, but I couldn&amp;rsquo;t remember, world is moving fast and almost any time you start a project you can discover lots of new stuff which may be better or a good fit it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used &lt;a href=&#34;http://jade-lang.com/&#34; target=&#34;_blank&#34; &gt;Jade&lt;/a&gt;
+ and &lt;a href=&#34;http://paularmstrong.github.io/swig/&#34; target=&#34;_blank&#34; &gt;Swig&lt;/a&gt;
+ (a bit less) several times and for this project I was thinking in using &lt;a href=&#34;http://markojs.com/&#34; target=&#34;_blank&#34; &gt;Marko&lt;/a&gt;
+, it has a few nice features as be able to send the content through a stream and a widget system which helps to create reusable components; however I found a bit confusing to start because there are several examples and &lt;a href=&#34;https://www.youtube.com/playlist?list=PLZUgs-F38XXQJBxA58UqnwTVMZS_uza_C&#34; target=&#34;_blank&#34; &gt;screen casts&lt;/a&gt;
+ but &lt;a href=&#34;http://markojs.com/docs/marko/javascript-api/#rendertemplatepath-templatedata-streamwritable&#34; target=&#34;_blank&#34; &gt;quite few functions have been deprecated in the new version&lt;/a&gt;
+ and I don&amp;rsquo;t have the need of streaming the content to enhance performance for this project.&lt;/p&gt;
+
+&lt;p&gt;At the same time, I didn&amp;rsquo;t want to spend lots of time in choosing and having to solve quite a few issues in how to use it and use it well to get the advantages, so I found Nunjucks was a good choice between taking something that I know and something that it&amp;rsquo;s new for me.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, in the time being I don&amp;rsquo;t expect to use that many advanced features that Nunjucks has, and probably I won&amp;rsquo;t take advantage of its power, but it&amp;rsquo;s OK, as it provides me all the things that I need.&lt;/p&gt;
+
+&lt;h2 id=&#34;riotjs:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;RiotJS&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ seems probably out of the context of this post and it could be if I wouldn&amp;rsquo;t have decided to also incorporate since the first few commits.&lt;/p&gt;
+
+&lt;p&gt;It also could be React, but I feel that it would add too much complexity to the project, it isn&amp;rsquo;t a big project and it shouldn&amp;rsquo;t have a big code base; moreover I would have to spend more time to nail React and all the things around it so I would end up not making the things done.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve had a experience using RiotJS, for a freelancing project that I was working a few weeks ago, it was a project with very hard deadline and I had to build a mobile friendly site for one existing one, created by one big &amp;ldquo;consultancy&amp;rdquo; company which basically they ended up delivering a huge pile of crap; anyway, the only think that matters for this post is that it couldn&amp;rsquo;t be made responsive and in 3 weeks time I had to deep in that horrible code base, make the changes what I needed to serve the content for a &lt;a href=&#34;https://en.wikipedia.org/wiki/Single-page_application&#34; target=&#34;_blank&#34; &gt;SPA&lt;/a&gt;
+ which at the same time I had to create to be served for requests coming from mobile devices.&lt;/p&gt;
+
+&lt;p&gt;I had never used RiotJS before, and due its minimalism I was able to read and understand the docs, and just use it to do what I had to do.&lt;/p&gt;
+
+&lt;p&gt;For this side project, I could avoid to add Riot, because it makes sense to render the site in the server, however there are a few parts which I would like to render on the client (e.g. a dashboard), maybe not in the first version, but in one, close to the first one.&lt;/p&gt;
+
+&lt;p&gt;Choosing RiotJS, I think that I can take advantage of its &lt;a href=&#34;http://riotjs.com/guide/&#34; target=&#34;_blank&#34; &gt;custom tag&lt;/a&gt;
+ to create components which at the beginning I can render in the server into Nunjucks templates and at some point, start to render them in the client side in a few pages or parts of them.&lt;/p&gt;
+
+&lt;h2 id=&#34;rendering-riotjs-in-nunjucks-templates:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Rendering RiotJS in Nunjucks templates&lt;/h2&gt;
+
+&lt;p&gt;To do this, I didn&amp;rsquo;t need to create any plugin, I could follow the same approach which you can watch in &lt;a href=&#34;https://www.youtube.com/watch?v=6ww1UXGJzcs&amp;amp;feature=youtu.be&#34; target=&#34;_blank&#34; &gt;this video using swig&lt;/a&gt;
+, but I found that creating a Nunjucks plugin for this purpose was simple and easy and it will save me time to repeat over an over a few statements in any page that I&amp;rsquo;m going to drop RiotJS tags besides the implementation will be less error prone.&lt;/p&gt;
+
+&lt;p&gt;The implementation of &lt;a href=&#34;http://mozilla.github.io/nunjucks/api.html#custom-tags&#34; target=&#34;_blank&#34; &gt;Nunjucks extension&lt;/a&gt;
+ is as simple as:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; RiotExtension(basePath) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.tags &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;]
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.parse &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (parser, nodes) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; tok &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.nextToken()
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; args &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.parseSignature(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;)
+    parser.advanceAfterBlockEnd(tok.value)
+
+    parser.parseUntilBlocks(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;endriot&amp;#39;&lt;/span&gt;)
+    parser.advanceAfterBlockEnd()
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nodes.CallExtension(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;renderRiot&amp;#39;&lt;/span&gt;, args, [])
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.renderRiot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (ctx, view, opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-disable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; tag &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(path.join(basePath, view))
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-enable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nunjucks.runtime.SafeString(riot.render(tag, opts))
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On the server, I&amp;rsquo;m using &lt;a href=&#34;http://koajs.com/&#34; target=&#34;_blank&#34; &gt;KoaJS&lt;/a&gt;
+ v2, at that time it wasn&amp;rsquo;t support in &lt;a href=&#34;https://github.com/queckezz/koa-views&#34; target=&#34;_blank&#34; &gt;Koa-views&lt;/a&gt;
+ for Koa v2 without using &lt;a href=&#34;https://github.com/koajs/convert&#34; target=&#34;_blank&#34; &gt;koa-convert&lt;/a&gt;
+, maybe &lt;a href=&#34;https://github.com/queckezz/koa-views/pull/54&#34; target=&#34;_blank&#34; &gt;there will one soon&lt;/a&gt;
+, and because I prefer to render views without having side effects in Koa &lt;code&gt;ctx&lt;/code&gt; (context), I basically pass the render function where I need and use it to generate the HTML which I assign to &lt;code&gt;ctx.body&lt;/code&gt; where I need.&lt;/p&gt;
+
+&lt;p&gt;The function which returns a promised render function, looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; getRenderFn(viewsPath, opts) {
+  riot.settings.brackets &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;${ }&amp;#39;&lt;/span&gt;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; njr &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; nunjucks.configure(viewsPath, opts)
+  njr.addExtension(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;RiotExtension&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; RiotExtension(path.join(viewsPath, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)))
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (view, data) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Promise((resolve, reject) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+      njr.render(view, data, (err, html) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+          reject(err)
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt;
+        }
+
+        resolve(html)
+      })
+    })
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And then, whenever I need to render a Riot tag in a Nunjucks template I only have to do &lt;code&gt;{% riot &amp;quot;my-tag.html&amp;quot; %}{% endriot %}&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Nunjuks looks as powerful template engine, on the other hand, I love the minimalism of RiotJS; with the combination of both I can render views in the server including components (Riot tags) than later on, I could reuse in the client side.&lt;/p&gt;
+
+&lt;p&gt;Nunjucks and RiotJS isn&amp;rsquo;t the only two that you can combine together, there more famous combinations or just one which allow to create templates which can be rendered in the server and the client, but I&amp;rsquo;ve decided to choose those based on my project requirements (technical and non-technical too); my recommendation here, is, do the same, choose the one(s) which fit better to it.&lt;/p&gt;
+
+&lt;p&gt;Happy mixing!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>KoaJS v2, BabelJS &amp; npm scripts</title>
+      <link>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</link>
+      <pubDate>Thu, 25 Feb 2016 09:14:11 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</guid>
+      <description>
+
+&lt;p&gt;Koa v2 has changed completely the middleware function signature, used in v1.x, to use &lt;a href=&#34;http://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;ES2016 async/await functions&lt;/a&gt;
+ over &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*&#34; target=&#34;_blank&#34; &gt;generators&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s still in alpha even thought the Koa&amp;rsquo;s team says that it&amp;rsquo;s production ready, because it&amp;rsquo;s currently used in some systems which are in production, however &lt;a href=&#34;https://github.com/koajs/koa/issues/533&#34; target=&#34;_blank&#34; &gt;the issues is that NodeJS doesn&amp;#39;t still support async/await function natively&lt;/a&gt;
+, hence you need a transpiler to be able to use async/await functions.&lt;/p&gt;
+
+&lt;p&gt;One, and probably the most famous, ES2015 tranpilers which also supports some of the features proposed for ES2016, and between then Async/Await functions, is &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; &gt;BabelJS&lt;/a&gt;
+; it&amp;rsquo;s also the one, most mentioned, in the Koa&amp;rsquo;s issue linked above, but it doesn&amp;rsquo;t look fancy having to transpile server code because it can be very painful, however Koa v2 doesn&amp;rsquo;t only accept async/await functions as a middleware, it also accepts function which return Promises (&lt;a href=&#34;https://nodejs.org/en/docs/es6/#which-features-ship-with-node-js-by-default-no-runtime-flag-required&#34; target=&#34;_blank&#34; &gt;which are already supported natively by last productions releases (LTS and no LTS)&lt;/a&gt;
+) because at the end an async/await function returns a Promise to the caller.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-we-can-do-now:4aa0da6c353d68f2346342f02b552d25&#34;&gt;What we can do now&lt;/h2&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t want to use BabelJS to write server code because it may be a pain the ass having in your development pipeline, then &lt;a href=&#34;https://github.com/koajs/koa/tree/2.0.0-alpha.3#example&#34; target=&#34;_blank&#34; &gt;you can still use Koa v2 using functions which return Promises&lt;/a&gt;
+; you don&amp;rsquo;t have to worry in having to rewrite those middlewares again when async/await functions be natively supported by NodeJS, you could use those ones and the new ones that implemented with async/async function seamless.&lt;/p&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t mind to use BabelJS in your server code, because it&amp;rsquo;s a new development which isn&amp;rsquo;t going to be a very big codebase, or because the implementation progress is going to be slow for whatever reason or you have any other reason which isn&amp;rsquo;t relevant for the purpose of this post then go for it and when NodeJS support async/away function natively then kill BabelJS.&lt;/p&gt;
+
+&lt;h2 id=&#34;koa-v2-babeljs-with-nodemon-npm-scripts:4aa0da6c353d68f2346342f02b552d25&#34;&gt;Koa v2, BabelJS, with Nodemon &amp;amp; npm scripts&lt;/h2&gt;
+
+&lt;p&gt;In case that you want to use BabelJS, and you don&amp;rsquo;t have any prepared boilerplate to develop a server side with Babel with server restarting automatically on each change, then you can follow this steps to install it, configure it and run it with npm.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have ran &lt;code&gt;npm init&lt;/code&gt; in a folder and you&amp;rsquo;re in your terminal on it execute&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Install Koa v2 &lt;code&gt;npm install --save koa@next&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install Babel and the presets and plugins needed to transpile ES6/7 features not supported natively by NodeJS; I recommend only use the async/await functions to be able to run your code as soon as async/await function are supported by NodeJS and may not others as spread paramaters, etc.
+&lt;code&gt;npm install --save-dev babel-core babel-cli babel-preset-es2015-node5  babel-plugin-transform-async-to-generator&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install nodemon &lt;code&gt;npm install --save-dev nodemon&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then setup babel creating a &lt;code&gt;.babelrc&lt;/code&gt; file with this content:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;development&amp;quot;&lt;/span&gt;: {
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;es2015-node5&amp;quot;&lt;/span&gt;],
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;transform-async-to-generator&amp;quot;&lt;/span&gt;]
+    }
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then you can create, into the property name &lt;code&gt;scripts&lt;/code&gt; of &lt;code&gt;package.json&lt;/code&gt;, something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;scripts&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;dev&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --exec npm run -s serve&amp;quot;&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;serve&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;babel-node -- src/server.js&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In case that you use &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;eslint&lt;/a&gt;
+ to lint your code, to avoid linter issues with async/await functions you have to install it and babel plugin&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;npm install --save-dev eslint babel-eslint&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;then set in &lt;code&gt;.eslintrc&lt;/code&gt; file the property &lt;code&gt;&amp;quot;parser&amp;quot;: &amp;quot;babel-eslint&amp;quot;&lt;/code&gt;. Bear in mind that you will have to enable the &lt;code&gt;es6&lt;/code&gt; features too, enabling &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;`es6` environtment&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;and you can also setup a watch mode in package.json &lt;code&gt;scripts&lt;/code&gt; property&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;lint-w&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --watch src -e js --exec eslint .&amp;quot;&lt;/span&gt;
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;then you can run the &amp;ldquo;dev&amp;rdquo; script target in one terminal tab and in other this one and enjoy developing a Koa v2 app, with asyn/await function with live restart and live linting.&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t wait until Koa v2 to be announced as production version, use it now with Babel or without, just use it now.&lt;/p&gt;
+
+&lt;p&gt;Happy coding!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How Arrow Functions Perform on Node?</title>
+      <link>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</link>
+      <pubDate>Thu, 18 Feb 2016 19:18:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</guid>
+      <description>
+
+&lt;p&gt;ES2015 Arrow functions are offered natively on NodeJS since while ago; they look as &lt;strong&gt;a convenient way to write anonymous functions than using function expressions&lt;/strong&gt;, because they have a &lt;a href=&#34;https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions&#34; target=&#34;_blank&#34; &gt;shorter syntax, but they also bind `this` value lexically&lt;/a&gt;
+, which is the thing that got my attention to do this short performance test to know if they run slower, faster or equally than function expressions.&lt;/p&gt;
+
+&lt;p&gt;As I mentioned in several posts, performance may be very important, but the most of the times, it&amp;rsquo;s quite less important than other things, as having a clean, simple and easy to understand and maintain code base which may performs not that fast as another one without those properties, or other reasons as using implementations (a.k.a frameworks) which are more generic so they allow to build fast, with less resources and many people can start to work quick because are well know by a certain amount of them.&lt;/p&gt;
+
+&lt;p&gt;I always consider the things mentioned above, however I&amp;rsquo;m not lazy if I have to type a bit more to get better performance without compromising any other important property, so in this case I would say that if arrow functions perform slower than function expressions, I would follow using function expressions because I don&amp;rsquo;t really mind to type the word &lt;code&gt;function&lt;/code&gt;, moreover that I think that in some situations the line of code is more clear having the keyword &lt;code&gt;function&lt;/code&gt; than the shorter syntax of the arrow functions, nonetheless that&amp;rsquo;s out of the scope of this post.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance-test:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Performance test&lt;/h2&gt;
+
+&lt;p&gt;Note, my purpose here is only &lt;strong&gt;to analyze those situations where the anonymous functions used don&amp;rsquo;t access to &lt;code&gt;this&lt;/code&gt; pointer&lt;/strong&gt;, because the most of the times that I&amp;rsquo;ve seen replacing functions expressions by arrow functions are on those situations and my worries are if arrow functions perform slower due the fact that they lexically bind &lt;code&gt;this&lt;/code&gt; pointer.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not analyzing those ones which the functions access to the lexical scope where functions expression should do through &lt;code&gt;bind&lt;/code&gt; or assigning lexical &lt;code&gt;this&lt;/code&gt; to a variable defined in the lexical scope, which at least, &lt;a href=&#34;http://stackoverflow.com/questions/17638305/why-is-bind-slower-than-a-closure&#34; target=&#34;_blank&#34; &gt;a few years ago, `bind` didn&amp;#39;t look as a good options from the performance point of view and we should see what happen now with the arrow functions&lt;/a&gt;
+, however that&amp;rsquo;s out of the main goal of this post.&lt;/p&gt;
+
+&lt;p&gt;To know the different running times between then I wrote a small script using &lt;a href=&#34;https://benchmarkjs.com/&#34; target=&#34;_blank&#34; &gt;Benchmark.js&lt;/a&gt;
+ with &lt;a href=&#34;https://github.com/wadey/node-microtime&#34; target=&#34;_blank&#34; &gt;Microtime&lt;/a&gt;
+ which looks like&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;use strict&amp;#39;&lt;/span&gt;;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; benchmark &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;benchmark&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; obj &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  execFe&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (a, b, c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c;
+    }(a, b, c));
+  },
+  execAf&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; ((a, b, c) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c)(a, b, c);
+  }
+};
+
+module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; obj;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; suite &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; benchmark.Suite;
+
+suite.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;arrow function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execAf(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;normal function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execFe(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;complete&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.forEach(b &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} &lt;span style=&#34;color: #333333&#34;&gt;-&amp;gt;&lt;/span&gt; mean&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${b.stats.mean}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  });
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; b &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; m &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; diff &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; b.stats.mean &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt; m.stats.mean;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} is ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;faster&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;slower&amp;#39;&lt;/span&gt;} than ${m.name} by ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt;diff &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; diff} seconds&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;Fastest is&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.filter(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fastest&amp;#39;&lt;/span&gt;).map(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;)}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+})
+.run({ async&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;false&lt;/span&gt; });
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also find it on the &lt;a href=&#34;https://gist.github.com/ifraixedes/e697740cd43bec83cd37&#34; target=&#34;_blank&#34; &gt;gist which I&amp;#39;ve created for its purpose&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;results:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Results&lt;/h2&gt;
+
+&lt;p&gt;I ran it several times (with NodeJS v5.6.0) and I didn&amp;rsquo;t find any performance run time difference between the arrow functions and the functions expressions. Each time that I executed the test I got different result, some of them the arrow function was faster and in others the function expressions, besides that the time difference between them was so tiny, so that&amp;rsquo;s more the usual differences that you can find in benchmark libraries than a real fact.&lt;/p&gt;
+
+&lt;p&gt;Below you can see the result of two of the executions that I did&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.1797950413531386e-8
+normal function -&amp;gt; mean: 3.236298102991821e-8
+arrow function is faster than normal function by 5.650306163868237e-10 seconds
+Fastest is: arrow function,normal function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.478900530420292e-8
+normal function -&amp;gt; mean: 3.4248199017909106e-8
+arrow function is slower than normal function by 5.408062862938166e-10 seconds
+Fastest is: normal function,arrow function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, the difference is negligible.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;Arrow functions and function expressions have the same performance execution, at least in Node.&lt;/p&gt;
+
+&lt;p&gt;Best!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;I&amp;rsquo;ve updated this post on 23/03/2016 to clarify what I wanted to analyze related arrow functions&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Speaking at BarcelonaJS: Generators &amp; Async Functions</title>
+      <link>http://blog.fraixed.es/post/speaking-bcnjs-generators-and-async-functions</link>
+      <pubDate>Tue, 12 Jan 2016 18:00:58 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/speaking-bcnjs-generators-and-async-functions</guid>
+      <description>&lt;p&gt;Tuesday (12th of January of 2016), at &lt;strong&gt;&lt;a href=&#34;http://barcelonajs.org/&#34; target=&#34;_blank&#34; &gt;BarcelonaJS Organisation&lt;/a&gt;
+&lt;/strong&gt;, I gave an introductory talk about &lt;strong&gt;&lt;a href=&#34;http://www.ecma-international.org/ecma-262/6.0/#sec-generatorfunction-objects&#34; target=&#34;_blank&#34; &gt;Generators Functions which are available in EcmaScript 2015&lt;/a&gt;
+&lt;/strong&gt; and &lt;strong&gt;&lt;a href=&#34;https://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;Async Functions which are defined in the draft proposal for EcmaScript 2016&lt;/a&gt;
+&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;I wrote just these few slides&lt;/p&gt;
+
+&lt;p&gt;&lt;div style=&#34;margin: auto; text-align: center;&#34;&gt;
+  &lt;iframe width=&#34;750&#34; height=&#34;563&#34; frameborder=&#34;0&#34; scrolling=&#34;no&#34; marginheight=&#34;0&#34; marginwidth=&#34;0&#34; src=&#34;http://blog.fraixed.es/slides/bcnjs-201601/&#34;
+    &lt;p&gt;Your browser doesn&amp;rsquo;t support iframes&lt;/p&gt;
+  &lt;/iframe&gt;
+  &lt;br&gt;
+  &lt;a href=http://blog.fraixed.es/slides/bcnjs-201601/ target=&#34;_blank&#34;&gt;See these slides in a single page &amp;amp; don&amp;rsquo;t forget to press &amp;ldquo;p&amp;rdquo; to see a few notes which I&amp;rsquo;ve written&lt;/a&gt;
+&lt;/div&gt;
+&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;and mostly I spent my time talking about them through examples which you can find &lt;a href=&#34;https://gist.github.com/ifraixedes/62a7155b87e7e7d0c71d&#34; target=&#34;_blank&#34; &gt;in a public gist on my Github&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If you were there, I hope that you enjoyed or at least got something good from my talk and please don&amp;rsquo;t forget &lt;strong&gt;to drop a few comments with your feedback&lt;/strong&gt;; it will be very valuable for me to keep improving.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Walk through Golang Package Interfaces</title>
+      <link>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</link>
+      <pubDate>Wed, 06 Jan 2016 08:24:56 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</guid>
+      <description>
+
+&lt;p&gt;Golang interface is one of things that people love due its simplicity and how they make possible to create small things which can be composed to create more complex ones.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s well know that defining interfaces in the implementations make them more flexible and reusable; defining interfaces with just one or a couple of functions signatures is one of the good practices of writing Golang applications, because they make the implementations more modular due they can be composed to get new ones for more specific needs.&lt;/p&gt;
+
+&lt;p&gt;Having this big set of small interface give the opportunity to have a bigger set of generic functions because they only constrain the parameters to implement one of those; so they can be use for any user defined type which implements at least that specific interface.&lt;/p&gt;
+
+&lt;p&gt;Everything above is well know and there are lots of posts about this matter, hence my goal in this post isn&amp;rsquo;t to add a new one more or extend this topic even more; there already good literature about it that you can find easily.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;My goal is to provide the list of interfaces which I&amp;rsquo;ve found, and hopefully I haven&amp;rsquo;t missed any, in Golang 1.5 standard package and highlight few of them&lt;/strong&gt; which I think that we have to bear in mind when we are developing common applications or services.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-ones-useful-for-the-most-common-applications:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The ones useful for the most common applications&lt;/h2&gt;
+
+&lt;h3 id=&#34;sql-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sql package&lt;/h3&gt;
+
+&lt;p&gt;The sql package has two without including the ones defined in the driver subpackage which I&amp;rsquo;ve skipped due that in common applications development is unusual having to implement a new driver.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These ones gathered my attention due that it isn&amp;rsquo;t that rare to store types in a database which aren&amp;rsquo;t basic types defined in the used database system; while we can do the mapping each time that we read those values from the database, the Scanner interface is very convenient to be implemented and get the benefits to get the mapping automatically when the values are read from the database, by the Scan function.&lt;/p&gt;
+
+&lt;p&gt;One example of this case is &lt;a href=&#34;https://godoc.org/github.com/satori/go.uuid#UUID.Scan&#34; target=&#34;_blank&#34; &gt;go.uuid&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;encoding-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;encoding Package&lt;/h3&gt;
+
+&lt;p&gt;The encoding/decoding data is another common operation to perform in common application development. Golang encoding package defines two pairs, marshare/unmarsheler, of interfaces, one for binary and another for text:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryMarshaler&#34; target=&#34;_blank&#34; &gt;BinaryMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryUnmarshaler&#34; target=&#34;_blank&#34; &gt;BinaryUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextMarshaler&#34; target=&#34;_blank&#34; &gt;TextMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextUnmarshaler&#34; target=&#34;_blank&#34; &gt;TextUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It also defines the same pair for specific encodings which usage is very spread&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;gob&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobDecoder&#34; target=&#34;_blank&#34; &gt;GobDecoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobEncoder&#34; target=&#34;_blank&#34; &gt;GobEncoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;json&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;xml&lt;/strong&gt;: which has one pair to allow to encode/decode attributes
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#MarshalerAttr&#34; target=&#34;_blank&#34; &gt;MarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#UnmarshalerAttr&#34; target=&#34;_blank&#34; &gt;UnmarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And one more for binary encoding
+* &lt;a href=&#34;https://golang.org/pkg/encoding/binary/#ByteOrder&#34; target=&#34;_blank&#34; &gt;ByteOrder&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;flag-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;flag package&lt;/h3&gt;
+
+&lt;p&gt;Another common stuff is to pass argument to our application when it starts; &lt;em&gt;flag package&lt;/em&gt; contains two interface which allow to define types to map values passed through command line arguments.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Getter&#34; target=&#34;_blank&#34; &gt;Getter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;fmt-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;fmt package&lt;/h3&gt;
+
+&lt;p&gt;The fmt package defines a set of interfaces to format I/O, which is another functionality which can be needed in common applications development.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Formatter&#34; target=&#34;_blank&#34; &gt;Formatter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#GoStringer&#34; target=&#34;_blank&#34; &gt;GoStringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#ScanState&#34; target=&#34;_blank&#34; &gt;ScanState&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#State&#34; target=&#34;_blank&#34; &gt;State&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Stringer&#34; target=&#34;_blank&#34; &gt;Stringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;sort-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sort package&lt;/h3&gt;
+
+&lt;p&gt;Some applications also requires to sort element in slices, so the types which implement sort interface can use after the routines of sort package to be sorted.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sort/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-rest:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The rest&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Compress package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;flate&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Reader&#34; target=&#34;_blank&#34; &gt;falate/Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Resetter&#34; target=&#34;_blank&#34; &gt;falate/Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;zlib&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/zlib/#Resetter&#34; target=&#34;_blank&#34; &gt;Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Heap package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/container/heap/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Crypto package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Decrypter&#34; target=&#34;_blank&#34; &gt;Decrypter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Signer&#34; target=&#34;_blank&#34; &gt;Signer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#SignerOpts&#34; target=&#34;_blank&#34; &gt;SignerOpts&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cipher&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#AEAD&#34; target=&#34;_blank&#34; &gt;AEAD&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Block&#34; target=&#34;_blank&#34; &gt;Block&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#BlockMode&#34; target=&#34;_blank&#34; &gt;BlockMode&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Stream&#34; target=&#34;_blank&#34; &gt;Stream&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;elliptic&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/elliptic/#Curve&#34; target=&#34;_blank&#34; &gt;Curve&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/tls/#ClientSessionCache&#34; target=&#34;_blank&#34; &gt;ClientSessionCache&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sql/driver package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ColumnConverter&#34; target=&#34;_blank&#34; &gt;ColumnConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Driver&#34; target=&#34;_blank&#34; &gt;Driver&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Execer&#34; target=&#34;_blank&#34; &gt;Execer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Queryer&#34; target=&#34;_blank&#34; &gt;Queryer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Tx&#34; target=&#34;_blank&#34; &gt;Tx&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ValueConverter&#34; target=&#34;_blank&#34; &gt;ValueConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Valuer&#34; target=&#34;_blank&#34; &gt;Valuer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;debug package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;dwarf&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/dwarf/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;macho&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/macho/#Load&#34; target=&#34;_blank&#34; &gt;Load&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;expvar package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/expvar/#Var&#34; target=&#34;_blank&#34; &gt;Var&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;ast package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Decl&#34; target=&#34;_blank&#34; &gt;Decl&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Expr&#34; target=&#34;_blank&#34; &gt;Expr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Spec&#34; target=&#34;_blank&#34; &gt;Spec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Visitor&#34; target=&#34;_blank&#34; &gt;Visitor&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;constant package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/constant/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;types package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Importer&#34; target=&#34;_blank&#34; &gt;Importer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Object&#34; target=&#34;_blank&#34; &gt;Object&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Sizes&#34; target=&#34;_blank&#34; &gt;Sizes&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;hash package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash64&#34; target=&#34;_blank&#34; &gt;Hash64&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;image package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#PalettedImage&#34; target=&#34;_blank&#34; &gt;PalettedImage&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;color&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Color&#34; target=&#34;_blank&#34; &gt;Color&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Model&#34; target=&#34;_blank&#34; &gt;Model&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;draw&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Drawer&#34; target=&#34;_blank&#34; &gt;Drawer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Quantizer&#34; target=&#34;_blank&#34; &gt;Quantizer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;jpeg&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/jpeg/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;io package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteReader&#34; target=&#34;_blank&#34; &gt;ByteReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteScanner&#34; target=&#34;_blank&#34; &gt;ByteScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteWriter&#34; target=&#34;_blank&#34; &gt;ByteWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Closer&#34; target=&#34;_blank&#34; &gt;Closer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadCloser&#34; target=&#34;_blank&#34; &gt;ReadCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadSeeker&#34; target=&#34;_blank&#34; &gt;ReadSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteCloser&#34; target=&#34;_blank&#34; &gt;ReadWriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteSeeker&#34; target=&#34;_blank&#34; &gt;ReadWriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriter&#34; target=&#34;_blank&#34; &gt;ReadWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderAt&#34; target=&#34;_blank&#34; &gt;ReaderAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderFrom&#34; target=&#34;_blank&#34; &gt;ReaderFrom&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneReader&#34; target=&#34;_blank&#34; &gt;RuneReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneScanner&#34; target=&#34;_blank&#34; &gt;RuneScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Seeker&#34; target=&#34;_blank&#34; &gt;Seeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteCloser&#34; target=&#34;_blank&#34; &gt;WriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteSeeker&#34; target=&#34;_blank&#34; &gt;WriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Writer&#34; target=&#34;_blank&#34; &gt;Writer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterAt&#34; target=&#34;_blank&#34; &gt;WriterAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterTo&#34; target=&#34;_blank&#34; &gt;WriterTo&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;math/rand package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/math/rand/#Source&#34; target=&#34;_blank&#34; &gt;Source&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;mine/multipart package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/mime/multipart/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;net package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Addr&#34; target=&#34;_blank&#34; &gt;Addr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Listener&#34; target=&#34;_blank&#34; &gt;Listener&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#PacketConn&#34; target=&#34;_blank&#34; &gt;PacketConn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;http&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CloseNotifier&#34; target=&#34;_blank&#34; &gt;CloseNotifier&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CookieJar&#34; target=&#34;_blank&#34; &gt;CookieJar&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#FileSystem&#34; target=&#34;_blank&#34; &gt;FileSystem&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Flusher&#34; target=&#34;_blank&#34; &gt;Flusher&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Handler&#34; target=&#34;_blank&#34; &gt;Handler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Hijacker&#34; target=&#34;_blank&#34; &gt;Hijacker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#ResponseWriter&#34; target=&#34;_blank&#34; &gt;ResponseWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#RoundTripper&#34; target=&#34;_blank&#34; &gt;RoundTripper&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cookiejar&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/cookiejar/#PublicSuffixList&#34; target=&#34;_blank&#34; &gt;PublicSuffixList&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;rpc&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ClientCodec&#34; target=&#34;_blank&#34; &gt;ClientCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ServerCodec&#34; target=&#34;_blank&#34; &gt;ServerCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;smtp&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/smtp/#Auth&#34; target=&#34;_blank&#34; &gt;Auth&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;os&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#FileInfo&#34; target=&#34;_blank&#34; &gt;FileInfo&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#Signal&#34; target=&#34;_blank&#34; &gt;Signal&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;reflect package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/reflect/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;runtime package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/runtime/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sync package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sync/#Locker&#34; target=&#34;_blank&#34; &gt;Locker&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;syscall package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/syscall/#Sockaddr&#34; target=&#34;_blank&#34; &gt;Sockaddr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;tesing package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/#TB&#34; target=&#34;_blank&#34; &gt;TB&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;quick&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/quick/#Generator&#34; target=&#34;_blank&#34; &gt;Generator&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;text/template/parse&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/text/template/parse/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;conclusion:8299f908315f8a7f26ec77fc52719a89&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Golang interfaces are the most powerful and simple feature that the language expose to create modular and reusable implementations.&lt;/p&gt;
+
+&lt;p&gt;Golang standard library contains a bunch of already defined interfaces which can be implemented by our applications or services without having to think in new ones for the same purpose besides to ease and speed up to any Golang developer to understand our implementations.&lt;/p&gt;
+
+&lt;p&gt;Collecting all of them in in this post allowed me to discover some of them which I haven&amp;rsquo;t seen before even though I&amp;rsquo;ve been developing in Golang for one year and a half. Some of them I had never seen because I haven&amp;rsquo;t had to use them, others I had seen when I was reading a specific package documentation and other I saw at some point but I didn&amp;rsquo;t assimilate at the first glance, so this post has been a good exercise.&lt;/p&gt;
+
+&lt;p&gt;If I&amp;rsquo;ve missed any and you know which ones, please let me know with an innocent comment.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Speaking at BarcelonaJS: Introduction to Lovefield</title>
+      <link>http://blog.fraixed.es/post/speaking-bcnjs-intro-to-lovefield</link>
+      <pubDate>Mon, 05 Oct 2015 01:18:10 +0100</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/speaking-bcnjs-intro-to-lovefield</guid>
+      <description>&lt;p&gt;Last Thursday (1st of October of 2015), I gave a talk at &lt;a href=&#34;http://barcelonajs.org/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;BarcelonaJS group&lt;/strong&gt;&lt;/a&gt; about &lt;a href=&#34;https://google.github.io/lovefield/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;Lovefield&lt;/strong&gt;, a cross-browser SQL-Like relation query engine; here I left the slides that I created for that purpose.&lt;/p&gt;
+
+&lt;p&gt;&lt;div style=&#34;margin: auto; text-align: center;&#34;&gt;
+  &lt;iframe width=&#34;750&#34; height=&#34;563&#34; frameborder=&#34;0&#34; scrolling=&#34;no&#34; marginheight=&#34;0&#34; marginwidth=&#34;0&#34; src=&#34;http://blog.fraixed.es/slides/bcnjs-201510/&#34;
+    &lt;p&gt;Your browser doesn&amp;rsquo;t support iframes&lt;/p&gt;
+  &lt;/iframe&gt;
+  &lt;br&gt;
+  &lt;a href=http://blog.fraixed.es/slides/bcnjs-201510/ target=&#34;_blank&#34;&gt;See these slides in a single page &amp;amp; don&amp;rsquo;t forget to press &amp;ldquo;p&amp;rdquo; to see the notes which I&amp;rsquo;ve written&lt;/a&gt;
+&lt;/div&gt;
+&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see &lt;a href=&#34;https://gist.github.com/ifraixedes/485329b7d46531e50e23&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;the &lt;strong&gt;source code of my demo&lt;/strong&gt; on a public gist under my GitHub account&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Thanks to the organisers, &lt;a href=&#34;https://twitter.com/patrickheneise&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34; title=&#34;Patrick Heneise&#34;&gt;@patrickheneise&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/eth0lo&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34; title=&#34;Jean Carlos Meninno&#34;&gt;eth0lo&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/isabelcabezasm&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34; title=&#34;Isabel Cabezas&#34;&gt;@isabelcabezasm&lt;/a&gt; for all the efforts to run this Javascript amazing community in Barcelona.&lt;/p&gt;
+
+&lt;p&gt;If you were there, I hope that you enjoyed or at least got something good from my talk; please feel free to provide an &lt;strong&gt;honest&lt;/strong&gt; feedback in the comments.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Private Members on ES6 Classes with Proxies</title>
+      <link>http://blog.fraixed.es/post/private-members-es6-classes-with-proxies</link>
+      <pubDate>Wed, 06 May 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/private-members-es6-classes-with-proxies</guid>
+      <description>
+
+&lt;p&gt;ES6 is getting close to its official release, the &lt;a href=&#34;http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts&#34; target=&#34;_blank&#34;&gt;last Revision, no. 38, is the last Final Draft&lt;/a&gt;, however &lt;a href=&#34;https://kangax.github.io/compat-table/es6/&#34; target=&#34;_blank&#34;&gt;Browsers, Runtimes and Compilers/Polyfills&lt;/a&gt; haven&amp;rsquo;t implemented all the features that the specification defines.&lt;/p&gt;
+
+&lt;p&gt;In this post I&amp;rsquo;m going to go through over a hacky idea about to create objects with &lt;strong&gt;ES6 Classes with private members without using closures as in ES5&lt;/strong&gt;, which is possible as you probably know, nonetheless that topic is very well explained in articles, blog posts, etc., so no point to write another blog post to talk about it, again.&lt;/p&gt;
+
+&lt;h2 id=&#34;es6-classes:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;ES6 Classes&lt;/h2&gt;
+
+&lt;p&gt;As you may already know, ES6 brings the concept of Object Oriented Programming Classes to Javascript.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;ES6 Classes&lt;/strong&gt; allows to create classes without having to specify functions and its prototype property; the syntax and everything that you need to know can be found in a very thorough post named &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Classes in ECMAScript 6 (final semantics)&amp;rdquo;&lt;/a&gt; that &lt;a href=&#34;http://rauschma.de/&#34; target=&#34;_blank&#34;&gt;Dr. Axel Rauschmayer&lt;/a&gt; has written and where he also concluded &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html#does_javascript_need_classes%3F&#34; target=&#34;_blank&#34;&gt;a few clear benefits about ES6 Classes&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve already read his blog post or you&amp;rsquo;ve also known from any other source, ES6 classes doesn&amp;rsquo;t have property scope as many, if not all, &lt;a href=&#34;http://en.wikipedia.org/wiki/Object-oriented_programming&#34; target=&#34;_blank&#34;&gt;Object Oriented Programming&lt;/a&gt; languages have, then you still need the &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures#Emulating_private_methods_with_closures&#34; target=&#34;_blank&#34;&gt;closures workaround to define private properties in objects&lt;/a&gt;, at least if you don&amp;rsquo;t use any of the working approaches that I show bellow.&lt;/p&gt;
+
+&lt;h2 id=&#34;es6-proxies:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;ES6 Proxies&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Proxies is a ES6 mechanism that allows to register traps over an object&lt;/strong&gt;, so they allows to specify custom behavior for fundamental object operations (assignment, iteration, property lookup, etc).&lt;/p&gt;
+
+&lt;p&gt;Proxies is a less mature ES6 feature than classes, at least for the environment that I&amp;rsquo;ve used in this post which you&amp;rsquo;ll read below.&lt;/p&gt;
+
+&lt;p&gt;Because you can find several resources to figure out what ES6 proxies allow to do, I&amp;rsquo;m not going to tell their details here; if you&amp;rsquo;re lazy to look for them, &lt;a href=&#34;http://rauschma.de/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Axel&lt;/a&gt; has also written a &lt;a href=&#34;http://www.2ality.com/2014/12/es6-proxies.html&#34; target=&#34;_blank&#34;&gt;very thorough post about them&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-hack:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The hack&lt;/h2&gt;
+
+&lt;p&gt;After the brief introduction about the two ES6 features that I&amp;rsquo;ve used to create a hacky idea to define private members in objects, I&amp;rsquo;m going to walk through what I&amp;rsquo;ve used to get it works and the different approaches that I&amp;rsquo;ve tried until I found the one that I felt quite satisfied.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-used-environment:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The used environment&lt;/h3&gt;
+
+&lt;p&gt;My first thought was to use &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Babel&lt;/a&gt; to be able to transpile ES6 to ES5 and be able to use this hack everywhere, however it couldn&amp;rsquo;t be because, according to Babel, &lt;a href=&#34;http://babeljs.io/docs/learn-es6/#proxies&#34; target=&#34;_blank&#34;&gt;no way to transpile ES6 proxies to ES5&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;So my alternative has been to use &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;iojs&lt;/a&gt; with &lt;a href=&#34;https://www.npmjs.com/package/harmony-reflect&#34; target=&#34;_blank&#34;&gt;harmony-reflect&lt;/a&gt; module.&lt;/p&gt;
+
+&lt;p&gt;Therefore if you want to run any piece of code of this post, then install &lt;code&gt;iojs-1.8.1&lt;/code&gt; (version which I&amp;rsquo;ve used so I really know for sure that it works), install harmony-reflect &lt;a href=&#34;https://www.npmjs.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;npm&lt;/a&gt; module and execute iojs with &lt;code&gt;--harmony&lt;/code&gt; and &lt;code&gt;--harmony_proxies&lt;/code&gt; flags (&lt;code&gt;iojs --harmony --harmony_proxies the-script.js&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h3 id=&#34;class-declaration:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Class declaration&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve created a very simple class to show the proof of concept of this hack, nothing clever here, however it&amp;rsquo;s useful to get a better understanding wha I&amp;rsquo;ll show you below.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;use strict&amp;#39;&lt;/span&gt;;
+
+require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;harmony-reflect&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Usual class&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;class&lt;/span&gt; Person {
+  constructor(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  get name() {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name;
+  }
+  set name(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  greeting(person) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;hi ${person.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;;
+  }
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Create an object from an usual class&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Person(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a Person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPerson.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #888888&#34;&gt;// _name property is accessible because JS classes doesn&amp;#39;t have access scope&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a Person instance ${ivanPerson._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+ 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Very clear what I&amp;rsquo;ve coded, moreover with the comments I don&amp;rsquo;t think that it needs any clarification; note the &lt;code&gt;require(&#39;harmony-reflect&#39;)&lt;/code&gt; import, otherwise the following lines of code won&amp;rsquo;t work.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-possible-approaches:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The possible approaches&lt;/h3&gt;
+
+&lt;p&gt;Before going to see some of the approaches that I&amp;rsquo;ve come up, you must know that I&amp;rsquo;ve chosen as a convention that any property (values or method) whose name starts with &lt;code&gt;_&lt;/code&gt; is private, even though my proof of concept only show the access to a property value with a defined getter, it also works for properties values without getters and property methods.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-the-base-class-not-working-solution:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify the Base Class (not working solution)&lt;/h4&gt;
+
+&lt;p&gt;I already knew that it wasn&amp;rsquo;t probably going to work, because if you know a little bit how Classes works or you inspect a very slightly them, you&amp;rsquo;ll see that &lt;strong&gt;a ES6 Class it&amp;rsquo;s an object with Function prototype&lt;/strong&gt;, besides, Proxies only trap the calls to the target object, so wrapping a Class with a Proxy will protect the Class, no the instances created from them; however I gave a try because never hurt and you make sure that your thoughts are right.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// Let&amp;#39;s try to protect class object&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ProtectedPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(Person, {
+  get(target, name) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;calling getter in Person wrapped by a proxy&amp;#39;&lt;/span&gt;);
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+    }
+  }
+});
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Let&amp;#39;s create an instance of the class that we wrapped with a proxy&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanProtectedPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; ProtectedPerson(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt; person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanProtectedPerson.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #888888&#34;&gt;// _name still accessible due proxy wrapped class Person;&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// a class is a Function with prototype object, proxy trap calls to the&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// class itself hence the target is the class, not its instances&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt; person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanProtectedPerson._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Thoughts confirmed, &lt;code&gt;_name&lt;/code&gt; on any instance of &lt;code&gt;Person&lt;/code&gt; still accessible; what the Proxy traps, are the properties of &lt;code&gt;Person&lt;/code&gt; class which is a instance of &lt;code&gt;Function&lt;/code&gt;; you can test it yourself if you don&amp;rsquo;t believe me.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-the-class-instances:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify the Class instances&lt;/h4&gt;
+
+&lt;p&gt;The obvious solution is to define a proxy for each &lt;code&gt;Person&lt;/code&gt; instance, and it works as a charm, let&amp;rsquo;s see the example:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// let&amp;#39;s protect a base class instance&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPersonProtected &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(ivanPerson, {
+  get(target, name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+    }
+  }
+})
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a person instance which has been &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtected.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;try&lt;/span&gt; {
+  &lt;span style=&#34;color: #888888&#34;&gt;// _name property call gets trapped by the proxy&lt;/span&gt;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a person instance which has been &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtected._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+} &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;catch&lt;/span&gt; (e) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (e.message &lt;span style=&#34;color: #333333&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Proxy did its job!!&amp;#39;&lt;/span&gt;);
+  } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; e;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The solution works and it&amp;rsquo;s great, however it&amp;rsquo;s repetitive having to create a proxy each time that an instance of &lt;code&gt;Person&lt;/code&gt; is created; it&amp;rsquo;s true that we can create a function which wrap the two operations and it&amp;rsquo;ll solve the problem, however I would like to use Classes to create instances as expected, so using &lt;code&gt;new&lt;/code&gt; operator, for that reason I squashed my brain a little bit more and I&amp;rsquo;ve found the next solution which works and I guess that it&amp;rsquo;s the most interesting part of this post.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-this-instances:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify &lt;code&gt;this&lt;/code&gt; instances&lt;/h4&gt;
+
+&lt;p&gt;The idea has been based in the concept of how Javascript&amp;rsquo;s constructors (i.e. Functions) behave.&lt;/p&gt;
+
+&lt;p&gt;Javascript&amp;rsquo;s constructors  return &lt;code&gt;this&lt;/code&gt; object if they don&amp;rsquo;t have a return statement in its body (usual and expected the most of the times) otherwise they return the value of the &lt;code&gt;return&lt;/code&gt; statement.&lt;/p&gt;
+
+&lt;p&gt;In ES6, Classes are Functions and constructors are allowed to have return statements and their behaviour, is totally the same than in ES5, according Axel, they have the same behaviour for &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html#safety_checks&#34;&gt;backwards compatibility&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Bearing in mind that concept, we can do the following:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// However it&amp;#39;s painful, having to wrap in a proxy every single instance of a class&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// is a repeatable tiring task, so let&amp;#39;s try to creata a class that protect its&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// object instances&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;class&lt;/span&gt; PersonProtected {
+  constructor(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+    &lt;span style=&#34;color: #888888&#34;&gt;// In es6 it also works as in es5: remember es6 class is nothing more than a Function&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// and `new` call the function defined by `constructor`;&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// in es5 works because when you call a `new` on a function the value retuned is the&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// value returned inside the function if it&amp;#39;s an object otherwise returns `this`;&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// in es6 remains the same for backward compatibility&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, {
+      get(target, name) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+        } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+        }
+      }
+    });
+  }
+  get name() {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name;
+  }
+  set name(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  greeting(person) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;hi ${person.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;;
+  }
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPersonProtectedInstance &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; PersonProtected(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a PersonProtected instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtectedInstance.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;try&lt;/span&gt; {
+  &lt;span style=&#34;color: #888888&#34;&gt;// _name property call gets trapped by the proxy&lt;/span&gt;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a PersonProtected instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtectedInstance._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+} &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;catch&lt;/span&gt; (e) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (e.message &lt;span style=&#34;color: #333333&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Class which proxy `this` did its job!!&amp;#39;&lt;/span&gt;);
+  } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; e;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;As you can see in the previous snippet of code, it&amp;rsquo;s as simple as moving the Proxy call inside the constructor and pass &lt;code&gt;this&lt;/code&gt; as a target and returns the returned object by the Proxy call, so it takes advantage of the strange behaviour of Javascript&amp;rsquo;s constructors which has been kept in ES6 Classes.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s clean, works and we can keep the Class instantiation syntax as it is, with the ability to define private properties just starting their names with &lt;code&gt;_&lt;/code&gt;, convention that I&amp;rsquo;ve chosen.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;ES6 Classes don&amp;rsquo;t have any mechanism to define private properties, however with the help of Proxies and the backwards compatibility kept with ES5 we can create a clean mechanism based in naming conventions to define private objects&amp;rsquo; properties.&lt;/p&gt;
+
+&lt;p&gt;Remind you that it&amp;rsquo;s a hack, Proxies aren&amp;rsquo;t even available in iojs, besides I have no clue the performance about this approach, so it isn&amp;rsquo;t for production if you lover yourself.&lt;/p&gt;
+
+&lt;p&gt;All the code of the post, just in case that you&amp;rsquo;d like to check it out, is under this &lt;a href=&#34;https://gist.github.com/ifraixedes/e9311748c961f1dbb93e&#34; target=&#34;_blank&#34;&gt;gist&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Do you have any other idea to get something similar with the features that ES6 brings? if you have, please share them in the comments.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Generating OpenSSL certificates to run a NodeJS HTTPS Server</title>
+      <link>http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server</link>
+      <pubDate>Wed, 22 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server</guid>
+      <description>
+
+&lt;p&gt;The last few days I&amp;rsquo;ve had to implement a simple HTTP/HTTPS client wrapper for NodeJS, which returns a &lt;a href=&#34;https://promisesaplus.com/&#34; target=&#34;_blank&#34;&gt;Promise&lt;/a&gt;) for each request call and do some basic management for the common body structure that the APIs, which we&amp;rsquo;re building, respond.&lt;/p&gt;
+
+&lt;p&gt;Nonetheless, I&amp;rsquo;m not writing this post for the itself implementation because the purpose doesn&amp;rsquo;t matter to tell about the process to generate the SSL certificates to use for a iojs/NodeJS HTTPS server which you may need, as I needed, to test a HTTPS client.&lt;/p&gt;
+
+&lt;p&gt;As you may know and/or think, &lt;a href=&#34;https://www.openssl.org&#34; target=&#34;_blank&#34;&gt;OpenSSL&lt;/a&gt; isn&amp;rsquo;t the most friendly library, or in this case command line tool, that you&amp;rsquo;ve ever been used, however I&amp;rsquo;m not complaining about it, it provides a useful functionality which, you may think the same than me, is not the most funny thing that you would like to implement, for that reason and because it&amp;rsquo;s Open Source, I much appreciate the people how contribute to it, &lt;a href=&#34;http://en.wikipedia.org/wiki/OpenSSL&#34; target=&#34;_blank&#34;&gt;as many others may do&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;After the introduction, let&amp;rsquo;s go for the interesting part of the post.&lt;/p&gt;
+
+&lt;h2 id=&#34;generating-the-openssl-certificates:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Generating the OpenSSL certificates&lt;/h2&gt;
+
+&lt;p&gt;To create a certificate which it&amp;rsquo;s not self signed, to be able to emulate more how the real world works and avoid that the client report &lt;code&gt;self signed certificate&lt;/code&gt; SSL/TLS error, first of all we have to have a &lt;a href=&#34;http://en.wikipedia.org/wiki/Certificate_authority&#34; target=&#34;_blank&#34;&gt;CA (Certificate Authority)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The CAs&amp;rsquo; role is to emit certificates providing the trust (as a trusted third party) of the certificates that the serves use to proof that they&amp;rsquo;re who they really are.&lt;/p&gt;
+
+&lt;p&gt;In the real world, the trusted CAs are regulated, in someway which guarantee that the world (a.k.a us) can trust on them due the security requirements that they fulfill; obviously for our test environment we don&amp;rsquo;t need to know about all the bureaucracy.&lt;/p&gt;
+
+&lt;p&gt;Hence, first we have to &lt;strong&gt;create the CA certificate&lt;/strong&gt;, in this case with one, the root, will be enough, so it must be self signed, because it&amp;rsquo;s the root. In the real world the root CAs don&amp;rsquo;t usually sign end certificates, they sign certificates for other CAs creating an hierarchy chain where the CAs from some certain bottom level sign the end certificates, the ones used by server/clients to prove their authenticity.&lt;/p&gt;
+
+&lt;p&gt;To generate it with OpenSSL, we just use &lt;a href=&#34;https://www.openssl.org/docs/apps/req.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;req&lt;/code&gt; utility&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl req -batch -newkey rsa:2048 -nodes -keyout \
+  root-ca.key -days 3650 -x509 -out root-ca.crt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s clarify some of the used options:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;batch&lt;/code&gt;: We avoid the interactive mode, so we execute and get.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nodes&lt;/code&gt;: Specify not to encrypt the private key, so server can read it without any passphrase or key agent.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x509&lt;/code&gt;: Generate a self signed certificate rather than a certificate request (we&amp;rsquo;ll see this in a moment).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, we have our CA, then let&amp;rsquo;s create the certificate that we need for our server; first we have to create a &lt;strong&gt;certificate request&lt;/strong&gt; with our private key; I&amp;rsquo;d just like to remind you that your private keys are generate by yourself and &lt;strong&gt;never are sent anywhere&lt;/strong&gt;, which is the basis of a PKI (Public Key Infrastructure), share your public key and non-disclose never your private key.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl req -newkey rsa:2048 -batch -nodes \
+  -config openssl.cnf -out localhost.csr -keyout localhost.key
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s clarify some of the used options for this, as well&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;newkey&lt;/code&gt;: Generate a new private key besides the certificate request; if we&amp;rsquo;d already had one, we&amp;rsquo;d remove this option and will provide another one to specify the file which contains the key, but with this, we save the call to another command.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;config&lt;/code&gt;: It provides a OpenSSL configuration file where we can specify what values and default values; it&amp;rsquo;s important here because I want to specify &lt;code&gt;localhost&lt;/code&gt; as domain name (in an Open SSL certificate is the &amp;ldquo;common name&amp;rdquo;) to match with the host used in the test&amp;rsquo;s requests but at the same time I want to assign in automatically without having to reply interactive questions (&lt;code&gt;-batch&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The configuration file, in this case &lt;code&gt;openssl.cnf&lt;/code&gt;, for the purpose that I want, only needs two fields, in the format that OpenSSL expect (if I&amp;rsquo;m not wrong it accepts other ones, but I know exactly this); it looks like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[ req ]
+distinguished_name     = req_distinguished_name
+
+[ req_distinguished_name ]
+ commonName                      = Common Name (eg, your name or your server&#39;s hostname)
+ commonName_default              = localhost
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And finally, let&amp;rsquo;s give the certificate request to the CA to generate the certificate for our server through &lt;a href=&#34;https://www.openssl.org/docs/apps/x509.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;x509&lt;/code&gt; utility&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl x509 -req -CAkey root-ca.key -CA root-ca.crt \
+  -CAcreateserial -in localhost.csr -days 3650 -out localhost.crt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And the options clarification&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;req&lt;/code&gt;: Specify that the input is a certificate request than a certificate&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CAcreateserial&lt;/code&gt;: Generate a serial number file if doesn&amp;rsquo;t exist, so if we run this for first time, it will, otherwise will read from it the serial number and increment it for the next time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And we&amp;rsquo;re done with OpenSSL; in my case I add this in a &lt;code&gt;makefile target&lt;/code&gt; not to have to remember all of this each time that I have to generate them.&lt;/p&gt;
+
+&lt;h2 id=&#34;running-a-nodejs-https-server:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Running a NodeJS HTTPS server&lt;/h2&gt;
+
+&lt;p&gt;Running a HTTPS server with &lt;a href=&#34;https://iojs.org/api/https.html#https_https_createserver_options_requestlistener&#34; taget=&#34;_blank&#34;&gt;iojs&lt;/a&gt; / &lt;a href=&#34;https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener&#34; target=&#34;_blank&#34;&gt;NodeJS&lt;/a&gt; is pretty straightforward as a HTTP one.&lt;/p&gt;
+
+&lt;p&gt;I could save this section however, because the API documentation example is quite clear however, I thought that it doesn&amp;rsquo;t hurt to add here to provide a better understanding to the post.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; https &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;https&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; fs &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fs&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; options &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  key&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; fs.readFileSync(path.join(__dirname, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;localhost.key&amp;#39;&lt;/span&gt;)),
+  cert&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; fs.readFileSync(path(__dirname, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;localhost.crt&amp;#39;&lt;/span&gt;))
+};
+
+https.createServer(options, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res) {
+  res.writeHead(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;200&lt;/span&gt;);
+  res.end(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;hello world\n&amp;quot;&lt;/span&gt;);
+}).listen(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;8000&lt;/span&gt;);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id=&#34;requesting-the-server-from-nodejs-https-client:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Requesting the server from NodeJS HTTPS client&lt;/h2&gt;
+
+&lt;p&gt;Requesting the server from HTTPS &lt;a href=&#34;https://iojs.org/api/https.html#https_https_request_options_callback&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt; / &lt;a href=&#34;https://nodejs.org/api/https.html#https_https_request_options_callback&#34; target=&#34;_blank&#34;&gt;NodeJS&lt;/a&gt; client is pretty straightforward as well, however I have to provide the CA which signed the certificate used by the server, otherwise client will report an error saying that the certificate is wrong, basically because it cannot trust in a certificate which has been emitted for an unknown CA.&lt;/p&gt;
+
+&lt;p&gt;Therefore, on each request we must specify the &lt;code&gt;ca&lt;/code&gt; property in the options object with the CA&amp;rsquo;s certificate, maybe it&amp;rsquo;s annoying, but better than adding the certificate to the OS keychain, due that the &lt;a href=&#34;https://nodejs.org/api/https.html#https_https_globalagent&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;globalAgen&lt;/code&gt;&lt;/a&gt; ignores the &lt;a href=&#34;https://nodejs.org/api/tls.html#tls_tls_connect_options_callback&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;tls.connect&lt;/code&gt;&lt;/a&gt; options.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; https &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;https&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; fs &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fs&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; options &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  hostname&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;localhost&amp;#39;&lt;/span&gt;,
+  port&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;8000&lt;/span&gt;,
+  path&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;,
+  method&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;GET&amp;#39;&lt;/span&gt;,
+  ca&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; fs.readFileSync(path(__dirname, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;root-ca.crt&amp;#39;&lt;/span&gt;))
+};
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; req &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; https.request(options, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(res) {
+  console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;statusCode: &amp;quot;&lt;/span&gt;, res.statusCode);
+  console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;headers: &amp;quot;&lt;/span&gt;, res.headers);
+
+  res.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;data&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(d) {
+    process.stdout.write(d);
+  });
+});
+req.end();
+
+req.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;error&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(e) {
+  console.error(e);
+});
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And done!&lt;/p&gt;
+
+&lt;p&gt;Another solution to avoid to pass the CA certificate to the client is to use the &lt;code&gt;rejectUnauthorized&lt;/code&gt; options property to false, but in that case you are authorising everything, so I prefer to add the used CA and limit the authorisation for non-official CAs to only the create one.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Generating our certificate for our development/test environment with OpenSSL is a little bit tedious if you have to figure out how, however when you have how, it can be added to your &amp;ldquo;task runner&amp;rdquo; of your project and forget about the process.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, running a HTTPS server and making HTTPS request with iojs/NodeJS are pretty straightforward, knowing a bit about the server and client requirements, because when you don&amp;rsquo;t, finding out what happens with the error messages that OpenSSL sometimes gives, isn&amp;rsquo;t a nice task.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve hope that you&amp;rsquo;ve found this useful.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>JS Test with Mocha, Chai &amp; Sinon Driven by Example</title>
+      <link>http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example</link>
+      <pubDate>Mon, 06 Apr 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example</guid>
+      <description>
+
+&lt;p&gt;I&amp;rsquo;ve decided to write this post after I&amp;rsquo;ve helped a friend of mine, &lt;a href=&#34;https://twitter.com/hyprstack&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;@hyprstack&lt;/a&gt;, to write a 100% coverage test in one of his implementations using &amp;ldquo;spies&amp;rdquo; and &amp;ldquo;stubs&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;As you probably well know &lt;strong&gt;&amp;ldquo;testing&amp;rdquo;&lt;/strong&gt; is one of the general software development &lt;strong&gt;best practices&lt;/strong&gt;, they&amp;rsquo;re highly recommended for any piece of code that has been create beyond a hack and whenever you&amp;rsquo;re a little bit worry the consequences that your code can produce if it doesn&amp;rsquo;t do what you expect.&lt;/p&gt;
+
+&lt;p&gt;Anyway, my friend was doing an implementation of AWS handler for &lt;a href=&#34;http://aws.amazon.com/lambda/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;AWS Lambda&lt;/a&gt; which basically is triggered when a file it&amp;rsquo;s uploaded to S3. The handler (function) has to download the file (if it has a supported file image extension), resize the image file in several defined sizes and upload those new files to S3.&lt;/p&gt;
+
+&lt;p&gt;It may not seem quite complicated, however the most of the operations are performed by third party libraries (&lt;a href=&#34;https://npmjs.org&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;npm modules&lt;/a&gt;), hence its test must be to &amp;ldquo;stub&amp;rdquo; no to rely on S3 as external service and avoid to mess around image files to simulate the resizing, therefore &lt;a href=&#34;https://github.com/aheckmann/gm&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gm (GraphicsMagick &amp;amp; ImageMagick) node module&lt;/a&gt; must be stubbed as well.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;You can refer to this &lt;a href=&#34;http://stackoverflow.com/questions/28881483/nodejs-testing-aws-with-mocha/28915395#28915395&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Stack Overflow question&lt;/a&gt; for more details&lt;/strong&gt; about my friends&amp;rsquo; doubt.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-execution-environment:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;The execution environment&lt;/h2&gt;
+
+&lt;p&gt;AWS Lambda is &lt;strong&gt;naturally iojs/NodeJS asynchronous pattern&lt;/strong&gt;, basically everything here run in iojs/NodeJS.&lt;/p&gt;
+
+&lt;p&gt;As you may know the asynchronous pattern isn&amp;rsquo;t easy to fully understand when you&amp;rsquo;re starting with it, or at least, reaching the point where combining asynchronous callbacks to make it works together are not something that you beat in one fell swoop in the first days, and if you add an extra bit of abstraction by a workflow library, the things can be easily messed up, as you can see as example in that Stack Overflow question; however nothing to worry, I made similar mistakes when I was starting.&lt;/p&gt;
+
+&lt;p&gt;This is one point in favour to be more interested in testing your code as my friend is.&lt;/p&gt;
+
+&lt;h2 id=&#34;testing-with-mocha-chai-and-sinon:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;Testing with Mocha, Chai and Sinon&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mochajs.org/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;Mocha&lt;/strong&gt;&lt;/a&gt; as test framework running, &lt;a href=&#34;http://chaijs.com/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;Chai&lt;/strong&gt; as assertion library and &lt;a href=&#34;http://sinonjs.org/&#34; target=&#34;_blank&#34;&gt;Sinon&lt;/a&gt; as test &amp;ldquo;spies&amp;rdquo;, &amp;ldquo;stubs&amp;rdquo; and &amp;ldquo;mocks&amp;rdquo; are a &lt;strong&gt;good combination to mix together&lt;/strong&gt; if you need all those things.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used a lot Mocha and Chai, but Sinon, just a bit, due the most of things that I&amp;rsquo;ve been developing haven&amp;rsquo;t need to stub a third party dependency to bypass them for similar reasons that I mentioned in the introduction of this post.&lt;/p&gt;
+
+&lt;p&gt;Stubs are useful, but they&amp;rsquo;re not the easiest thing to assimilate at the first time that you use or read the documentation; again they can be easy to understand, but as the most the things, more the difficult when you have to use properly in a real scenario.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-implementation:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;The implementation&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m not going to mention what the implementation does, I think that it&amp;rsquo;s easier to take a look to a right implementation that I&amp;rsquo;ve created in this &lt;a href=&#34;https://gist.github.com/ifraixedes/3330ce0edf9286234b04&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt; in case that you&amp;rsquo;re more interested and have better understanding about the following part of the post, hence I just leave here, the pice of code that it can be some more difficult because the issue was still there with the first Stack Overflow reply&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;async.waterfall([
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; download(next) {
+      s3.getObject({
+        Bucket&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; s3Bucket,
+        Key&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; s3Key
+      }, next);
+    },
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; transform(response, next) {
+      async.map(sizesConfigs, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (sizeConfig, mapNext) {
+        gm(response.Body, s3Key)
+        .resize(sizeConfig.width)
+        .toBuffer(imageType, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (err, buffer) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+            mapNext(err);
+            &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt;;
+          }
+
+          s3.putObject({
+            Bucket&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; s3Bucket,
+            Key&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;dst/&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; sizeConfig.destinationPath &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; s3Key,
+            Body&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; buffer,
+            ContentType&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;image/&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; imageType
+          }, mapNext)
+        });
+      }, next);
+    }
+  ], &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (err) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+      console.error(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Error processing image, details %s&amp;#39;&lt;/span&gt;, err.message);
+      context.done(err);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      context.done(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Successfully resized images bucket: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; s3Bucket &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; / key: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; s3Key);
+    }
+  });
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first implementation and the second one provided in the first Stack Overflow reply, messed up with the &lt;a href=&#34;https://github.com/caolan/async#waterfall&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;async.waterfall&lt;/a&gt;; and this uses, as you can see, inside one of the waterfall functions &lt;a href=&#34;https://github.com/caolan/async#map&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;async.map&lt;/a&gt;; for a year an half ago, I&amp;rsquo;m not using async that much, I use &lt;a href=&#34;http://en.wikipedia.org/wiki/Futures_and_promises&#34;&gt;promises&lt;/a&gt;, however I&amp;rsquo;ve tried to introduce the less changes as possible to make it works and clean up a little bit to make the implementation simpler to ease its readability.&lt;/p&gt;
+
+&lt;p&gt;By the way, my friend did another implementation in my first feed back and it solved the issue, however he was confused due the back and forth feedback, and he did another implementation without using async and using in his own, which I think that it&amp;rsquo;s good to learn and understand how async works internally, but the implementation looks neater with &lt;code&gt;async&lt;/code&gt; beyond to be closer to the original one.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-test:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;The test&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve decided to implement the test from scratch, it was not ideal for me to take the test that he and the Stack Overflow responser did and refactor to aim the 100% coverage.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not going to expose here the test, you can see it, in the &lt;a href=&#34;https://gist.github.com/ifraixedes/3330ce0edf9286234b04&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;; I&amp;rsquo;m going to mention what I&amp;rsquo;ve learn about Sinon when you have to use for several third party dependencies, together with &lt;a href=&#34;https://github.com/thlorenz/proxyquire&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;proxyquire&lt;/a&gt; which I had never used before and it&amp;rsquo;s good not to have to expose or inject third party modules in your modules and having the chance of still using them as usual when you want to stub them.&lt;/p&gt;
+
+&lt;p&gt;Whenever you are using this &amp;ldquo;testing stack&amp;rdquo; (Mocha, Chai and Sinon), &lt;strong&gt;&lt;a href=&#34;https://github.com/domenic/sinon-chai&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;sinon-chai&lt;/a&gt; is king&lt;/strong&gt;, it simplifies and make the test assertions more readable when obviously you use both; my friend was already using it, so I haven&amp;rsquo;t introduced it to the new test, but I&amp;rsquo;ve though that it&amp;rsquo;s a good thing to mention.&lt;/p&gt;
+
+&lt;p&gt;If you read the test, you&amp;rsquo;ll see that there&amp;rsquo;re several stubs (and/or spies) that you must use to be able to test the handler. The tests cases which involve to test all the execution workflow require to test the calls (passsed parameters) and define at callback call for each; they drove me mad at the beginning and in some point I decided to extract the &lt;code&gt;transform&lt;/code&gt; function in the &lt;code&gt;asyn.waterfall&lt;/code&gt; chain to an individual script (a.k.a node module) to be able to create just only one &amp;ldquo;stub&amp;rdquo; for the part with the &lt;code&gt;proxyquire&lt;/code&gt; help and write a second test to test only the &lt;code&gt;transform&lt;/code&gt; module; however I&amp;rsquo;ve failed, I couldn&amp;rsquo;t make &lt;code&gt;proxyquire&lt;/code&gt; work with it, it was still executing the original function than the &lt;code&gt;stub&lt;/code&gt; and at the end, I returned back to the current solution (all in one script/node module), however I&amp;rsquo;ve also thought the easy second solution, to add the &lt;code&gt;transform&lt;/code&gt; function to AWS handler module, however I didn&amp;rsquo;t like to have to export both in the same module and as you can see, I returned back to the first and current approach.&lt;/p&gt;
+
+&lt;p&gt;With the current approach, I&amp;rsquo;ve started to create all the &amp;ldquo;stubs&amp;rdquo; and as I thought at the beginning, it was going to be hard to add every stub with the parameters that each one should receive to test all the calls to &lt;code&gt;gm&lt;/code&gt; module, moreover that a simple mistake (typo, etc.) was not going not to call the chain, making difficult to discover from where the error comes (implementation or test stub and which one), moreover to have to put a lot of expectations in the wrong place &lt;code&gt;begin&lt;/code&gt; Mocha function.&lt;/p&gt;
+
+&lt;p&gt;Thinking for a moment, I&amp;rsquo;ve realised that using Sinon with Chai, it&amp;rsquo;s not needed, to have to define parameters, just defining the position of the callback parameters and the values pass in the &amp;ldquo;stubs&amp;rdquo; are enough and move to chai the assertions checking in the right place, &lt;code&gt;it&lt;/code&gt; Mocha function, so it&amp;rsquo;s more right, simpler and readable, hence better.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Test your code is king, sometime is harder than writing the implementation, in this case I&amp;rsquo;ve spent more time in the test than in the implementation, moreover if you want to have 100% coverage; having the coverage is good to know which parts of your implementations are tested and which ones not, so added whenever you can, as my friend did.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re starting with iojs/NodeJS, I think that the best way is to understand well the asynchronous programming pattern, is through the callback node convention, they&amp;rsquo;re the basis of node and even though the promise approach are increasing fast, I think that it&amp;rsquo;s worth to learn the basis first.&lt;/p&gt;
+
+&lt;p&gt;Testing your code when you&amp;rsquo;re learning it&amp;rsquo;s as good complement for your implementations, you&amp;rsquo;ll learn a lot, and moving forward with spies, stubs and mock it&amp;rsquo;s good to struggle, learn and when you beat them, you&amp;rsquo;ll be ready to use whenever you need then, furthermore to be more experienced.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re learning node, don&amp;rsquo;t miss to check &lt;a href=&#34;http://nodeschool.io/&#34; target=&#34;_blank&#34;&gt;Node School&lt;/a&gt; in case that you haven&amp;rsquo;t heard about it.&lt;/p&gt;
+
+&lt;p&gt;I hope that this read has been useful for you.
+Best!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Slices of Structs or Slices of Pointers to Structs Dilemma</title>
+      <link>http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma</link>
+      <pubDate>Mon, 09 Mar 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Golang&lt;/a&gt; is a &lt;a href=&#34;http://golang.org/doc/faq#ancestors&#34; target=&#34;_blank&#34;&gt;C family language&lt;/a&gt; which has brought me, again, the ability to use memory references through pointers, even though with some significant differences: &lt;a href=&#34;http://golang.org/doc/faq#no_pointer_arithmetic&#34; target=&#34;_blank&#34;&gt;no pointers arithmetic&lt;/a&gt; and &lt;a href=&#34;http://golang.org/doc/faq#garbage_collection&#34; target=&#34;_blank&#34;&gt;garbage collector&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Its similarities with C, drove me, in the beginning, to some confusions about using pointers or values in one of its native internal powerful types, &lt;a href=&#34;http://blog.golang.org/slices&#34; target=&#34;_blank&#34;&gt;slices&lt;/a&gt;, here I&amp;rsquo;m going to talk about those.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-context:3653a82367ee70ab851135843e3e77ae&#34;&gt;The context&lt;/h3&gt;
+
+&lt;p&gt;Some months ago, I&amp;rsquo;ve started to read a little bit &lt;a href=&#34;http://golang.org/doc/effective_go.html&#34;&gt;Go documentation&lt;/a&gt;, visit its &lt;a href=&#34;http://tour.golang.org/&#34; target=&#34;_blank&#34;&gt;tour&lt;/a&gt; and tinker it with some small implementations, just to get use with the syntax, types and quirks.&lt;/p&gt;
+
+&lt;p&gt;The last five months I&amp;rsquo;ve been increasing the number of hours to spend with it; following some resources which provide me good resources as videos, blog posts and marvelous repositories and at the same time to have the chance to use that theoretical knowledge in my professional environment.&lt;/p&gt;
+
+&lt;p&gt;Quite a few times a more active activity than consuming good resources, has been reading code, making small refactorings or adding small features and reviewing code; however that code has been generated for us (my own team members) and everyone are embracing Go roughly for the same period of time, even though some of them worked in the first implementation of one of the main company services, therefore the experience on hands on it is slightly different.&lt;/p&gt;
+
+&lt;p&gt;With this is small introductions to read and write lines of code inside of a small team with not that much experience in Go, allowed us to have the chance to discuss easily things as &amp;ldquo;why A and not B&amp;rdquo; when we&amp;rsquo;ve read something that we&amp;rsquo;ve seen that it&amp;rsquo;s odd, messy, awkward or basically because some of us (myself included) don&amp;rsquo;t understand why the author wrote it. Even though the author has reasons for for it, we have raised some doubts about &lt;strong&gt;code organisation&lt;/strong&gt;, how to write more &lt;strong&gt;comprehensible and clear code&lt;/strong&gt;, how &lt;strong&gt;to use Go idioms&lt;/strong&gt;, what can &lt;strong&gt;perform better&lt;/strong&gt; and so on.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-concerns-about-slices-of-structs:3653a82367ee70ab851135843e3e77ae&#34;&gt;The concerns about slices of structs&lt;/h3&gt;
+
+&lt;p&gt;In the first instance, due the &lt;strong&gt;nature of the &lt;a href=&#34;http://blog.golang.org/go-slices-usage-and-internals&#34; target=&#34;_blank&#34;&gt;slices&lt;/a&gt;&lt;/strong&gt; is easy to think that it doesn&amp;rsquo;t matter if you store into them, structs or pointers to structs, because slices are structures &amp;ldquo;which point to their elements&amp;rdquo;, and it they are passed as a parameter to a function or returned from it, there wouldn&amp;rsquo;t be any difference in terms of performance,  because their elements are not copied due they contain a reference to the memory space which the elements are alocated.&lt;/p&gt;
+
+&lt;p&gt;Nonetheless it isn&amp;rsquo;t very strange to have, or find, a &lt;strong&gt;function which creates a new type struct&lt;/strong&gt; to wrap all the operations needed to initialised it than have to do them manually each time that one has to be created. Basically it&amp;rsquo;s very usual to have one function that create a structure when it&amp;rsquo;s not a straightforward struct where some of there values are initialised, worked out, composed or converted from other types or they have methods defined; several native Go packages use this approach for example &lt;a href=&#34;http://golang.org/pkg/net/http/#NewRequest&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Request&lt;/a&gt;, moreover it&amp;rsquo;s part of the &lt;a href=&#34;http://golang.org/doc/effective_go.html#package-names&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;constructors convention&amp;rdquo;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We probably agree that those &lt;strong&gt;&amp;ldquo;constructors&amp;rdquo; clearly perform better returning  a pointer to the struct than the itself struct&lt;/strong&gt;; returning those by value doesn&amp;rsquo;t make sense because they&amp;rsquo;d be copied and those copies don&amp;rsquo;t provide any benefit because they have been created inside of the function hence any other reference to them exist at that moment, at least if nothing crazy has been implemented, as passing a pointer which will be pointed to it moreover to return it and we&amp;rsquo;d like to keep their independent then to return a copy would offer that independence, however let&amp;rsquo;s forget the crazy scenarios that the most of the time they don&amp;rsquo;t probably make sense.&lt;/p&gt;
+
+&lt;p&gt;Considering those &lt;strong&gt;&amp;ldquo;constructors&amp;rdquo; functions&lt;/strong&gt;, if we need to &lt;strong&gt;create slices&lt;/strong&gt; of those types structs then, the most obvious thing is to have slices of pointers, because when we have to create room for the slice, we&amp;rsquo;ll only allocate memory for those pointers, otherwise we&amp;rsquo;d allocate memory for those structs and thereafter, when the constructor return a new one, the values should be copied from the pointer returned by the constructor to the struct allocated in the slice.&lt;/p&gt;
+
+&lt;p&gt;Here there is a simple snipped of code with this concept&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	id &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	upper &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+	lower &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Return pointer to a struct to avoid to&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;//return a copy of it which has been created inside&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; newToStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Return a slice of pointer to a struct because they structs are created&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// by a constructor function then added to the slice, and having pointers&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// we avoid to copy their values, each time that one is added&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSlice(fss []fromStruct) (tss []&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;([]&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With &lt;strong&gt;this prospect everything is quite clear&lt;/strong&gt; and the &lt;strong&gt;answer is to use slice of pointers to structs&lt;/strong&gt;, nonetheless I didn&amp;rsquo;t find that conclusion straightaway when I didn&amp;rsquo;t have that perspective and when I read several lines of code where slices of pointers to struct are passed to functions, because my first thought was that who wrote them, used pointers to struct to avoid to pass copies of those to functions, due as easy is as to get confused between &lt;a href=&#34;http://blog.golang.org/go-slices-usage-and-internals&#34;&gt;slices and arrays&lt;/a&gt; which is &lt;a href=&#34;http://golang.org/doc/effective_go.html#allocation_make&#34; target=&#34;blank&#34;&gt;mentioned in the documentation&lt;/a&gt; but when it&amp;rsquo;s read in one go is easy not to assimilate the concept in the first read; by the way, when I read and that though raised, I asked about it, however I didn&amp;rsquo;t get the previously exposed prospect and the answer was that probably were for that confusing reason what slices really are and at that moment to write that implementation, the concept was unknown.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Reading some open source code&lt;/strong&gt;, I&amp;rsquo;ve discover a &lt;strong&gt;simple and elegant way to avoid to see stars between the square brackets and the type name&lt;/strong&gt;; defining a type for slices of pointer to structs free your function declaration of several brackets and start. Applying this in the code snipped that I&amp;rsquo;ve written perviously, it looks as&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	id &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	upper &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+	lower &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStructSlice []fromStruct
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStructSlice []&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; newToStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSlice(fss fromStructSlice) (tss toStructSlice) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSlice, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If you want to see an example of one open source project, you can see it, in one of the &lt;a href=&#34;https://github.com/spf13/hugo/blob/91d16fbba09d3552af7b5327797dd2b5d9861b35/hugolib/pagination.go#L31&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;hugo packages&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:3653a82367ee70ab851135843e3e77ae&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;In Go, whenever you have a type struct, which is created through a &amp;ldquo;constructor&amp;rdquo; function, which will be used into slices, use slices of pointers to structs and define types for those if you don&amp;rsquo;t like to see lots of stars and brackets in your function declarations.&lt;/p&gt;
+
+&lt;p&gt;Hope that you read before you have had to figure yourself.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>3 Little Things in NodeJS which Help When You Have to Refactor</title>
+      <link>http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor</link>
+      <pubDate>Mon, 02 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor</guid>
+      <description>
+
+&lt;p&gt;We can say that in software development the concept of &lt;a href=&#34;http://martinfowler.com/books/refactoring.html&#34; target=&#34;_blank&#34;&gt;refactoring&lt;/a&gt; is present all the time; it seems that is in its nature.&lt;/p&gt;
+
+&lt;p&gt;We refactor code for several purposes, having a list with all of them, can be tricky, however here there are some:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We are building a prototype and we iterate over it to add, remove or change features.&lt;/li&gt;
+&lt;li&gt;We must clean code which was created in some point in a rush or it was created in the prototype cycle.&lt;/li&gt;
+&lt;li&gt;We must fix a bug.&lt;/li&gt;
+&lt;li&gt;We must upgrade dependencies which have changed the exposed API.&lt;/li&gt;
+&lt;li&gt;We must fix a performance issue.&lt;/li&gt;
+&lt;li&gt;We&amp;rsquo;ve come up with a new way/idea to get a cleaner or optimised implementation.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In my case, we are doing code refactoring almost everyday, even though, in my case, when I&amp;rsquo;m working in a new feature over a existent code base, sometimes I find some existent part which may have a little refactoring, and then I do, or if I&amp;rsquo;m working in a totally new implementation, I usually start from a roughly idea, which I &lt;a href=&#34;http://www.extremeprogramming.org/rules/spike.html&#34; target=&#34;_blank&#34;&gt;create a spike&lt;/a&gt; and then I refactor iteratively.&lt;/p&gt;
+
+&lt;p&gt;In this post, I&amp;rsquo;m going to mention 3 little things that I&amp;rsquo;ve learnt of refactoring NodeJS code bases, personal and professional ones, therefore I&amp;rsquo;ve learnt some of them from my own mistakes.&lt;/p&gt;
+
+&lt;h2 id=&#34;extracting-options-object-parameter-at-the-beginning-of-the-function:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Extracting &lt;code&gt;options&lt;/code&gt; object parameter at the beginning of the function&lt;/h2&gt;
+
+&lt;p&gt;One of the common implementation pattern that I use a lot in NodeJS is creating scripts that expose a function which receives only one parameter, an options object, e.g.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #888888&#34;&gt;// @param {Object} opts&lt;/span&gt;
+  module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;// Do whatever&lt;/span&gt;
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+      tell&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; tell
+    };
+  };
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; tell(somebody, message) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Hey &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; somebody &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;, Ivan wants to tell you: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; message;
+  }
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This pattern help me to prototype implementations because I can add more functionalities which require some options without changing the expose signature of the function, nonetheless don&amp;rsquo;t take me how it has to be used everywhere or keep it as the pattern to use to expose any API.&lt;/p&gt;
+
+&lt;p&gt;Ok, the pattern is great and if the function only has a few lines it is easy to take it to use in another prototype which may reuse it, however if the implementation is larger in number of lines or complex, for example it performs asynchronous operations (if you use callbacks then I would add, to the function of the example, a second parameter to pass the callback) then, knowing what options the function requires is painful, if they are accessed any where in the function.&lt;/p&gt;
+
+&lt;p&gt;One solution for that is to add a block comment on top of the function declaration with all the options parameters required and optional, nonetheless it isn&amp;rsquo;t in my likes, because if you&amp;rsquo;re prototyping, it&amp;rsquo;ll require to keep update when one parameter is added, removed or swapped from required to optional or vice versa, therefore it is prone to be outdated, hence useless.&lt;/p&gt;
+
+&lt;p&gt;A second solution, which is in my preferences, is extracting the options parameters just at the beginning of the function, just after you make all the validations of the required options or having a function with that purpose, which returns an opts object with the required values if opts pass the needed validations; you may already know what I mean, nonetheless let&amp;rsquo;s see an example:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// @param {Object} opts&lt;/span&gt;
+module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (opts) {
+  &lt;span style=&#34;color: #888888&#34;&gt;// Having a helper function for the validations is&lt;/span&gt;
+  &lt;span style=&#34;color: #888888&#34;&gt;// worthwhile when there are several options to check&lt;/span&gt;
+  &lt;span style=&#34;color: #888888&#34;&gt;// values and/or types&lt;/span&gt;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #333333&#34;&gt;!&lt;/span&gt;opts) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;opts is required&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; greeting &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; opts.greeting &lt;span style=&#34;color: #333333&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Hey&amp;#39;&lt;/span&gt;;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; teller &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; opts.teller &lt;span style=&#34;color: #333333&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+    tell&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; tell.bind(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, greeting, teller)
+  };
+};
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; tell(greeting, teller, somebody, message) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; greeting &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; somebody &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;, &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; teller &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; wants to tell you: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; message;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If the function is used internally and the options values are set by our implementation, validations are very basic, then extracting is clearer; hence as a rule of thumb keep the extraction in only one place because, with a quick glance, you can figure out in the future what option parameters the function needs.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, the good news is that ECMAScript 6 (ES6) will bring a destructuring feature, which allow to do something like this but compacted in the function signature, besides other cool stuff. You can read about it in the awesome Alex Rauschmayer blog post called &lt;a href=&#34;http://www.2ality.com/2015/01/es6-destructuring.html&#34; target=&#34;_blank&#34;&gt;Destructuring and parameter handling in ECMAScript 6&lt;/a&gt; to know deeply about ES6 destructuring and &lt;a href=&#34;http://www.2ality.com/2015/01/es6-destructuring.html#simulating_named_parameters_in_javascript&#34; href=&#34;_blank&#34;&gt;Simulating Named Parameters in JavaScript&lt;/a&gt; section to see the exposed case.&lt;/p&gt;
+
+&lt;h2 id=&#34;environment-variables-can-be-evil:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Environment variables can be evil&lt;/h2&gt;
+
+&lt;p&gt;Environment variables can be very useful to parametrise your applications and change the application behaviour however using too many or not to add them into documentation easy to find, can be a nightmare if they are accessed across all the code base.&lt;/p&gt;
+
+&lt;p&gt;However if they are used with awareness, only using a few and very identified then, they avoid to have a burden configuration file which has to be versioned for different environments.&lt;/p&gt;
+
+&lt;p&gt;In NodeJS, there is the famous NODE_ENV environment variable and it&amp;rsquo;s fine to define change the behaviour of your application or library (if it is justified), however I&amp;rsquo;ve found that not always is good to rely on it due that some npm packages use it to operate differently in production than development or testing environments.&lt;/p&gt;
+
+&lt;p&gt;The cases that I&amp;rsquo;ve found they are better to use other variable than NODE_ENV to specify the environment is when you have something that only has to run exclusively in production, for example, you  would like to set NODE_ENV to production to do load testing of your application, but you don&amp;rsquo;t want to send errors message to a central service that you use to collect them, because obviously you&amp;rsquo;re testing it in a controlled environment and don&amp;rsquo;t want to pollute your productions logs.&lt;/p&gt;
+
+&lt;p&gt;Anyway if your implementations need environment variables, I would pull all of them out in one place and would spread them as a property of an options object parameter, similar what I exposed in the previous section; unifying to one place where the application take them, eases to see in quick view what environment variables your application needs and what default values are assigned if they could be not specified, then know easily what values to set in other environments when the default values aren&amp;rsquo;t appropriated.&lt;/p&gt;
+
+&lt;h2 id=&#34;use-absolute-url-computed-into-variables:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Use absolute URL computed into variables&lt;/h2&gt;
+
+&lt;p&gt;This is a recommendation bound to &lt;a href=&#34;http://expressjs.com/4x/api.html&#34; target=&#34;_blank&#34;&gt;express 4.x&lt;/a&gt;, specifically to &lt;a href=&#34;http://expressjs.com/4x/api.html#router&#34; target=&#34;_blank&#34;&gt;Router&lt;/a&gt; feature which is available since version 4, nonetheless it may apply for others Web frameworks in a similar way.&lt;/p&gt;
+
+&lt;p&gt;Router is one of the awesome features that express 4 has brought, it allows to create mini-applications which specify their routes, middlewares included; they offer the possibility to reuse your implemented routes in different applications, obviously if they are quite generic and you developed them bearing in mind that autonomy.&lt;/p&gt;
+
+&lt;p&gt;However, I created some of them bearing in mind that, but I missed one thing. My routes render views rather than to send JSON, however it could apply to JSON if you have to send URLs to follow, and they need to link one to another and vice versa.&lt;/p&gt;
+
+&lt;p&gt;Because route can be mounted by other &lt;a href=&#34;http://expressjs.com/4x/api.html#app.use&#34; target=&#34;_blank&#34;&gt;Routers and a App&lt;/a&gt; you cannot hardcode an absolute URL, then I thought use relative URLs.&lt;/p&gt;
+
+&lt;p&gt;For example, having this two routes in a router:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  router.get(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/user/:id&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res, next) { ... });
+  router.get(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/group/:id&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res, next) { ... })
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Then each route view has a link to each other, e.g.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;user view&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;a&lt;/span&gt; &lt;span style=&#34;color: #0000CC&#34;&gt;href=&lt;/span&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;group/10&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #007700&#34;&gt;&amp;gt;&lt;/span&gt;NodeJS developers&lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;group view&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;a&lt;/span&gt; &lt;span style=&#34;color: #0000CC&#34;&gt;href=&lt;/span&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;user/0&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #007700&#34;&gt;&amp;gt;&lt;/span&gt;Group Administrator&lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Then I got in troubles because the links don&amp;rsquo;t work, because if you are, for example, in a users view, your browser url could be something &lt;code&gt;http://communi.ty/user/10&lt;/code&gt;, then when you press the link to the group &amp;ldquo;NodeJS developers&amp;rdquo; your browser will request &lt;code&gt;http://communi.ty/user/group/10&lt;/code&gt;, then the URL does not match with the &amp;ldquo;group&amp;rdquo; route of the Router.&lt;/p&gt;
+
+&lt;p&gt;In front of it, you can think to use absolute URLs, however if you use that Router in another application or your mount it in another path, then they won&amp;rsquo;t work. Perhaps, you decide that the views are not portable and they have to be implemented on each application, well&amp;hellip; that make sense, views are very bound to the application and they cannot probably be reused but you still have the issue that if you mount the Router under another path in the same application, because you are prototyping then you could realise that a new path fits better, then you would have to update your views without haven&amp;rsquo;t ported your router to another application; even worse, in the JSON case that I mentioned above, using relative URLs will require to update the Router, then it wouldn&amp;rsquo;t be reusable.&lt;/p&gt;
+
+&lt;p&gt;The solutions is easy, always compute the links with their absolute URL in the route and pass them to the render as variables, and likewise when you send JSON.&lt;/p&gt;
+
+&lt;p&gt;You can get the absolute URL even though you are in a Router&amp;rsquo;s route with &lt;a href=&#34;http://expressjs.com/4x/api.html#req.originalUrl&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;req.originalUrl&lt;/code&gt;&lt;/a&gt; and then you can compute the URLs to the other routes; in this example, stripping &amp;ldquo;/group/&lt;em&gt;&amp;rdquo; and &amp;ldquo;/user/&lt;/em&gt;&amp;rdquo; and after appending whatever is needed in each case would be enough to get the expected result.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;As software developers, we are refactoring all the time, software always can be better or it has to change for any reason; sometimes we have to prototype and move the prototypes to a product as soon as possible hence we don&amp;rsquo;t have time enough to spend thinking all the cases that our applications will face, even we&amp;rsquo;d have it, we&amp;rsquo;d probably fail, for that reason I guess that agile methodologies appeared; then in front of of this situation, we can craft software as better as we can and apply tiny things that we learn throughout our experience to make those refactoring less painful.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

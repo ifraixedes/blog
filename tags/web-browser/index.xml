@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Web Browser on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/web-browser/</link>
+    <description>Recent content in Web Browser on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Mon, 26 Jan 2015 11:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/web-browser/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Performance Execution on JS Objects Created in Different Ways</title>
+      <link>http://blog.fraixed.es/post/performance-js-objects-created-different-ways</link>
+      <pubDate>Mon, 26 Jan 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/performance-js-objects-created-different-ways</guid>
+      <description>
+
+&lt;p&gt;In JS (javascript) there are different approaches to create objects which differ in somehow not only syntax but in small things that you can achieve.&lt;/p&gt;
+
+&lt;p&gt;My aim in this post is not to talk of those different approaches in the sense how they differ in terms of &lt;a href=&#34;http://en.wikipedia.org/wiki/Information_hiding&#34; target=&#34;_blank&#34;&gt;encapsulation&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code&#34; target=&#34;_blank&#34;&gt;code readability&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Programming_paradigm&#34; target=&#34;_blank&#34;&gt;programming paradigm&lt;/a&gt; approach, best practices, likes and preferences; I think that there are enough posts, articles, resources, etc, with full details, well explained and good quality about this topic on Internet.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m going to show some &lt;strong&gt;basic performance tests&lt;/strong&gt; that I&amp;rsquo;ve done with an object created with those different approaches; just to have fund and because I was curious about it.&lt;/p&gt;
+
+&lt;h2 id=&#34;test-implementations:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Test implementations&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve implemented a silly example of those different approaches and after I executed a performance test in different platforms (Browsers, &lt;a href=&#34;http://nodejs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Node&lt;/a&gt; and &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;iojs&lt;/a&gt;); let&amp;rsquo;s see first the used object creation approaches implementations:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Usual Constructor Function&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPrototype() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+}
+
+ContentPrototype.prototype.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; text;
+};
+
+ContentPrototype.prototype.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text;
+};
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Usual Constructor Function &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPrototypeNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+}
+
+ContentPrototypeNull.prototype.__proto__ &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+ContentPrototypeNull.prototype.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; text;
+};
+
+ContentPrototypeNull.prototype.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text;
+};
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Constructor Function which uses &lt;code&gt;Object.defineProperty&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentProperty() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.defineProperty(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;content&amp;#39;&lt;/span&gt;, {
+    set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+      }
+
+      text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+    },
+    get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Constructor Function which uses &lt;code&gt;Object.defineProperty&lt;/code&gt; &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPropertyNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.defineProperty(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;content&amp;#39;&lt;/span&gt;, {
+    set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+      }
+
+      text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+    },
+    get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+    }
+  });
+}
+
+ContentPropertyNull.prototype.__proto__ &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Usual Object Literal&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunction() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+            &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+  };
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object Literal &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; obj &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;);
+
+  obj.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+    }
+
+    text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+  };
+
+  obj.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+  };
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; obj;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object created by &lt;code&gt;Object.create&lt;/code&gt; defining properties&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionObjCreate() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;, {
+    content&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object created by &lt;code&gt;Object.create&lt;/code&gt; defining properties &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionObjCreateNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, {
+    content&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;After I wrote those examples, I also wrote little test for each one to check that they have the same behaviour in both operations (read and write), however I haven&amp;rsquo;t added here to avoid noise.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance-execution-tests:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Performance Execution Tests&lt;/h2&gt;
+
+&lt;p&gt;Thereafter I&amp;rsquo;ve created two performance test scripts to run in Node and iojs in my laptop (8 cores):&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;My own simple implementation which basically execute each operation a bunch of times in a loop, stores the individual values and calculates the time execution average; you can find it in this &lt;a href=&#34;https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-simple-average-time-metrics-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Another one which uses &lt;a href=&#34;http://benchmarkjs.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;benchmark.js&lt;/a&gt; with &lt;a href=&#34;https://github.com/wadey/node-microtime&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;microtime&lt;/a&gt; whose script you can find in this &lt;a href=&#34;https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-benchmark-metics-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In the case of the browsers, I&amp;rsquo;ve used &lt;a href=&#34;http://jsperf.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;jsperf&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then I&amp;rsquo;ve executed the performance execution test in the mentioned platforms to see how the objects, created with each different approach, perform in terms of writing and reading an object&amp;rsquo;s property value.&lt;/p&gt;
+
+&lt;h3 id=&#34;iojs:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;iojs&lt;/h3&gt;
+
+&lt;p&gt;I used the last iojs version available so far, which is 1.1.0.&lt;/p&gt;
+
+&lt;p&gt;My own script returned these results&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;iojs v1.1.0 simple average time&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/65/d6/66/65d666c5bf4aa1063ba2b42e299ceba8.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Benchmarjs script returned these ones&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;iojs v1.1.0 benchmark&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/9a/76/18/9a7618386ca59477e6069f1b086f1be5.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;node:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Node&lt;/h3&gt;
+
+&lt;p&gt;I used the last production Node version available so far, which is 0.12.0, YES v0.12 has been finally released.&lt;/p&gt;
+
+&lt;p&gt;My own script returned these results&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;node v0.12.0 simple average time&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/f1/b1/9a/f1b19a2b89f0daf73ee83ebbcc3c5165.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Benchmarjs script returned these ones&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;node v0.12.0 benchmark&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/de/36/a1/de36a16e9216edaf3f6e4afaaafa0b81.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;browser:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Browser&lt;/h3&gt;
+
+&lt;p&gt;In the browser you can find two tests, which are the same than the iojs and Node ones, but I had to split them in two, one to run the writing property operation and another for the reading one, to offer better results readability.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve run each one in three browsers, Chrome, Firefox and Safari and two different versions in the case of Chrome, one of them the current Chrome Canary; however &lt;strong&gt;I encourage you to run with your browsers&lt;/strong&gt; to have more samples of the same borwser/version and/or new ones from different browsers/versions.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://jsperf.com/proto-defineprop-obj-set/2&#34; target=&#34;_blank&#34;&gt;writing property value test&lt;/a&gt; showed me the next chart which I took an screenshot&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;browsers writing property jsperf chart&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/84/97/7e/84977e5a4415963462f7aa98c72f9e54.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://jsperf.com/prototype-vs-defineproperty-vs-object-get/3&#34; target=&#34;_blank&#34;&gt;reading property value test&lt;/a&gt; and its screenshot that I took&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;browsers reading property jsperf chart&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/d6/21/d2/d621d29ce5176a6a119d4b65abca3e84.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;my-analysis:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;My Analysis&lt;/h2&gt;
+
+&lt;p&gt;Due that Node and iojs benchmark don&amp;rsquo;t make more difference between running the benchmark test asynchronous and synchronous, I&amp;rsquo;ve just needed to take one of them in both cases to compare.&lt;/p&gt;
+
+&lt;p&gt;Having the comparison of writing and reading an object property value between them using benchmark script is not quite clear about the differences, more or less they perform similar and one is a little bit faster than other in some cases and vice versa.&lt;/p&gt;
+
+&lt;p&gt;If I have to asses them using &lt;strong&gt;my own script&lt;/strong&gt;, I can see that overall, &lt;strong&gt;Node performs around 5% faster than iojs&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;However both are consistent in what create object approaches perform faster in terms of writing and reading values.&lt;/p&gt;
+
+&lt;p&gt;We can see that Node and iojs, writes and reads perform better with objects whose properties have been defined using &lt;code&gt;Object.defineProperty&lt;/code&gt; or defining them through &lt;code&gt;Object.create&lt;/code&gt;; the approach that performs worse is any kind of constructors and in the middle we have the object literals; we cannot see much difference between inherit from Object prototype than without.&lt;/p&gt;
+
+&lt;p&gt;Having the &lt;strong&gt;difference between the best approach and the worst one&lt;/strong&gt; we can get gains around &lt;strong&gt;40% in writing&lt;/strong&gt; and &lt;strong&gt;200% in reading&lt;/strong&gt;, so not bad to have thought.&lt;/p&gt;
+
+&lt;p&gt;In the case of the browsers, we&amp;rsquo;ve got that the performance between the different approaches is the same for writing and reading.&lt;/p&gt;
+
+&lt;p&gt;Between them, &lt;strong&gt;Firefox and Safari perform very good with object literals&lt;/strong&gt;; Firefox does, in second place with constructors and so bad with objects created with &lt;code&gt;Object.create&lt;/code&gt; and/or having the properties set by &lt;code&gt;Object.defineProperty&lt;/code&gt; and Safari the opposite.&lt;/p&gt;
+
+&lt;p&gt;Surprisingly &lt;strong&gt;Chrome performs equally with all of them less object literals&lt;/strong&gt;, and &lt;strong&gt;Chrome Canary&lt;/strong&gt; increases those with constructors, maintains the same with object literals and &lt;strong&gt;decrease so much with objects created by &lt;code&gt;Object.create&lt;/code&gt;&lt;/strong&gt; which define their properties with it.&lt;/p&gt;
+
+&lt;p&gt;In the browser, you can see easily, thanks to the charts showed by &lt;a href=&#34;http://jsperf.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;jsperf&lt;/a&gt;, the roughly percentage of gain between approaches and browsers.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Having these result you can decide what approach to use in your implementations to boost the performance, however you may only get a benefit of it if you are writing and reading values on objects properties that you&amp;rsquo;ve created their implementation; nonetheless I only assessed CPU so, profiling the amount of memory spend with the different approaches when you have to create a lot of them, would also be important to keep the best balance.&lt;/p&gt;
+
+&lt;p&gt;Moreover in the time being the results are those, but mostly, browsers are updated fast and these results may change in the near future.&lt;/p&gt;
+
+&lt;p&gt;From my point of view, &lt;strong&gt;it isn&amp;rsquo;t worthwhile to focus in performance&lt;/strong&gt; and &lt;strong&gt;forget &lt;a href=&#34;http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code&#34; target=&#34;_blank&#34;&gt;code readability&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Programming_paradigm&#34; target=&#34;_blank&#34;&gt;programming paradigm&lt;/a&gt; and best practices&lt;/strong&gt; to keep the implementation simple and clear to ease the maintainability; hence after I&amp;rsquo;ve written it, I suggest to read these two rules of the Unix philosophy:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.faqs.org/docs/artu/ch01s06.html#id2877610&#34; target=&#34;_blank&#34;&gt;Rule of Clarity: Clarity is better than cleverness&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.faqs.org/docs/artu/ch01s06.html#rule_of_optimization&#34; target=&#34;_blank&#34;&gt;Rule of Optimization: Prototype before polishing. Get it working before you optimize it&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;ve enjoyed.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

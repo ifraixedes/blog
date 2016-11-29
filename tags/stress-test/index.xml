@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Stress Test on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/stress-test/</link>
+    <description>Recent content in Stress Test on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 20 Mar 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/stress-test/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #5</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150320/</link>
+      <pubDate>Fri, 20 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150320/</guid>
+      <description>&lt;p&gt;The last 7 days, twitter hasn&amp;rsquo;t only helped me to discover new libraries, techniques, tutorials, etc; it has also brought a quite interesting quote which I agree and cool tool which allows you record your terminal, let&amp;rsquo;s see them in appearing order&lt;/p&gt;
+
+&lt;p&gt;A practical video which show you some tips in how to create Go packages successfully, don&amp;rsquo;t miss to watch it if you are in the wave of Golang(&lt;a href=&#34;http://golang.org&#34;&gt;http://golang.org&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Practical Tips for Creating a Go Package Successfully: &lt;a href=&#34;https://t.co/PVdRndZIEM&#34;&gt;https://t.co/PVdRndZIEM&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/video?src=hash&#34;&gt;#video&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/576723470849064960&#34;&gt;March 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Through a reply of a tweet which asked for tools to make terminal tutorial animations, I&amp;rsquo;ve discovered &lt;a href=&#34;https://asciinema.org/&#34;&gt;asciinema&lt;/a&gt; a wonderful &lt;strong&gt;Open Source&lt;/strong&gt; tool to record your terminal&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/robbyrussell&#34;&gt;@robbyrussell&lt;/a&gt; &lt;a href=&#34;https://t.co/cdNu1UqJFI&#34;&gt;https://t.co/cdNu1UqJFI&lt;/a&gt; is nice&lt;/p&gt;&amp;mdash; Frank Denis (@jedisct1) &lt;a href=&#34;https://twitter.com/jedisct1/status/576766332781363200&#34;&gt;March 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;What about debugging Go in GDB, if you don&amp;rsquo;t know, then you can read this &lt;a href=&#34;http://cevaris.com/2015/03/08/debugging-golang-in-gdb/&#34;&gt;quick tutorial&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Debugging Go in GDB: &lt;a href=&#34;http://t.co/QaszV7pGiT&#34;&gt;http://t.co/QaszV7pGiT&lt;/a&gt; (A quick tutorial on debugging a simple Go program using the popular GNU debugger.)&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/577085866046271488&#34;&gt;March 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;As I&amp;rsquo;ve commented in the introduction of this post, the mentioned quote is&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Working hard for something&amp;hellip; &lt;a href=&#34;http://t.co/3Ncjhys2SY&#34;&gt;pic.twitter.com/3Ncjhys2SY&lt;/a&gt;&lt;/p&gt;&amp;mdash; Juergen R. Bolz (@123top10) &lt;a href=&#34;https://twitter.com/123top10/status/577121077333217280&#34;&gt;March 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last selected one is about how to stress your servers, do you thing that your servers are gods? maybe you want to know their limits&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;How To Stress Test CPU and Memory (VM) On a Linux and Unix With Stress-ng (via &lt;a href=&#34;https://twitter.com/Pocket&#34;&gt;@Pocket&lt;/a&gt;) &lt;a href=&#34;http://t.co/si9jQ3YkH3&#34;&gt;http://t.co/si9jQ3YkH3&lt;/a&gt;&lt;/p&gt;&amp;mdash; Paul B(ü|ue)tow (@plantanran) &lt;a href=&#34;https://twitter.com/plantanran/status/578320627674849280&#34;&gt;March 18, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that your week has been not too bad and you have a wonderful weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

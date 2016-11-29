@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Web on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/web/</link>
+    <description>Recent content in Web on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Wed, 02 Mar 2016 16:05:37 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/web/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A Nunjucks extension to compile RiotJS tags</title>
+      <link>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</link>
+      <pubDate>Wed, 02 Mar 2016 16:05:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</guid>
+      <description>
+
+&lt;p&gt;On the way to London, meanwhile I was flying, I wanted to take advantage of the dead time without internet to write this short blog post about a &lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+, &lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ and a Nunjucks extension that I&amp;rsquo;ve implemented, for a side project that I&amp;rsquo;m working on, to render RiotJS tags on the server.&lt;/p&gt;
+
+&lt;h2 id=&#34;nunjucks:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Nunjucks&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+ is a template engine (yes, another one!) for NodeJS and the browser which is heavily inspired by &lt;a href=&#34;http://jinja.pocoo.org/&#34; target=&#34;_blank&#34; &gt;jinja2&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;d never used before and probably I had heard about it, but I couldn&amp;rsquo;t remember, world is moving fast and almost any time you start a project you can discover lots of new stuff which may be better or a good fit it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used &lt;a href=&#34;http://jade-lang.com/&#34; target=&#34;_blank&#34; &gt;Jade&lt;/a&gt;
+ and &lt;a href=&#34;http://paularmstrong.github.io/swig/&#34; target=&#34;_blank&#34; &gt;Swig&lt;/a&gt;
+ (a bit less) several times and for this project I was thinking in using &lt;a href=&#34;http://markojs.com/&#34; target=&#34;_blank&#34; &gt;Marko&lt;/a&gt;
+, it has a few nice features as be able to send the content through a stream and a widget system which helps to create reusable components; however I found a bit confusing to start because there are several examples and &lt;a href=&#34;https://www.youtube.com/playlist?list=PLZUgs-F38XXQJBxA58UqnwTVMZS_uza_C&#34; target=&#34;_blank&#34; &gt;screen casts&lt;/a&gt;
+ but &lt;a href=&#34;http://markojs.com/docs/marko/javascript-api/#rendertemplatepath-templatedata-streamwritable&#34; target=&#34;_blank&#34; &gt;quite few functions have been deprecated in the new version&lt;/a&gt;
+ and I don&amp;rsquo;t have the need of streaming the content to enhance performance for this project.&lt;/p&gt;
+
+&lt;p&gt;At the same time, I didn&amp;rsquo;t want to spend lots of time in choosing and having to solve quite a few issues in how to use it and use it well to get the advantages, so I found Nunjucks was a good choice between taking something that I know and something that it&amp;rsquo;s new for me.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, in the time being I don&amp;rsquo;t expect to use that many advanced features that Nunjucks has, and probably I won&amp;rsquo;t take advantage of its power, but it&amp;rsquo;s OK, as it provides me all the things that I need.&lt;/p&gt;
+
+&lt;h2 id=&#34;riotjs:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;RiotJS&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ seems probably out of the context of this post and it could be if I wouldn&amp;rsquo;t have decided to also incorporate since the first few commits.&lt;/p&gt;
+
+&lt;p&gt;It also could be React, but I feel that it would add too much complexity to the project, it isn&amp;rsquo;t a big project and it shouldn&amp;rsquo;t have a big code base; moreover I would have to spend more time to nail React and all the things around it so I would end up not making the things done.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve had a experience using RiotJS, for a freelancing project that I was working a few weeks ago, it was a project with very hard deadline and I had to build a mobile friendly site for one existing one, created by one big &amp;ldquo;consultancy&amp;rdquo; company which basically they ended up delivering a huge pile of crap; anyway, the only think that matters for this post is that it couldn&amp;rsquo;t be made responsive and in 3 weeks time I had to deep in that horrible code base, make the changes what I needed to serve the content for a &lt;a href=&#34;https://en.wikipedia.org/wiki/Single-page_application&#34; target=&#34;_blank&#34; &gt;SPA&lt;/a&gt;
+ which at the same time I had to create to be served for requests coming from mobile devices.&lt;/p&gt;
+
+&lt;p&gt;I had never used RiotJS before, and due its minimalism I was able to read and understand the docs, and just use it to do what I had to do.&lt;/p&gt;
+
+&lt;p&gt;For this side project, I could avoid to add Riot, because it makes sense to render the site in the server, however there are a few parts which I would like to render on the client (e.g. a dashboard), maybe not in the first version, but in one, close to the first one.&lt;/p&gt;
+
+&lt;p&gt;Choosing RiotJS, I think that I can take advantage of its &lt;a href=&#34;http://riotjs.com/guide/&#34; target=&#34;_blank&#34; &gt;custom tag&lt;/a&gt;
+ to create components which at the beginning I can render in the server into Nunjucks templates and at some point, start to render them in the client side in a few pages or parts of them.&lt;/p&gt;
+
+&lt;h2 id=&#34;rendering-riotjs-in-nunjucks-templates:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Rendering RiotJS in Nunjucks templates&lt;/h2&gt;
+
+&lt;p&gt;To do this, I didn&amp;rsquo;t need to create any plugin, I could follow the same approach which you can watch in &lt;a href=&#34;https://www.youtube.com/watch?v=6ww1UXGJzcs&amp;amp;feature=youtu.be&#34; target=&#34;_blank&#34; &gt;this video using swig&lt;/a&gt;
+, but I found that creating a Nunjucks plugin for this purpose was simple and easy and it will save me time to repeat over an over a few statements in any page that I&amp;rsquo;m going to drop RiotJS tags besides the implementation will be less error prone.&lt;/p&gt;
+
+&lt;p&gt;The implementation of &lt;a href=&#34;http://mozilla.github.io/nunjucks/api.html#custom-tags&#34; target=&#34;_blank&#34; &gt;Nunjucks extension&lt;/a&gt;
+ is as simple as:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; RiotExtension(basePath) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.tags &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;]
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.parse &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (parser, nodes) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; tok &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.nextToken()
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; args &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.parseSignature(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;)
+    parser.advanceAfterBlockEnd(tok.value)
+
+    parser.parseUntilBlocks(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;endriot&amp;#39;&lt;/span&gt;)
+    parser.advanceAfterBlockEnd()
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nodes.CallExtension(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;renderRiot&amp;#39;&lt;/span&gt;, args, [])
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.renderRiot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (ctx, view, opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-disable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; tag &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(path.join(basePath, view))
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-enable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nunjucks.runtime.SafeString(riot.render(tag, opts))
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On the server, I&amp;rsquo;m using &lt;a href=&#34;http://koajs.com/&#34; target=&#34;_blank&#34; &gt;KoaJS&lt;/a&gt;
+ v2, at that time it wasn&amp;rsquo;t support in &lt;a href=&#34;https://github.com/queckezz/koa-views&#34; target=&#34;_blank&#34; &gt;Koa-views&lt;/a&gt;
+ for Koa v2 without using &lt;a href=&#34;https://github.com/koajs/convert&#34; target=&#34;_blank&#34; &gt;koa-convert&lt;/a&gt;
+, maybe &lt;a href=&#34;https://github.com/queckezz/koa-views/pull/54&#34; target=&#34;_blank&#34; &gt;there will one soon&lt;/a&gt;
+, and because I prefer to render views without having side effects in Koa &lt;code&gt;ctx&lt;/code&gt; (context), I basically pass the render function where I need and use it to generate the HTML which I assign to &lt;code&gt;ctx.body&lt;/code&gt; where I need.&lt;/p&gt;
+
+&lt;p&gt;The function which returns a promised render function, looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; getRenderFn(viewsPath, opts) {
+  riot.settings.brackets &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;${ }&amp;#39;&lt;/span&gt;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; njr &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; nunjucks.configure(viewsPath, opts)
+  njr.addExtension(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;RiotExtension&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; RiotExtension(path.join(viewsPath, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)))
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (view, data) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Promise((resolve, reject) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+      njr.render(view, data, (err, html) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+          reject(err)
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt;
+        }
+
+        resolve(html)
+      })
+    })
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And then, whenever I need to render a Riot tag in a Nunjucks template I only have to do &lt;code&gt;{% riot &amp;quot;my-tag.html&amp;quot; %}{% endriot %}&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Nunjuks looks as powerful template engine, on the other hand, I love the minimalism of RiotJS; with the combination of both I can render views in the server including components (Riot tags) than later on, I could reuse in the client side.&lt;/p&gt;
+
+&lt;p&gt;Nunjucks and RiotJS isn&amp;rsquo;t the only two that you can combine together, there more famous combinations or just one which allow to create templates which can be rendered in the server and the client, but I&amp;rsquo;ve decided to choose those based on my project requirements (technical and non-technical too); my recommendation here, is, do the same, choose the one(s) which fit better to it.&lt;/p&gt;
+
+&lt;p&gt;Happy mixing!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #10</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150424/</link>
+      <pubDate>Fri, 24 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150424/</guid>
+      <description>&lt;p&gt;This week, my first favourite tweet is not about tech, rare? where I have a few other interests as well, however don&amp;rsquo;t worry, the next four are tech, so go ahead&lt;/p&gt;
+
+&lt;p&gt;Starting a business from scratch isn&amp;rsquo;t probably the easiest thing to do, probably the opposite, so knowing from the experience of others is very valuable&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Starting a business from Scratch - hints and tips from &lt;a href=&#34;https://twitter.com/dan_jenkins&#34;&gt;@dan_jenkins&lt;/a&gt; after he founded &lt;a href=&#34;https://twitter.com/nimbleapeltd&#34;&gt;@nimbleapeltd&lt;/a&gt; &lt;a href=&#34;http://t.co/Uz9JG1Zhom&#34;&gt;http://t.co/Uz9JG1Zhom&lt;/a&gt;&lt;/p&gt;&amp;mdash; Nimble Ape Ltd (@nimbleapeltd) &lt;a href=&#34;https://twitter.com/nimbleapeltd/status/589087461864779778&#34;&gt;April 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; is getting my attention, so learning language features through blog post is quite passive to get into it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Mixing, matching, mutation and moves &lt;a href=&#34;http://t.co/YFE1702wiD&#34;&gt;http://t.co/YFE1702wiD&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/589119747293220864&#34;&gt;April 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I love Internet, so I love the Web, reading about the new browser features is always in my todo list&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Chrome Stable (42) now with Push Notifications and Add to Home screen for all users.&amp;#10;&amp;#10;&lt;a href=&#34;http://t.co/tw2A9dt7uJ&#34;&gt;http://t.co/tw2A9dt7uJ&lt;/a&gt; &lt;a href=&#34;http://t.co/prEOJmC0uQ&#34;&gt;pic.twitter.com/prEOJmC0uQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Chrome Developers (@ChromiumDev) &lt;a href=&#34;https://twitter.com/ChromiumDev/status/590169593110335488&#34;&gt;April 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been very happy of the new features that &lt;a href=&#34;https://www.npmjs.com/&#34;&gt;npm&lt;/a&gt; release, with the amount of package that it hosts, it was something that so many people were expecting, and happy they&amp;rsquo;ve got solve a hard problem&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;solving npm’s hard problem: naming packages &lt;a href=&#34;http://t.co/126RkmZaef&#34;&gt;http://t.co/126RkmZaef&lt;/a&gt; &lt;a href=&#34;http://t.co/voENvgIiA7&#34;&gt;pic.twitter.com/voENvgIiA7&lt;/a&gt;&lt;/p&gt;&amp;mdash; npmbot (@npmjs) &lt;a href=&#34;https://twitter.com/npmjs/status/590307732042973184&#34;&gt;April 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I think that this series of blog posts about &lt;a href=&#34;http://adampresley.com/2015/04/12/writing-a-lexer-and-parser-in-go-part-1.html&#34;&gt;&amp;ldquo;Writing a Lexer and Parser in Go&amp;rdquo;&lt;/a&gt; will very good, because they teach &lt;a href=&#34;http://golang.org&#34;&gt;golang&lt;/a&gt; based in a very familiar topic about computer science besides that the example is simple, so easy to step into, and based in a Rob Pike presentation.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Writing a Lexer and Parser in Go - Part 1: &lt;a href=&#34;http://t.co/EvhFBi6L2X&#34;&gt;http://t.co/EvhFBi6L2X&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/590183203736068097&#34;&gt;April 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a crazy weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #6</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150327/</link>
+      <pubDate>Fri, 27 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150327/</guid>
+      <description>&lt;p&gt;Yep, this week my timeline came up with these marvelous tweets.&lt;/p&gt;
+
+&lt;p&gt;An awesome tool that take source code TODO comments and create Github issues to remind you that they have to be fixed in not to leave those there for ages&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;nifty tool to convert your TODO comments into Github issues: &lt;a href=&#34;http://t.co/M2gwKz5RvI&#34;&gt;http://t.co/M2gwKz5RvI&lt;/a&gt; - bonus: install as a git precommit hook!&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/580429907521503232&#34;&gt;March 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Opinions are opinions and the battles about preferences between techies is the day to day, don&amp;rsquo;t miss this&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;A Few Notes On Choosing Between Go and D for a Quick Project: &lt;a href=&#34;http://t.co/KfO2C0svlb&#34;&gt;http://t.co/KfO2C0svlb&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/579311506665406464&#34;&gt;March 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Load a web site fast is one of the biggest headache of any web developer, here you can read a new technique that hopefully will help you to get less crazy each time that you must do it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;New JavaScript Techniques for Rapid Page Loads: &lt;a href=&#34;http://t.co/hZJD4LX6Ur&#34;&gt;http://t.co/hZJD4LX6Ur&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/579270070611931138&#34;&gt;March 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Well if you were desiring that Blink implement pointer events, this tweet is good news for you&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Based on feedback from developers &amp;amp; the Pointer Event Working Group, Blink is now reconsidering Pointer Events: &lt;a href=&#34;https://t.co/8uARlPNoVp&#34;&gt;https://t.co/8uARlPNoVp&lt;/a&gt;&lt;/p&gt;&amp;mdash; Chrome Developers (@ChromiumDev) &lt;a href=&#34;https://twitter.com/ChromiumDev/status/580764127691411456&#34;&gt;March 25, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;One example which shows that the decisions are made mustn&amp;rsquo;t be forever, things change and some that was ideal in past doesn&amp;rsquo;t have to be idea for now or for the future&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;«This … makes me wonder what other standard unix programs make design assumptions that aren’t true in 2015…» — this.&amp;#10;&amp;#10;&lt;a href=&#34;http://t.co/LpnWxVIXP1&#34;&gt;http://t.co/LpnWxVIXP1&lt;/a&gt;&lt;/p&gt;&amp;mdash; Michael Klishin (@michaelklishin) &lt;a href=&#34;https://twitter.com/michaelklishin/status/573599284454637568&#34;&gt;March 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you have a great weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

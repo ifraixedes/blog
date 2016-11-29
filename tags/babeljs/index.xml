@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Babeljs on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/babeljs/</link>
+    <description>Recent content in Babeljs on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Tue, 12 Jan 2016 18:00:58 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/babeljs/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Speaking at BarcelonaJS: Generators &amp; Async Functions</title>
+      <link>http://blog.fraixed.es/post/speaking-bcnjs-generators-and-async-functions</link>
+      <pubDate>Tue, 12 Jan 2016 18:00:58 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/speaking-bcnjs-generators-and-async-functions</guid>
+      <description>&lt;p&gt;Tuesday (12th of January of 2016), at &lt;strong&gt;&lt;a href=&#34;http://barcelonajs.org/&#34; target=&#34;_blank&#34; &gt;BarcelonaJS Organisation&lt;/a&gt;
+&lt;/strong&gt;, I gave an introductory talk about &lt;strong&gt;&lt;a href=&#34;http://www.ecma-international.org/ecma-262/6.0/#sec-generatorfunction-objects&#34; target=&#34;_blank&#34; &gt;Generators Functions which are available in EcmaScript 2015&lt;/a&gt;
+&lt;/strong&gt; and &lt;strong&gt;&lt;a href=&#34;https://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;Async Functions which are defined in the draft proposal for EcmaScript 2016&lt;/a&gt;
+&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;I wrote just these few slides&lt;/p&gt;
+
+&lt;p&gt;&lt;div style=&#34;margin: auto; text-align: center;&#34;&gt;
+  &lt;iframe width=&#34;750&#34; height=&#34;563&#34; frameborder=&#34;0&#34; scrolling=&#34;no&#34; marginheight=&#34;0&#34; marginwidth=&#34;0&#34; src=&#34;http://blog.fraixed.es/slides/bcnjs-201601/&#34;
+    &lt;p&gt;Your browser doesn&amp;rsquo;t support iframes&lt;/p&gt;
+  &lt;/iframe&gt;
+  &lt;br&gt;
+  &lt;a href=http://blog.fraixed.es/slides/bcnjs-201601/ target=&#34;_blank&#34;&gt;See these slides in a single page &amp;amp; don&amp;rsquo;t forget to press &amp;ldquo;p&amp;rdquo; to see a few notes which I&amp;rsquo;ve written&lt;/a&gt;
+&lt;/div&gt;
+&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;and mostly I spent my time talking about them through examples which you can find &lt;a href=&#34;https://gist.github.com/ifraixedes/62a7155b87e7e7d0c71d&#34; target=&#34;_blank&#34; &gt;in a public gist on my Github&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If you were there, I hope that you enjoyed or at least got something good from my talk and please don&amp;rsquo;t forget &lt;strong&gt;to drop a few comments with your feedback&lt;/strong&gt;; it will be very valuable for me to keep improving.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

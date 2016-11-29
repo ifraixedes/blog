@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Npm on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/npm/</link>
+    <description>Recent content in Npm on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Thu, 25 Feb 2016 09:14:11 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/npm/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>KoaJS v2, BabelJS &amp; npm scripts</title>
+      <link>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</link>
+      <pubDate>Thu, 25 Feb 2016 09:14:11 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</guid>
+      <description>
+
+&lt;p&gt;Koa v2 has changed completely the middleware function signature, used in v1.x, to use &lt;a href=&#34;http://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;ES2016 async/await functions&lt;/a&gt;
+ over &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*&#34; target=&#34;_blank&#34; &gt;generators&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s still in alpha even thought the Koa&amp;rsquo;s team says that it&amp;rsquo;s production ready, because it&amp;rsquo;s currently used in some systems which are in production, however &lt;a href=&#34;https://github.com/koajs/koa/issues/533&#34; target=&#34;_blank&#34; &gt;the issues is that NodeJS doesn&amp;#39;t still support async/await function natively&lt;/a&gt;
+, hence you need a transpiler to be able to use async/await functions.&lt;/p&gt;
+
+&lt;p&gt;One, and probably the most famous, ES2015 tranpilers which also supports some of the features proposed for ES2016, and between then Async/Await functions, is &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; &gt;BabelJS&lt;/a&gt;
+; it&amp;rsquo;s also the one, most mentioned, in the Koa&amp;rsquo;s issue linked above, but it doesn&amp;rsquo;t look fancy having to transpile server code because it can be very painful, however Koa v2 doesn&amp;rsquo;t only accept async/await functions as a middleware, it also accepts function which return Promises (&lt;a href=&#34;https://nodejs.org/en/docs/es6/#which-features-ship-with-node-js-by-default-no-runtime-flag-required&#34; target=&#34;_blank&#34; &gt;which are already supported natively by last productions releases (LTS and no LTS)&lt;/a&gt;
+) because at the end an async/await function returns a Promise to the caller.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-we-can-do-now:4aa0da6c353d68f2346342f02b552d25&#34;&gt;What we can do now&lt;/h2&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t want to use BabelJS to write server code because it may be a pain the ass having in your development pipeline, then &lt;a href=&#34;https://github.com/koajs/koa/tree/2.0.0-alpha.3#example&#34; target=&#34;_blank&#34; &gt;you can still use Koa v2 using functions which return Promises&lt;/a&gt;
+; you don&amp;rsquo;t have to worry in having to rewrite those middlewares again when async/await functions be natively supported by NodeJS, you could use those ones and the new ones that implemented with async/async function seamless.&lt;/p&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t mind to use BabelJS in your server code, because it&amp;rsquo;s a new development which isn&amp;rsquo;t going to be a very big codebase, or because the implementation progress is going to be slow for whatever reason or you have any other reason which isn&amp;rsquo;t relevant for the purpose of this post then go for it and when NodeJS support async/away function natively then kill BabelJS.&lt;/p&gt;
+
+&lt;h2 id=&#34;koa-v2-babeljs-with-nodemon-npm-scripts:4aa0da6c353d68f2346342f02b552d25&#34;&gt;Koa v2, BabelJS, with Nodemon &amp;amp; npm scripts&lt;/h2&gt;
+
+&lt;p&gt;In case that you want to use BabelJS, and you don&amp;rsquo;t have any prepared boilerplate to develop a server side with Babel with server restarting automatically on each change, then you can follow this steps to install it, configure it and run it with npm.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have ran &lt;code&gt;npm init&lt;/code&gt; in a folder and you&amp;rsquo;re in your terminal on it execute&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Install Koa v2 &lt;code&gt;npm install --save koa@next&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install Babel and the presets and plugins needed to transpile ES6/7 features not supported natively by NodeJS; I recommend only use the async/await functions to be able to run your code as soon as async/await function are supported by NodeJS and may not others as spread paramaters, etc.
+&lt;code&gt;npm install --save-dev babel-core babel-cli babel-preset-es2015-node5  babel-plugin-transform-async-to-generator&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install nodemon &lt;code&gt;npm install --save-dev nodemon&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then setup babel creating a &lt;code&gt;.babelrc&lt;/code&gt; file with this content:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;development&amp;quot;&lt;/span&gt;: {
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;es2015-node5&amp;quot;&lt;/span&gt;],
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;transform-async-to-generator&amp;quot;&lt;/span&gt;]
+    }
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then you can create, into the property name &lt;code&gt;scripts&lt;/code&gt; of &lt;code&gt;package.json&lt;/code&gt;, something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;scripts&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;dev&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --exec npm run -s serve&amp;quot;&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;serve&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;babel-node -- src/server.js&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In case that you use &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;eslint&lt;/a&gt;
+ to lint your code, to avoid linter issues with async/await functions you have to install it and babel plugin&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;npm install --save-dev eslint babel-eslint&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;then set in &lt;code&gt;.eslintrc&lt;/code&gt; file the property &lt;code&gt;&amp;quot;parser&amp;quot;: &amp;quot;babel-eslint&amp;quot;&lt;/code&gt;. Bear in mind that you will have to enable the &lt;code&gt;es6&lt;/code&gt; features too, enabling &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;`es6` environtment&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;and you can also setup a watch mode in package.json &lt;code&gt;scripts&lt;/code&gt; property&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;lint-w&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --watch src -e js --exec eslint .&amp;quot;&lt;/span&gt;
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;then you can run the &amp;ldquo;dev&amp;rdquo; script target in one terminal tab and in other this one and enjoy developing a Koa v2 app, with asyn/await function with live restart and live linting.&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t wait until Koa v2 to be announced as production version, use it now with Babel or without, just use it now.&lt;/p&gt;
+
+&lt;p&gt;Happy coding!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #7</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150403/</link>
+      <pubDate>Fri, 03 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150403/</guid>
+      <description>&lt;p&gt;Working week is gone as we&amp;rsquo;re on Easter, but no time to rest in the blog; so here there it goes the 5 tweets which captivated me the last 7 days.&lt;/p&gt;
+
+&lt;p&gt;Do you love &lt;a href=&#34;https://www.gnu.org/software/make/&#34;&gt;make&lt;/a&gt; as a build tool? Don&amp;rsquo;t miss to take a look to &lt;a href=&#34;https://martine.github.io/ninja/&#34;&gt;Ninja&lt;/a&gt;, it looks promising in terms of speed between other stuff&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Ninja – A small build system with a focus on speed &lt;a href=&#34;https://t.co/VAhyZD6e51&#34;&gt;https://t.co/VAhyZD6e51&lt;/a&gt;&lt;/p&gt;&amp;mdash; Hacker News (@newsycombinator) &lt;a href=&#34;https://twitter.com/newsycombinator/status/581954162050641921&#34;&gt;March 28, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;For a year and a half I&amp;rsquo;ve fallen in love with &lt;a href=&#34;http://www.vim.org/&#34;&gt;Vim&lt;/a&gt;, but I&amp;rsquo;ve really like what &lt;a href=&#34;http://neovim.org/&#34;&gt;neoVim&lt;/a&gt; is bringing &amp;ldquo;the next generation&amp;rdquo;, and one part of that generation is &lt;strong&gt;an integrated terminal emulator&lt;/strong&gt;, which now it has a brief documentation&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Basic documentation for the builtin terminal emulator is now available:  &lt;a href=&#34;http://t.co/1v5LvyU2Et&#34;&gt;http://t.co/1v5LvyU2Et&lt;/a&gt;&lt;/p&gt;&amp;mdash; Neovim (@Neovim) &lt;a href=&#34;https://twitter.com/Neovim/status/582342442445365248&#34;&gt;March 30, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt; helped me to discover another nice command line tool&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Stop using tail -f (mostly) &lt;a href=&#34;http://t.co/J3wuv8WAAq&#34;&gt;http://t.co/J3wuv8WAAq&lt;/a&gt; &amp;#10;&amp;#10;Or use MultiTail &lt;a href=&#34;http://t.co/pNVgPxssQ7&#34;&gt;http://t.co/pNVgPxssQ7&lt;/a&gt;&amp;#10;&amp;#10;&lt;a href=&#34;https://twitter.com/hashtag/Unix?src=hash&#34;&gt;#Unix&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Sysadmin?src=hash&#34;&gt;#Sysadmin&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Linux?src=hash&#34;&gt;#Linux&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/FreeBSD?src=hash&#34;&gt;#FreeBSD&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/IT?src=hash&#34;&gt;#IT&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OSX?src=hash&#34;&gt;#OSX&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/582588210561187840&#34;&gt;March 30, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;https://npmjs.com&#34;&gt;npm&lt;/a&gt; team has created an amazing web site where you can see how the semantic versioning apply to a chosen npm module&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;introducing the npm semantic version calculator: &lt;a href=&#34;http://t.co/MxrxxAm8oy&#34;&gt;http://t.co/MxrxxAm8oy&lt;/a&gt; &lt;a href=&#34;http://t.co/tG4zXoPHob&#34;&gt;pic.twitter.com/tG4zXoPHob&lt;/a&gt;&lt;/p&gt;&amp;mdash; npmbot (@npmjs) &lt;a href=&#34;https://twitter.com/npmjs/status/583665488980500480&#34;&gt;April 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one is about a new &lt;strong&gt;fragment shader sandbox&lt;/strong&gt; which supports &lt;a href=&#34;https://github.com/stackgl/glslify&#34;&gt;glslify&lt;/a&gt;, still work in progress, but it looks amazing&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://t.co/UFY6AIEX5H&#34;&gt;http://t.co/UFY6AIEX5H&lt;/a&gt;: a fragment shader sandbox with glslify support! &lt;a href=&#34;http://t.co/4Zsy06QKp3&#34;&gt;pic.twitter.com/4Zsy06QKp3&lt;/a&gt;&lt;/p&gt;&amp;mdash; Hugh Kennedy (@hughskennedy) &lt;a href=&#34;https://twitter.com/hughskennedy/status/583728671678050305&#34;&gt;April 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;re having nice Easter.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

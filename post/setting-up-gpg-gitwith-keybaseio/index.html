@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn how to sign your commits with Keybase.io PGP key without typing a passphrase on each commit and get your commits verified on Github">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Setting up GPG, GIT with keybase.io">
+  <meta property="og:url" content="http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio">
+  <meta property="og:description" content="Learn how to sign your commits with Keybase.io PGP key without typing a passphrase on each commit and get your commits verified on Github">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://s-media-cache-ak0.pinimg.com/originals/93/b7/0f/93b70f721d3e341e93ddea2853815df3.png">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="git">
+      
+        <meta property="og:tag" content="pgp">
+      
+        <meta property="og:tag" content="github">
+      
+        <meta property="og:tag" content="security">
+      
+        <meta property="og:tag" content="linux">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Setting up GPG, GIT with keybase.io</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio"><h1 class="l-title title">Setting up GPG, GIT with keybase.io</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">18-09-2016</span>
+    <br>
+    
+
+<p>Back in April, <a href="https://github.com/blog/2144-gpg-signature-verification" target="_blank" >Github started to support signed commits and tags with PGP</a>
+.</p>
+
+<p>I&rsquo;ve always wanted that <a href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy" target="_blank" >PGP (Pretty Good Privacy)</a>
+ were widely spread because, for example I would love to easily send confidential emails and avoid repudiation in some others that I receive from third parties, however the lack of support for email clients not just desktop client, web clients and mobile clients which today are that necessary makes very hard that people adopt it, so using it in our daily life is mostly an utopia.</p>
+
+<p>After Github has added support for it, it has been for me a good excuse to start to use PGP in my daily life, it isn&rsquo;t email, but well, I use Github, as many other geeks, almost in daily basis, or if it isn&rsquo;t Github, it&rsquo;s git, so if it&rsquo;s well integrated then, I don&rsquo;t mind to use in any repo either although it isn&rsquo;t hosted on Github.</p>
+
+<p>The key point of PGP is, obviously, to have a pair of keys; I had one long time ago, that I ended without using it, after I don&rsquo;t know how many years later, which was around 2 years ago, I got a new PGP key pair with <a href="https://keybase.io" target="_blank" >keybase</a>
+, but being hones the account was almost unactive until last April.</p>
+
+<p>Keybase.io provides a PGP cloud service which create and host keys attached to people; it provides some mechanisms to identify people through third party social services which today are used by tons of people. Of course, the concept of hosting your private key obligate to the users in trust in their security, something that&rsquo;s very debatable, but being honest, that same thing happens with the digital certificates and in my case, for the usage that I give to the key, it isn&rsquo;t big concern.</p>
+
+<p>To setup my Keybase key with Github, in order to sign my commits and be marked as verified, I followed the blog awesome <a href="https://www.ahmadnassri.com/blog/github-gpg-keybase-pgp/" target="_blank" >blog post Github GPG &#43; Keybase PGP of Ahad Nassri</a>
+</p>
+
+<h2 id="using-gnupg-agent-for-the-sake-of-your-fingers:f45bcba25f8956a54cd0645d9d008cc9">Using gnupg-agent for the sake of your fingers</h2>
+
+<p>A very important thing for me and avoid to disable the signing options of my git configuration is no to have to type the passphrase of my GPG key on each commit. For this purpose, we have an agent, as we have for the <code>ssh</code>.</p>
+
+<p>In my case, I use an Ubuntu Linux for all my development stuff, so here I describe to install and configure <code>gpg-agent</code> for a Ubuntu Linux, if you use another distro then you may have to make some changes and if you use another OS then, you probably end up changing everything but I hope that you can get, at least, the idea in how to do so.</p>
+
+<h3 id="install-it:f45bcba25f8956a54cd0645d9d008cc9">Install it</h3>
+
+<p>Installing the agent is as easy how a simple <code>apt-get install gnupg-agent</code> command execution.</p>
+
+<p>You can run the agent manually each time that you login or do the same adding that command to your <code>.bashrc</code> file or the equivalent <code>rc</code> file that your shell execute on a new session.</p>
+
+<p>In my case I use <a href="https://en.wikipedia.org/wiki/Z_shell" target="_blank" >Z shell (zsh)</a>
+ and <a href="http://ohmyz.sh/" target="_blank" >Oh My ZSH!</a>
+ and I use the <a href="https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/plugins/gpg-agent/gpg-agent.plugin.zsh" target="_blank" >plugin that it provides for running the `gnupg-agent`</a>
+, which you can run adding to the <code>plugins</code> variable list <code>gpg-agent</code>, for example mine, looks like</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #996633">plugins</span><span style="color: #333333">=(</span>ssh-agent zsh-syntax-highlighting gpg-agent<span style="color: #333333">)</span>
+</pre></div>
+
+
+<p><strong>if you&rsquo;re using gnpg-agent version 2</strong> then you don&rsquo;t need to use the <em>Oh My ZSH!</em> plugin because the agent will be executed automatically at OS the startup time as any other service; check it with <code>gpg-agent --version</code>, but you may have to assign and export some variable because <em>gpg</em> client can connect to the agent version 2, although for unknown reasons, sometimes I haven&rsquo;t needed to export any of them to make it work and sometimes I have to export on or both.</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #007020">export </span><span style="color: #996633">SSH_AUTH_SOCK</span><span style="color: #333333">=</span><span style="color: #996633">$HOME</span>/.gnupg/S.gpg-agent.ss
+<span style="color: #007020">export </span><span style="color: #996633">GPG_TTY</span><span style="color: #333333">=</span><span style="color: #008800; font-weight: bold">$(</span>TTY<span style="color: #008800; font-weight: bold">)</span>
+</pre></div>
+
+
+<p>If doesn&rsquo;t work without them, getting an error message about the agent connection then, export <code>GPG_TTY</code> and if it persists, then export the both.</p>
+
+<h3 id="configure-it:f45bcba25f8956a54cd0645d9d008cc9">Configure it</h3>
+
+<p>To configure the agent you have to create a configuration file; by default is located on your <em>user home director</em> in the directory <code>.gnupg/gpg-agent.conf</code>, take a look to the <a href="https://www.gnupg.org/documentation/manuals/gnupg/Agent-Options.html#option%20%2d%2doptions" target="_blank" >options summary section of the documentation web site</a>
+ to see all the available options.</p>
+
+<p>Mine only contains a few options which I wanted to tweak</p>
+
+<pre><code># Set the default cache time to 1 day.
+default-cache-ttl       86400
+default-cache-ttl-ssh   86400
+
+# Set the max cache time to 30 days.
+max-cache-ttl           2592000
+max-cache-ttl-ssh       2592000
+</code></pre>
+
+<p>Now it&rsquo;s time to add our <em>pgp keys</em>, due the purpose of this post, I&rsquo;ll add my Keybase Key, but you could whatever <em>pgp key</em> you own, repeating the process for each key.</p>
+
+<p>Export your private key through the Keybase command line or through the website and save it somewhere, I&rsquo;ll assume that the key file is in <code>~/my-key</code> for the rest of this post.</p>
+
+<p>List the current keys, which we shouldn&rsquo;t have any, but the same command will initialize the key store database on the first call <code>gpg --list-keys</code>, you should see something like</p>
+
+<pre><code>~ ➜  gpg --list-keys
+gpg: /home/vagrant/.gnupg/trustdb.gpg: trustdb created
+</code></pre>
+
+<p>Import the key <code>gpg --import ~/my-key</code>, in my case I got</p>
+
+<pre><code>~ ➜  gpg --import my-key
+gpg: key B5CB5AD5: secret key imported
+gpg: key B5CB5AD5: public key &quot;keybase.io/ifraixedes &lt;ifraixedes@keybase.io&gt;&quot; imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
+gpg:       secret keys read: 1
+gpg:   secret keys imported: 1
+</code></pre>
+
+<p>And now if you list the keys (<code>gpg --list-keys</code>), you should see something like</p>
+
+<pre><code>~ ➜  gpg --list-keys
+/home/vagrant/.gnupg/pubring.gpg
+--------------------------------
+pub   4096R/B5CB5AD5 2015-04-15
+uid                  keybase.io/ifraixedes &lt;ifraixedes@keybase.io&gt;
+sub   2048R/97F96DB7 2015-04-15 [expires: 2023-04-13]
+sub   2048R/1C9B754A 2015-04-15 [expires: 2023-04-13]
+</code></pre>
+
+<h2 id="configure-git-for-signing-and-use-a-default-key:f45bcba25f8956a54cd0645d9d008cc9">Configure GIT for signing and use a default key</h2>
+
+<p>In my case, I&rsquo;m happy to sign all the commits with the same key, so I don&rsquo;t have the need to constantly specify a key per project so I made all this configurations as global, if you need to configure them per project then remove the <code>--global</code> options of the commands that I listed below.</p>
+
+<p>Let&rsquo;s specify the key to use with <code>git config --global user.signingkey ifraixedes@keybase.io</code> or use the key shorthand <code>git config --global user.signingkey B5CB5AD5</code></p>
+
+<p>Then, let&rsquo;s sign all the commits by default, so we don&rsquo;t have to specify <code>-S</code> to <code>git commit</code> each time, <code>git config --global commit.gpgsign true</code></p>
+
+<p>With these two options, we are set if the agent is version 1, but <strong>if the agent that you&rsquo;re running in your machine is the version 2</strong>, then you have to add one configuration parameter more to git, otherwise you&rsquo;ll see a message, on each commit, saying something like <code>agent is not running in this session</code>; this happens because GIT is using by the default the <code>gpg</code> binary in your path, and for the version 2 you have to use the <code>gpg2</code>.</p>
+
+<p>First make sure that you install the <em>gpg v2</em> with <code>sudo apt-get install gnupg2</code> and thereafter, tell git to use <em>gpg2</em> with <code>git config --global gpg.program gpg2</code></p>
+
+<h2 id="wrapping-up:f45bcba25f8956a54cd0645d9d008cc9">Wrapping up</h2>
+
+<p>At this point, the best thing before giving it a try is to exit your session and login again, than trying to run the <code>gpg-agent</code> by hand, because you&rsquo;ll try that everything is running as expected and it&rsquo;s easier.</p>
+
+<p>Happy signing!</p>
+
+<hr />
+
+<p>Useful links:</p>
+
+<ul>
+<li><a href="https://www.ahmadnassri.com/blog/github-gpg-keybase-pgp/" target="_blank" >Github GPG &#43; Keybase PGP</a>
+</li>
+<li><a href="https://help.github.com/categories/gpg/" target="_blank" >Github help for PGP</a>
+</li>
+<li><a href="https://wiki.archlinux.org/index.php/GnuPG" target="_blank" >Good summary docs of GnuPG</a>
+</li>
+</ul>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

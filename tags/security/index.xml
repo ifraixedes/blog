@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Security on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/security/</link>
+    <description>Recent content in Security on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Sun, 18 Sep 2016 22:29:45 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/security/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Setting up GPG, GIT with keybase.io</title>
+      <link>http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio</link>
+      <pubDate>Sun, 18 Sep 2016 22:29:45 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio</guid>
+      <description>
+
+&lt;p&gt;Back in April, &lt;a href=&#34;https://github.com/blog/2144-gpg-signature-verification&#34; target=&#34;_blank&#34; &gt;Github started to support signed commits and tags with PGP&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve always wanted that &lt;a href=&#34;https://en.wikipedia.org/wiki/Pretty_Good_Privacy&#34; target=&#34;_blank&#34; &gt;PGP (Pretty Good Privacy)&lt;/a&gt;
+ were widely spread because, for example I would love to easily send confidential emails and avoid repudiation in some others that I receive from third parties, however the lack of support for email clients not just desktop client, web clients and mobile clients which today are that necessary makes very hard that people adopt it, so using it in our daily life is mostly an utopia.&lt;/p&gt;
+
+&lt;p&gt;After Github has added support for it, it has been for me a good excuse to start to use PGP in my daily life, it isn&amp;rsquo;t email, but well, I use Github, as many other geeks, almost in daily basis, or if it isn&amp;rsquo;t Github, it&amp;rsquo;s git, so if it&amp;rsquo;s well integrated then, I don&amp;rsquo;t mind to use in any repo either although it isn&amp;rsquo;t hosted on Github.&lt;/p&gt;
+
+&lt;p&gt;The key point of PGP is, obviously, to have a pair of keys; I had one long time ago, that I ended without using it, after I don&amp;rsquo;t know how many years later, which was around 2 years ago, I got a new PGP key pair with &lt;a href=&#34;https://keybase.io&#34; target=&#34;_blank&#34; &gt;keybase&lt;/a&gt;
+, but being hones the account was almost unactive until last April.&lt;/p&gt;
+
+&lt;p&gt;Keybase.io provides a PGP cloud service which create and host keys attached to people; it provides some mechanisms to identify people through third party social services which today are used by tons of people. Of course, the concept of hosting your private key obligate to the users in trust in their security, something that&amp;rsquo;s very debatable, but being honest, that same thing happens with the digital certificates and in my case, for the usage that I give to the key, it isn&amp;rsquo;t big concern.&lt;/p&gt;
+
+&lt;p&gt;To setup my Keybase key with Github, in order to sign my commits and be marked as verified, I followed the blog awesome &lt;a href=&#34;https://www.ahmadnassri.com/blog/github-gpg-keybase-pgp/&#34; target=&#34;_blank&#34; &gt;blog post Github GPG &amp;#43; Keybase PGP of Ahad Nassri&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;using-gnupg-agent-for-the-sake-of-your-fingers:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Using gnupg-agent for the sake of your fingers&lt;/h2&gt;
+
+&lt;p&gt;A very important thing for me and avoid to disable the signing options of my git configuration is no to have to type the passphrase of my GPG key on each commit. For this purpose, we have an agent, as we have for the &lt;code&gt;ssh&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In my case, I use an Ubuntu Linux for all my development stuff, so here I describe to install and configure &lt;code&gt;gpg-agent&lt;/code&gt; for a Ubuntu Linux, if you use another distro then you may have to make some changes and if you use another OS then, you probably end up changing everything but I hope that you can get, at least, the idea in how to do so.&lt;/p&gt;
+
+&lt;h3 id=&#34;install-it:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Install it&lt;/h3&gt;
+
+&lt;p&gt;Installing the agent is as easy how a simple &lt;code&gt;apt-get install gnupg-agent&lt;/code&gt; command execution.&lt;/p&gt;
+
+&lt;p&gt;You can run the agent manually each time that you login or do the same adding that command to your &lt;code&gt;.bashrc&lt;/code&gt; file or the equivalent &lt;code&gt;rc&lt;/code&gt; file that your shell execute on a new session.&lt;/p&gt;
+
+&lt;p&gt;In my case I use &lt;a href=&#34;https://en.wikipedia.org/wiki/Z_shell&#34; target=&#34;_blank&#34; &gt;Z shell (zsh)&lt;/a&gt;
+ and &lt;a href=&#34;http://ohmyz.sh/&#34; target=&#34;_blank&#34; &gt;Oh My ZSH!&lt;/a&gt;
+ and I use the &lt;a href=&#34;https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/plugins/gpg-agent/gpg-agent.plugin.zsh&#34; target=&#34;_blank&#34; &gt;plugin that it provides for running the `gnupg-agent`&lt;/a&gt;
+, which you can run adding to the &lt;code&gt;plugins&lt;/code&gt; variable list &lt;code&gt;gpg-agent&lt;/code&gt;, for example mine, looks like&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #996633&#34;&gt;plugins&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;=(&lt;/span&gt;ssh-agent zsh-syntax-highlighting gpg-agent&lt;span style=&#34;color: #333333&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;if you&amp;rsquo;re using gnpg-agent version 2&lt;/strong&gt; then you don&amp;rsquo;t need to use the &lt;em&gt;Oh My ZSH!&lt;/em&gt; plugin because the agent will be executed automatically at OS the startup time as any other service; check it with &lt;code&gt;gpg-agent --version&lt;/code&gt;, but you may have to assign and export some variable because &lt;em&gt;gpg&lt;/em&gt; client can connect to the agent version 2, although for unknown reasons, sometimes I haven&amp;rsquo;t needed to export any of them to make it work and sometimes I have to export on or both.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #007020&#34;&gt;export &lt;/span&gt;&lt;span style=&#34;color: #996633&#34;&gt;SSH_AUTH_SOCK&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #996633&#34;&gt;$HOME&lt;/span&gt;/.gnupg/S.gpg-agent.ss
+&lt;span style=&#34;color: #007020&#34;&gt;export &lt;/span&gt;&lt;span style=&#34;color: #996633&#34;&gt;GPG_TTY&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;$(&lt;/span&gt;TTY&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If doesn&amp;rsquo;t work without them, getting an error message about the agent connection then, export &lt;code&gt;GPG_TTY&lt;/code&gt; and if it persists, then export the both.&lt;/p&gt;
+
+&lt;h3 id=&#34;configure-it:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Configure it&lt;/h3&gt;
+
+&lt;p&gt;To configure the agent you have to create a configuration file; by default is located on your &lt;em&gt;user home director&lt;/em&gt; in the directory &lt;code&gt;.gnupg/gpg-agent.conf&lt;/code&gt;, take a look to the &lt;a href=&#34;https://www.gnupg.org/documentation/manuals/gnupg/Agent-Options.html#option%20%2d%2doptions&#34; target=&#34;_blank&#34; &gt;options summary section of the documentation web site&lt;/a&gt;
+ to see all the available options.&lt;/p&gt;
+
+&lt;p&gt;Mine only contains a few options which I wanted to tweak&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Set the default cache time to 1 day.
+default-cache-ttl       86400
+default-cache-ttl-ssh   86400
+
+# Set the max cache time to 30 days.
+max-cache-ttl           2592000
+max-cache-ttl-ssh       2592000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to add our &lt;em&gt;pgp keys&lt;/em&gt;, due the purpose of this post, I&amp;rsquo;ll add my Keybase Key, but you could whatever &lt;em&gt;pgp key&lt;/em&gt; you own, repeating the process for each key.&lt;/p&gt;
+
+&lt;p&gt;Export your private key through the Keybase command line or through the website and save it somewhere, I&amp;rsquo;ll assume that the key file is in &lt;code&gt;~/my-key&lt;/code&gt; for the rest of this post.&lt;/p&gt;
+
+&lt;p&gt;List the current keys, which we shouldn&amp;rsquo;t have any, but the same command will initialize the key store database on the first call &lt;code&gt;gpg --list-keys&lt;/code&gt;, you should see something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~ ➜  gpg --list-keys
+gpg: /home/vagrant/.gnupg/trustdb.gpg: trustdb created
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Import the key &lt;code&gt;gpg --import ~/my-key&lt;/code&gt;, in my case I got&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~ ➜  gpg --import my-key
+gpg: key B5CB5AD5: secret key imported
+gpg: key B5CB5AD5: public key &amp;quot;keybase.io/ifraixedes &amp;lt;ifraixedes@keybase.io&amp;gt;&amp;quot; imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
+gpg:       secret keys read: 1
+gpg:   secret keys imported: 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And now if you list the keys (&lt;code&gt;gpg --list-keys&lt;/code&gt;), you should see something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~ ➜  gpg --list-keys
+/home/vagrant/.gnupg/pubring.gpg
+--------------------------------
+pub   4096R/B5CB5AD5 2015-04-15
+uid                  keybase.io/ifraixedes &amp;lt;ifraixedes@keybase.io&amp;gt;
+sub   2048R/97F96DB7 2015-04-15 [expires: 2023-04-13]
+sub   2048R/1C9B754A 2015-04-15 [expires: 2023-04-13]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;configure-git-for-signing-and-use-a-default-key:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Configure GIT for signing and use a default key&lt;/h2&gt;
+
+&lt;p&gt;In my case, I&amp;rsquo;m happy to sign all the commits with the same key, so I don&amp;rsquo;t have the need to constantly specify a key per project so I made all this configurations as global, if you need to configure them per project then remove the &lt;code&gt;--global&lt;/code&gt; options of the commands that I listed below.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s specify the key to use with &lt;code&gt;git config --global user.signingkey ifraixedes@keybase.io&lt;/code&gt; or use the key shorthand &lt;code&gt;git config --global user.signingkey B5CB5AD5&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Then, let&amp;rsquo;s sign all the commits by default, so we don&amp;rsquo;t have to specify &lt;code&gt;-S&lt;/code&gt; to &lt;code&gt;git commit&lt;/code&gt; each time, &lt;code&gt;git config --global commit.gpgsign true&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;With these two options, we are set if the agent is version 1, but &lt;strong&gt;if the agent that you&amp;rsquo;re running in your machine is the version 2&lt;/strong&gt;, then you have to add one configuration parameter more to git, otherwise you&amp;rsquo;ll see a message, on each commit, saying something like &lt;code&gt;agent is not running in this session&lt;/code&gt;; this happens because GIT is using by the default the &lt;code&gt;gpg&lt;/code&gt; binary in your path, and for the version 2 you have to use the &lt;code&gt;gpg2&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;First make sure that you install the &lt;em&gt;gpg v2&lt;/em&gt; with &lt;code&gt;sudo apt-get install gnupg2&lt;/code&gt; and thereafter, tell git to use &lt;em&gt;gpg2&lt;/em&gt; with &lt;code&gt;git config --global gpg.program gpg2&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;wrapping-up:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Wrapping up&lt;/h2&gt;
+
+&lt;p&gt;At this point, the best thing before giving it a try is to exit your session and login again, than trying to run the &lt;code&gt;gpg-agent&lt;/code&gt; by hand, because you&amp;rsquo;ll try that everything is running as expected and it&amp;rsquo;s easier.&lt;/p&gt;
+
+&lt;p&gt;Happy signing!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Useful links:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.ahmadnassri.com/blog/github-gpg-keybase-pgp/&#34; target=&#34;_blank&#34; &gt;Github GPG &amp;#43; Keybase PGP&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://help.github.com/categories/gpg/&#34; target=&#34;_blank&#34; &gt;Github help for PGP&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://wiki.archlinux.org/index.php/GnuPG&#34; target=&#34;_blank&#34; &gt;Good summary docs of GnuPG&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #12</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</link>
+      <pubDate>Fri, 08 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</guid>
+      <description>&lt;p&gt;Another &amp;ldquo;working&amp;rdquo; week is gone and as usual you can take a look here to my 5 favourite tweets of the week&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve got a nice post about &lt;a href=&#34;http://www.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;Rust&lt;/a&gt; Iterators, don&amp;rsquo;t missed if you&amp;rsquo;ve started to be curious about this language that will be for production use in a few days after this post&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;A Journey into Iterators &lt;a href=&#34;http://t.co/tuR0cIIG12&#34;&gt;http://t.co/tuR0cIIG12&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/594624260599058434&#34;&gt;May 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Hacking is not my topic, however I&amp;rsquo;m always interested in news about it, so this tweet about Javascript-Based DDoS got my attention&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;An Introduction to JavaScript-Based DDoS: &lt;a href=&#34;https://t.co/V6VU7agXOC&#34;&gt;https://t.co/V6VU7agXOC&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/594925681714143232&#34;&gt;May 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The amazing community behind &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt; has made a big step to move forward releasing 2.0 version, they deserved to add this tweet here&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;io.js 2.0 Released: &lt;a href=&#34;https://t.co/hcF5CxV1yV&#34;&gt;https://t.co/hcF5CxV1yV&lt;/a&gt; (V8 upgraded to 4.8, npm to 2.9.0 &amp;amp; more, see &lt;a href=&#34;https://t.co/flwmTNnJvP&#34;&gt;https://t.co/flwmTNnJvP&lt;/a&gt; )&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/595575488371937281&#34;&gt;May 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The Linux distribution called &lt;a href=&#34;https://www.kali.org/&#34; target=&#34;_blank&#34;&gt;Kali&lt;/a&gt;, has updated 3 packages related with Wireless Penetration Testing, so good news if you love to play around with wireless connections&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Pixiewps, Reaver &amp;amp; Aircrack-ng - wireless penetration testing tool updates in Kali and what they mean for you  - &lt;a href=&#34;https://t.co/jgXn4t9nE1&#34;&gt;https://t.co/jgXn4t9nE1&lt;/a&gt;&lt;/p&gt;&amp;mdash; muts (@kalilinux) &lt;a href=&#34;https://twitter.com/kalilinux/status/595217837792178176&#34;&gt;May 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://dave.cheney.net/&#34; target=&#34;_blank&#34;&gt;Dave Cheney&lt;/a&gt; has created a new build tool for &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt;, called &lt;a href=&#34;http://getgb.io/&#34; target=&#34;_blank&#34;&gt;gd&lt;/a&gt; which should solve the problem of a reproducible builds; one of thing that me and many other people miss in &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt; is an appropriated tool to manage dependencies so I&amp;rsquo;ll take a look to this totally different approach of others I&amp;rsquo;ve seen and tested, hence this tweet provided me this amazing discovery&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Building Go projects with &amp;#39;gb&amp;#39;: &lt;a href=&#34;https://t.co/f9igUiQOQP&#34;&gt;https://t.co/f9igUiQOQP&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/596654809404538880&#34;&gt;May 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a lovely weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #9</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</link>
+      <pubDate>Fri, 17 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</guid>
+      <description>&lt;p&gt;This week security, programming languages and Linux, go ahead to see what tweets I&amp;rsquo;ve chosen.&lt;/p&gt;
+
+&lt;p&gt;New security issue on Apple OS X 10.10.2, so if you use OSX 10.10 and yo haven&amp;rsquo;t updated, you should do ASAP because you&amp;rsquo;re already late.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/hashtag/rootpipe?src=hash&#34;&gt;#rootpipe&lt;/a&gt; Full disclosure of a privilege escalation to root in Apple OS X 10.10.2 (and earlier): &lt;a href=&#34;https://t.co/mT6EvSYqWh&#34;&gt;https://t.co/mT6EvSYqWh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Emil Kvarnhammar (@emilkvarnhammar) &lt;a href=&#34;https://twitter.com/emilkvarnhammar/status/586147583552266240&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A blog post about &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; and concurrency has been released, after it&amp;rsquo;s in beta and it&amp;rsquo;ll be for production soon, it&amp;rsquo;s worth to read what feature the language has to implement some interesting patterns&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Fearless Concurrency with Rust &lt;a href=&#34;http://t.co/RzmGXuPAcD&#34;&gt;http://t.co/RzmGXuPAcD&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/586566688109367297&#34;&gt;April 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I wasn&amp;rsquo;t aware of the &lt;a href=&#34;https://elementary.io/&#34;&gt;Elementary Linux distribution&lt;/a&gt;, I don&amp;rsquo;t have any plan to use but I&amp;rsquo;ve like the concept of it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Elementary Linux released:&amp;#10;32bit &lt;a href=&#34;http://t.co/6I07CZ6IIe&#34;&gt;http://t.co/6I07CZ6IIe&lt;/a&gt;&amp;#10;&amp;#10;64bit &lt;a href=&#34;http://t.co/pewrEkzjWE&#34;&gt;http://t.co/pewrEkzjWE&lt;/a&gt;&amp;#10;&amp;#10;More &lt;a href=&#34;https://t.co/lV7wdkrXlZ&#34;&gt;https://t.co/lV7wdkrXlZ&lt;/a&gt; &lt;a href=&#34;http://t.co/5dwrDqIC6Q&#34;&gt;pic.twitter.com/5dwrDqIC6Q&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586946813573201920&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Indoctrinate people to Linux is always good, and making it free remove all the barriers, so I support this cause and I&amp;rsquo;ve decided to share it here; furthermore the author is the creator of one of the distributions that I used quite a bit in the past, &lt;a href=&#34;https://www.gentoo.org/&#34;&gt;Gentoo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Please RT. The best &amp;quot;Linux Fundamentals&amp;quot; course, by Daniel Robbins the creator of Gentoo Linux &lt;a href=&#34;http://t.co/uQMmw2w7yQ&#34;&gt;http://t.co/uQMmw2w7yQ&lt;/a&gt; No registration needed&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586935862635528194&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve really found very interesting about a blog post written by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;, because lastly I&amp;rsquo;ve got in the same thoughts about having too many features which some of them are redundant in programming languages, frameworks, etc., rather than help in long term, they annoy.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Less is more: removing language features to leave nowhere for bugs to hide. &lt;a href=&#34;http://t.co/6q3MHSkAe9&#34;&gt;http://t.co/6q3MHSkAe9&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Tim Ruffles (@timruffles) &lt;a href=&#34;https://twitter.com/timruffles/status/587893747385556992&#34;&gt;April 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a wonderful weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #4</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</link>
+      <pubDate>Fri, 13 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</guid>
+      <description>&lt;p&gt;Another 7 days almost gone, hence there it goes the 5 tweets that I&amp;rsquo;ve selected from my Twitter timeline.&lt;/p&gt;
+
+&lt;p&gt;Thanks to &lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt; I&amp;rsquo;ve discovered &lt;a href=&#34;http://en.wikipedia.org/wiki/SSHFS&#34;&gt;SSHFS&lt;/a&gt;, a network file system on top of &lt;a href=&#34;http://en.wikipedia.org/wiki/Secure_Shell&#34;&gt;SSH&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;How To Mount Remote Directory With SSHFS on a Linux &lt;a href=&#34;http://t.co/O0G8MUsXoC&#34;&gt;http://t.co/O0G8MUsXoC&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenBSD?src=hash&#34;&gt;#OpenBSD&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenSSH?src=hash&#34;&gt;#OpenSSH&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/CentOS?src=hash&#34;&gt;#CentOS&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Ubuntu?src=hash&#34;&gt;#Ubuntu&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Debian?src=hash&#34;&gt;#Debian&lt;/a&gt; &lt;a href=&#34;http://t.co/t3YYVa5W5w&#34;&gt;pic.twitter.com/t3YYVa5W5w&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/574355319184359425&#34;&gt;March 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Congratulations to &lt;a href=&#34;https://iojs.org/&#34;&gt;io.js&lt;/a&gt; community to release another version v1.5.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js bugfix release v1.5.1 out now @ &lt;a href=&#34;https://t.co/MKaxWFC8Bn&#34;&gt;https://t.co/MKaxWFC8Bn&lt;/a&gt; CHANGELOG @ &lt;a href=&#34;https://t.co/JwuzQ2hV3B&#34;&gt;https://t.co/JwuzQ2hV3B&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/575000532336668673&#34;&gt;March 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Mozilla released another post related with performance, this time related with SIMD.js (&lt;a href=&#34;http://en.wikipedia.org/wiki/SIMD&#34;&gt;Single Instruction Multiple Data&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;The State of SIMD.js Performance in Firefox: &lt;a href=&#34;https://t.co/I4aHZ9SSTv&#34;&gt;https://t.co/I4aHZ9SSTv&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/575352064122970112&#34;&gt;March 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice Open Source (MIT license) &lt;a href=&#34;http://golang.org/&#34;&gt;Golang&lt;/a&gt; library about arbritrary-precision fixed-point decimal library, which has been implemented and used in production for 6 months by &lt;a href=&#34;https://www.shopspring.com/&#34;&gt;Spring&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Decimal: An Arbitrary-Precision Fixed-point Decimal Library - &lt;a href=&#34;http://t.co/Cx3Dm8kPKa&#34;&gt;http://t.co/Cx3Dm8kPKa&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/576050308616425472&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice post of a great engineering work by &lt;a href=&#34;https://engineering.linkedin.com/&#34;&gt;LinkedIn&lt;/a&gt; to reduce the traffic of their websites over HTTP 1.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;great writeup from LinkedIn on SDCH.. &amp;quot;average additional compression across our static content was about 24%&amp;quot; @ &lt;a href=&#34;http://t.co/Vm2XRPfWLc&#34;&gt;http://t.co/Vm2XRPfWLc&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/576078282384228352&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Enjoy your weekend hacking around!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Behind the scene of a Gumtree Spoofed email</title>
+      <link>http://blog.fraixed.es/post/behind-scene-gumtree-spoofed-email</link>
+      <pubDate>Mon, 23 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/behind-scene-gumtree-spoofed-email</guid>
+      <description>
+
+&lt;p&gt;In my previous post, I wrote about &lt;a href=&#34;http://blog.fraixed.es/post/basic-hints-indentify-gumtree-spoofed-email&#34; target=&#34;_blank&#34;&gt;Basic Hints to Identify a Gumtree Spoofed email&lt;/a&gt;, which is an introduction and the context of this post.&lt;/p&gt;
+
+&lt;p&gt;In this post I&amp;rsquo;m writing about what I found in the URL linked by that spoofed email.&lt;/p&gt;
+
+&lt;p&gt;This post, as the previous one related with this topic, doesn&amp;rsquo;t bring any hacking technique, again, I&amp;rsquo;m not a hacker, I&amp;rsquo;m another common geek guy, hence don&amp;rsquo;t expect to read a new kind of attack or hacking trend, just a little bit more technical stuff of what I just did for fun when I received that email.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-raw-content-of-the-email:8e0c4f2e9445ffcb49b9e62648e9c29a&#34;&gt;The raw content of the email&lt;/h2&gt;
+
+&lt;p&gt;The first thing that I did, was taking a look to the raw format of the email, however as I already expected, nothing important was there, &lt;a href=&#34;http://en.wikipedia.org/wiki/Sender_Policy_Framework&#34; target=&#34;_blank&#34;&gt;SPF&lt;/a&gt; passed how it was expected because the email sender address is a gmail one, hence Google isn&amp;rsquo;t going to ban itself if the email has been sent through their servers and nobody is going to use a gmail email address to send through other servers than the official ones because nobody gets any value of it; if somebody wants to do that, is because they want to send you an email with the domain address that they try to fake the original sender, in this case would be &lt;a href=&#34;http://gumtree.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Gumtree&lt;/a&gt; not gmail.&lt;/p&gt;
+
+&lt;p&gt;Moreover in this case the content of the email was encoded in base64, so it was easy to see the domain name where the link is pointing, just hovering with the mouse and taking a look to the bottom of the browser window than decode the base64. Anyway, the content was the next&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/bc/ef/1c/bcef1c808165c0b85b7a0682c434b9d7.jpg&#34; alt=&#34;phishing email raw format&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;following-the-links-via-curl:8e0c4f2e9445ffcb49b9e62648e9c29a&#34;&gt;Following the links via &lt;code&gt;curl&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;I got the link, nonetheless, I don&amp;rsquo;t trust too much to visit the link straightaway without taking a look a little bit what behind it without a usual browser, just in case that they could take advantage of some security hole; although I&amp;rsquo;d probably browser it at the end, I prefer to have a roughly idea what scripts and URLs includes.&lt;/p&gt;
+
+&lt;p&gt;Then &lt;code&gt;curl&lt;/code&gt; the URL&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;curl the URL&#34; src=&#34;http://zippy.gfycat.com/FeistyFrequentAndeancockoftherock.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;After that I realised that they used a URL in the middle to redirect to the proper site, &lt;a href=&#34;http://curl.haxx.se/docs/manpage.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;curl&lt;/code&gt;&lt;/a&gt; doesn&amp;rsquo;t manage redirections by default, then I followed the redirection with &lt;code&gt;curl -L&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;curl the URL with redirection&#34; src=&#34;http://zippy.gfycat.com/ShamelessQuaintAntipodesgreenparakeet.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;As we can see, it&amp;rsquo;s not only one redirection, they added a second one, this time a javascript one.&lt;/p&gt;
+
+&lt;p&gt;Why did they do all of these? I don&amp;rsquo;t know the right answer, I haven&amp;rsquo;t built it ;P, however I guess that they did for these reasons:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;The link&amp;rsquo;s URL is to avoid to be marked as spam in gmail, having a URL that the path (last part of the URL) is &lt;code&gt;images&lt;/code&gt; helps to sidetrack the spam filters.&lt;/li&gt;
+&lt;li&gt;That URL response with a &lt;a href=&#34;http://en.wikipedia.org/wiki/HTTP_301&#34; target=&#34;_blank&#34;&gt;301 HTTP status code (Moved Permanently)&lt;/a&gt; adds another barrier for &lt;a href=&#34;http://en.wikipedia.org/wiki/Web_crawler&#34; target=&#34;_blank&#34;&gt;crawler&lt;/a&gt; which may follow the link, some of them don&amp;rsquo;t follow those redirections then, more difficult to get there and find out that it&amp;rsquo;s faking Gumtree.&lt;/li&gt;
+&lt;li&gt;Following the 301 redirection, the content of the page is just a simple chunk of javascript which redirect the browser when it gets execute; they added this new one to be harder to follow by crawlers, the most of them don&amp;rsquo;t execute javascript, therefore the probability to detect the scam automatically drops down a lot.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then, I followed the javascript redirection, expecting that would be the last one, because the URL revealed the Gumtree domain name on it, hence what is the point to another one when there isn&amp;rsquo;t anything to hide behind it?&lt;/p&gt;
+
+&lt;p&gt;Due that, I decided to &lt;code&gt;curl&lt;/code&gt; the URL and filter the content (with &lt;a href=&#34;http://en.wikipedia.org/wiki/Grep&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;grep&lt;/code&gt;&lt;/a&gt;) that could harm, however it&amp;rsquo;s not the only one, but finding out &lt;code&gt;css&lt;/code&gt;, &lt;code&gt;js&lt;/code&gt; links, &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; tags and &lt;code&gt;src&lt;/code&gt; attributes will show what in the page may be dangerous with no much effort.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;curl and filter the content&#34; src=&#34;http://zippy.gfycat.com/FinishedWebbedAdouri.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, just only some css and one image, moreover they are linked to Gumtree domain (sa.gumtree.com), then if we trust in Gumtree, we know that they shouldn&amp;rsquo;t contain any malicious stuff.&lt;/p&gt;
+
+&lt;h4 id=&#34;visit-the-web-site-with-a-browser:8e0c4f2e9445ffcb49b9e62648e9c29a&#34;&gt;Visit the web site with a browser&lt;/h4&gt;
+
+&lt;p&gt;After all of those steps, I was ready to browse the URL with my browser (last official &lt;a href=&#34;http://www.google.com/chrome/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Chrome&lt;/a&gt; version), however, I always prefer to do in &lt;a href=&#34;https://support.google.com/chrome/answer/95464?hl=en-GB&#34;  target=&#34;_blank&#34;&gt;incognito mode&lt;/a&gt; and disable javascript execution (just in case) and cache to avoid to leave sh** in my computer.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;disabling javascript and cache and browsing the URL&#34; src=&#34;http://zippy.gfycat.com/FirmYearlyKitten.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;As we can see the web site try to simulate Gumtree login form; have you got the point of the URL? they added Gumtree domain name into it to mislead the visitor and try to get him/her to believe that he/she is in a Gumtree web page, but clearly it&amp;rsquo;s at the end in the &lt;a href=&#34;http://en.wikipedia.org/wiki/Query_string&#34; target=&#34;_blank&#34;&gt;query string part of the URL&lt;/a&gt; so it doesn&amp;rsquo;t apply to the domain name.&lt;/p&gt;
+
+&lt;p&gt;Obviously, I wasn&amp;rsquo;t going to introduce my login details there as you must not too; I took a look to the HTML code to see what is the URL that collects the form data and take a simple look to see if there was something weird there, however, remember that we haven&amp;rsquo;t seen any javascript in page so probably the form shouldn&amp;rsquo;t have any javascript validation.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;taking a look to the HTML code of the form&#34; src=&#34;http://media.giphy.com/media/ytwDCK1o9L7KmGqefm/giphy.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;I could press the button to go to that URL, however I preferred to load the URL straightaway and see how good they built it.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;loading the URL from straightaway than submitting it&#34; src=&#34;http://media.giphy.com/media/5yLgocc3WHwbwoTn7Us/giphy.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Clearly, no quality at all, they didn&amp;rsquo;t implement any check, the URL could be loaded by &lt;a href=&#34;http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods&#34; target=&#34;_blank&#34;&gt;GET than POST&lt;/a&gt; and the Gumtree domain in the URL is just a visual misleading.&lt;/p&gt;
+
+&lt;p&gt;We see that the page after that it&amp;rsquo;s the interesting one for them, they want to collect our credit/debit card details, basically from where they make money after all their effort; I applied the same technique than previously and I loaded the URL straightaway, I&amp;rsquo;m feeling a little bit safe with it, but I don&amp;rsquo;t have any strong technical argument to do it.&lt;/p&gt;
+
+&lt;p&gt;And that&amp;rsquo;s it, they should get that they want, then they show you the expected message and redirect you to Gumtree home page to avoid that the victim realises of their domain, just in case that he/she hasn&amp;rsquo;t before, and lose the income.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;loading credit/debit card details URL form straightaway&#34; src=&#34;http://media.giphy.com/media/5yLgociQbt93scFPyPC/giphy.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;the redirection to Gumtree home page&#34; src=&#34;http://media.giphy.com/media/5yLgocjcqYJrKdSpGqk/giphy.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:8e0c4f2e9445ffcb49b9e62648e9c29a&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Phishing emails are something that still existing; nowadays, I guess that less people get haunted with those however they probably get some, even though the rate should be low, to build a fake Gumtree one is easy and cheap in terms of look &amp;amp; feel and the place to store the data collected for those forms.&lt;/p&gt;
+
+&lt;p&gt;As an advise, check always the &lt;strong&gt;entire URL&lt;/strong&gt; of the browser and don&amp;rsquo;t get distracted by a part of the URL and ask yourself to check thoroughly to see if you can see any strange thing before sending any credit/debit card information.&lt;/p&gt;
+
+&lt;p&gt;Be safe.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #1</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150220/</link>
+      <pubDate>Fri, 20 Feb 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150220/</guid>
+      <description>&lt;p&gt;Today, Friday, I&amp;rsquo;ve decided to start this &lt;strong&gt;serie of weekly posts&lt;/strong&gt; where I will publish my &lt;strong&gt;5 favourite tweets&lt;/strong&gt; that I&amp;rsquo;ll have got from my twitter timeline since Friday of previous week until Thursday of the current week.&lt;/p&gt;
+
+&lt;p&gt;You should find here &lt;strong&gt;every Friday, by 1pm&lt;/strong&gt; a post with those 5 tweets that I&amp;rsquo;ve selected, so to check it by Friday afternoon or in your geeky weekend to discover something new that you may have missed.&lt;/p&gt;
+
+&lt;p&gt;This week, I&amp;rsquo;ve selected&lt;/p&gt;
+
+&lt;p&gt;Something cool with &lt;a href=&#34;https://github.com/substack/watchify&#34;&gt;watchify&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;more experiments with &amp;quot;script injection&amp;quot; in Chrome, much faster with watchify &amp;#10;&lt;a href=&#34;https://t.co/6MUwWsNPRZ&#34;&gt;https://t.co/6MUwWsNPRZ&lt;/a&gt;&amp;#10;/ &lt;a href=&#34;https://twitter.com/substack&#34;&gt;@substack&lt;/a&gt; &lt;a href=&#34;https://twitter.com/dan_abramov&#34;&gt;@dan_abramov&lt;/a&gt;&lt;/p&gt;&amp;mdash; Matt DesLauriers (@mattdesl) &lt;a href=&#34;https://twitter.com/mattdesl/status/566790923884183552&#34;&gt;February 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;iojs is looking forward to adding HTTP2&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;With Chrome ditching SPDY and going full on HTTP2, io.js &lt;em&gt;may&lt;/em&gt; follow with core HTTP2 support, discussion here: &lt;a href=&#34;https://t.co/pVcyyQ1Vyw&#34;&gt;https://t.co/pVcyyQ1Vyw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/564973319942721537&#34;&gt;February 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A very good and deep technical post about the final semantics of ECMAScript 6 classes&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Classes in ECMAScript 6: The Final Semantics - &lt;a href=&#34;http://t.co/56RQIkUYAN&#34;&gt;http://t.co/56RQIkUYAN&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/567665264469508096&#34;&gt;February 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Being aware about security stuff is never time wasted, then check those 10 immutable Laws of Security&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;10 immutable Laws of Security: &lt;a href=&#34;http://t.co/WDj66fXI9A&#34;&gt;http://t.co/WDj66fXI9A&lt;/a&gt; - great read, lots of hard won wisdom.&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/568098163933868032&#34;&gt;February 18, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A very nice tool to analyse web logs, written in &lt;a href=&#34;http://golang.org/&#34;&gt;golang&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;GoAccess – Terminal-Based Visual Web Log Analyzer - &lt;a href=&#34;http://t.co/VnwgBT9pxP&#34;&gt;http://t.co/VnwgBT9pxP&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/golang?src=hash&#34;&gt;#golang&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/sysadmin?src=hash&#34;&gt;#sysadmin&lt;/a&gt; (cc &lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt;)&lt;/p&gt;&amp;mdash; Nabil ZADVAT (@NabilZADVAT) &lt;a href=&#34;https://twitter.com/NabilZADVAT/status/568107738951233537&#34;&gt;February 18, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope one of them was in your interests.&lt;/p&gt;
+
+&lt;p&gt;Have a nice weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Basic Hints to Identify a Gumtree Spoofed email</title>
+      <link>http://blog.fraixed.es/post/basic-hints-indentify-gumtree-spoofed-email</link>
+      <pubDate>Mon, 16 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/basic-hints-indentify-gumtree-spoofed-email</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Email_spoofing&#34; target=&#34;_blank&#34;&gt;Email spoofing&lt;/a&gt; is a kind of attacks which have been used by cybercriminals for long time; even though the number of people who are aware about them has increased for last years, therefore the number of victims is lower, they&amp;rsquo;re still using it, because I guess that it&amp;rsquo;s cheap to execute and they&amp;rsquo;re still generating profit with them.&lt;/p&gt;
+
+&lt;p&gt;This post is not for hackers, I&amp;rsquo;m not a hacker, I&amp;rsquo;m another common geek guy, hence not to expect to learn the next crazy hacking trending technique; Ive written it based in one of my experiences and I thought that it could be useful for people with no technical skills to know how these attacks happen and be aware about them.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-scenario:58f4a77cc5d5524f87a6606c5e579251&#34;&gt;The Scenario&lt;/h3&gt;
+
+&lt;p&gt;The most of the free classified ads websites are constantly suffering of email spoofing attacks, because they have substantial web traffic of a lot of people making &amp;ldquo;business&amp;rdquo; deals in a non-regulated way, it means that nobody takes care of those deals which the most of them involve money exchange, so they are a good source of potential &amp;ldquo;clients&amp;rdquo; for cybercriminals.&lt;/p&gt;
+
+&lt;p&gt;I also use them for those purposes, however taking the same care that I take in the real life that basically is driven by one principle &lt;strong&gt;&amp;ldquo;don&amp;rsquo;t trust with anybody, except your mum!&amp;rdquo;&lt;/strong&gt; (there is some sarcasm in that sentence).&lt;/p&gt;
+
+&lt;p&gt;Then, henceforth I will show you how I got a &lt;a href=&#34;http://gumtree.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Gumtree&lt;/a&gt; spoofed email and the steps that I took to find out that it was spoofed email and hopefully you will get the execution pattern that they use to try to have a good business deal with you.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-story:58f4a77cc5d5524f87a6606c5e579251&#34;&gt;The Story&lt;/h3&gt;
+
+&lt;p&gt;I had an ad published in Gumtree and I got an email which was trying to emulate an official Gumtree one.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/736x/5e/a6/c0/5ea6c0641149cb9d578b07b012f24e05.jpg&#34; alt=&#34;received spoofed gumtree email&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;The main point here is that we cannot see anything strange with a simple look; however the operational was not expected, Gumtree has never sent me an email with a link to see any request, and if you use it quite a bit, then you may start to suspect of it for that reason; nonetheless the operational could change through the time so it&amp;rsquo;s not a hint which could show us that it&amp;rsquo;s a spoofed email.&lt;/p&gt;
+
+&lt;p&gt;In my case, &lt;strong&gt;I could detect straightaway something very strange&lt;/strong&gt; because the fake customer sent me a usual message through the ad&amp;rsquo;s contact form and when I just replied, 5 seconds later I received that email, hence too fast to write an email with that response even though Gumtree had forwarded me and email with a link to read the request. In this case it should be enough to discard this email and consider that somebody wants to cheat us, but if you hadn&amp;rsquo;t had the chance to realise that the email got into your inbox in that moment, you had probably realised that the email came just after your replied.&lt;/p&gt;
+
+&lt;p&gt;Anyway I was further with it and I checked the email sender, because as you can see some email providers, in this case &lt;a href=&#34;https://www.gmail.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gmail&lt;/a&gt;, only show the name that user wants to show than the specific email address.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/8f/70/0f/8f700fb44fbcec0dad6ba29394fde54b.jpg&#34; alt=&#34;checking sender email address&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;And thereafter, I checked the URL of the link, just only positioning my mouse pointer on top of the text link and looking the bottom of the browser window, where browser should usually show the full URL where the link points. The link wasn&amp;rsquo;t pointing any URL under gumtre.com domain name, therefore with this hint we should be enough  &lt;strong&gt;suspect evidences&lt;/strong&gt; to discard this email as potential customer request.&lt;/p&gt;
+
+&lt;p&gt;However, let&amp;rsquo;s give a small nudge to the world and report it as &lt;a href=&#34;http://en.wikipedia.org/wiki/Phishing&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;phishing&lt;/a&gt; therefore, don&amp;rsquo;t forget to report to  &lt;a href=&#34;http://help.gumtree.com/knowledgeProduct?c=Report_replies&amp;k=Example:%20%27email%20alerts%27&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Gumtree&lt;/a&gt; in the case it is related with, and if your email provider offers you any chance to do it, as it is the case of gmail, then do it as well.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://zippy.gfycat.com/ClosedPitifulHornet.gif&#34; alt=&#34;reporting phishing in gmail&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:58f4a77cc5d5524f87a6606c5e579251&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;In the Internet world, there are at least the same tricks to cheat you than in the physical world; &lt;strong&gt;using the common sense&lt;/strong&gt; and &lt;strong&gt;being always aware&lt;/strong&gt; is a must as probably you already do in the physical world, hence remain always vigilant and in front of a bad feeling, don&amp;rsquo;t do any step if you are not sure that it is secure and ask for advise if you think that you need help.&lt;/p&gt;
+
+&lt;p&gt;In the other hand, we need to put more emphasis to claim more security in the email systems, not only for confidentiality, but authenticity and non-repudiability too, which nowadays are already technically solved, however they aren&amp;rsquo;t commonly used, perhaps because nobody has found the way to spread them in an user friendly way, besides not to find a real business plan which can encourage investors to invest enough money to spread them.&lt;/p&gt;
+
+&lt;p&gt;In the time being, we could claim to the current email provider some easy built-in features which allow us to see&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;What is the real address of the sender&lt;/li&gt;
+&lt;li&gt;What URLs are pointing the text links&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;which, I think, they can be solved with simple text analysis and a little bit of design and user experience.&lt;/p&gt;
+
+&lt;p&gt;If you would like to read what there are behind the scene of the URL address linked by the email, don&amp;rsquo;t miss my next future post.&lt;/p&gt;
+
+&lt;p&gt;Take care.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

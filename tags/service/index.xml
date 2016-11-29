@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Service on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/service/</link>
+    <description>Recent content in Service on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Mon, 30 Mar 2015 11:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/service/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Thoughts about current APIs implementations</title>
+      <link>http://blog.fraixed.es/post/thoughts-about-current-apis-implementations</link>
+      <pubDate>Mon, 30 Mar 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/thoughts-about-current-apis-implementations</guid>
+      <description>
+
+&lt;p&gt;Nowadays there is a &lt;strong&gt;big amount of Internet services which operate over a &lt;a href=&#34;http://en.wikipedia.org/wiki/Representational_state_transfer&#34; target=&#34;_blank&#34;&gt;REST&lt;/a&gt; &lt;a href=&#34;http://en.wikipedia.org/wiki/Application_programming_interface&#34; target=&#34;_blank&#34;&gt;API&lt;/a&gt;&lt;/strong&gt;, and a big part of these services are businesses whose product/service is 100% offered/delivered/exposed over it, and moreover most of these business can be classified under the &amp;ldquo;start-up&amp;rdquo; fuzzy term (&lt;a href=&#34;http://en.wikipedia.org/wiki/Startup_company&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;1&lt;/a&gt;, &lt;a href=&#34;http://www.urbandictionary.com/define.php?term=startup&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;2&lt;/a&gt;, etc).&lt;/p&gt;
+
+&lt;p&gt;This trending has been very good adopted last years for developer communities, &lt;strong&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol&#34; target=&#34;_blank&#34;&gt;HTTP&lt;/a&gt; has become the standard communication (application layer) protocol&lt;/strong&gt; (you can blame Internet about it), until reach the point that if a service doesn&amp;rsquo;t have a REST API then it may be discarded over another one whose quality is worse but offer a REST API.&lt;/p&gt;
+
+&lt;p&gt;REST is not the only way to expose a service over HTTP, for example &lt;strong&gt;SOAP is another one and it&amp;rsquo;s standard unlike REST which is a software architecture style&lt;/strong&gt;, however I guess that the adoption for REST instead of others has been the simplicity (&lt;a href=&#34;http://json.org/&#34; target=&#34;_blank&#34;&gt;JSON&lt;/a&gt; data format helped a lot); the tradeoff is, that now, developers, as consumers, face with a variety of ways to define the same, versioning, error handling, etc., and as producers (REST API&amp;rsquo;s owner), what ways to choose to expose those.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been consuming quite a bit HTTP APIs, the most of them in hackathons, others for professional purpose and never produced one for professional purpose nonetheless we&amp;rsquo;re producing one in the company where I&amp;rsquo;m currently working and facing the challenge to make decisions as the &lt;a href=&#34;https://news.ycombinator.com/item?id=1523664&#34; target=&#34;_blank&#34;&gt;versioning one (URL vs headers)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here, I&amp;rsquo;m not going to fire the next hot discussion about API best practices, I&amp;rsquo;m not currently the right person for that, as I&amp;rsquo;ve said, I&amp;rsquo;ve never built one for the real world, so I believe that there are better people in the world who can write post or speak about it, for example, people who are talking in &lt;a href=&#34;http://www.meetup.com/London-API-Group/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;London API&lt;/a&gt;, which is co-organised by a friend of mine (&lt;a href=&#34;https://twitter.com/orliesaurus&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;@orliesaurus&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Therefore I&amp;rsquo;m going to write about three aspects which annoys me but at the same time I consider that they are quite objective.&lt;/p&gt;
+
+&lt;h2 id=&#34;why-not-use-the-standard-when-the-standard-exist:9d9586e37c51496f007cdb035378cc03&#34;&gt;Why not use the standard when the standard exist&lt;/h2&gt;
+
+&lt;p&gt;Last Saturday, as quite usual, I was attending to a Hackathon; the hackathon was focused in using one REST API service.&lt;/p&gt;
+
+&lt;p&gt;The required API to use was related with &lt;strong&gt;getting information&lt;/strong&gt; about transportation; I used one of the resources which returns the route to go from a specified origin (coordinates point) to a specified destination, however it requires a bunch of parameters more as start time, type of transport, and so on. Clearly, the end point is to get information, then the request should be a GET request, however the API required a POST, why?&lt;/p&gt;
+
+&lt;p&gt;For my understanding the right HTTP verb is GET &lt;strong&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/strong&gt;, because the &lt;a href=&#34;https://tools.ietf.org/html/rfc7231#section-4.3.1&#34; target=&#34;_blank&#34;&gt;HTTP standard says&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The GET method requests transfer of a current selected representation
+  for the target resource.  GET is the primary mechanism of information
+  retrieval and the focus of almost all performance optimizations.
+  Hence, when people speak of retrieving some identifiable information
+  via HTTP, they are generally referring to making a GET request.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Then, I guess that the decision of using POST is because the parameters are sent in the request body due that they aren&amp;rsquo;t nice values to use as URL path moreover they are too many to send them in URLs&amp;rsquo; query and I agree to send them in the body to keep a clean URL, nevertheless I disagree to send them by POST, mainly because &lt;a href=&#34;https://tools.ietf.org/html/rfc7231#section-4.3.3&#34; target=&#34;_blank&#34;&gt;the HTTP standard says&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The POST method requests that the target resource process the
+  representation enclosed in the request according to the resource&amp;rsquo;s
+  own specific semantics.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;hence, I&amp;rsquo;ve made the assumption that the decision to use POST was, because they believed that GET cannot contains body &lt;strong&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/strong&gt;, however the standard doesn&amp;rsquo;t say that it cannot contain body, it says&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A payload within a GET request message has no defined semantics;
+  sending a payload body on a GET request might cause some existing
+  implementations to reject the request.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This is not the only place that, we can find examples which drive us to make the assumption that GET cannot hold body, other example is the well known and useful REST client tool called &lt;a href=&#34;https://www.getpostman.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Postman&lt;/a&gt; where if you cannot make a GET request with body as you can see in the next picture how GET doesn&amp;rsquo;t offer you the input box to put the body content&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;Postman screenshot to make a GET request&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/7a/1b/73/7a1b73e3356abd0931fbdfad47c41afd.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;instead of POST&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;Postman screenshot to make a POST request&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/0f/7d/f5/0f7df545b03812b36a8c6ec80f501084.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Perhaps the owner of the mentioned API was thinking in this kind of conflict and preferred to expose the resource by POST.&lt;/p&gt;
+
+&lt;p&gt;I have to recognise that the examples of the real world confused me on it as well, so I&amp;rsquo;ve learnt the lesson, try always to read the standard or at least do it when I&amp;rsquo;m slightly in doubt.&lt;/p&gt;
+
+&lt;p&gt;By they way, there is an &lt;a href=&#34;https://github.com/a85/POSTMan-Chrome-Extension/issues/919&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;issue in Postman Github repository about this&lt;/a&gt;, however it seems that the problem is the platform where Postman runs.&lt;/p&gt;
+
+&lt;h2 id=&#34;use-different-urls-for-different-resources:9d9586e37c51496f007cdb035378cc03&#34;&gt;Use different URLs for different resources&lt;/h2&gt;
+
+&lt;p&gt;How the API make available the resources is something that matters therefore &lt;strong&gt;creating URLs which make sense with the exposed resource, help a lot to understand the resource, the returned data, moreover that it&amp;rsquo;ll make the life easier to write the documentation&lt;/strong&gt; to explain what the resource return and what parameters require and support.&lt;/p&gt;
+
+&lt;p&gt;Take a look to this API resource&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;screenshot of documentation page of /items resource of visit Britain REST API&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/5a/c9/68/5ac968db19e80a86f62f9c4996d2b6f9.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Basically you get a lit of categories which are entities to catalogue locations with the same resource that you get locations using the query parameter &amp;ldquo;type&amp;rdquo;, therefore the data structure of the response body, obviously is different for each type and in the resource documentation isn&amp;rsquo;t clear at all to know that parameters aren&amp;rsquo;t ignored on each type.&lt;/p&gt;
+
+&lt;p&gt;Maybe I miss something, but why haven&amp;rsquo;t they created a different resource for each type, or at leas for type &amp;ldquo;category&amp;rdquo; and &amp;ldquo;locations&amp;rdquo;?&lt;/p&gt;
+
+&lt;h2 id=&#34;use-a-standardised-data-format:9d9586e37c51496f007cdb035378cc03&#34;&gt;Use a standardised data format&lt;/h2&gt;
+
+&lt;p&gt;Another important thing to appreciate is the returned data format. Ideally, the &lt;strong&gt;API should return two, JSON and XML&lt;/strong&gt; (yes XML it&amp;rsquo;s not dead) and if it only returns one, I&amp;rsquo;d suggest JSON, at least today, maybe not some years ago.&lt;/p&gt;
+
+&lt;p&gt;If an API returns raw text, then the developer will have a lot of work parsing the raw data besides just struggling of making the transformations of the returned data structure to the structure which fulfill their requirements.&lt;/p&gt;
+
+&lt;p&gt;This may seems that it doesn&amp;rsquo;t happen, and today any api return JSON or XML or both, well, then you can take a look to &lt;a href=&#34;http://www.clickatell.com/apis-scripts/apis/http-s/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Clickatell HTTP API&lt;/a&gt; &lt;a href=&#34;http://www.clickatell.com/downloads/http/Clickatell_HTTP.pdf&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;documentation&lt;/a&gt; &lt;sup&gt;pdf doc&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;or just forget to open the PDF document and waste your time searching where about you can see it and just take a quick look to the example that I copied from it&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ID: xxxxx
+or
+ERR: Error number, error description
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Nice, no?&lt;/p&gt;
+
+&lt;h2 id=&#34;wrapping-up:9d9586e37c51496f007cdb035378cc03&#34;&gt;Wrapping up&lt;/h2&gt;
+
+&lt;p&gt;Nowadays the works is full of REST APIs, they are not standardised, so several things are implemented/exposed in different ways, versioning, parameters to send, etc.&lt;/p&gt;
+
+&lt;p&gt;Event though they are implemented differently, if they keep the resources under more or less meaning URLs (paths with words which match with the returned content) and send the data in at least one of the spread formats (JSON or XML), then the pains to use them are reduced quite a bit.&lt;/p&gt;
+
+&lt;p&gt;I haven&amp;rsquo;t mentioned anything about API documentations, I think that it&amp;rsquo;s quite evident that the API needs a decent documentation otherwise developer will have to waste their time doing reverse engineering the exposed API; appreciated things to appear in the documentation are how to authenticate (in case that it&amp;rsquo;s needed), the exposed resources with, how to be requested (verb, params, the headers), what is the response data structure when succeed and when fails, response headers to consider and maybe some other that doesn&amp;rsquo;t come up now to my brain. A clear document format oriented to browse the resources and a play ground are also very helpful.&lt;/p&gt;
+
+&lt;p&gt;In my case I appreciate that the API use the HTTP standard as much as possible, when it cannot fulfill the requirements, then it&amp;rsquo;s OK, but using the standard inappropriately or just using an alternative non-standard way to do something when the standard offer one is bad.&lt;/p&gt;
+
+&lt;p&gt;What do you think about the APIs that you use? have you always found clear APIs?&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;I&amp;rsquo;ve update this post&lt;/strong&gt; on 14/04/2015 adding the next two footnotes after I&amp;rsquo;ve realised that I wrote something that it&amp;rsquo;s not totally right; I&amp;rsquo;ve also written &lt;a href=&#34;http://blog.fraixed.es/post/clarifying-my-mistake-get-requests-with-body&#34; target=&#34;_blank&#34;&gt;a second blog post about my mistake&lt;/a&gt; which gives a better clarification than this two footnotes.&lt;/p&gt;
+
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;1&lt;/sup&gt; The right verb is still being GET, if POST is used as the mentioned API does, however if GET is used it must be without BODY and all the parameters must be in the URI through query parameters or in some part of the path it make sense create different resources.&lt;/p&gt;
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;2&lt;/sup&gt; The current HTTP/1.1 standard doesn&#39;t disallow to use BODY in GET, however it mustn&#39;t considered, so it&#39;s pointless.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

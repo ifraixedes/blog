@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Read about how to test in iojs/NodeJS with 100% coverage a simple AWS Lambda handler which third party dependencies with Mocha, Chai &amp; Sinon">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="JS Test with Mocha, Chai &amp; Sinon Driven by Example">
+  <meta property="og:url" content="http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example">
+  <meta property="og:description" content="Read about how to test in iojs/NodeJS with 100% coverage a simple AWS Lambda handler which third party dependencies with Mocha, Chai &amp; Sinon">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="testing">
+      
+        <meta property="og:tag" content="iojs and NodeJS">
+      
+        <meta property="og:tag" content="javascript">
+      
+        <meta property="og:tag" content="soft dev">
+      
+        <meta property="og:tag" content="best practices">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>JS Test with Mocha, Chai &amp; Sinon Driven by Example</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example"><h1 class="l-title title">JS Test with Mocha, Chai &amp; Sinon Driven by Example</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">06-04-2015</span>
+    <br>
+    
+
+<p>I&rsquo;ve decided to write this post after I&rsquo;ve helped a friend of mine, <a href="https://twitter.com/hyprstack" target="_blank" rel="nofollow">@hyprstack</a>, to write a 100% coverage test in one of his implementations using &ldquo;spies&rdquo; and &ldquo;stubs&rdquo;.</p>
+
+<p>As you probably well know <strong>&ldquo;testing&rdquo;</strong> is one of the general software development <strong>best practices</strong>, they&rsquo;re highly recommended for any piece of code that has been create beyond a hack and whenever you&rsquo;re a little bit worry the consequences that your code can produce if it doesn&rsquo;t do what you expect.</p>
+
+<p>Anyway, my friend was doing an implementation of AWS handler for <a href="http://aws.amazon.com/lambda/" target="_blank" rel="nofollow">AWS Lambda</a> which basically is triggered when a file it&rsquo;s uploaded to S3. The handler (function) has to download the file (if it has a supported file image extension), resize the image file in several defined sizes and upload those new files to S3.</p>
+
+<p>It may not seem quite complicated, however the most of the operations are performed by third party libraries (<a href="https://npmjs.org" target="_blank" rel="nofollow">npm modules</a>), hence its test must be to &ldquo;stub&rdquo; no to rely on S3 as external service and avoid to mess around image files to simulate the resizing, therefore <a href="https://github.com/aheckmann/gm" target="_blank" rel="nofollow">gm (GraphicsMagick &amp; ImageMagick) node module</a> must be stubbed as well.</p>
+
+<p><strong>You can refer to this <a href="http://stackoverflow.com/questions/28881483/nodejs-testing-aws-with-mocha/28915395#28915395" target="_blank" rel="nofollow">Stack Overflow question</a> for more details</strong> about my friends&rsquo; doubt.</p>
+
+<h2 id="the-execution-environment:e1912fe5925c5037293d0fc83ae1a114">The execution environment</h2>
+
+<p>AWS Lambda is <strong>naturally iojs/NodeJS asynchronous pattern</strong>, basically everything here run in iojs/NodeJS.</p>
+
+<p>As you may know the asynchronous pattern isn&rsquo;t easy to fully understand when you&rsquo;re starting with it, or at least, reaching the point where combining asynchronous callbacks to make it works together are not something that you beat in one fell swoop in the first days, and if you add an extra bit of abstraction by a workflow library, the things can be easily messed up, as you can see as example in that Stack Overflow question; however nothing to worry, I made similar mistakes when I was starting.</p>
+
+<p>This is one point in favour to be more interested in testing your code as my friend is.</p>
+
+<h2 id="testing-with-mocha-chai-and-sinon:e1912fe5925c5037293d0fc83ae1a114">Testing with Mocha, Chai and Sinon</h2>
+
+<p><a href="http://mochajs.org/" target="_blank"><strong>Mocha</strong></a> as test framework running, <a href="http://chaijs.com/" target="_blank"><strong>Chai</strong> as assertion library and <a href="http://sinonjs.org/" target="_blank">Sinon</a> as test &ldquo;spies&rdquo;, &ldquo;stubs&rdquo; and &ldquo;mocks&rdquo; are a <strong>good combination to mix together</strong> if you need all those things.</p>
+
+<p>I&rsquo;ve used a lot Mocha and Chai, but Sinon, just a bit, due the most of things that I&rsquo;ve been developing haven&rsquo;t need to stub a third party dependency to bypass them for similar reasons that I mentioned in the introduction of this post.</p>
+
+<p>Stubs are useful, but they&rsquo;re not the easiest thing to assimilate at the first time that you use or read the documentation; again they can be easy to understand, but as the most the things, more the difficult when you have to use properly in a real scenario.</p>
+
+<h2 id="the-implementation:e1912fe5925c5037293d0fc83ae1a114">The implementation</h2>
+
+<p>I&rsquo;m not going to mention what the implementation does, I think that it&rsquo;s easier to take a look to a right implementation that I&rsquo;ve created in this <a href="https://gist.github.com/ifraixedes/3330ce0edf9286234b04" target="_blank" rel="nofollow">gist</a> in case that you&rsquo;re more interested and have better understanding about the following part of the post, hence I just leave here, the pice of code that it can be some more difficult because the issue was still there with the first Stack Overflow reply</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%">async.waterfall([
+    <span style="color: #008800; font-weight: bold">function</span> download(next) {
+      s3.getObject({
+        Bucket<span style="color: #333333">:</span> s3Bucket,
+        Key<span style="color: #333333">:</span> s3Key
+      }, next);
+    },
+    <span style="color: #008800; font-weight: bold">function</span> transform(response, next) {
+      async.map(sizesConfigs, <span style="color: #008800; font-weight: bold">function</span> (sizeConfig, mapNext) {
+        gm(response.Body, s3Key)
+        .resize(sizeConfig.width)
+        .toBuffer(imageType, <span style="color: #008800; font-weight: bold">function</span> (err, buffer) {
+          <span style="color: #008800; font-weight: bold">if</span> (err) {
+            mapNext(err);
+            <span style="color: #008800; font-weight: bold">return</span>;
+          }
+
+          s3.putObject({
+            Bucket<span style="color: #333333">:</span> s3Bucket,
+            Key<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&#39;dst/&#39;</span> <span style="color: #333333">+</span> sizeConfig.destinationPath <span style="color: #333333">+</span> <span style="background-color: #fff0f0">&#39;/&#39;</span> <span style="color: #333333">+</span> s3Key,
+            Body<span style="color: #333333">:</span> buffer,
+            ContentType<span style="color: #333333">:</span> <span style="background-color: #fff0f0">&#39;image/&#39;</span> <span style="color: #333333">+</span> imageType
+          }, mapNext)
+        });
+      }, next);
+    }
+  ], <span style="color: #008800; font-weight: bold">function</span> (err) {
+    <span style="color: #008800; font-weight: bold">if</span> (err) {
+      console.error(<span style="background-color: #fff0f0">&#39;Error processing image, details %s&#39;</span>, err.message);
+      context.done(err);
+    } <span style="color: #008800; font-weight: bold">else</span> {
+      context.done(<span style="color: #008800; font-weight: bold">null</span>, <span style="background-color: #fff0f0">&#39;Successfully resized images bucket: &#39;</span> <span style="color: #333333">+</span> s3Bucket <span style="color: #333333">+</span> <span style="background-color: #fff0f0">&#39; / key: &#39;</span> <span style="color: #333333">+</span> s3Key);
+    }
+  });
+</pre></div>
+
+
+<p>The first implementation and the second one provided in the first Stack Overflow reply, messed up with the <a href="https://github.com/caolan/async#waterfall" target="_blank" rel="nofollow">async.waterfall</a>; and this uses, as you can see, inside one of the waterfall functions <a href="https://github.com/caolan/async#map" target="_blank" rel="nofollow">async.map</a>; for a year an half ago, I&rsquo;m not using async that much, I use <a href="http://en.wikipedia.org/wiki/Futures_and_promises">promises</a>, however I&rsquo;ve tried to introduce the less changes as possible to make it works and clean up a little bit to make the implementation simpler to ease its readability.</p>
+
+<p>By the way, my friend did another implementation in my first feed back and it solved the issue, however he was confused due the back and forth feedback, and he did another implementation without using async and using in his own, which I think that it&rsquo;s good to learn and understand how async works internally, but the implementation looks neater with <code>async</code> beyond to be closer to the original one.</p>
+
+<h2 id="the-test:e1912fe5925c5037293d0fc83ae1a114">The test</h2>
+
+<p>I&rsquo;ve decided to implement the test from scratch, it was not ideal for me to take the test that he and the Stack Overflow responser did and refactor to aim the 100% coverage.</p>
+
+<p>I&rsquo;m not going to expose here the test, you can see it, in the <a href="https://gist.github.com/ifraixedes/3330ce0edf9286234b04" target="_blank" rel="nofollow">gist</a>; I&rsquo;m going to mention what I&rsquo;ve learn about Sinon when you have to use for several third party dependencies, together with <a href="https://github.com/thlorenz/proxyquire" target="_blank" rel="nofollow">proxyquire</a> which I had never used before and it&rsquo;s good not to have to expose or inject third party modules in your modules and having the chance of still using them as usual when you want to stub them.</p>
+
+<p>Whenever you are using this &ldquo;testing stack&rdquo; (Mocha, Chai and Sinon), <strong><a href="https://github.com/domenic/sinon-chai" target="_blank" rel="nofollow">sinon-chai</a> is king</strong>, it simplifies and make the test assertions more readable when obviously you use both; my friend was already using it, so I haven&rsquo;t introduced it to the new test, but I&rsquo;ve though that it&rsquo;s a good thing to mention.</p>
+
+<p>If you read the test, you&rsquo;ll see that there&rsquo;re several stubs (and/or spies) that you must use to be able to test the handler. The tests cases which involve to test all the execution workflow require to test the calls (passsed parameters) and define at callback call for each; they drove me mad at the beginning and in some point I decided to extract the <code>transform</code> function in the <code>asyn.waterfall</code> chain to an individual script (a.k.a node module) to be able to create just only one &ldquo;stub&rdquo; for the part with the <code>proxyquire</code> help and write a second test to test only the <code>transform</code> module; however I&rsquo;ve failed, I couldn&rsquo;t make <code>proxyquire</code> work with it, it was still executing the original function than the <code>stub</code> and at the end, I returned back to the current solution (all in one script/node module), however I&rsquo;ve also thought the easy second solution, to add the <code>transform</code> function to AWS handler module, however I didn&rsquo;t like to have to export both in the same module and as you can see, I returned back to the first and current approach.</p>
+
+<p>With the current approach, I&rsquo;ve started to create all the &ldquo;stubs&rdquo; and as I thought at the beginning, it was going to be hard to add every stub with the parameters that each one should receive to test all the calls to <code>gm</code> module, moreover that a simple mistake (typo, etc.) was not going not to call the chain, making difficult to discover from where the error comes (implementation or test stub and which one), moreover to have to put a lot of expectations in the wrong place <code>begin</code> Mocha function.</p>
+
+<p>Thinking for a moment, I&rsquo;ve realised that using Sinon with Chai, it&rsquo;s not needed, to have to define parameters, just defining the position of the callback parameters and the values pass in the &ldquo;stubs&rdquo; are enough and move to chai the assertions checking in the right place, <code>it</code> Mocha function, so it&rsquo;s more right, simpler and readable, hence better.</p>
+
+<h2 id="conclusion:e1912fe5925c5037293d0fc83ae1a114">Conclusion</h2>
+
+<p>Test your code is king, sometime is harder than writing the implementation, in this case I&rsquo;ve spent more time in the test than in the implementation, moreover if you want to have 100% coverage; having the coverage is good to know which parts of your implementations are tested and which ones not, so added whenever you can, as my friend did.</p>
+
+<p>If you&rsquo;re starting with iojs/NodeJS, I think that the best way is to understand well the asynchronous programming pattern, is through the callback node convention, they&rsquo;re the basis of node and even though the promise approach are increasing fast, I think that it&rsquo;s worth to learn the basis first.</p>
+
+<p>Testing your code when you&rsquo;re learning it&rsquo;s as good complement for your implementations, you&rsquo;ll learn a lot, and moving forward with spies, stubs and mock it&rsquo;s good to struggle, learn and when you beat them, you&rsquo;ll be ready to use whenever you need then, furthermore to be more experienced.</p>
+
+<p>If you&rsquo;re learning node, don&rsquo;t miss to check <a href="http://nodeschool.io/" target="_blank">Node School</a> in case that you haven&rsquo;t heard about it.</p>
+
+<p>I hope that this read has been useful for you.
+Best!</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

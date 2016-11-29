@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rsses on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/rss/</link>
+    <description>Recent content in Rsses on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <atom:link href="http://blog.fraixed.es/rss/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title></title>
+      <link>http://blog.fraixed.es/rss/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/rss/</guid>
+      <description>&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;link rel=&#34;canonical&#34; href=&#34;{{.Site.BaseURL}}/index.xml&#34;/&gt;&lt;meta http-equiv=&#34;content-type&#34; content=&#34;text/html; charset=utf-8&#34; /&gt;&lt;meta http-equiv=&#34;refresh&#34; content=&#34;0;url={{.Site.BaseURL}}/index.xml&#34; /&gt;&lt;/head&gt;&lt;/html&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

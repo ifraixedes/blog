@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Linux on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/linux/</link>
+    <description>Recent content in Linux on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Sun, 18 Sep 2016 22:29:45 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Setting up GPG, GIT with keybase.io</title>
+      <link>http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio</link>
+      <pubDate>Sun, 18 Sep 2016 22:29:45 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio</guid>
+      <description>
+
+&lt;p&gt;Back in April, &lt;a href=&#34;https://github.com/blog/2144-gpg-signature-verification&#34; target=&#34;_blank&#34; &gt;Github started to support signed commits and tags with PGP&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve always wanted that &lt;a href=&#34;https://en.wikipedia.org/wiki/Pretty_Good_Privacy&#34; target=&#34;_blank&#34; &gt;PGP (Pretty Good Privacy)&lt;/a&gt;
+ were widely spread because, for example I would love to easily send confidential emails and avoid repudiation in some others that I receive from third parties, however the lack of support for email clients not just desktop client, web clients and mobile clients which today are that necessary makes very hard that people adopt it, so using it in our daily life is mostly an utopia.&lt;/p&gt;
+
+&lt;p&gt;After Github has added support for it, it has been for me a good excuse to start to use PGP in my daily life, it isn&amp;rsquo;t email, but well, I use Github, as many other geeks, almost in daily basis, or if it isn&amp;rsquo;t Github, it&amp;rsquo;s git, so if it&amp;rsquo;s well integrated then, I don&amp;rsquo;t mind to use in any repo either although it isn&amp;rsquo;t hosted on Github.&lt;/p&gt;
+
+&lt;p&gt;The key point of PGP is, obviously, to have a pair of keys; I had one long time ago, that I ended without using it, after I don&amp;rsquo;t know how many years later, which was around 2 years ago, I got a new PGP key pair with &lt;a href=&#34;https://keybase.io&#34; target=&#34;_blank&#34; &gt;keybase&lt;/a&gt;
+, but being hones the account was almost unactive until last April.&lt;/p&gt;
+
+&lt;p&gt;Keybase.io provides a PGP cloud service which create and host keys attached to people; it provides some mechanisms to identify people through third party social services which today are used by tons of people. Of course, the concept of hosting your private key obligate to the users in trust in their security, something that&amp;rsquo;s very debatable, but being honest, that same thing happens with the digital certificates and in my case, for the usage that I give to the key, it isn&amp;rsquo;t big concern.&lt;/p&gt;
+
+&lt;p&gt;To setup my Keybase key with Github, in order to sign my commits and be marked as verified, I followed the blog awesome &lt;a href=&#34;https://www.ahmadnassri.com/blog/github-gpg-keybase-pgp/&#34; target=&#34;_blank&#34; &gt;blog post Github GPG &amp;#43; Keybase PGP of Ahad Nassri&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;using-gnupg-agent-for-the-sake-of-your-fingers:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Using gnupg-agent for the sake of your fingers&lt;/h2&gt;
+
+&lt;p&gt;A very important thing for me and avoid to disable the signing options of my git configuration is no to have to type the passphrase of my GPG key on each commit. For this purpose, we have an agent, as we have for the &lt;code&gt;ssh&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In my case, I use an Ubuntu Linux for all my development stuff, so here I describe to install and configure &lt;code&gt;gpg-agent&lt;/code&gt; for a Ubuntu Linux, if you use another distro then you may have to make some changes and if you use another OS then, you probably end up changing everything but I hope that you can get, at least, the idea in how to do so.&lt;/p&gt;
+
+&lt;h3 id=&#34;install-it:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Install it&lt;/h3&gt;
+
+&lt;p&gt;Installing the agent is as easy how a simple &lt;code&gt;apt-get install gnupg-agent&lt;/code&gt; command execution.&lt;/p&gt;
+
+&lt;p&gt;You can run the agent manually each time that you login or do the same adding that command to your &lt;code&gt;.bashrc&lt;/code&gt; file or the equivalent &lt;code&gt;rc&lt;/code&gt; file that your shell execute on a new session.&lt;/p&gt;
+
+&lt;p&gt;In my case I use &lt;a href=&#34;https://en.wikipedia.org/wiki/Z_shell&#34; target=&#34;_blank&#34; &gt;Z shell (zsh)&lt;/a&gt;
+ and &lt;a href=&#34;http://ohmyz.sh/&#34; target=&#34;_blank&#34; &gt;Oh My ZSH!&lt;/a&gt;
+ and I use the &lt;a href=&#34;https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/plugins/gpg-agent/gpg-agent.plugin.zsh&#34; target=&#34;_blank&#34; &gt;plugin that it provides for running the `gnupg-agent`&lt;/a&gt;
+, which you can run adding to the &lt;code&gt;plugins&lt;/code&gt; variable list &lt;code&gt;gpg-agent&lt;/code&gt;, for example mine, looks like&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #996633&#34;&gt;plugins&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;=(&lt;/span&gt;ssh-agent zsh-syntax-highlighting gpg-agent&lt;span style=&#34;color: #333333&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;if you&amp;rsquo;re using gnpg-agent version 2&lt;/strong&gt; then you don&amp;rsquo;t need to use the &lt;em&gt;Oh My ZSH!&lt;/em&gt; plugin because the agent will be executed automatically at OS the startup time as any other service; check it with &lt;code&gt;gpg-agent --version&lt;/code&gt;, but you may have to assign and export some variable because &lt;em&gt;gpg&lt;/em&gt; client can connect to the agent version 2, although for unknown reasons, sometimes I haven&amp;rsquo;t needed to export any of them to make it work and sometimes I have to export on or both.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #007020&#34;&gt;export &lt;/span&gt;&lt;span style=&#34;color: #996633&#34;&gt;SSH_AUTH_SOCK&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #996633&#34;&gt;$HOME&lt;/span&gt;/.gnupg/S.gpg-agent.ss
+&lt;span style=&#34;color: #007020&#34;&gt;export &lt;/span&gt;&lt;span style=&#34;color: #996633&#34;&gt;GPG_TTY&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;$(&lt;/span&gt;TTY&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If doesn&amp;rsquo;t work without them, getting an error message about the agent connection then, export &lt;code&gt;GPG_TTY&lt;/code&gt; and if it persists, then export the both.&lt;/p&gt;
+
+&lt;h3 id=&#34;configure-it:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Configure it&lt;/h3&gt;
+
+&lt;p&gt;To configure the agent you have to create a configuration file; by default is located on your &lt;em&gt;user home director&lt;/em&gt; in the directory &lt;code&gt;.gnupg/gpg-agent.conf&lt;/code&gt;, take a look to the &lt;a href=&#34;https://www.gnupg.org/documentation/manuals/gnupg/Agent-Options.html#option%20%2d%2doptions&#34; target=&#34;_blank&#34; &gt;options summary section of the documentation web site&lt;/a&gt;
+ to see all the available options.&lt;/p&gt;
+
+&lt;p&gt;Mine only contains a few options which I wanted to tweak&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Set the default cache time to 1 day.
+default-cache-ttl       86400
+default-cache-ttl-ssh   86400
+
+# Set the max cache time to 30 days.
+max-cache-ttl           2592000
+max-cache-ttl-ssh       2592000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to add our &lt;em&gt;pgp keys&lt;/em&gt;, due the purpose of this post, I&amp;rsquo;ll add my Keybase Key, but you could whatever &lt;em&gt;pgp key&lt;/em&gt; you own, repeating the process for each key.&lt;/p&gt;
+
+&lt;p&gt;Export your private key through the Keybase command line or through the website and save it somewhere, I&amp;rsquo;ll assume that the key file is in &lt;code&gt;~/my-key&lt;/code&gt; for the rest of this post.&lt;/p&gt;
+
+&lt;p&gt;List the current keys, which we shouldn&amp;rsquo;t have any, but the same command will initialize the key store database on the first call &lt;code&gt;gpg --list-keys&lt;/code&gt;, you should see something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~ ➜  gpg --list-keys
+gpg: /home/vagrant/.gnupg/trustdb.gpg: trustdb created
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Import the key &lt;code&gt;gpg --import ~/my-key&lt;/code&gt;, in my case I got&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~ ➜  gpg --import my-key
+gpg: key B5CB5AD5: secret key imported
+gpg: key B5CB5AD5: public key &amp;quot;keybase.io/ifraixedes &amp;lt;ifraixedes@keybase.io&amp;gt;&amp;quot; imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
+gpg:       secret keys read: 1
+gpg:   secret keys imported: 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And now if you list the keys (&lt;code&gt;gpg --list-keys&lt;/code&gt;), you should see something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~ ➜  gpg --list-keys
+/home/vagrant/.gnupg/pubring.gpg
+--------------------------------
+pub   4096R/B5CB5AD5 2015-04-15
+uid                  keybase.io/ifraixedes &amp;lt;ifraixedes@keybase.io&amp;gt;
+sub   2048R/97F96DB7 2015-04-15 [expires: 2023-04-13]
+sub   2048R/1C9B754A 2015-04-15 [expires: 2023-04-13]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;configure-git-for-signing-and-use-a-default-key:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Configure GIT for signing and use a default key&lt;/h2&gt;
+
+&lt;p&gt;In my case, I&amp;rsquo;m happy to sign all the commits with the same key, so I don&amp;rsquo;t have the need to constantly specify a key per project so I made all this configurations as global, if you need to configure them per project then remove the &lt;code&gt;--global&lt;/code&gt; options of the commands that I listed below.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s specify the key to use with &lt;code&gt;git config --global user.signingkey ifraixedes@keybase.io&lt;/code&gt; or use the key shorthand &lt;code&gt;git config --global user.signingkey B5CB5AD5&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Then, let&amp;rsquo;s sign all the commits by default, so we don&amp;rsquo;t have to specify &lt;code&gt;-S&lt;/code&gt; to &lt;code&gt;git commit&lt;/code&gt; each time, &lt;code&gt;git config --global commit.gpgsign true&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;With these two options, we are set if the agent is version 1, but &lt;strong&gt;if the agent that you&amp;rsquo;re running in your machine is the version 2&lt;/strong&gt;, then you have to add one configuration parameter more to git, otherwise you&amp;rsquo;ll see a message, on each commit, saying something like &lt;code&gt;agent is not running in this session&lt;/code&gt;; this happens because GIT is using by the default the &lt;code&gt;gpg&lt;/code&gt; binary in your path, and for the version 2 you have to use the &lt;code&gt;gpg2&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;First make sure that you install the &lt;em&gt;gpg v2&lt;/em&gt; with &lt;code&gt;sudo apt-get install gnupg2&lt;/code&gt; and thereafter, tell git to use &lt;em&gt;gpg2&lt;/em&gt; with &lt;code&gt;git config --global gpg.program gpg2&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;wrapping-up:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Wrapping up&lt;/h2&gt;
+
+&lt;p&gt;At this point, the best thing before giving it a try is to exit your session and login again, than trying to run the &lt;code&gt;gpg-agent&lt;/code&gt; by hand, because you&amp;rsquo;ll try that everything is running as expected and it&amp;rsquo;s easier.&lt;/p&gt;
+
+&lt;p&gt;Happy signing!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Useful links:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.ahmadnassri.com/blog/github-gpg-keybase-pgp/&#34; target=&#34;_blank&#34; &gt;Github GPG &amp;#43; Keybase PGP&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://help.github.com/categories/gpg/&#34; target=&#34;_blank&#34; &gt;Github help for PGP&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://wiki.archlinux.org/index.php/GnuPG&#34; target=&#34;_blank&#34; &gt;Good summary docs of GnuPG&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #9</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</link>
+      <pubDate>Fri, 17 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</guid>
+      <description>&lt;p&gt;This week security, programming languages and Linux, go ahead to see what tweets I&amp;rsquo;ve chosen.&lt;/p&gt;
+
+&lt;p&gt;New security issue on Apple OS X 10.10.2, so if you use OSX 10.10 and yo haven&amp;rsquo;t updated, you should do ASAP because you&amp;rsquo;re already late.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/hashtag/rootpipe?src=hash&#34;&gt;#rootpipe&lt;/a&gt; Full disclosure of a privilege escalation to root in Apple OS X 10.10.2 (and earlier): &lt;a href=&#34;https://t.co/mT6EvSYqWh&#34;&gt;https://t.co/mT6EvSYqWh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Emil Kvarnhammar (@emilkvarnhammar) &lt;a href=&#34;https://twitter.com/emilkvarnhammar/status/586147583552266240&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A blog post about &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; and concurrency has been released, after it&amp;rsquo;s in beta and it&amp;rsquo;ll be for production soon, it&amp;rsquo;s worth to read what feature the language has to implement some interesting patterns&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Fearless Concurrency with Rust &lt;a href=&#34;http://t.co/RzmGXuPAcD&#34;&gt;http://t.co/RzmGXuPAcD&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/586566688109367297&#34;&gt;April 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I wasn&amp;rsquo;t aware of the &lt;a href=&#34;https://elementary.io/&#34;&gt;Elementary Linux distribution&lt;/a&gt;, I don&amp;rsquo;t have any plan to use but I&amp;rsquo;ve like the concept of it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Elementary Linux released:&amp;#10;32bit &lt;a href=&#34;http://t.co/6I07CZ6IIe&#34;&gt;http://t.co/6I07CZ6IIe&lt;/a&gt;&amp;#10;&amp;#10;64bit &lt;a href=&#34;http://t.co/pewrEkzjWE&#34;&gt;http://t.co/pewrEkzjWE&lt;/a&gt;&amp;#10;&amp;#10;More &lt;a href=&#34;https://t.co/lV7wdkrXlZ&#34;&gt;https://t.co/lV7wdkrXlZ&lt;/a&gt; &lt;a href=&#34;http://t.co/5dwrDqIC6Q&#34;&gt;pic.twitter.com/5dwrDqIC6Q&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586946813573201920&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Indoctrinate people to Linux is always good, and making it free remove all the barriers, so I support this cause and I&amp;rsquo;ve decided to share it here; furthermore the author is the creator of one of the distributions that I used quite a bit in the past, &lt;a href=&#34;https://www.gentoo.org/&#34;&gt;Gentoo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Please RT. The best &amp;quot;Linux Fundamentals&amp;quot; course, by Daniel Robbins the creator of Gentoo Linux &lt;a href=&#34;http://t.co/uQMmw2w7yQ&#34;&gt;http://t.co/uQMmw2w7yQ&lt;/a&gt; No registration needed&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586935862635528194&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve really found very interesting about a blog post written by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;, because lastly I&amp;rsquo;ve got in the same thoughts about having too many features which some of them are redundant in programming languages, frameworks, etc., rather than help in long term, they annoy.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Less is more: removing language features to leave nowhere for bugs to hide. &lt;a href=&#34;http://t.co/6q3MHSkAe9&#34;&gt;http://t.co/6q3MHSkAe9&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Tim Ruffles (@timruffles) &lt;a href=&#34;https://twitter.com/timruffles/status/587893747385556992&#34;&gt;April 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a wonderful weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

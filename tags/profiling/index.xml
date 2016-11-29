@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Profiling on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/profiling/</link>
+    <description>Recent content in Profiling on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Tue, 15 Mar 2016 19:30:46 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/profiling/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Talk at Golang BCN about Profiling Go Programs</title>
+      <link>http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs</link>
+      <pubDate>Tue, 15 Mar 2016 19:30:46 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs</guid>
+      <description>
+
+&lt;p&gt;This post has two main purposes:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Have a kind of script for my talk, at &lt;a href=&#34;http://golangbcn.org/&#34; target=&#34;_blank&#34; &gt;Golang BCN&lt;/a&gt;
+, for the topic mentioned in the title of this post&lt;/li&gt;
+&lt;li&gt;The place where the attendees and followers of Golang BCN can access to the material used in my talk&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;My talk doesn&amp;rsquo;t have any slide, I think that&amp;rsquo;s better to spend my time mentioning the code to run and what I do to use the profiler with the basic implementation which I&amp;rsquo;ve created for this purpose.&lt;/p&gt;
+
+&lt;h2 id=&#34;get-ready:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Get Ready&lt;/h2&gt;
+
+&lt;p&gt;To follow me you have first to make sure that you have installed in your machine:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Golang 1.6; probably an early close version would work too, however I used that one because it was the last stable release at the time that I prepared the talk.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.graphviz.org/&#34; target=&#34;_blank&#34; &gt;Graphviz&lt;/a&gt;
+ which is required to be able to generate &lt;code&gt;svg&lt;/code&gt; with &lt;code&gt;pprof&lt;/code&gt; (The tool offered by Golang out of the box to profile your programs)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;NOTE that I used a linux machine to run it; I haven&amp;rsquo;t done anything which doesn&amp;rsquo;t look cross platform, but bear in mind that you may have issues run it on other operative system&lt;/p&gt;
+
+&lt;p&gt;Get the code, cloning this &lt;a href=&#34;https://gist.github.com/ifraixedes/fd8b585c3da6dacb6385&#34; target=&#34;_blank&#34; &gt;gist&lt;/a&gt;
+ in your &lt;code&gt;GOPATH&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;basic-implementation-examples:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Basic implementation examples&lt;/h2&gt;
+
+&lt;p&gt;To give this introductory talk to Golan profiler, I&amp;rsquo;ve implemented 4 flavors of a &lt;a href=&#34;https://en.wikipedia.org/wiki/Power_of_two&#34; target=&#34;_blank&#34; &gt;Power of 2 function&lt;/a&gt;
+ and 4 flavors of function which returns &lt;a href=&#34;https://en.wikipedia.org/wiki/Fibonacci_number&#34; target=&#34;_blank&#34; &gt;Fibonacci numbers&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The implementation have a test for each function, to make sure that they work as expected, some benchmarks which will use to profile the 8 mentioned functions and a basic server with 2 endpoints to show how &lt;code&gt;net/http/pprof&lt;/code&gt; package expose profile information on an http server just only importing it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve also added a &lt;code&gt;Makefile&lt;/code&gt; as helper to run the most of the commands which I need to profile the benchmarks and the basic http server.&lt;/p&gt;
+
+&lt;h2 id=&#34;profiling-benchmarks:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Profiling benchmarks&lt;/h2&gt;
+
+&lt;p&gt;To profile benchmarks, we need to run the benchmarks with some flags to get profile metrics data files; we also have to get the compiled binary, because, thereafter, we can match the profile metrics with the function names and the lines of the source code where those metrics refer.&lt;/p&gt;
+
+&lt;p&gt;So we do something like &lt;code&gt;go test -bench . -benchmem -memprofile mem.out -cpuprofile cpu.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;With the previous command, run the benchmarks and output a memory and cpu profile data; the binary is also generated with an auto-generated name, pass &lt;code&gt;-o mybin&lt;/code&gt; to give it the name that you would like.&lt;/p&gt;
+
+&lt;p&gt;With the output generated in our terminal, we already know which flavor function (on each functions set) is the fastest. However, having the profiling data we can know from each function, which are the cost of their internal operations; for this simple functions isn&amp;rsquo;t worth as they only have a few instructions, however in large programs where there are quite a few nested function calls, we can see which are the cost of each call and deepen in those ones which are the most costly and know where the bottlenecks are to see if we can change the implementation for more optimized ones.&lt;/p&gt;
+
+&lt;p&gt;The profiling data can be analyzed using &lt;code&gt;pprof&lt;/code&gt; tool, executing something like &lt;code&gt;go tool pprof mybin cpu.out&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;When we run pprof in that way, we get into a &amp;ldquo;repl&amp;rdquo; where we can execute commands to read the the different information which profile data file contains and see some of them next to the line of the implementation which they refer&lt;/p&gt;
+
+&lt;p&gt;Another way, which probably is the most practical, is to generate a flow graph of the function calls with the cost of each (or the most costly if there are too many) function call; we can get that executing something like &lt;code&gt;go tool pprof -svg -output cpu.svg mybin cpu.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;And we are ready to open &lt;code&gt;cpu.svg&lt;/code&gt; and see where are our bottlenecks.&lt;/p&gt;
+
+&lt;h2 id=&#34;profiling-a-service:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Profiling a service&lt;/h2&gt;
+
+&lt;p&gt;A service is an application that, ideally, will run forever, exposing an interface which other applications (clients) can request to perform the exposed operations. Due they behavior, they have to offer an interface to get the profile data or they have to export it on a defined intervals of time.&lt;/p&gt;
+
+&lt;p&gt;Golang has the package &lt;code&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/pprof/&#34; target=&#34;_blank&#34; &gt;net/http/pprof&lt;/a&gt;
+&lt;/code&gt; which allows to expose, automatically, a few HTTP endpoints to collect the profile data, if the service has an http server, otherwise we can create one HTTP only for that purpose.&lt;/p&gt;
+
+&lt;p&gt;The exposed endpoints are listed under &lt;code&gt;/debug/pprof/&lt;/code&gt; path and to collect the profile data we execute &lt;code&gt;pprof&lt;/code&gt; pointing to the specific path, for example&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;cpu: &lt;code&gt;go tool pprof http://localhost:8000/debug/pprof/profile&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;heap: &lt;code&gt;go tool pprof http://localhost:8000/debug/pprof/heap&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;goroutine block: &lt;code&gt;go tool pprof http://localhost:8000/debug/pprof/block&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Each of those calls generate an output profile data file as we has got from the benchmark and with those you can use &lt;code&gt;pprof&lt;/code&gt; in the same way to analyze the data.&lt;/p&gt;
+
+&lt;p&gt;This is all for now!&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Related links&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The main reference about profiling Go programs posted in the Golang official Blog: &lt;a href=&#34;http://blog.golang.org/profiling-go-programs&#34; target=&#34;_blank&#34; &gt;Profiling Go Programs&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;I wrote a couple of post in my early days in Golang; I used the profiler to drop my curiosity about the performance of values and pointers passed as a parameter, so you can read other place how to use the profiler, &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics/&#34; target=&#34;_blank&#34; &gt;gathering the metrics&lt;/a&gt;
+ and &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics/&#34; target=&#34;_blank&#34; &gt;analyzing them&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Profiling Golang Slices of Structs vs Pointers: Analysing Metrics</title>
+      <link>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics</link>
+      <pubDate>Mon, 23 Mar 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics</guid>
+      <description>
+
+&lt;p&gt;This is the second part of a two post series about the performance of Golang slices between those which contain structs and those which contain pointers to the same structs and how they are populated through different struct &amp;ldquo;constructor&amp;rdquo; and &amp;ldquo;converter&amp;rdquo; implementations, hence you need to read the &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics&#34; target=_blank&gt;previous post&lt;/a&gt; to understand this.&lt;/p&gt;
+
+&lt;p&gt;After gathering the profiling metrics from &lt;a href=&#34;https://gist.github.com/ifraixedes/f11fba231ac8cb4cb1d4#file-structs_test-go&#34; target=&#34;_blank&#34;&gt;benchmarks&lt;/a&gt; and &lt;a href=&#34;https://gist.github.com/ifraixedes/f11fba231ac8cb4cb1d4#file-main-go&#34; target=_blank&gt;&lt;code&gt;main&lt;/code&gt;&lt;/a&gt; executions, I&amp;rsquo;m going to go through them to see how the different implemented approaches performs and hopefully to get some conclusions about them to have a better decision making for future Golang developments.&lt;/p&gt;
+
+&lt;h2 id=&#34;benchmarks:674e6dc579e95f2506494215d826638f&#34;&gt;Benchmarks&lt;/h2&gt;
+
+&lt;p&gt;Executing the benchmark, &lt;code&gt;go test -v -bench . -benchtime 10s -benchmem -memprofile mem.out  -cpuprofile cpu.out&lt;/code&gt;, we get an terminal output with some numbers besides of two files which contain CPU and memory profiling metrics.&lt;/p&gt;
+
+&lt;p&gt;The terminal output looks like this&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/01/1c/6d/011c6dc4f064a6265d03e591aab1fe51.jpg&#34; alt=&#34;benchmarks results terminal output&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;With that, we already have what of them performs better and what is the worst, however, in my case I&amp;rsquo;m getting the opposite that initially I expected to find. I was expecting that avoiding memory copy between struct constructors which return pointers and slices which store pointers, the gain should be notorious better than copying values across the memory.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s, first, generate some graphs with the profiling data with pprof and see if we can be clearer about the results that we&amp;rsquo;ve got.&lt;/p&gt;
+
+&lt;p&gt;With &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu.png perf.test cpu.out&lt;/code&gt; we get a graph with the CPU profiling metrics, which looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/12/56/6f/12566f2f1dbbd3d1ade1c80f5cc74c69.jpg&#34; alt=&#34;benchmarks CPU graph&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And the allocated space with &lt;code&gt;go tool pprof -png -alloc_space -output  ~/Workspace/tmp/blog/mem-alloc-space.png perf.test mem.out&lt;/code&gt;, which looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/02/4c/64/024c6488103261951d5a82d2b12d51fb.jpg&#34; alt=&#34;benchmarks space allocation graph&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;At first glance, I&amp;rsquo;m confused, so the &lt;strong&gt;benchmarks&amp;rsquo; output shows different results than the profiling graphs&lt;/strong&gt;, which the best and worse approaches are switched around, however that&amp;rsquo;s not really the case; &lt;strong&gt;graphs show the accumulated of the benchmarks execution&lt;/strong&gt;, which run each approach a different number of times until they can measure an average time of each iteration; therefore the &lt;strong&gt;&lt;em&gt;benchamkars output the average results per loop&lt;/em&gt;&lt;/strong&gt;, and graphs the whole accumulation of the whole execution. To confirm that, I&amp;rsquo;ve created spreadsheet where I&amp;rsquo;ve pulled the data from them, I&amp;rsquo;ve made the calculations from the accumulated data from the graphs to iterations besides to work out some comparisons between the approaches, to be clear the differences between them&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://goo.gl/jIkeZp&#34; target=_blank&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/5c/b7/78/5cb77848806bdd9ada1a0f5214d5994e.jpg&#34; alt=&#34;spreadsheet benchmark comparison table&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Click in the image to jump to the spreadsheet if you wish to see it.&lt;/p&gt;
+
+&lt;p&gt;Clearly, we can see the winner, with no pointers at all, we get the best CPU performance and the same memory performance that the slices of structs but using a constructor which returns pointer to a struct, which are 50% less memory usage than the other two approaches.&lt;/p&gt;
+
+&lt;h2 id=&#34;main:674e6dc579e95f2506494215d826638f&#34;&gt;Main&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve also implemented a &lt;code&gt;main&lt;/code&gt; function, right?, maybe because I though that the benchmarks could show a different reality due the warm-up, therefore, let&amp;rsquo;s analyse the &lt;code&gt;main&lt;/code&gt; profiling data with each different approach.&lt;/p&gt;
+
+&lt;p&gt;Following the order that I&amp;rsquo;ve used in the spreadsheet, we have&lt;/p&gt;
+
+&lt;p&gt;The &amp;ldquo;struct&amp;rdquo; method CPU &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu-struct.png main cpu-struct.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/1d/22/bd/1d22bdb662f2b849bdf45bb277b6dd30.jpg&#34; alt=&#34;CPU profiling graph of &amp;quot;struct&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and the &amp;ldquo;used memory space&amp;rdquo; &lt;code&gt;go tool pprof -png -inuse_space -output  ~/Workspace/tmp/blog/mem-inuse-space-struct.png main mem-struct.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/6a/ef/13/6aef13daa6b952e05fb9830e87e2aa97.jpg&#34; alt=&#34;memory usage graph of &amp;quot;struct&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &amp;ldquo;hybrid&amp;rdquo; method CPU &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu-hybrid.png main cpu-hybrid.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/ee/6f/47/ee6f47baac71aea04ceee502d66402b1.jpg&#34; alt=&#34;CPU profiling graph of &amp;quot;hybrid&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and its memory usage &lt;code&gt;go tool pprof -png -inuse_space -output  ~/Workspace/tmp/blog/mem-inuse-space-hybrid.png main mem-hybrid.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/b4/dd/a5/b4dda54b0bcda8d88ed32df29476e96e.jpg&#34; alt=&#34;memory usage graph of &amp;quot;hybrid&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The &amp;ldquo;pointer&amp;rdquo; one &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu-pointer.png main cpu-pointer.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/79/cb/57/79cb5731eebdeb63068233256b601c6f.jpg&#34; alt=&#34;CPU profiling graph of &amp;quot;pointer&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and its memory usage &lt;code&gt;go tool pprof -png -inuse_space -output  ~/Workspace/tmp/blog/mem-inuse-space-pointer.png main mem-pointer.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/b4/dd/a5/b4dda54b0bcda8d88ed32df29476e96e.jpg&#34; alt=&#34;memory usage graph of &amp;quot;pointer&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and the last one, the no-pointers, CPU &lt;code&gt;go tool pprof -png  -output  ~/Workspace/tmp/blog/cpu-no-pointers.png main cpu-no-pointers.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/38/b3/77/38b3775ce311060259c07d054c583c45.jpg&#34; alt=&#34;CPU profiling graph of &amp;quot;no-pointers&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;and memory usage &lt;code&gt;go tool pprof -png -inuse_space -output  ~/Workspace/tmp/blog/mem-inuse-space-no-pointers.png main mem-no-pointers.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/6a/ef/13/6aef13daa6b952e05fb9830e87e2aa97.jpg&#34; alt=&#34;memory usage graph of &amp;quot;no-pointers&amp;quot; method&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;analysis:674e6dc579e95f2506494215d826638f&#34;&gt;Analysis&lt;/h2&gt;
+
+&lt;p&gt;We can discard the memory usage because the heap frames in &lt;code&gt;main&lt;/code&gt; executions don&amp;rsquo;t provide a consistent information when the slice stores structs or pointers; in the other hand, we&amp;rsquo;ve got the same results for the CPU performance between &lt;code&gt;main&lt;/code&gt; and benchmark executions for all the approaches. I&amp;rsquo;ve also used pprof command line to list top 10 and list the functions, however I haven&amp;rsquo;t found anything useful or something that we cannot see in the graphs, so I haven&amp;rsquo;t included here to avoid fuzz.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Surprisingly the fastest implementation is the one that doesn&amp;rsquo;t involve pointers at all&lt;/strong&gt;, because the used constructor creates structs that are returned by copy, because it doesn&amp;rsquo;t return a pointer, and the used slice stores structs rather than pointers, so another copy should be done in the assignation between the constructor return value and the position referenced by the slice&amp;rsquo;s index.&lt;/p&gt;
+
+&lt;p&gt;I was expecting to find just the opposite, using pointers, hence just changing pointers addresses over copying values between memory spaces should be the fasters solution, however it&amp;rsquo;s the slowest one.&lt;/p&gt;
+
+&lt;p&gt;Taking a look to the CPU graphs of the &lt;code&gt;main&lt;/code&gt; execution with the two methods that use pointers, &amp;ldquo;pointer&amp;rdquo; and &amp;ldquo;hybrid&amp;rdquo;, we can see how the &lt;code&gt;main&lt;/code&gt; runtime and the function that &lt;code&gt;main&lt;/code&gt; executes, don&amp;rsquo;t even appear, because the CPU time is spent in two linked boxes named &amp;ldquo;System&amp;rdquo; and &amp;ldquo;External Code&amp;rdquo; and in the case of &amp;ldquo;pointer&amp;rdquo; method, we can also see two more related with the &amp;ldquo;gc&amp;rdquo; (garbage collector).&lt;/p&gt;
+
+&lt;p&gt;After this I can extract some conclusions and some doubts as well, so let&amp;rsquo;s see then.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:674e6dc579e95f2506494215d826638f&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Making assumptions based in theories (references versus values) is a kind of making blind decisions&lt;/strong&gt; when we don&amp;rsquo;t exactly know how compilers and runtimes perform operations; hence &lt;strong&gt;implementing benchmark and collecting profiling metrics of our developments are good practices&lt;/strong&gt; that we should consider when the performance matters or whenever we&amp;rsquo;re worry about it.&lt;/p&gt;
+
+&lt;p&gt;Golang has native packages and tools that allows to achieve them in not than painful way as other languages may be, besides it promotes them as a good development practice.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, &lt;strong&gt;this proof of concept doesn&amp;rsquo;t mean that the right method to implement in every scenario&lt;/strong&gt; is not to use pointers (addresses) and return and assign copies every where, due to this two fair facts:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;The structs used here are very small structs, one of them only contains one &lt;code&gt;uint64&lt;/code&gt; and the other one, two &lt;code&gt;uint32&lt;/code&gt;, so the memory copy can be very optimised for those types or for small size structs, however it&amp;rsquo;s something that I don&amp;rsquo;t really know and they&amp;rsquo;re only my thoughts.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;The implementation is a process that runs and ends, which I consider that it can be different for a process which runs for long time (in theory infintely) and it has to deal with different loads, as a service or server could be; those services may need to optimise memory space sacrificing the CPU usage or vice versa, but again, those are my thoughts and each scenario must be assessed individually.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;If you want to see a more complex implementation example and its performance analysis take a look to this &lt;a href=&#34;http://blog.golang.org/profiling-go-programs&#34; target=_blank&gt;post in Golang blog&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;As I said, this is a proof of concept, it&amp;rsquo;s not any experience in running something in production or the steps followed to find bottle necks or performance improvements, furthermore I don&amp;rsquo;t have years of experience with Golang and I&amp;rsquo;m not a performance analysis expert; I may be wrong in some of the metrics gathering, analysis or conclusions, and I will appreciate that if you realise about those or you have a better explanation or you thing that you can contribute in something, please write a comment and share them with others.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve hope that you&amp;rsquo;ve got something interesting from here.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Profiling Golang Slices of Structs vs Pointers: Gathering Metrics</title>
+      <link>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics</link>
+      <pubDate>Mon, 16 Mar 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics</guid>
+      <description>
+
+&lt;p&gt;After the post that I wrote last week about &lt;a href=&#34;http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma target=&#34;_blank&#34;&gt;Golang slices&lt;/a&gt;, and what type of slices to use when we use &amp;ldquo;constructor&amp;rdquo; functions, I&amp;rsquo;ve got a huge curiosity to know the difference, in performance wise, what are the differences of using slices which contain literally structs versus the ones which contain pointers to the same types of structs, and how it can be affected depending of which of them is used.&lt;/p&gt;
+
+&lt;p&gt;The possible combinations are, having a &amp;ldquo;constructor&amp;rdquo; function which given a struct of type A, returns a struct of type B, which can be a struct (copied retruned) or pointer (reference returned) and storing the B structs into slices of B structs (copied on each assignation) or pointers of B structs (referenced in each assignation); I know that this explanation is a mess, however go ahead to be clear what I mean.&lt;/p&gt;
+
+&lt;p&gt;To know about it, I&amp;rsquo;ve written a silly specific Golang example which will allows us to gather some &lt;strong&gt;benchmarking and profiling metrics&lt;/strong&gt;; the motivation is due by how easy can be implemented and analised through the tool set that Golang natively brings; if  you aren&amp;rsquo;t aware about them, take a look to &lt;a href=&#34;http://golang.org/pkg/testing/#hdr-Benchmarks&#34; target=&#34;_blank&#34;&gt;Benchmark function in testing package&lt;/a&gt; and &lt;a href=&#34;http://golang.org/pkg/runtime/pprof/&#34; target=&#34;_blank&#34;&gt;CPU and memory profiling can be done with runtime/pprof package&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In this post, I&amp;rsquo;ll show the implementation and the process to gather performance metrics, and in the following post, we&amp;rsquo;ll analyse them.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-implementation:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Implementation&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve taken as base, the same example that I wrote last week about slices and I&amp;rsquo;ve added all the different cases to compare.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s take a look to the main parts of the implementation to be in context when we analyse the results.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-types:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Types&lt;/h3&gt;
+
+&lt;p&gt;The types are the same, of my previous post, plus one more, however I&amp;rsquo;ve renamed one to hopefully, avoid confusion between them in the results.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	id &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	upper &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+	lower &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStructSlice []fromStruct
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStructSlice []toStruct
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStructSliceP []&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id=&#34;the-struct-types-constructors:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Struct Types Constructors&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve created two constructors, one that I&amp;rsquo;d already implemented in my pervious post, which returns a reference to the struct created inside, and one that I&amp;rsquo;ve added here, which returns a copy of the struct (which should perform worse, but we&amp;rsquo;ll see exactly what, in the analysis part).&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; newToStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; toAStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3 id=&#34;the-slices-converters:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Slices Converters&lt;/h3&gt;
+
+&lt;p&gt;For the slices converters, I&amp;rsquo;ve had to work a little bit more, because we have more combinations; again, one of them has been copied from my previous post and renamed, too.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSlice(fss fromStructSlice) (tss toStructSlice) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSlice, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSliceTmpP(fss fromStructSlice) (tss toStructSlice) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSlice, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; ts &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		ts = newToStruct(fs.id)
+		tss[i] = &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;ts
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSliceP(fss fromStructSlice) (tss toStructSliceP) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSliceP, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSliceNoPointers(fss fromStructSlice) (tss toStructSlice) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSlice, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = toAStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Be aware, that I&amp;rsquo;ve added one, &lt;code&gt;fromStructSliceToStructSliceTmpP&lt;/code&gt; which is almost the same than &lt;code&gt;fromStructSliceToStructSlice&lt;/code&gt;, however it doesn&amp;rsquo;t do the assignation to the slice straightaway and uses a local variable; the reason is, because I&amp;rsquo;ve thought that having an indirection, perhaps, the compiler doesn&amp;rsquo;t optimise the assignation that it may do in the other one, detecting the returned pointer which the pointed content is going to be copied in another part of memory, then why cannot it be a little bit smart and put the values into the memory part hold by the slice? OK, I&amp;rsquo;ve know that it is a paranoia, but adding that case was not too much work and we&amp;rsquo;ll have one case more to compare even though it is a awkward implementation.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-benchmarks:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Benchmarks&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve written a benchmark for each slices converter and also tests for them and the constructors, however I&amp;rsquo;m not going to add the tests heres because I&amp;rsquo;ve written them to test the implementations and they don&amp;rsquo;t provide anything interesting for the purpose of this post series, which is the performance.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; BenchmarkFromStructSliceToStructSlice(b &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;testing.B) {
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;; i &amp;lt; b.N; i&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt; {
+		fromStructSliceToStructSlice(fss)
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; BenchmarkFromStructSliceToStructSliceTmpP(b &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;testing.B) {
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;; i &amp;lt; b.N; i&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt; {
+		fromStructSliceToStructSliceTmpP(fss)
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; BenchmarkFromStructSliceToStructSliceP(b &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;testing.B) {
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;; i &amp;lt; b.N; i&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt; {
+		fromStructSliceToStructSliceP(fss)
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; BenchmarkFromStructSliceToStructSliceNotPointers(b &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;testing.B) {
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;; i &amp;lt; b.N; i&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt; {
+		fromStructSliceToStructSliceNoPointers(fss)
+	}
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;You can see nothing fancy in them as I&amp;rsquo;ve kept them simple.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-main:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Main&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;main&lt;/code&gt; wasn&amp;rsquo;t required to implement if the package isn&amp;rsquo;t named &lt;code&gt;main&lt;/code&gt;; actually I named it different beforehand, nonetheless later, I thought that it was not too bad, to implement a main function which allows to execute each case individually and output the CPU and Heap to files to be able to analyse them with &lt;code&gt;pprof&lt;/code&gt;, and to have the results of a normal execution than only the benchmarks ones. Therefore I&amp;rsquo;ve renamed the package to &amp;ldquo;main&amp;rdquo; and I&amp;rsquo;ve implemented it.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;package&lt;/span&gt; main
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;import&lt;/span&gt; (
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;flag&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;fmt&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;log&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;os&amp;quot;&lt;/span&gt;
+	&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;runtime/pprof&amp;quot;&lt;/span&gt;
+)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; numElems &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt; = &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;24&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; transformMethod &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; init() {
+	flag.StringVar(&lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;transformMethod, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;method&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;the method to execute to transform values from one slice type to another: struct, pointer, hybrid or no-pointers&amp;quot;&lt;/span&gt;)
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; profileMem(suffix &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;) {
+	f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(fmt.Sprintf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;mem-%s.out&amp;quot;&lt;/span&gt;, suffix))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+		log.Fatal(err)
+	}
+	pprof.WriteHeapProfile(f)
+	f.Close()
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; main() {
+	flag.Parse()
+	fss &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; generateFromStructSlice(numElems)
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;switch&lt;/span&gt; transformMethod {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;struct&amp;quot;&lt;/span&gt;:
+		f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;cpu-struct.out&amp;quot;&lt;/span&gt;)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;defer&lt;/span&gt; pprof.StopCPUProfile()
+
+		res &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; fromStructSliceToStructSlice(fss)
+		profileMem(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;struct&amp;quot;&lt;/span&gt;)
+		log.Printf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(res))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;pointer&amp;quot;&lt;/span&gt;:
+		f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;cpu-pointer.out&amp;quot;&lt;/span&gt;)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;defer&lt;/span&gt; pprof.StopCPUProfile()
+
+		res &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; fromStructSliceToStructSliceP(fss)
+		profileMem(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;pointer&amp;quot;&lt;/span&gt;)
+		log.Printf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(res))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;hybrid&amp;quot;&lt;/span&gt;:
+		f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;cpu-hybrid.out&amp;quot;&lt;/span&gt;)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;defer&lt;/span&gt; pprof.StopCPUProfile()
+
+		res &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; fromStructSliceToStructSliceTmpP(fss)
+		profileMem(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;hybrid&amp;quot;&lt;/span&gt;)
+		log.Printf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(res))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;no-pointers&amp;quot;&lt;/span&gt;:
+		f, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; os.Create(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;cpu-no-pointers.out&amp;quot;&lt;/span&gt;)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;defer&lt;/span&gt; pprof.StopCPUProfile()
+
+		res &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; fromStructSliceToStructSliceNoPointers(fss)
+		profileMem(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;no-pointers&amp;quot;&lt;/span&gt;)
+		log.Printf(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;%d&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(res))
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;default&lt;/span&gt;:
+		log.Fatal(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;invalid method&amp;quot;&lt;/span&gt;)
+	}
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;the-execution:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;The Execution&lt;/h2&gt;
+
+&lt;p&gt;The execution of the benchmarks is as easy as executing the tests through &lt;code&gt;go test&lt;/code&gt; command but with one flag.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;go test -v -bench . -benchtime 10s -benchmem -memprofile mem.out  -cpuprofile cpu.out .
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The only required parameter to execute them, is &lt;code&gt;-bench&lt;/code&gt;, which return the time spent in each iteration and the number of iterations that have been run as samples to figure the result.&lt;/p&gt;
+
+&lt;p&gt;In my case, I&amp;rsquo;ve also added the &lt;code&gt;-benchtime 10s&lt;/code&gt; to run them 10 seconds than the default time, which is 1 second, &lt;code&gt;-benchmen&lt;/code&gt; to get the memory allocation statistics and &lt;code&gt;-memprofile&lt;/code&gt; and &lt;code&gt;-cpuprofile&lt;/code&gt; to output the results to files be able to analyse them afterwards, with &lt;em&gt;pprof&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;You can read about the available &lt;code&gt;go test&lt;/code&gt; flags, &lt;a href=&#34;http://golang.org/cmd/go/#hdr-Description_of_testing_flags&#34; target=&#34;_blank&#34;&gt;&lt;a href=&#34;http://golang.org/pkg/runtime/pprof/&#34;&gt;http://golang.org/pkg/runtime/pprof/&lt;/a&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;On the other hand, I&amp;rsquo;ve built &amp;ldquo;main&amp;rdquo; rather than only running it with &lt;code&gt;go run&lt;/code&gt;, because to analyse the output data with pprof, the binary is required, hence I&amp;rsquo;ve built it with &lt;code&gt;go build main.go structs.go&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To execute main, it&amp;rsquo;s just &lt;code&gt;./main -method {which-one}&lt;/code&gt; where &lt;code&gt;{which-one}&lt;/code&gt; must be &lt;code&gt;struct&lt;/code&gt;, &lt;code&gt;pointer&lt;/code&gt;, &lt;code&gt;hybrid&lt;/code&gt; or &lt;code&gt;no-pointers&lt;/code&gt; which are the values that &lt;code&gt;main&lt;/code&gt; checks for the only available flag, &lt;code&gt;-method&lt;/code&gt;, although you may probably know about it from the above &lt;code&gt;main&lt;/code&gt; implementation. Each method, output two filenames, &amp;ldquo;mem-xxx.out&amp;rdquo; and &amp;ldquo;cpu-xxx.out&amp;rdquo;, where &amp;ldquo;xxx&amp;rdquo; are the values of the &lt;code&gt;-method&lt;/code&gt; flag, to avoid to override a previous execution with different method.&lt;/p&gt;
+
+&lt;p&gt;All these outputs files are the files that we&amp;rsquo;ll use to analyse the profiler data, through pprof, to see how the performance is affected by the different approaches.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:17084713d6e4e29f3d1d43301eb8a9a5&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Golang has natively support to build benchmarks and packages to profile the CPU and Heap, so those tasks are not tedious to use as may be with another language.&lt;/p&gt;
+
+&lt;p&gt;Here I&amp;rsquo;ve used them to get profiling metrics of different ways to achieve the same, on the post [Profiling Golang Slices of Structs vs Pointers: Analyzing Metrics]http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics you can read how I analyze the outputs of the benchmarks and how I use pprof to know the % of CPU used by the internal function calls, so don&amp;rsquo;t miss to have a look onto it.&lt;/p&gt;
+
+&lt;p&gt;By the way, &lt;strong&gt;all the code is available in &lt;a href=&#34;http://goo.gl/tC60Yl&#34; target=&#34;_blank&#34;&gt;this gist&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that it has been interesting.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

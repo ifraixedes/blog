@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="In JS (javascript) there are different approaches to create objects and each one performs different when the object properties values are read and write">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Performance Execution on JS Objects Created in Different Ways">
+  <meta property="og:url" content="http://blog.fraixed.es/post/performance-js-objects-created-different-ways">
+  <meta property="og:description" content="In JS (javascript) there are different approaches to create objects and each one performs different when the object properties values are read and write">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="NodeJS">
+      
+        <meta property="og:tag" content="iojs">
+      
+        <meta property="og:tag" content="web browser">
+      
+        <meta property="og:tag" content="javascript">
+      
+        <meta property="og:tag" content="performance">
+      
+        <meta property="og:tag" content="research">
+      
+        <meta property="og:tag" content="soft dev">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/performance-js-objects-created-different-ways">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Performance Execution on JS Objects Created in Different Ways</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/performance-js-objects-created-different-ways"><h1 class="l-title title">Performance Execution on JS Objects Created in Different Ways</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">26-01-2015</span>
+    <br>
+    
+
+<p>In JS (javascript) there are different approaches to create objects which differ in somehow not only syntax but in small things that you can achieve.</p>
+
+<p>My aim in this post is not to talk of those different approaches in the sense how they differ in terms of <a href="http://en.wikipedia.org/wiki/Information_hiding" target="_blank">encapsulation</a>, <a href="http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code" target="_blank">code readability</a>, <a href="http://en.wikipedia.org/wiki/Programming_paradigm" target="_blank">programming paradigm</a> approach, best practices, likes and preferences; I think that there are enough posts, articles, resources, etc, with full details, well explained and good quality about this topic on Internet.</p>
+
+<p>I&rsquo;m going to show some <strong>basic performance tests</strong> that I&rsquo;ve done with an object created with those different approaches; just to have fund and because I was curious about it.</p>
+
+<h2 id="test-implementations:6714155ea9f1aa8bfca3db0c3355ca1c">Test implementations</h2>
+
+<p>I&rsquo;ve implemented a silly example of those different approaches and after I executed a performance test in different platforms (Browsers, <a href="http://nodejs.org/" target="_blank" rel="nofollow">Node</a> and <a href="https://iojs.org/" target="_blank" rel="nofollow">iojs</a>); let&rsquo;s see first the used object creation approaches implementations:</p>
+
+<ul>
+<li>Usual Constructor Function</li>
+</ul>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">function</span> ContentPrototype() {
+  <span style="color: #008800; font-weight: bold">this</span>.text <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+}
+
+ContentPrototype.prototype.set <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> (text) {
+  <span style="color: #008800; font-weight: bold">if</span> (<span style="color: #008800; font-weight: bold">typeof</span> text <span style="color: #333333">!==</span> <span style="background-color: #fff0f0">&#39;string&#39;</span>) {
+      <span style="color: #008800; font-weight: bold">throw</span> <span style="color: #008800; font-weight: bold">new</span> <span style="color: #007020">Error</span>(<span style="background-color: #fff0f0">&#39;Content mus be a string&#39;</span>);
+  }
+
+  <span style="color: #008800; font-weight: bold">this</span>.text <span style="color: #333333">=</span> text;
+};
+
+ContentPrototype.prototype.get <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> (text) {
+  <span style="color: #008800; font-weight: bold">return</span> <span style="color: #008800; font-weight: bold">this</span>.text;
+};
+</pre></div>
+
+
+<ul>
+<li>Usual Constructor Function <strong>without</strong> Object Prototype</li>
+</ul>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">function</span> ContentPrototypeNull() {
+  <span style="color: #008800; font-weight: bold">this</span>.text <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+}
+
+ContentPrototypeNull.prototype.__proto__ <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+ContentPrototypeNull.prototype.set <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> (text) {
+  <span style="color: #008800; font-weight: bold">if</span> (<span style="color: #008800; font-weight: bold">typeof</span> text <span style="color: #333333">!==</span> <span style="background-color: #fff0f0">&#39;string&#39;</span>) {
+      <span style="color: #008800; font-weight: bold">throw</span> <span style="color: #008800; font-weight: bold">new</span> <span style="color: #007020">Error</span>(<span style="background-color: #fff0f0">&#39;Content mus be a string&#39;</span>);
+  }
+
+  <span style="color: #008800; font-weight: bold">this</span>.text <span style="color: #333333">=</span> text;
+};
+
+ContentPrototypeNull.prototype.get <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> (text) {
+  <span style="color: #008800; font-weight: bold">return</span> <span style="color: #008800; font-weight: bold">this</span>.text;
+};
+</pre></div>
+
+
+<ul>
+<li>Constructor Function which uses <code>Object.defineProperty</code></li>
+</ul>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">function</span> ContentProperty() {
+  <span style="color: #008800; font-weight: bold">var</span> text <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+
+  <span style="color: #007020">Object</span>.defineProperty(<span style="color: #008800; font-weight: bold">this</span>, <span style="background-color: #fff0f0">&#39;content&#39;</span>, {
+    set<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> (c) {
+      <span style="color: #008800; font-weight: bold">if</span> (<span style="color: #008800; font-weight: bold">typeof</span> c <span style="color: #333333">!==</span> <span style="background-color: #fff0f0">&#39;string&#39;</span>) {
+          <span style="color: #008800; font-weight: bold">throw</span> <span style="color: #008800; font-weight: bold">new</span> <span style="color: #007020">Error</span>(<span style="background-color: #fff0f0">&#39;Content mus be a string&#39;</span>);
+      }
+
+      text <span style="color: #333333">=</span> c;
+    },
+    get<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> () {
+      <span style="color: #008800; font-weight: bold">return</span> text;
+    }
+  });
+}
+</pre></div>
+
+
+<ul>
+<li>Constructor Function which uses <code>Object.defineProperty</code> <strong>without</strong> Object Prototype</li>
+</ul>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">function</span> ContentPropertyNull() {
+  <span style="color: #008800; font-weight: bold">var</span> text <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+
+  <span style="color: #007020">Object</span>.defineProperty(<span style="color: #008800; font-weight: bold">this</span>, <span style="background-color: #fff0f0">&#39;content&#39;</span>, {
+    set<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> (c) {
+      <span style="color: #008800; font-weight: bold">if</span> (<span style="color: #008800; font-weight: bold">typeof</span> c <span style="color: #333333">!==</span> <span style="background-color: #fff0f0">&#39;string&#39;</span>) {
+          <span style="color: #008800; font-weight: bold">throw</span> <span style="color: #008800; font-weight: bold">new</span> <span style="color: #007020">Error</span>(<span style="background-color: #fff0f0">&#39;Content mus be a string&#39;</span>);
+      }
+
+      text <span style="color: #333333">=</span> c;
+    },
+    get<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> () {
+      <span style="color: #008800; font-weight: bold">return</span> text;
+    }
+  });
+}
+
+ContentPropertyNull.prototype.__proto__ <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+</pre></div>
+
+
+<ul>
+<li>Function which returns an Usual Object Literal</li>
+</ul>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">function</span> contentFunction() {
+  <span style="color: #008800; font-weight: bold">var</span> text <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+
+  <span style="color: #008800; font-weight: bold">return</span> {
+      set<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> (c) {
+        <span style="color: #008800; font-weight: bold">if</span> (<span style="color: #008800; font-weight: bold">typeof</span> c <span style="color: #333333">!==</span> <span style="background-color: #fff0f0">&#39;string&#39;</span>) {
+            <span style="color: #008800; font-weight: bold">throw</span> <span style="color: #008800; font-weight: bold">new</span> <span style="color: #007020">Error</span>(<span style="background-color: #fff0f0">&#39;Content mus be a string&#39;</span>);
+        }
+
+        text <span style="color: #333333">=</span> c;
+      },
+      get<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> () {
+        <span style="color: #008800; font-weight: bold">return</span> text;
+      }
+  };
+}
+</pre></div>
+
+
+<ul>
+<li>Function which returns an Object Literal <strong>without</strong> Object Prototype</li>
+</ul>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">function</span> contentFunctionNull() {
+  <span style="color: #008800; font-weight: bold">var</span> text <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+  <span style="color: #008800; font-weight: bold">var</span> obj <span style="color: #333333">=</span> <span style="color: #007020">Object</span>.create(<span style="color: #008800; font-weight: bold">null</span>);
+
+  obj.set <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> (c) {
+    <span style="color: #008800; font-weight: bold">if</span> (<span style="color: #008800; font-weight: bold">typeof</span> c <span style="color: #333333">!==</span> <span style="background-color: #fff0f0">&#39;string&#39;</span>) {
+      <span style="color: #008800; font-weight: bold">throw</span> <span style="color: #008800; font-weight: bold">new</span> <span style="color: #007020">Error</span>(<span style="background-color: #fff0f0">&#39;Content mus be a string&#39;</span>);
+    }
+
+    text <span style="color: #333333">=</span> c;
+  };
+
+  obj.get <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> () {
+    <span style="color: #008800; font-weight: bold">return</span> text;
+  };
+
+  <span style="color: #008800; font-weight: bold">return</span> obj;
+}
+</pre></div>
+
+
+<ul>
+<li>Function which returns an Object created by <code>Object.create</code> defining properties</li>
+</ul>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">function</span> contentFunctionObjCreate() {
+  <span style="color: #008800; font-weight: bold">var</span> text <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+
+  <span style="color: #008800; font-weight: bold">return</span> <span style="color: #007020">Object</span>.create(<span style="color: #007020">Object</span>, {
+    content<span style="color: #333333">:</span> {
+      set<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> (c) {
+        <span style="color: #008800; font-weight: bold">if</span> (<span style="color: #008800; font-weight: bold">typeof</span> c <span style="color: #333333">!==</span> <span style="background-color: #fff0f0">&#39;string&#39;</span>) {
+          <span style="color: #008800; font-weight: bold">throw</span> <span style="color: #008800; font-weight: bold">new</span> <span style="color: #007020">Error</span>(<span style="background-color: #fff0f0">&#39;Content mus be a string&#39;</span>);
+        }
+
+        text <span style="color: #333333">=</span> c;
+      },
+      get<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> () {
+        <span style="color: #008800; font-weight: bold">return</span> text;
+      }
+    }
+  });
+}
+</pre></div>
+</p>
+
+<ul>
+<li>Function which returns an Object created by <code>Object.create</code> defining properties <strong>without</strong> Object Prototype</li>
+</ul>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">function</span> contentFunctionObjCreateNull() {
+  <span style="color: #008800; font-weight: bold">var</span> text <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">null</span>;
+
+  <span style="color: #008800; font-weight: bold">return</span> <span style="color: #007020">Object</span>.create(<span style="color: #008800; font-weight: bold">null</span>, {
+    content<span style="color: #333333">:</span> {
+      set<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> (c) {
+        <span style="color: #008800; font-weight: bold">if</span> (<span style="color: #008800; font-weight: bold">typeof</span> c <span style="color: #333333">!==</span> <span style="background-color: #fff0f0">&#39;string&#39;</span>) {
+          <span style="color: #008800; font-weight: bold">throw</span> <span style="color: #008800; font-weight: bold">new</span> <span style="color: #007020">Error</span>(<span style="background-color: #fff0f0">&#39;Content mus be a string&#39;</span>);
+        }
+
+        text <span style="color: #333333">=</span> c;
+      },
+      get<span style="color: #333333">:</span> <span style="color: #008800; font-weight: bold">function</span> () {
+        <span style="color: #008800; font-weight: bold">return</span> text;
+      }
+    }
+  });
+}
+</pre></div>
+</p>
+
+<p>After I wrote those examples, I also wrote little test for each one to check that they have the same behaviour in both operations (read and write), however I haven&rsquo;t added here to avoid noise.</p>
+
+<h2 id="performance-execution-tests:6714155ea9f1aa8bfca3db0c3355ca1c">Performance Execution Tests</h2>
+
+<p>Thereafter I&rsquo;ve created two performance test scripts to run in Node and iojs in my laptop (8 cores):</p>
+
+<ol>
+<li>My own simple implementation which basically execute each operation a bunch of times in a loop, stores the individual values and calculates the time execution average; you can find it in this <a href="https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-simple-average-time-metrics-js" target="_blank" rel="nofollow">gist</a></li>
+<li>Another one which uses <a href="http://benchmarkjs.com/" target="_blank" rel="nofollow">benchmark.js</a> with <a href="https://github.com/wadey/node-microtime" target="_blank" rel="nofollow">microtime</a> whose script you can find in this <a href="https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-benchmark-metics-js" target="_blank" rel="nofollow">gist</a></li>
+</ol>
+
+<p>In the case of the browsers, I&rsquo;ve used <a href="http://jsperf.com/" target="_blank" rel="nofollow">jsperf</a>.</p>
+
+<p>Then I&rsquo;ve executed the performance execution test in the mentioned platforms to see how the objects, created with each different approach, perform in terms of writing and reading an object&rsquo;s property value.</p>
+
+<h3 id="iojs:6714155ea9f1aa8bfca3db0c3355ca1c">iojs</h3>
+
+<p>I used the last iojs version available so far, which is 1.1.0.</p>
+
+<p>My own script returned these results</p>
+
+<p><img alt="iojs v1.1.0 simple average time" src="https://s-media-cache-ak0.pinimg.com/originals/65/d6/66/65d666c5bf4aa1063ba2b42e299ceba8.jpg" class="graphic-medium graphic-medium-centre"></p>
+
+<p>Benchmarjs script returned these ones</p>
+
+<p><img alt="iojs v1.1.0 benchmark" src="https://s-media-cache-ak0.pinimg.com/originals/9a/76/18/9a7618386ca59477e6069f1b086f1be5.jpg" class="graphic-medium graphic-medium-centre"></p>
+
+<h3 id="node:6714155ea9f1aa8bfca3db0c3355ca1c">Node</h3>
+
+<p>I used the last production Node version available so far, which is 0.12.0, YES v0.12 has been finally released.</p>
+
+<p>My own script returned these results</p>
+
+<p><img alt="node v0.12.0 simple average time" src="https://s-media-cache-ak0.pinimg.com/originals/f1/b1/9a/f1b19a2b89f0daf73ee83ebbcc3c5165.jpg" class="graphic-medium graphic-medium-centre"></p>
+
+<p>Benchmarjs script returned these ones</p>
+
+<p><img alt="node v0.12.0 benchmark" src="https://s-media-cache-ak0.pinimg.com/originals/de/36/a1/de36a16e9216edaf3f6e4afaaafa0b81.jpg" class="graphic-medium graphic-medium-centre"></p>
+
+<h3 id="browser:6714155ea9f1aa8bfca3db0c3355ca1c">Browser</h3>
+
+<p>In the browser you can find two tests, which are the same than the iojs and Node ones, but I had to split them in two, one to run the writing property operation and another for the reading one, to offer better results readability.</p>
+
+<p>I&rsquo;ve run each one in three browsers, Chrome, Firefox and Safari and two different versions in the case of Chrome, one of them the current Chrome Canary; however <strong>I encourage you to run with your browsers</strong> to have more samples of the same borwser/version and/or new ones from different browsers/versions.</p>
+
+<p>The <a href="http://jsperf.com/proto-defineprop-obj-set/2" target="_blank">writing property value test</a> showed me the next chart which I took an screenshot</p>
+
+<p><img alt="browsers writing property jsperf chart" src="https://s-media-cache-ak0.pinimg.com/originals/84/97/7e/84977e5a4415963462f7aa98c72f9e54.jpg" class="graphic-medium graphic-medium-centre"></p>
+
+<p>The <a href="http://jsperf.com/prototype-vs-defineproperty-vs-object-get/3" target="_blank">reading property value test</a> and its screenshot that I took</p>
+
+<p><img alt="browsers reading property jsperf chart" src="https://s-media-cache-ak0.pinimg.com/originals/d6/21/d2/d621d29ce5176a6a119d4b65abca3e84.jpg" class="graphic-medium graphic-medium-centre"></p>
+
+<h2 id="my-analysis:6714155ea9f1aa8bfca3db0c3355ca1c">My Analysis</h2>
+
+<p>Due that Node and iojs benchmark don&rsquo;t make more difference between running the benchmark test asynchronous and synchronous, I&rsquo;ve just needed to take one of them in both cases to compare.</p>
+
+<p>Having the comparison of writing and reading an object property value between them using benchmark script is not quite clear about the differences, more or less they perform similar and one is a little bit faster than other in some cases and vice versa.</p>
+
+<p>If I have to asses them using <strong>my own script</strong>, I can see that overall, <strong>Node performs around 5% faster than iojs</strong>.</p>
+
+<p>However both are consistent in what create object approaches perform faster in terms of writing and reading values.</p>
+
+<p>We can see that Node and iojs, writes and reads perform better with objects whose properties have been defined using <code>Object.defineProperty</code> or defining them through <code>Object.create</code>; the approach that performs worse is any kind of constructors and in the middle we have the object literals; we cannot see much difference between inherit from Object prototype than without.</p>
+
+<p>Having the <strong>difference between the best approach and the worst one</strong> we can get gains around <strong>40% in writing</strong> and <strong>200% in reading</strong>, so not bad to have thought.</p>
+
+<p>In the case of the browsers, we&rsquo;ve got that the performance between the different approaches is the same for writing and reading.</p>
+
+<p>Between them, <strong>Firefox and Safari perform very good with object literals</strong>; Firefox does, in second place with constructors and so bad with objects created with <code>Object.create</code> and/or having the properties set by <code>Object.defineProperty</code> and Safari the opposite.</p>
+
+<p>Surprisingly <strong>Chrome performs equally with all of them less object literals</strong>, and <strong>Chrome Canary</strong> increases those with constructors, maintains the same with object literals and <strong>decrease so much with objects created by <code>Object.create</code></strong> which define their properties with it.</p>
+
+<p>In the browser, you can see easily, thanks to the charts showed by <a href="http://jsperf.com/" target="_blank" rel="nofollow">jsperf</a>, the roughly percentage of gain between approaches and browsers.</p>
+
+<h2 id="conclusion:6714155ea9f1aa8bfca3db0c3355ca1c">Conclusion</h2>
+
+<p>Having these result you can decide what approach to use in your implementations to boost the performance, however you may only get a benefit of it if you are writing and reading values on objects properties that you&rsquo;ve created their implementation; nonetheless I only assessed CPU so, profiling the amount of memory spend with the different approaches when you have to create a lot of them, would also be important to keep the best balance.</p>
+
+<p>Moreover in the time being the results are those, but mostly, browsers are updated fast and these results may change in the near future.</p>
+
+<p>From my point of view, <strong>it isn&rsquo;t worthwhile to focus in performance</strong> and <strong>forget <a href="http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code" target="_blank">code readability</a>, <a href="http://en.wikipedia.org/wiki/Programming_paradigm" target="_blank">programming paradigm</a> and best practices</strong> to keep the implementation simple and clear to ease the maintainability; hence after I&rsquo;ve written it, I suggest to read these two rules of the Unix philosophy:</p>
+
+<ol>
+<li><a href="http://www.faqs.org/docs/artu/ch01s06.html#id2877610" target="_blank">Rule of Clarity: Clarity is better than cleverness</a></li>
+<li><a href="http://www.faqs.org/docs/artu/ch01s06.html#rule_of_optimization" target="_blank">Rule of Optimization: Prototype before polishing. Get it working before you optimize it</a></li>
+</ol>
+
+<p>I hope that you&rsquo;ve enjoyed.</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

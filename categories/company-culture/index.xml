@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Company Culture on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/categories/company-culture/</link>
+    <description>Recent content in Company Culture on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Sat, 28 Nov 2015 09:02:14 +0100</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/categories/company-culture/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A Different Angle about the Story behind the New WordPress</title>
+      <link>http://blog.fraixed.es/post/different-angle-about-story-new-wordpress</link>
+      <pubDate>Sat, 28 Nov 2015 09:02:14 +0100</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/different-angle-about-story-new-wordpress</guid>
+      <description>&lt;p&gt;If you have arrived here is because &lt;strong&gt;you have given me the chance to show you if this post is about the tech and code base changes&lt;/strong&gt; that WordPress (maybe better to say &lt;a href=&#34;https://automattic.com/&#34; target=&#34;_blank&#34; &gt;Auttomatic&lt;/a&gt;
+ have done over the last year and half to release a new product called &lt;a href=&#34;https://github.com/Automattic/wp-calypso&#34; target=&#34;_blank&#34; &gt;Calypso&lt;/a&gt;
+ which is bound to the famous &lt;a href=&#34;https://wordpress.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;WordPress CMS&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;My goal here isn&amp;rsquo;t to write another post about the tech of this topic, there is a bunch already available on Internet besides I don&amp;rsquo;t have that much experience in WordPress development; then &lt;strong&gt;what is this about?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;A short post to put together the paragraphs and my comments aside about the &lt;strong&gt;company culture&lt;/strong&gt; which are in &lt;a href=&#34;https://developer.wordpress.com/2015/11/23/the-story-behind-the-new-wordpress-com/&#34; target=&#34;_blank&#34; &gt;the official launching post&lt;/a&gt;
+, so I start with it.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Since WordPress is a PHP-powered application, our company-wide development skill-set has historically been PHP-heavy with a sprinkling of advanced JavaScript. This made Calypso intimidating to other engineers and designers at the company for much of the first six months of its development — we were building something that few people could jump in on.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Clear Automattic managed well how to start making small steps into the new technology which they were intimidated to be able to lose the fear.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;But as each day passed our experience built, we made mistakes, we reviewed them, we fixed them, and we learned. Once we had the project moving, we set better examples for other engineers, and shared our knowledge across the company&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;They have clear recognised that they made mistakes to be able to learn, even though, in my opinion, is the only way to actually learn, not all the companies, teams or people recognise their mistakes externally or even worse they don&amp;rsquo;t make a retrospective basically because they don&amp;rsquo;t see their own errors.&lt;/p&gt;
+
+&lt;p&gt;On the other hand they knew how to highlight the progress by examples and spread the knowledge which is king for team.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Calypso prototyping was done collaboratively between a handful of designers in GitHub; although many of us had long used GitHub for personal projects it was relatively new for internal projects, which historically used Trac for most project management and bug tracking&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The adopted new tools at the same time that they shifted technology, taking a look to other teams success and not being afraid to make several changes at the same time.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;As GitHub had worked so well for the prototyping stage we switched for all Calypso development, allowing us to harness the pull request (PR) system for peer code reviews, and build our own custom GitHub-based workflow. Code reviews were new for many developers — traditionally at Automattic, we have had no systematic peer code review system outside of the VIP team’s daily code review of client sites. Code review, though it initially added to the intimidation of starting to work with Calypso, greatly increased the quality of our codebase and helped everyone level up their JavaScript skills.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;They have also adopted peer code review even though team member were even more intimidated; that means that the members, or the majority of them, haven&amp;rsquo;t been reluctant to the change and they understood that company needed a shift.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;What started as a team of seven people working on Calypso quickly spread to a cross-section of teams with ten, then 14, then 20 Automatticians actively working in the Calypso codebase. Two months after the launch of the first Calypso-powered feature on WordPress.com, we had 40 contributors working on Calypso across five different teams. We iterated over the next year with the “release early, release often” Automattic mindset, launching 40 distinct Calypso-powered features on WordPress.com with over 100 individual contributors.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This highlight the company culture and the quality of the employees.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Over the past year and a half, Calypso has gone from an idea to an aspirational prototype to a fully functioning product built, launched iteratively, and used by millions of WordPress.com users. Internally, it’s been a period of great change and growth. We’ve embraced cross-team collaboration through GitHub and peer code reviews through the PR review system, gone from just a couple of great JavaScript developers to a company full of them, and seen incredible collaboration between designers and developers on a daily basis.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Quickly the whole company have realised of all the benefits of sharing knowledge and they embraced it; I&amp;rsquo;m totally sure that this only works with combination of people with good mindset and a good company culture.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been delighted to find in the official launching post all the changes which have made this new shift than finding a very technical post, because at the end the people and the culture make these things happen.&lt;/p&gt;
+
+&lt;p&gt;If you also want to read a clarification about the tech changes which have been done in WordPress, I recommend you to read &lt;a href=&#34;http://wesbos.com/wordpress-calypso-react/&#34; target=&#34;_blank&#34; &gt;Clearing the air: Is WordPress being rewritten in Node.js and React? by Wes Bos&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Drop a comment if you have similar or opposite experience, I would like to hear about it.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

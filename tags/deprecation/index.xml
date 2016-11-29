@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Deprecation on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/deprecation/</link>
+    <description>Recent content in Deprecation on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 27 Mar 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/deprecation/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #6</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150327/</link>
+      <pubDate>Fri, 27 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150327/</guid>
+      <description>&lt;p&gt;Yep, this week my timeline came up with these marvelous tweets.&lt;/p&gt;
+
+&lt;p&gt;An awesome tool that take source code TODO comments and create Github issues to remind you that they have to be fixed in not to leave those there for ages&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;nifty tool to convert your TODO comments into Github issues: &lt;a href=&#34;http://t.co/M2gwKz5RvI&#34;&gt;http://t.co/M2gwKz5RvI&lt;/a&gt; - bonus: install as a git precommit hook!&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/580429907521503232&#34;&gt;March 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Opinions are opinions and the battles about preferences between techies is the day to day, don&amp;rsquo;t miss this&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;A Few Notes On Choosing Between Go and D for a Quick Project: &lt;a href=&#34;http://t.co/KfO2C0svlb&#34;&gt;http://t.co/KfO2C0svlb&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/579311506665406464&#34;&gt;March 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Load a web site fast is one of the biggest headache of any web developer, here you can read a new technique that hopefully will help you to get less crazy each time that you must do it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;New JavaScript Techniques for Rapid Page Loads: &lt;a href=&#34;http://t.co/hZJD4LX6Ur&#34;&gt;http://t.co/hZJD4LX6Ur&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/579270070611931138&#34;&gt;March 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Well if you were desiring that Blink implement pointer events, this tweet is good news for you&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Based on feedback from developers &amp;amp; the Pointer Event Working Group, Blink is now reconsidering Pointer Events: &lt;a href=&#34;https://t.co/8uARlPNoVp&#34;&gt;https://t.co/8uARlPNoVp&lt;/a&gt;&lt;/p&gt;&amp;mdash; Chrome Developers (@ChromiumDev) &lt;a href=&#34;https://twitter.com/ChromiumDev/status/580764127691411456&#34;&gt;March 25, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;One example which shows that the decisions are made mustn&amp;rsquo;t be forever, things change and some that was ideal in past doesn&amp;rsquo;t have to be idea for now or for the future&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;«This … makes me wonder what other standard unix programs make design assumptions that aren’t true in 2015…» — this.&amp;#10;&amp;#10;&lt;a href=&#34;http://t.co/LpnWxVIXP1&#34;&gt;http://t.co/LpnWxVIXP1&lt;/a&gt;&lt;/p&gt;&amp;mdash; Michael Klishin (@michaelklishin) &lt;a href=&#34;https://twitter.com/michaelklishin/status/573599284454637568&#34;&gt;March 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you have a great weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

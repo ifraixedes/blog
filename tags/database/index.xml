@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Database on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/database/</link>
+    <description>Recent content in Database on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Mon, 05 Oct 2015 01:18:10 +0100</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/database/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Speaking at BarcelonaJS: Introduction to Lovefield</title>
+      <link>http://blog.fraixed.es/post/speaking-bcnjs-intro-to-lovefield</link>
+      <pubDate>Mon, 05 Oct 2015 01:18:10 +0100</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/speaking-bcnjs-intro-to-lovefield</guid>
+      <description>&lt;p&gt;Last Thursday (1st of October of 2015), I gave a talk at &lt;a href=&#34;http://barcelonajs.org/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;BarcelonaJS group&lt;/strong&gt;&lt;/a&gt; about &lt;a href=&#34;https://google.github.io/lovefield/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;Lovefield&lt;/strong&gt;, a cross-browser SQL-Like relation query engine; here I left the slides that I created for that purpose.&lt;/p&gt;
+
+&lt;p&gt;&lt;div style=&#34;margin: auto; text-align: center;&#34;&gt;
+  &lt;iframe width=&#34;750&#34; height=&#34;563&#34; frameborder=&#34;0&#34; scrolling=&#34;no&#34; marginheight=&#34;0&#34; marginwidth=&#34;0&#34; src=&#34;http://blog.fraixed.es/slides/bcnjs-201510/&#34;
+    &lt;p&gt;Your browser doesn&amp;rsquo;t support iframes&lt;/p&gt;
+  &lt;/iframe&gt;
+  &lt;br&gt;
+  &lt;a href=http://blog.fraixed.es/slides/bcnjs-201510/ target=&#34;_blank&#34;&gt;See these slides in a single page &amp;amp; don&amp;rsquo;t forget to press &amp;ldquo;p&amp;rdquo; to see the notes which I&amp;rsquo;ve written&lt;/a&gt;
+&lt;/div&gt;
+&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see &lt;a href=&#34;https://gist.github.com/ifraixedes/485329b7d46531e50e23&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;the &lt;strong&gt;source code of my demo&lt;/strong&gt; on a public gist under my GitHub account&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Thanks to the organisers, &lt;a href=&#34;https://twitter.com/patrickheneise&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34; title=&#34;Patrick Heneise&#34;&gt;@patrickheneise&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/eth0lo&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34; title=&#34;Jean Carlos Meninno&#34;&gt;eth0lo&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/isabelcabezasm&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34; title=&#34;Isabel Cabezas&#34;&gt;@isabelcabezasm&lt;/a&gt; for all the efforts to run this Javascript amazing community in Barcelona.&lt;/p&gt;
+
+&lt;p&gt;If you were there, I hope that you enjoyed or at least got something good from my talk; please feel free to provide an &lt;strong&gt;honest&lt;/strong&gt; feedback in the comments.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

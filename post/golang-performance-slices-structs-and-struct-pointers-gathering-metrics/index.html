@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gathering profiling metrics (cpu and memory) about Golang slices of structs versus pointers to structs with surprisingly results what performs better">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Profiling Golang Slices of Structs vs Pointers: Gathering Metrics">
+  <meta property="og:url" content="http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics">
+  <meta property="og:description" content="Gathering profiling metrics (cpu and memory) about Golang slices of structs versus pointers to structs with surprisingly results what performs better">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:section" content="programming">
+      
+        <meta property="og:tag" content="golang">
+      
+        <meta property="og:tag" content="performance">
+      
+        <meta property="og:tag" content="profiling">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Profiling Golang Slices of Structs vs Pointers: Gathering Metrics</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics"><h1 class="l-title title">Profiling Golang Slices of Structs vs Pointers: Gathering Metrics</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">16-03-2015</span>
+    <br>
+    
+
+<p>After the post that I wrote last week about <a href="http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma target="_blank">Golang slices</a>, and what type of slices to use when we use &ldquo;constructor&rdquo; functions, I&rsquo;ve got a huge curiosity to know the difference, in performance wise, what are the differences of using slices which contain literally structs versus the ones which contain pointers to the same types of structs, and how it can be affected depending of which of them is used.</p>
+
+<p>The possible combinations are, having a &ldquo;constructor&rdquo; function which given a struct of type A, returns a struct of type B, which can be a struct (copied retruned) or pointer (reference returned) and storing the B structs into slices of B structs (copied on each assignation) or pointers of B structs (referenced in each assignation); I know that this explanation is a mess, however go ahead to be clear what I mean.</p>
+
+<p>To know about it, I&rsquo;ve written a silly specific Golang example which will allows us to gather some <strong>benchmarking and profiling metrics</strong>; the motivation is due by how easy can be implemented and analised through the tool set that Golang natively brings; if  you aren&rsquo;t aware about them, take a look to <a href="http://golang.org/pkg/testing/#hdr-Benchmarks" target="_blank">Benchmark function in testing package</a> and <a href="http://golang.org/pkg/runtime/pprof/" target="_blank">CPU and memory profiling can be done with runtime/pprof package</a>.</p>
+
+<p>In this post, I&rsquo;ll show the implementation and the process to gather performance metrics, and in the following post, we&rsquo;ll analyse them.</p>
+
+<h2 id="the-implementation:17084713d6e4e29f3d1d43301eb8a9a5">The Implementation</h2>
+
+<p>I&rsquo;ve taken as base, the same example that I wrote last week about slices and I&rsquo;ve added all the different cases to compare.</p>
+
+<p>Let&rsquo;s take a look to the main parts of the implementation to be in context when we analyse the results.</p>
+
+<h3 id="the-types:17084713d6e4e29f3d1d43301eb8a9a5">The Types</h3>
+
+<p>The types are the same, of my previous post, plus one more, however I&rsquo;ve renamed one to hopefully, avoid confusion between them in the results.</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">type</span> fromStruct <span style="color: #008800; font-weight: bold">struct</span> {
+	id <span style="color: #333399; font-weight: bold">uint64</span>
+}
+
+<span style="color: #008800; font-weight: bold">type</span> toStruct <span style="color: #008800; font-weight: bold">struct</span> {
+	upper <span style="color: #333399; font-weight: bold">uint32</span>
+	lower <span style="color: #333399; font-weight: bold">uint32</span>
+}
+
+<span style="color: #008800; font-weight: bold">type</span> fromStructSlice []fromStruct
+<span style="color: #008800; font-weight: bold">type</span> toStructSlice []toStruct
+<span style="color: #008800; font-weight: bold">type</span> toStructSliceP []<span style="color: #333333">*</span>toStruct
+</pre></div>
+
+
+<h3 id="the-struct-types-constructors:17084713d6e4e29f3d1d43301eb8a9a5">The Struct Types Constructors</h3>
+
+<p>I&rsquo;ve created two constructors, one that I&rsquo;d already implemented in my pervious post, which returns a reference to the struct created inside, and one that I&rsquo;ve added here, which returns a copy of the struct (which should perform worse, but we&rsquo;ll see exactly what, in the analysis part).</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">func</span> newToStruct(num <span style="color: #333399; font-weight: bold">uint64</span>) <span style="color: #333333">*</span>toStruct {
+	<span style="color: #008800; font-weight: bold">return</span> <span style="color: #333333">&amp;</span>toStruct{
+		upper: <span style="color: #007020">uint32</span>(num <span style="color: #333333">&gt;&gt;</span> <span style="color: #0000DD; font-weight: bold">32</span>),
+		lower: <span style="color: #007020">uint32</span>(num),
+	}
+}
+
+<span style="color: #008800; font-weight: bold">func</span> toAStruct(num <span style="color: #333399; font-weight: bold">uint64</span>) toStruct {
+	<span style="color: #008800; font-weight: bold">return</span> toStruct{
+		upper: <span style="color: #007020">uint32</span>(num <span style="color: #333333">&gt;&gt;</span> <span style="color: #0000DD; font-weight: bold">32</span>),
+		lower: <span style="color: #007020">uint32</span>(num),
+	}
+}
+</pre></div>
+
+
+<h3 id="the-slices-converters:17084713d6e4e29f3d1d43301eb8a9a5">The Slices Converters</h3>
+
+<p>For the slices converters, I&rsquo;ve had to work a little bit more, because we have more combinations; again, one of them has been copied from my previous post and renamed, too.</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">func</span> fromStructSliceToStructSlice(fss fromStructSlice) (tss toStructSlice) {
+	tss = <span style="color: #007020">make</span>(toStructSlice, <span style="color: #007020">len</span>(fss))
+
+	<span style="color: #008800; font-weight: bold">for</span> i, fs <span style="color: #333333">:=</span> <span style="color: #008800; font-weight: bold">range</span> fss {
+		tss[i] = <span style="color: #333333">*</span>newToStruct(fs.id)
+	}
+
+	<span style="color: #008800; font-weight: bold">return</span> tss
+}
+
+<span style="color: #008800; font-weight: bold">func</span> fromStructSliceToStructSliceTmpP(fss fromStructSlice) (tss toStructSlice) {
+	tss = <span style="color: #007020">make</span>(toStructSlice, <span style="color: #007020">len</span>(fss))
+
+	<span style="color: #008800; font-weight: bold">var</span> ts <span style="color: #333333">*</span>toStruct
+	<span style="color: #008800; font-weight: bold">for</span> i, fs <span style="color: #333333">:=</span> <span style="color: #008800; font-weight: bold">range</span> fss {
+		ts = newToStruct(fs.id)
+		tss[i] = <span style="color: #333333">*</span>ts
+	}
+
+	<span style="color: #008800; font-weight: bold">return</span> tss
+}
+
+<span style="color: #008800; font-weight: bold">func</span> fromStructSliceToStructSliceP(fss fromStructSlice) (tss toStructSliceP) {
+	tss = <span style="color: #007020">make</span>(toStructSliceP, <span style="color: #007020">len</span>(fss))
+
+	<span style="color: #008800; font-weight: bold">for</span> i, fs <span style="color: #333333">:=</span> <span style="color: #008800; font-weight: bold">range</span> fss {
+		tss[i] = newToStruct(fs.id)
+	}
+
+	<span style="color: #008800; font-weight: bold">return</span> tss
+}
+
+<span style="color: #008800; font-weight: bold">func</span> fromStructSliceToStructSliceNoPointers(fss fromStructSlice) (tss toStructSlice) {
+	tss = <span style="color: #007020">make</span>(toStructSlice, <span style="color: #007020">len</span>(fss))
+
+	<span style="color: #008800; font-weight: bold">for</span> i, fs <span style="color: #333333">:=</span> <span style="color: #008800; font-weight: bold">range</span> fss {
+		tss[i] = toAStruct(fs.id)
+	}
+
+	<span style="color: #008800; font-weight: bold">return</span> tss
+}
+</pre></div>
+
+
+<p>Be aware, that I&rsquo;ve added one, <code>fromStructSliceToStructSliceTmpP</code> which is almost the same than <code>fromStructSliceToStructSlice</code>, however it doesn&rsquo;t do the assignation to the slice straightaway and uses a local variable; the reason is, because I&rsquo;ve thought that having an indirection, perhaps, the compiler doesn&rsquo;t optimise the assignation that it may do in the other one, detecting the returned pointer which the pointed content is going to be copied in another part of memory, then why cannot it be a little bit smart and put the values into the memory part hold by the slice? OK, I&rsquo;ve know that it is a paranoia, but adding that case was not too much work and we&rsquo;ll have one case more to compare even though it is a awkward implementation.</p>
+
+<h3 id="the-benchmarks:17084713d6e4e29f3d1d43301eb8a9a5">The Benchmarks</h3>
+
+<p>I&rsquo;ve written a benchmark for each slices converter and also tests for them and the constructors, however I&rsquo;m not going to add the tests heres because I&rsquo;ve written them to test the implementations and they don&rsquo;t provide anything interesting for the purpose of this post series, which is the performance.</p>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">func</span> BenchmarkFromStructSliceToStructSlice(b <span style="color: #333333">*</span>testing.B) {
+	fss <span style="color: #333333">:=</span> generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	<span style="color: #008800; font-weight: bold">for</span> i <span style="color: #333333">:=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i &lt; b.N; i<span style="color: #333333">++</span> {
+		fromStructSliceToStructSlice(fss)
+	}
+}
+
+<span style="color: #008800; font-weight: bold">func</span> BenchmarkFromStructSliceToStructSliceTmpP(b <span style="color: #333333">*</span>testing.B) {
+	fss <span style="color: #333333">:=</span> generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	<span style="color: #008800; font-weight: bold">for</span> i <span style="color: #333333">:=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i &lt; b.N; i<span style="color: #333333">++</span> {
+		fromStructSliceToStructSliceTmpP(fss)
+	}
+}
+
+<span style="color: #008800; font-weight: bold">func</span> BenchmarkFromStructSliceToStructSliceP(b <span style="color: #333333">*</span>testing.B) {
+	fss <span style="color: #333333">:=</span> generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	<span style="color: #008800; font-weight: bold">for</span> i <span style="color: #333333">:=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i &lt; b.N; i<span style="color: #333333">++</span> {
+		fromStructSliceToStructSliceP(fss)
+	}
+}
+
+<span style="color: #008800; font-weight: bold">func</span> BenchmarkFromStructSliceToStructSliceNotPointers(b <span style="color: #333333">*</span>testing.B) {
+	fss <span style="color: #333333">:=</span> generateFromStructSlice(numElems)
+	b.ResetTimer()
+
+	<span style="color: #008800; font-weight: bold">for</span> i <span style="color: #333333">:=</span> <span style="color: #0000DD; font-weight: bold">0</span>; i &lt; b.N; i<span style="color: #333333">++</span> {
+		fromStructSliceToStructSliceNoPointers(fss)
+	}
+}
+</pre></div>
+</p>
+
+<p>You can see nothing fancy in them as I&rsquo;ve kept them simple.</p>
+
+<h3 id="the-main:17084713d6e4e29f3d1d43301eb8a9a5">The Main</h3>
+
+<p><code>main</code> wasn&rsquo;t required to implement if the package isn&rsquo;t named <code>main</code>; actually I named it different beforehand, nonetheless later, I thought that it was not too bad, to implement a main function which allows to execute each case individually and output the CPU and Heap to files to be able to analyse them with <code>pprof</code>, and to have the results of a normal execution than only the benchmarks ones. Therefore I&rsquo;ve renamed the package to &ldquo;main&rdquo; and I&rsquo;ve implemented it.</p>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">package</span> main
+
+<span style="color: #008800; font-weight: bold">import</span> (
+	<span style="background-color: #fff0f0">&quot;flag&quot;</span>
+	<span style="background-color: #fff0f0">&quot;fmt&quot;</span>
+	<span style="background-color: #fff0f0">&quot;log&quot;</span>
+	<span style="background-color: #fff0f0">&quot;os&quot;</span>
+	<span style="background-color: #fff0f0">&quot;runtime/pprof&quot;</span>
+)
+
+<span style="color: #008800; font-weight: bold">const</span> numElems <span style="color: #333399; font-weight: bold">uint32</span> = <span style="color: #0000DD; font-weight: bold">1</span> <span style="color: #333333">&lt;&lt;</span> <span style="color: #0000DD; font-weight: bold">24</span>
+
+<span style="color: #008800; font-weight: bold">var</span> transformMethod <span style="color: #333399; font-weight: bold">string</span>
+
+<span style="color: #008800; font-weight: bold">func</span> init() {
+	flag.StringVar(<span style="color: #333333">&amp;</span>transformMethod, <span style="background-color: #fff0f0">&quot;method&quot;</span>, <span style="background-color: #fff0f0">&quot;&quot;</span>, <span style="background-color: #fff0f0">&quot;the method to execute to transform values from one slice type to another: struct, pointer, hybrid or no-pointers&quot;</span>)
+}
+
+<span style="color: #008800; font-weight: bold">func</span> profileMem(suffix <span style="color: #333399; font-weight: bold">string</span>) {
+	f, err <span style="color: #333333">:=</span> os.Create(fmt.Sprintf(<span style="background-color: #fff0f0">&quot;mem-%s.out&quot;</span>, suffix))
+	<span style="color: #008800; font-weight: bold">if</span> err <span style="color: #333333">!=</span> <span style="color: #008800; font-weight: bold">nil</span> {
+		log.Fatal(err)
+	}
+	pprof.WriteHeapProfile(f)
+	f.Close()
+}
+
+<span style="color: #008800; font-weight: bold">func</span> main() {
+	flag.Parse()
+	fss <span style="color: #333333">:=</span> generateFromStructSlice(numElems)
+
+	<span style="color: #008800; font-weight: bold">switch</span> transformMethod {
+	<span style="color: #008800; font-weight: bold">case</span> <span style="background-color: #fff0f0">&quot;struct&quot;</span>:
+		f, err <span style="color: #333333">:=</span> os.Create(<span style="background-color: #fff0f0">&quot;cpu-struct.out&quot;</span>)
+		<span style="color: #008800; font-weight: bold">if</span> err <span style="color: #333333">!=</span> <span style="color: #008800; font-weight: bold">nil</span> {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		<span style="color: #008800; font-weight: bold">defer</span> pprof.StopCPUProfile()
+
+		res <span style="color: #333333">:=</span> fromStructSliceToStructSlice(fss)
+		profileMem(<span style="background-color: #fff0f0">&quot;struct&quot;</span>)
+		log.Printf(<span style="background-color: #fff0f0">&quot;%d&quot;</span>, <span style="color: #007020">len</span>(res))
+	<span style="color: #008800; font-weight: bold">case</span> <span style="background-color: #fff0f0">&quot;pointer&quot;</span>:
+		f, err <span style="color: #333333">:=</span> os.Create(<span style="background-color: #fff0f0">&quot;cpu-pointer.out&quot;</span>)
+		<span style="color: #008800; font-weight: bold">if</span> err <span style="color: #333333">!=</span> <span style="color: #008800; font-weight: bold">nil</span> {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		<span style="color: #008800; font-weight: bold">defer</span> pprof.StopCPUProfile()
+
+		res <span style="color: #333333">:=</span> fromStructSliceToStructSliceP(fss)
+		profileMem(<span style="background-color: #fff0f0">&quot;pointer&quot;</span>)
+		log.Printf(<span style="background-color: #fff0f0">&quot;%d&quot;</span>, <span style="color: #007020">len</span>(res))
+	<span style="color: #008800; font-weight: bold">case</span> <span style="background-color: #fff0f0">&quot;hybrid&quot;</span>:
+		f, err <span style="color: #333333">:=</span> os.Create(<span style="background-color: #fff0f0">&quot;cpu-hybrid.out&quot;</span>)
+		<span style="color: #008800; font-weight: bold">if</span> err <span style="color: #333333">!=</span> <span style="color: #008800; font-weight: bold">nil</span> {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		<span style="color: #008800; font-weight: bold">defer</span> pprof.StopCPUProfile()
+
+		res <span style="color: #333333">:=</span> fromStructSliceToStructSliceTmpP(fss)
+		profileMem(<span style="background-color: #fff0f0">&quot;hybrid&quot;</span>)
+		log.Printf(<span style="background-color: #fff0f0">&quot;%d&quot;</span>, <span style="color: #007020">len</span>(res))
+	<span style="color: #008800; font-weight: bold">case</span> <span style="background-color: #fff0f0">&quot;no-pointers&quot;</span>:
+		f, err <span style="color: #333333">:=</span> os.Create(<span style="background-color: #fff0f0">&quot;cpu-no-pointers.out&quot;</span>)
+		<span style="color: #008800; font-weight: bold">if</span> err <span style="color: #333333">!=</span> <span style="color: #008800; font-weight: bold">nil</span> {
+			log.Fatal(err)
+		}
+		pprof.StartCPUProfile(f)
+		<span style="color: #008800; font-weight: bold">defer</span> pprof.StopCPUProfile()
+
+		res <span style="color: #333333">:=</span> fromStructSliceToStructSliceNoPointers(fss)
+		profileMem(<span style="background-color: #fff0f0">&quot;no-pointers&quot;</span>)
+		log.Printf(<span style="background-color: #fff0f0">&quot;%d&quot;</span>, <span style="color: #007020">len</span>(res))
+	<span style="color: #008800; font-weight: bold">default</span>:
+		log.Fatal(<span style="background-color: #fff0f0">&quot;invalid method&quot;</span>)
+	}
+}
+</pre></div>
+</p>
+
+<h2 id="the-execution:17084713d6e4e29f3d1d43301eb8a9a5">The Execution</h2>
+
+<p>The execution of the benchmarks is as easy as executing the tests through <code>go test</code> command but with one flag.</p>
+
+<pre><code>go test -v -bench . -benchtime 10s -benchmem -memprofile mem.out  -cpuprofile cpu.out .
+</code></pre>
+
+<p>The only required parameter to execute them, is <code>-bench</code>, which return the time spent in each iteration and the number of iterations that have been run as samples to figure the result.</p>
+
+<p>In my case, I&rsquo;ve also added the <code>-benchtime 10s</code> to run them 10 seconds than the default time, which is 1 second, <code>-benchmen</code> to get the memory allocation statistics and <code>-memprofile</code> and <code>-cpuprofile</code> to output the results to files be able to analyse them afterwards, with <em>pprof</em>.</p>
+
+<p>You can read about the available <code>go test</code> flags, <a href="http://golang.org/cmd/go/#hdr-Description_of_testing_flags" target="_blank"><a href="http://golang.org/pkg/runtime/pprof/">http://golang.org/pkg/runtime/pprof/</a></a></p>
+
+<p>On the other hand, I&rsquo;ve built &ldquo;main&rdquo; rather than only running it with <code>go run</code>, because to analyse the output data with pprof, the binary is required, hence I&rsquo;ve built it with <code>go build main.go structs.go</code>.</p>
+
+<p>To execute main, it&rsquo;s just <code>./main -method {which-one}</code> where <code>{which-one}</code> must be <code>struct</code>, <code>pointer</code>, <code>hybrid</code> or <code>no-pointers</code> which are the values that <code>main</code> checks for the only available flag, <code>-method</code>, although you may probably know about it from the above <code>main</code> implementation. Each method, output two filenames, &ldquo;mem-xxx.out&rdquo; and &ldquo;cpu-xxx.out&rdquo;, where &ldquo;xxx&rdquo; are the values of the <code>-method</code> flag, to avoid to override a previous execution with different method.</p>
+
+<p>All these outputs files are the files that we&rsquo;ll use to analyse the profiler data, through pprof, to see how the performance is affected by the different approaches.</p>
+
+<h2 id="conclusion:17084713d6e4e29f3d1d43301eb8a9a5">Conclusion</h2>
+
+<p>Golang has natively support to build benchmarks and packages to profile the CPU and Heap, so those tasks are not tedious to use as may be with another language.</p>
+
+<p>Here I&rsquo;ve used them to get profiling metrics of different ways to achieve the same, on the post [Profiling Golang Slices of Structs vs Pointers: Analyzing Metrics]http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics you can read how I analyze the outputs of the benchmarks and how I use pprof to know the % of CPU used by the internal function calls, so don&rsquo;t miss to have a look onto it.</p>
+
+<p>By the way, <strong>all the code is available in <a href="http://goo.gl/tC60Yl" target="_blank">this gist</a></strong></p>
+
+<p>I hope that it has been interesting.</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

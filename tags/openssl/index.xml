@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Openssl on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/openssl/</link>
+    <description>Recent content in Openssl on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Wed, 22 Apr 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/openssl/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Generating OpenSSL certificates to run a NodeJS HTTPS Server</title>
+      <link>http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server</link>
+      <pubDate>Wed, 22 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server</guid>
+      <description>
+
+&lt;p&gt;The last few days I&amp;rsquo;ve had to implement a simple HTTP/HTTPS client wrapper for NodeJS, which returns a &lt;a href=&#34;https://promisesaplus.com/&#34; target=&#34;_blank&#34;&gt;Promise&lt;/a&gt;) for each request call and do some basic management for the common body structure that the APIs, which we&amp;rsquo;re building, respond.&lt;/p&gt;
+
+&lt;p&gt;Nonetheless, I&amp;rsquo;m not writing this post for the itself implementation because the purpose doesn&amp;rsquo;t matter to tell about the process to generate the SSL certificates to use for a iojs/NodeJS HTTPS server which you may need, as I needed, to test a HTTPS client.&lt;/p&gt;
+
+&lt;p&gt;As you may know and/or think, &lt;a href=&#34;https://www.openssl.org&#34; target=&#34;_blank&#34;&gt;OpenSSL&lt;/a&gt; isn&amp;rsquo;t the most friendly library, or in this case command line tool, that you&amp;rsquo;ve ever been used, however I&amp;rsquo;m not complaining about it, it provides a useful functionality which, you may think the same than me, is not the most funny thing that you would like to implement, for that reason and because it&amp;rsquo;s Open Source, I much appreciate the people how contribute to it, &lt;a href=&#34;http://en.wikipedia.org/wiki/OpenSSL&#34; target=&#34;_blank&#34;&gt;as many others may do&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;After the introduction, let&amp;rsquo;s go for the interesting part of the post.&lt;/p&gt;
+
+&lt;h2 id=&#34;generating-the-openssl-certificates:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Generating the OpenSSL certificates&lt;/h2&gt;
+
+&lt;p&gt;To create a certificate which it&amp;rsquo;s not self signed, to be able to emulate more how the real world works and avoid that the client report &lt;code&gt;self signed certificate&lt;/code&gt; SSL/TLS error, first of all we have to have a &lt;a href=&#34;http://en.wikipedia.org/wiki/Certificate_authority&#34; target=&#34;_blank&#34;&gt;CA (Certificate Authority)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The CAs&amp;rsquo; role is to emit certificates providing the trust (as a trusted third party) of the certificates that the serves use to proof that they&amp;rsquo;re who they really are.&lt;/p&gt;
+
+&lt;p&gt;In the real world, the trusted CAs are regulated, in someway which guarantee that the world (a.k.a us) can trust on them due the security requirements that they fulfill; obviously for our test environment we don&amp;rsquo;t need to know about all the bureaucracy.&lt;/p&gt;
+
+&lt;p&gt;Hence, first we have to &lt;strong&gt;create the CA certificate&lt;/strong&gt;, in this case with one, the root, will be enough, so it must be self signed, because it&amp;rsquo;s the root. In the real world the root CAs don&amp;rsquo;t usually sign end certificates, they sign certificates for other CAs creating an hierarchy chain where the CAs from some certain bottom level sign the end certificates, the ones used by server/clients to prove their authenticity.&lt;/p&gt;
+
+&lt;p&gt;To generate it with OpenSSL, we just use &lt;a href=&#34;https://www.openssl.org/docs/apps/req.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;req&lt;/code&gt; utility&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl req -batch -newkey rsa:2048 -nodes -keyout \
+  root-ca.key -days 3650 -x509 -out root-ca.crt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s clarify some of the used options:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;batch&lt;/code&gt;: We avoid the interactive mode, so we execute and get.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nodes&lt;/code&gt;: Specify not to encrypt the private key, so server can read it without any passphrase or key agent.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x509&lt;/code&gt;: Generate a self signed certificate rather than a certificate request (we&amp;rsquo;ll see this in a moment).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, we have our CA, then let&amp;rsquo;s create the certificate that we need for our server; first we have to create a &lt;strong&gt;certificate request&lt;/strong&gt; with our private key; I&amp;rsquo;d just like to remind you that your private keys are generate by yourself and &lt;strong&gt;never are sent anywhere&lt;/strong&gt;, which is the basis of a PKI (Public Key Infrastructure), share your public key and non-disclose never your private key.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl req -newkey rsa:2048 -batch -nodes \
+  -config openssl.cnf -out localhost.csr -keyout localhost.key
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s clarify some of the used options for this, as well&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;newkey&lt;/code&gt;: Generate a new private key besides the certificate request; if we&amp;rsquo;d already had one, we&amp;rsquo;d remove this option and will provide another one to specify the file which contains the key, but with this, we save the call to another command.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;config&lt;/code&gt;: It provides a OpenSSL configuration file where we can specify what values and default values; it&amp;rsquo;s important here because I want to specify &lt;code&gt;localhost&lt;/code&gt; as domain name (in an Open SSL certificate is the &amp;ldquo;common name&amp;rdquo;) to match with the host used in the test&amp;rsquo;s requests but at the same time I want to assign in automatically without having to reply interactive questions (&lt;code&gt;-batch&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The configuration file, in this case &lt;code&gt;openssl.cnf&lt;/code&gt;, for the purpose that I want, only needs two fields, in the format that OpenSSL expect (if I&amp;rsquo;m not wrong it accepts other ones, but I know exactly this); it looks like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[ req ]
+distinguished_name     = req_distinguished_name
+
+[ req_distinguished_name ]
+ commonName                      = Common Name (eg, your name or your server&#39;s hostname)
+ commonName_default              = localhost
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And finally, let&amp;rsquo;s give the certificate request to the CA to generate the certificate for our server through &lt;a href=&#34;https://www.openssl.org/docs/apps/x509.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;x509&lt;/code&gt; utility&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl x509 -req -CAkey root-ca.key -CA root-ca.crt \
+  -CAcreateserial -in localhost.csr -days 3650 -out localhost.crt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And the options clarification&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;req&lt;/code&gt;: Specify that the input is a certificate request than a certificate&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CAcreateserial&lt;/code&gt;: Generate a serial number file if doesn&amp;rsquo;t exist, so if we run this for first time, it will, otherwise will read from it the serial number and increment it for the next time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And we&amp;rsquo;re done with OpenSSL; in my case I add this in a &lt;code&gt;makefile target&lt;/code&gt; not to have to remember all of this each time that I have to generate them.&lt;/p&gt;
+
+&lt;h2 id=&#34;running-a-nodejs-https-server:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Running a NodeJS HTTPS server&lt;/h2&gt;
+
+&lt;p&gt;Running a HTTPS server with &lt;a href=&#34;https://iojs.org/api/https.html#https_https_createserver_options_requestlistener&#34; taget=&#34;_blank&#34;&gt;iojs&lt;/a&gt; / &lt;a href=&#34;https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener&#34; target=&#34;_blank&#34;&gt;NodeJS&lt;/a&gt; is pretty straightforward as a HTTP one.&lt;/p&gt;
+
+&lt;p&gt;I could save this section however, because the API documentation example is quite clear however, I thought that it doesn&amp;rsquo;t hurt to add here to provide a better understanding to the post.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; https &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;https&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; fs &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fs&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; options &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  key&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; fs.readFileSync(path.join(__dirname, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;localhost.key&amp;#39;&lt;/span&gt;)),
+  cert&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; fs.readFileSync(path(__dirname, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;localhost.crt&amp;#39;&lt;/span&gt;))
+};
+
+https.createServer(options, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res) {
+  res.writeHead(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;200&lt;/span&gt;);
+  res.end(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;hello world\n&amp;quot;&lt;/span&gt;);
+}).listen(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;8000&lt;/span&gt;);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id=&#34;requesting-the-server-from-nodejs-https-client:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Requesting the server from NodeJS HTTPS client&lt;/h2&gt;
+
+&lt;p&gt;Requesting the server from HTTPS &lt;a href=&#34;https://iojs.org/api/https.html#https_https_request_options_callback&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt; / &lt;a href=&#34;https://nodejs.org/api/https.html#https_https_request_options_callback&#34; target=&#34;_blank&#34;&gt;NodeJS&lt;/a&gt; client is pretty straightforward as well, however I have to provide the CA which signed the certificate used by the server, otherwise client will report an error saying that the certificate is wrong, basically because it cannot trust in a certificate which has been emitted for an unknown CA.&lt;/p&gt;
+
+&lt;p&gt;Therefore, on each request we must specify the &lt;code&gt;ca&lt;/code&gt; property in the options object with the CA&amp;rsquo;s certificate, maybe it&amp;rsquo;s annoying, but better than adding the certificate to the OS keychain, due that the &lt;a href=&#34;https://nodejs.org/api/https.html#https_https_globalagent&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;globalAgen&lt;/code&gt;&lt;/a&gt; ignores the &lt;a href=&#34;https://nodejs.org/api/tls.html#tls_tls_connect_options_callback&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;tls.connect&lt;/code&gt;&lt;/a&gt; options.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; https &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;https&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; fs &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fs&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; options &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  hostname&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;localhost&amp;#39;&lt;/span&gt;,
+  port&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;8000&lt;/span&gt;,
+  path&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;,
+  method&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;GET&amp;#39;&lt;/span&gt;,
+  ca&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; fs.readFileSync(path(__dirname, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;root-ca.crt&amp;#39;&lt;/span&gt;))
+};
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; req &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; https.request(options, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(res) {
+  console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;statusCode: &amp;quot;&lt;/span&gt;, res.statusCode);
+  console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;headers: &amp;quot;&lt;/span&gt;, res.headers);
+
+  res.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;data&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(d) {
+    process.stdout.write(d);
+  });
+});
+req.end();
+
+req.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;error&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(e) {
+  console.error(e);
+});
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And done!&lt;/p&gt;
+
+&lt;p&gt;Another solution to avoid to pass the CA certificate to the client is to use the &lt;code&gt;rejectUnauthorized&lt;/code&gt; options property to false, but in that case you are authorising everything, so I prefer to add the used CA and limit the authorisation for non-official CAs to only the create one.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Generating our certificate for our development/test environment with OpenSSL is a little bit tedious if you have to figure out how, however when you have how, it can be added to your &amp;ldquo;task runner&amp;rdquo; of your project and forget about the process.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, running a HTTPS server and making HTTPS request with iojs/NodeJS are pretty straightforward, knowing a bit about the server and client requirements, because when you don&amp;rsquo;t, finding out what happens with the error messages that OpenSSL sometimes gives, isn&amp;rsquo;t a nice task.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve hope that you&amp;rsquo;ve found this useful.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

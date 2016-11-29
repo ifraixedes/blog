@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Opinion on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/opinion/</link>
+    <description>Recent content in Opinion on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Thu, 31 Dec 2015 18:03:32 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/opinion/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Thoughts about Software Engineering in 2015</title>
+      <link>http://blog.fraixed.es/post/thoughts-about-software-engineering-2015</link>
+      <pubDate>Thu, 31 Dec 2015 18:03:32 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/thoughts-about-software-engineering-2015</guid>
+      <description>&lt;p&gt;In last hours of this year I&amp;rsquo;ve decided to write which are my thoughts, in 2015, about &lt;strong&gt;Software Engineering&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Engineering&lt;/strong&gt; is the science applied to the real world, so a &lt;strong&gt;software engineer&lt;/strong&gt; should solve problems 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;#engineering is the science applied to the real world, so a software engineer should solve problems&#34;    data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+ related with software. Problems are constrained for many different issues: technical, financial, economical, social, etc. Understanding and applying rational thinking are king to solve them.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;People who &lt;strong&gt;write code&lt;/strong&gt; and are passionate about, do not mean (at least for all of them) that they want to write instructions for a machine without any sense of just because somebody dictates them due a destructive bureaucracy.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Software Engineering is about &lt;strong&gt;creating good software&lt;/strong&gt;. Good software is about &lt;strong&gt;applying best practices&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;Software #engineering is about creating good software applying best practices&#34;    data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+which have been proof by identified experience put in practice than only been theories written in books, taught on universities degrees programs or even worse, spread through marketing campaigns, branding and so on.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;There is no solution which works well for all the use cases&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;There is no solution which works well for all the use cases&#34;   data-hashtags=&#34;engineering&#34; data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+. Identifying the problems and limit them than trying to look for a solution for all of them, make the solution stronger and better; solutions which try to solve too many problems are bloated and make them weak.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Experiments are good as long as they are clearly identified&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;experiments are good as long as they are clearly identified&#34;   data-hashtags=&#34;engineering&#34; data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+; knowing and clearly identifying their trade-offs is a good start point to believe that they have been created with engineering in mind.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Simplicity is hard to achieve&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;#simplicity is hard to achieve&#34;    data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+, it has to be constrained in a scope and can only be created by a group of people who actively participate and provide feedback.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Being specialist in some technology or programming language is fine, as long you have some knowledge of the lower layers; not having them or having the interest in acquiring them, limit the ability of the people to solve the problems which aren&amp;rsquo;t solved by the specific technology out of the box.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Managers, who don&amp;rsquo;t work close to the tech, do not design nor build software&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;Managers, who don&amp;#39;t work close to the tech, do not design nor build software&#34;   data-hashtags=&#34;engineering&#34; data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+. Having years of experience in software engineering allows people make decisions based on those, however if they do not keep connected with the technology, they should become a non executive feedback providers.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Probably I&amp;rsquo;ve missed a few more things to say, but they are enough for this year.&lt;/p&gt;
+
+&lt;p&gt;Have a good end of this year and good start for the next one.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

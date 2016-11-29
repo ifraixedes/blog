@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="After reading about a different approach of Golang HTTP Handlers to have clean code, I&#39;ve implemented a benchmark to about how it performs">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Thoughts about Golang Action Responses">
+  <meta property="og:url" content="http://blog.fraixed.es/post/thoughts-about-golang-action-responses">
+  <meta property="og:description" content="After reading about a different approach of Golang HTTP Handlers to have clean code, I&#39;ve implemented a benchmark to about how it performs">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="HTTP">
+      
+        <meta property="og:tag" content="Golang">
+      
+        <meta property="og:tag" content="Software Engineering">
+      
+        <meta property="og:tag" content="Implementation">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/thoughts-about-golang-action-responses">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Thoughts about Golang Action Responses</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/thoughts-about-golang-action-responses"><h1 class="l-title title">Thoughts about Golang Action Responses</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">20-05-2015</span>
+    <br>
+    
+
+<p>A few weeks ago one of my colleagues found a blog post about <strong><a href="http://openmymind.net/Go-action-responses/" target="_blank">a different approach to implement &ldquo;actions&rdquo; HTTP Handlers in Golang</a></strong>, which differs in how the most of the current Golang Web frameworks do which are heavily inspired in the interface offered by <a href="http://golang.org/pkg/net/http/#HandlerFunc" target="_blank">Golang HTTP official package</a>.</p>
+
+<p><a href="https://twitter.com/karlseguin" target="_blank" rel="nofollow">Karl Seguin</a> (the author of the post) commented that the approach gives a natural way to implement HTTP handlers returning response than passing them as an argument, something that works when the consumer not to need to have a full access control over the response, which are in most of the cases.</p>
+
+<p>I&rsquo;ve read this post and I&rsquo;ve spend some time analysing it, because my colleagues asked to the rest of team to have a view and share our thoughts; at that moment I just replied him &ldquo;<a href="#my-first-thoughts:ad2a40f84a32829eab1cb16b6efdee73">my first thoughts</a>&rdquo; and &ldquo;<a href="#what-i-don-t-like:ad2a40f84a32829eab1cb16b6efdee73">what I don&rsquo;t like</a>&rdquo; but I didn&rsquo;t have any substantial argument around my thoughts, so I&rsquo;ve take part of my spare time to consolidate them and add some tangible metrics and write this post about it.</p>
+
+<h2 id="my-first-thoughts:ad2a40f84a32829eab1cb16b6efdee73">My First Thoughts</h2>
+
+<p>My first impression was good, it <strong>provides a way to have a less verbose, hence easy to read, implementations</strong> for the Handlers which deals with the logic of the request (called &ldquo;actions&rdquo;), it means that commong/global Handlers, usually called &ldquo;middlewares&rdquo;, aren&rsquo;t contemplated.</p>
+
+<p>The approach focus in &ldquo;actions&rdquo;, making emphasis on increasing the readability of their implementations and common operations across them; it makes sense as a big web application has a lot of more &ldquo;actions&rdquo; than &ldquo;middlewares&rdquo; then developers spend the most of their time dealing with them, hence readability matters.</p>
+
+<p>Here it&rsquo;s nothing new, basically I agree with Karl.</p>
+
+<h2 id="what-i-don-t-like:ad2a40f84a32829eab1cb16b6efdee73">What I don&rsquo;t like</h2>
+
+<p>To clarify before to comment what I don&rsquo;t like from the approach, I want to say that &ldquo;I don&rsquo;t like&rdquo; doesn&rsquo;t mean &ldquo;I hate&rdquo; or &ldquo;the approach is discarded for those reasons&rdquo;, as usual there are tradeoffs on each approach and depending of the situation some tradeoffs ares less important than others and those define what approach to use for it.</p>
+
+<p>The approach defines a struct &ldquo;NormalResponse&rdquo; which holds the content of a HTTP response, status code, headers and body; it helps to avoid any write on HTTP ResponseWriter until the &ldquo;action&rdquo; ends therefore it&rsquo;s possible to deal with errors without moving the responsibility to the developers who implement the &ldquo;actions&rdquo; which may drive to have inconsistent response, e.g. Send 200 status code when error happened.</p>
+
+<p>&ldquo;NormalResponse&rdquo; struct is great for that, however <strong>it introduces some overhead</strong>; each action <strong>create a new instance of a struct which is used to hold the values to send throw the wire</strong>, hence those values must copied from &ldquo;NormalResponse&rdquo; instance to ResponseWriter; it means that for each request we introduce a new instance which must be garbage collected, therefore we introduce a performance penalty on our web application.</p>
+
+<h2 id="how-performance-matters:ad2a40f84a32829eab1cb16b6efdee73">How Performance Matters</h2>
+
+<p>As you may know, garbage collector isn&rsquo;t the best part of Golang and giving to it too much work could drive your application to screw up or at least not to get that response time that you desire; actually I&rsquo;ve seen this possible tradeoff straightaway, due quite a few posts and library implementations which I&rsquo;ve read where the authors are proud about zero or at least low number of allocations, so it nailed in my brain to be always aware.</p>
+
+<p>Golang team is improving the garbage collector and they&rsquo;re going to release a <a href="http://llvm.cc/t/go-1-4-garbage-collection-plan-and-roadmap-golang-org/33" target="_blank">new improved version with the next release 1.5</a>, however it&rsquo;s outside of the topic of this post, the present is 1.4 release and a garbage-collected language doesn&rsquo;t mean you can ignore memory allocation issues.</p>
+
+<p>As I&rsquo;ve commented in other posts, like <a href="http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics#conclusions:674e6dc579e95f2506494215d826638f" target="_blank">this</a> and <a href="http://blog.fraixed.es/post/performance-js-objects-created-different-ways#conclusions:6714155ea9f1aa8bfca3db0c3355ca1c" target="_blank">this</a>, performance is important but <strong>there are many other things which can be more important than performance</strong> in a lot of situations besides to be more important to find where are the bottle necks before removing the dust; hence this argument, as I&rsquo;ve already commented above, doesn&rsquo;t discard the approach at all, but it&rsquo;s worth bearing in mind.</p>
+
+<h2 id="let-s-see-some-numbers:ad2a40f84a32829eab1cb16b6efdee73">Let&rsquo;s See some Numbers</h2>
+
+<p>Because Golang offers a bunch of good tools to benchmark and profile your implementations (I used them in these two post series <a href="http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics" target="_blank">1</a> and <a href="http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics" target="_blank">2</a>), I&rsquo;ve made a simple &ldquo;action&rdquo; implementation, one using the &ldquo;NormalResponse&rdquo; approach and another with a standard handler to see if my thoughts were right or wrong.</p>
+
+<p>The results that I&rsquo;ve got are</p>
+
+<pre><code>spike ➜  go test -v -bench . -benchtime 10s -benchmem
+testing: warning: no tests to run
+PASS
+BenchmarkResponse       10000000              1908 ns/op             728 B/op          6 allocs/op
+BenchmarkStd            10000000              1357 ns/op             504 B/op          5 allocs/op
+ok      spike   36.009s
+</code></pre>
+
+<p>As we can see, &ldquo;NormalResponse&rdquo; needs, roughly, 40% more nanoseconds per operation than a standard handler.</p>
+
+<p>To compare the pprof graphs, cpu usage and memory consumption, I&rsquo;ve executed the benchmark individually to have separated graphs; so I&rsquo;ve executed those as previously but changing <code>-bench .</code> by <code>-bench Response</code> and <code>-bench Std</code>, for &ldquo;NormalResponse&rdquo; and &ldquo;Standard Handler&rdquo;, respectively; both benchmarks run the same amount of times, as before &ldquo;10000000&rdquo;.</p>
+
+<p>for &ldquo;NormalResponse&rdquo;, I&rsquo;ve got (CPU first and memory second)</p>
+
+<p><img src="https://s-media-cache-ak0.pinimg.com/originals/71/40/d1/7140d1c8694e9a2ec1780f232327a96c.png" alt="NormalResponse CPU profile graph" /></p>
+
+<p><img src="https://s-media-cache-ak0.pinimg.com/originals/68/11/d7/6811d7cbe2d7fe949cad4621ba72183b.png" alt="NormalResponse Memory Allocation Space" /></p>
+
+<p>And for &ldquo;Standard Handler&rdquo;</p>
+
+<p><img src="https://s-media-cache-ak0.pinimg.com/originals/01/7f/4d/017f4dc3ab76f4c189e8bda8cbfc6705.png" alt="Standard Handler CPU profile graph" /></p>
+
+<p><img src="https://s-media-cache-ak0.pinimg.com/originals/92/4d/13/924d13cb99fb7fdb6c6d54f7f3fe660a.png" alt="Standard Handler Memory Allocation Space" /></p>
+
+<p>Taking a look to the CPU graphs, we can see that the &ldquo;External Code&rdquo; triggered by GC and System are the heavy load part of both executions so &ldquo;ResponseNormal&rdquo; doesn&rsquo;t introduce overhead in the garbage collection job, then my thoughts were wrong; however the <strong>two phases response, &ldquo;action&rdquo; and <code>WriteTo</code> call makes the difference with a standard Handler and the bottle neck is the Map operations</strong>.</p>
+
+<p>In case of the memory consumption, we can see in the graphs how &ldquo;NormalResponse&rdquo; needs more memory, mostly, that difference is due <code>WriteTo</code> function and specifically the memory consumption are the operations on the Header type which is a Golang Map, again.</p>
+
+<p>My first thoughts about the performance penalty that &ldquo;NomralResponse&rdquo; approach may haven&rsquo;t been right; it has a performance penalty, however it isn&rsquo;t due GC operations, it&rsquo;s about Map operations. Knowing where the bottle neck is we may introduce improvement, for example changing the type used by &ldquo;NormalResponse&rdquo; to store the headers to send and revaluate to see the gain.</p>
+
+<h2 id="conclusion:ad2a40f84a32829eab1cb16b6efdee73">Conclusion</h2>
+
+<p>Performance matters however it isn&rsquo;t the only important thing to take care for all the implementation. Depending what you&rsquo;re implementing, the situation and requirements, performance may have less relevance than other stuff as readability, maintainability, etc.</p>
+
+<p>Benchmarks are king to know how your implementations perform in front of others, nonetheless you should always <strong>profile your code to see if you implementations can be improve without removing a big part of their advantages or at least you&rsquo;ll consolidate or refute your thoughts</strong> (it&rsquo;s my case here) why your implementation performs different.</p>
+
+<p>By the way you can find the implementation of this benchmark in this <a href="https://gist.github.com/ifraixedes/056175e0cf312db88f0e" target="_blank">gist</a></p>
+
+<p>I hope that you&rsquo;ve got something from here.</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hacking on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/hacking/</link>
+    <description>Recent content in Hacking on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 08 May 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/hacking/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #12</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</link>
+      <pubDate>Fri, 08 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</guid>
+      <description>&lt;p&gt;Another &amp;ldquo;working&amp;rdquo; week is gone and as usual you can take a look here to my 5 favourite tweets of the week&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve got a nice post about &lt;a href=&#34;http://www.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;Rust&lt;/a&gt; Iterators, don&amp;rsquo;t missed if you&amp;rsquo;ve started to be curious about this language that will be for production use in a few days after this post&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;A Journey into Iterators &lt;a href=&#34;http://t.co/tuR0cIIG12&#34;&gt;http://t.co/tuR0cIIG12&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/594624260599058434&#34;&gt;May 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Hacking is not my topic, however I&amp;rsquo;m always interested in news about it, so this tweet about Javascript-Based DDoS got my attention&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;An Introduction to JavaScript-Based DDoS: &lt;a href=&#34;https://t.co/V6VU7agXOC&#34;&gt;https://t.co/V6VU7agXOC&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/594925681714143232&#34;&gt;May 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The amazing community behind &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt; has made a big step to move forward releasing 2.0 version, they deserved to add this tweet here&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;io.js 2.0 Released: &lt;a href=&#34;https://t.co/hcF5CxV1yV&#34;&gt;https://t.co/hcF5CxV1yV&lt;/a&gt; (V8 upgraded to 4.8, npm to 2.9.0 &amp;amp; more, see &lt;a href=&#34;https://t.co/flwmTNnJvP&#34;&gt;https://t.co/flwmTNnJvP&lt;/a&gt; )&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/595575488371937281&#34;&gt;May 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The Linux distribution called &lt;a href=&#34;https://www.kali.org/&#34; target=&#34;_blank&#34;&gt;Kali&lt;/a&gt;, has updated 3 packages related with Wireless Penetration Testing, so good news if you love to play around with wireless connections&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Pixiewps, Reaver &amp;amp; Aircrack-ng - wireless penetration testing tool updates in Kali and what they mean for you  - &lt;a href=&#34;https://t.co/jgXn4t9nE1&#34;&gt;https://t.co/jgXn4t9nE1&lt;/a&gt;&lt;/p&gt;&amp;mdash; muts (@kalilinux) &lt;a href=&#34;https://twitter.com/kalilinux/status/595217837792178176&#34;&gt;May 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://dave.cheney.net/&#34; target=&#34;_blank&#34;&gt;Dave Cheney&lt;/a&gt; has created a new build tool for &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt;, called &lt;a href=&#34;http://getgb.io/&#34; target=&#34;_blank&#34;&gt;gd&lt;/a&gt; which should solve the problem of a reproducible builds; one of thing that me and many other people miss in &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt; is an appropriated tool to manage dependencies so I&amp;rsquo;ll take a look to this totally different approach of others I&amp;rsquo;ve seen and tested, hence this tweet provided me this amazing discovery&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Building Go projects with &amp;#39;gb&amp;#39;: &lt;a href=&#34;https://t.co/f9igUiQOQP&#34;&gt;https://t.co/f9igUiQOQP&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/596654809404538880&#34;&gt;May 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a lovely weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

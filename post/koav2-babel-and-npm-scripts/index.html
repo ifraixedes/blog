@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KoaJS v2 is production ready although it remains in alpha, why? go ahead and read this post to know and see how to use BabelJS with it">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="KoaJS v2, BabelJS &amp; npm scripts">
+  <meta property="og:url" content="http://blog.fraixed.es/post/koav2-babel-and-npm-scripts">
+  <meta property="og:description" content="KoaJS v2 is production ready although it remains in alpha, why? go ahead and read this post to know and see how to use BabelJS with it">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://camo.githubusercontent.com/674563115c4e0d4e5d99440b916952ad795c498e/68747470733a2f2f646c2e64726f70626f7875736572636f6e74656e742e636f6d2f752f363339363931332f6b6f612f6c6f676f2e706e67">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="NodeJS">
+      
+        <meta property="og:tag" content="programming">
+      
+        <meta property="og:tag" content="KoaJS">
+      
+        <meta property="og:tag" content="npm">
+      
+        <meta property="og:tag" content="javascript">
+      
+        <meta property="og:tag" content="eslint">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/koav2-babel-and-npm-scripts">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>KoaJS v2, BabelJS &amp; npm scripts</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/koav2-babel-and-npm-scripts"><h1 class="l-title title">KoaJS v2, BabelJS &amp; npm scripts</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">25-02-2016</span>
+    <br>
+    
+
+<p>Koa v2 has changed completely the middleware function signature, used in v1.x, to use <a href="http://tc39.github.io/ecmascript-asyncawait/" target="_blank" >ES2016 async/await functions</a>
+ over <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*" target="_blank" >generators</a>
+.</p>
+
+<p>It&rsquo;s still in alpha even thought the Koa&rsquo;s team says that it&rsquo;s production ready, because it&rsquo;s currently used in some systems which are in production, however <a href="https://github.com/koajs/koa/issues/533" target="_blank" >the issues is that NodeJS doesn&#39;t still support async/await function natively</a>
+, hence you need a transpiler to be able to use async/await functions.</p>
+
+<p>One, and probably the most famous, ES2015 tranpilers which also supports some of the features proposed for ES2016, and between then Async/Await functions, is <a href="http://babeljs.io/" target="_blank" >BabelJS</a>
+; it&rsquo;s also the one, most mentioned, in the Koa&rsquo;s issue linked above, but it doesn&rsquo;t look fancy having to transpile server code because it can be very painful, however Koa v2 doesn&rsquo;t only accept async/await functions as a middleware, it also accepts function which return Promises (<a href="https://nodejs.org/en/docs/es6/#which-features-ship-with-node-js-by-default-no-runtime-flag-required" target="_blank" >which are already supported natively by last productions releases (LTS and no LTS)</a>
+) because at the end an async/await function returns a Promise to the caller.</p>
+
+<h2 id="what-we-can-do-now:4aa0da6c353d68f2346342f02b552d25">What we can do now</h2>
+
+<p>If you don&rsquo;t want to use BabelJS to write server code because it may be a pain the ass having in your development pipeline, then <a href="https://github.com/koajs/koa/tree/2.0.0-alpha.3#example" target="_blank" >you can still use Koa v2 using functions which return Promises</a>
+; you don&rsquo;t have to worry in having to rewrite those middlewares again when async/await functions be natively supported by NodeJS, you could use those ones and the new ones that implemented with async/async function seamless.</p>
+
+<p>If you don&rsquo;t mind to use BabelJS in your server code, because it&rsquo;s a new development which isn&rsquo;t going to be a very big codebase, or because the implementation progress is going to be slow for whatever reason or you have any other reason which isn&rsquo;t relevant for the purpose of this post then go for it and when NodeJS support async/away function natively then kill BabelJS.</p>
+
+<h2 id="koa-v2-babeljs-with-nodemon-npm-scripts:4aa0da6c353d68f2346342f02b552d25">Koa v2, BabelJS, with Nodemon &amp; npm scripts</h2>
+
+<p>In case that you want to use BabelJS, and you don&rsquo;t have any prepared boilerplate to develop a server side with Babel with server restarting automatically on each change, then you can follow this steps to install it, configure it and run it with npm.</p>
+
+<p>Assuming that you have ran <code>npm init</code> in a folder and you&rsquo;re in your terminal on it execute</p>
+
+<ol>
+<li>Install Koa v2 <code>npm install --save koa@next</code></li>
+<li>Install Babel and the presets and plugins needed to transpile ES6/7 features not supported natively by NodeJS; I recommend only use the async/await functions to be able to run your code as soon as async/await function are supported by NodeJS and may not others as spread paramaters, etc.
+<code>npm install --save-dev babel-core babel-cli babel-preset-es2015-node5  babel-plugin-transform-async-to-generator</code></li>
+<li>Install nodemon <code>npm install --save-dev nodemon</code></li>
+</ol>
+
+<p>Then setup babel creating a <code>.babelrc</code> file with this content:</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%">{
+  <span style="color: #007700">&quot;env&quot;</span>: {
+    <span style="color: #007700">&quot;development&quot;</span>: {
+      <span style="color: #007700">&quot;presets&quot;</span>: [<span style="background-color: #fff0f0">&quot;es2015-node5&quot;</span>],
+      <span style="color: #007700">&quot;plugins&quot;</span>: [<span style="background-color: #fff0f0">&quot;transform-async-to-generator&quot;</span>]
+    }
+  }
+}
+</pre></div>
+
+
+<p>Then you can create, into the property name <code>scripts</code> of <code>package.json</code>, something like this:</p>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%">{
+  <span style="color: #007700">&quot;scripts&quot;</span>: {
+    <span style="color: #007700">&quot;dev&quot;</span>: <span style="background-color: #fff0f0">&quot;nodemon --exec npm run -s serve&quot;</span>,
+    <span style="color: #007700">&quot;serve&quot;</span>: <span style="background-color: #fff0f0">&quot;babel-node -- src/server.js&quot;</span>
+  }
+}
+</pre></div>
+</p>
+
+<p>In case that you use <a href="http://eslint.org/" target="_blank" >eslint</a>
+ to lint your code, to avoid linter issues with async/await functions you have to install it and babel plugin</p>
+
+<p><code>npm install --save-dev eslint babel-eslint</code></p>
+
+<p>then set in <code>.eslintrc</code> file the property <code>&quot;parser&quot;: &quot;babel-eslint&quot;</code>. Bear in mind that you will have to enable the <code>es6</code> features too, enabling <a href="http://eslint.org/docs/user-guide/configuring#specifying-environments" target="_blank" >`es6` environtment</a>
+.</p>
+
+<p>and you can also setup a watch mode in package.json <code>scripts</code> property</p>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%">{
+  <span style="color: #007700">&quot;lint-w&quot;</span>: <span style="background-color: #fff0f0">&quot;nodemon --watch src -e js --exec eslint .&quot;</span>
+}
+</pre></div>
+</p>
+
+<p>then you can run the &ldquo;dev&rdquo; script target in one terminal tab and in other this one and enjoy developing a Koa v2 app, with asyn/await function with live restart and live linting.</p>
+
+<p>Don&rsquo;t wait until Koa v2 to be announced as production version, use it now with Babel or without, just use it now.</p>
+
+<p>Happy coding!</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

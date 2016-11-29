@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hack on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/hack/</link>
+    <description>Recent content in Hack on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Wed, 06 May 2015 11:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/hack/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Private Members on ES6 Classes with Proxies</title>
+      <link>http://blog.fraixed.es/post/private-members-es6-classes-with-proxies</link>
+      <pubDate>Wed, 06 May 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/private-members-es6-classes-with-proxies</guid>
+      <description>
+
+&lt;p&gt;ES6 is getting close to its official release, the &lt;a href=&#34;http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts&#34; target=&#34;_blank&#34;&gt;last Revision, no. 38, is the last Final Draft&lt;/a&gt;, however &lt;a href=&#34;https://kangax.github.io/compat-table/es6/&#34; target=&#34;_blank&#34;&gt;Browsers, Runtimes and Compilers/Polyfills&lt;/a&gt; haven&amp;rsquo;t implemented all the features that the specification defines.&lt;/p&gt;
+
+&lt;p&gt;In this post I&amp;rsquo;m going to go through over a hacky idea about to create objects with &lt;strong&gt;ES6 Classes with private members without using closures as in ES5&lt;/strong&gt;, which is possible as you probably know, nonetheless that topic is very well explained in articles, blog posts, etc., so no point to write another blog post to talk about it, again.&lt;/p&gt;
+
+&lt;h2 id=&#34;es6-classes:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;ES6 Classes&lt;/h2&gt;
+
+&lt;p&gt;As you may already know, ES6 brings the concept of Object Oriented Programming Classes to Javascript.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;ES6 Classes&lt;/strong&gt; allows to create classes without having to specify functions and its prototype property; the syntax and everything that you need to know can be found in a very thorough post named &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Classes in ECMAScript 6 (final semantics)&amp;rdquo;&lt;/a&gt; that &lt;a href=&#34;http://rauschma.de/&#34; target=&#34;_blank&#34;&gt;Dr. Axel Rauschmayer&lt;/a&gt; has written and where he also concluded &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html#does_javascript_need_classes%3F&#34; target=&#34;_blank&#34;&gt;a few clear benefits about ES6 Classes&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve already read his blog post or you&amp;rsquo;ve also known from any other source, ES6 classes doesn&amp;rsquo;t have property scope as many, if not all, &lt;a href=&#34;http://en.wikipedia.org/wiki/Object-oriented_programming&#34; target=&#34;_blank&#34;&gt;Object Oriented Programming&lt;/a&gt; languages have, then you still need the &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures#Emulating_private_methods_with_closures&#34; target=&#34;_blank&#34;&gt;closures workaround to define private properties in objects&lt;/a&gt;, at least if you don&amp;rsquo;t use any of the working approaches that I show bellow.&lt;/p&gt;
+
+&lt;h2 id=&#34;es6-proxies:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;ES6 Proxies&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Proxies is a ES6 mechanism that allows to register traps over an object&lt;/strong&gt;, so they allows to specify custom behavior for fundamental object operations (assignment, iteration, property lookup, etc).&lt;/p&gt;
+
+&lt;p&gt;Proxies is a less mature ES6 feature than classes, at least for the environment that I&amp;rsquo;ve used in this post which you&amp;rsquo;ll read below.&lt;/p&gt;
+
+&lt;p&gt;Because you can find several resources to figure out what ES6 proxies allow to do, I&amp;rsquo;m not going to tell their details here; if you&amp;rsquo;re lazy to look for them, &lt;a href=&#34;http://rauschma.de/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Axel&lt;/a&gt; has also written a &lt;a href=&#34;http://www.2ality.com/2014/12/es6-proxies.html&#34; target=&#34;_blank&#34;&gt;very thorough post about them&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-hack:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The hack&lt;/h2&gt;
+
+&lt;p&gt;After the brief introduction about the two ES6 features that I&amp;rsquo;ve used to create a hacky idea to define private members in objects, I&amp;rsquo;m going to walk through what I&amp;rsquo;ve used to get it works and the different approaches that I&amp;rsquo;ve tried until I found the one that I felt quite satisfied.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-used-environment:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The used environment&lt;/h3&gt;
+
+&lt;p&gt;My first thought was to use &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Babel&lt;/a&gt; to be able to transpile ES6 to ES5 and be able to use this hack everywhere, however it couldn&amp;rsquo;t be because, according to Babel, &lt;a href=&#34;http://babeljs.io/docs/learn-es6/#proxies&#34; target=&#34;_blank&#34;&gt;no way to transpile ES6 proxies to ES5&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;So my alternative has been to use &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;iojs&lt;/a&gt; with &lt;a href=&#34;https://www.npmjs.com/package/harmony-reflect&#34; target=&#34;_blank&#34;&gt;harmony-reflect&lt;/a&gt; module.&lt;/p&gt;
+
+&lt;p&gt;Therefore if you want to run any piece of code of this post, then install &lt;code&gt;iojs-1.8.1&lt;/code&gt; (version which I&amp;rsquo;ve used so I really know for sure that it works), install harmony-reflect &lt;a href=&#34;https://www.npmjs.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;npm&lt;/a&gt; module and execute iojs with &lt;code&gt;--harmony&lt;/code&gt; and &lt;code&gt;--harmony_proxies&lt;/code&gt; flags (&lt;code&gt;iojs --harmony --harmony_proxies the-script.js&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h3 id=&#34;class-declaration:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Class declaration&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve created a very simple class to show the proof of concept of this hack, nothing clever here, however it&amp;rsquo;s useful to get a better understanding wha I&amp;rsquo;ll show you below.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;use strict&amp;#39;&lt;/span&gt;;
+
+require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;harmony-reflect&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Usual class&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;class&lt;/span&gt; Person {
+  constructor(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  get name() {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name;
+  }
+  set name(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  greeting(person) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;hi ${person.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;;
+  }
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Create an object from an usual class&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Person(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a Person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPerson.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #888888&#34;&gt;// _name property is accessible because JS classes doesn&amp;#39;t have access scope&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a Person instance ${ivanPerson._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+ 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Very clear what I&amp;rsquo;ve coded, moreover with the comments I don&amp;rsquo;t think that it needs any clarification; note the &lt;code&gt;require(&#39;harmony-reflect&#39;)&lt;/code&gt; import, otherwise the following lines of code won&amp;rsquo;t work.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-possible-approaches:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The possible approaches&lt;/h3&gt;
+
+&lt;p&gt;Before going to see some of the approaches that I&amp;rsquo;ve come up, you must know that I&amp;rsquo;ve chosen as a convention that any property (values or method) whose name starts with &lt;code&gt;_&lt;/code&gt; is private, even though my proof of concept only show the access to a property value with a defined getter, it also works for properties values without getters and property methods.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-the-base-class-not-working-solution:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify the Base Class (not working solution)&lt;/h4&gt;
+
+&lt;p&gt;I already knew that it wasn&amp;rsquo;t probably going to work, because if you know a little bit how Classes works or you inspect a very slightly them, you&amp;rsquo;ll see that &lt;strong&gt;a ES6 Class it&amp;rsquo;s an object with Function prototype&lt;/strong&gt;, besides, Proxies only trap the calls to the target object, so wrapping a Class with a Proxy will protect the Class, no the instances created from them; however I gave a try because never hurt and you make sure that your thoughts are right.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// Let&amp;#39;s try to protect class object&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ProtectedPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(Person, {
+  get(target, name) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;calling getter in Person wrapped by a proxy&amp;#39;&lt;/span&gt;);
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+    }
+  }
+});
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Let&amp;#39;s create an instance of the class that we wrapped with a proxy&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanProtectedPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; ProtectedPerson(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt; person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanProtectedPerson.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #888888&#34;&gt;// _name still accessible due proxy wrapped class Person;&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// a class is a Function with prototype object, proxy trap calls to the&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// class itself hence the target is the class, not its instances&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt; person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanProtectedPerson._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Thoughts confirmed, &lt;code&gt;_name&lt;/code&gt; on any instance of &lt;code&gt;Person&lt;/code&gt; still accessible; what the Proxy traps, are the properties of &lt;code&gt;Person&lt;/code&gt; class which is a instance of &lt;code&gt;Function&lt;/code&gt;; you can test it yourself if you don&amp;rsquo;t believe me.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-the-class-instances:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify the Class instances&lt;/h4&gt;
+
+&lt;p&gt;The obvious solution is to define a proxy for each &lt;code&gt;Person&lt;/code&gt; instance, and it works as a charm, let&amp;rsquo;s see the example:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// let&amp;#39;s protect a base class instance&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPersonProtected &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(ivanPerson, {
+  get(target, name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+    }
+  }
+})
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a person instance which has been &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtected.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;try&lt;/span&gt; {
+  &lt;span style=&#34;color: #888888&#34;&gt;// _name property call gets trapped by the proxy&lt;/span&gt;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a person instance which has been &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtected._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+} &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;catch&lt;/span&gt; (e) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (e.message &lt;span style=&#34;color: #333333&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Proxy did its job!!&amp;#39;&lt;/span&gt;);
+  } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; e;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The solution works and it&amp;rsquo;s great, however it&amp;rsquo;s repetitive having to create a proxy each time that an instance of &lt;code&gt;Person&lt;/code&gt; is created; it&amp;rsquo;s true that we can create a function which wrap the two operations and it&amp;rsquo;ll solve the problem, however I would like to use Classes to create instances as expected, so using &lt;code&gt;new&lt;/code&gt; operator, for that reason I squashed my brain a little bit more and I&amp;rsquo;ve found the next solution which works and I guess that it&amp;rsquo;s the most interesting part of this post.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-this-instances:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify &lt;code&gt;this&lt;/code&gt; instances&lt;/h4&gt;
+
+&lt;p&gt;The idea has been based in the concept of how Javascript&amp;rsquo;s constructors (i.e. Functions) behave.&lt;/p&gt;
+
+&lt;p&gt;Javascript&amp;rsquo;s constructors  return &lt;code&gt;this&lt;/code&gt; object if they don&amp;rsquo;t have a return statement in its body (usual and expected the most of the times) otherwise they return the value of the &lt;code&gt;return&lt;/code&gt; statement.&lt;/p&gt;
+
+&lt;p&gt;In ES6, Classes are Functions and constructors are allowed to have return statements and their behaviour, is totally the same than in ES5, according Axel, they have the same behaviour for &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html#safety_checks&#34;&gt;backwards compatibility&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Bearing in mind that concept, we can do the following:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// However it&amp;#39;s painful, having to wrap in a proxy every single instance of a class&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// is a repeatable tiring task, so let&amp;#39;s try to creata a class that protect its&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// object instances&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;class&lt;/span&gt; PersonProtected {
+  constructor(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+    &lt;span style=&#34;color: #888888&#34;&gt;// In es6 it also works as in es5: remember es6 class is nothing more than a Function&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// and `new` call the function defined by `constructor`;&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// in es5 works because when you call a `new` on a function the value retuned is the&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// value returned inside the function if it&amp;#39;s an object otherwise returns `this`;&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// in es6 remains the same for backward compatibility&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, {
+      get(target, name) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+        } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+        }
+      }
+    });
+  }
+  get name() {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name;
+  }
+  set name(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  greeting(person) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;hi ${person.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;;
+  }
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPersonProtectedInstance &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; PersonProtected(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a PersonProtected instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtectedInstance.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;try&lt;/span&gt; {
+  &lt;span style=&#34;color: #888888&#34;&gt;// _name property call gets trapped by the proxy&lt;/span&gt;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a PersonProtected instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtectedInstance._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+} &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;catch&lt;/span&gt; (e) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (e.message &lt;span style=&#34;color: #333333&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Class which proxy `this` did its job!!&amp;#39;&lt;/span&gt;);
+  } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; e;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;As you can see in the previous snippet of code, it&amp;rsquo;s as simple as moving the Proxy call inside the constructor and pass &lt;code&gt;this&lt;/code&gt; as a target and returns the returned object by the Proxy call, so it takes advantage of the strange behaviour of Javascript&amp;rsquo;s constructors which has been kept in ES6 Classes.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s clean, works and we can keep the Class instantiation syntax as it is, with the ability to define private properties just starting their names with &lt;code&gt;_&lt;/code&gt;, convention that I&amp;rsquo;ve chosen.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;ES6 Classes don&amp;rsquo;t have any mechanism to define private properties, however with the help of Proxies and the backwards compatibility kept with ES5 we can create a clean mechanism based in naming conventions to define private objects&amp;rsquo; properties.&lt;/p&gt;
+
+&lt;p&gt;Remind you that it&amp;rsquo;s a hack, Proxies aren&amp;rsquo;t even available in iojs, besides I have no clue the performance about this approach, so it isn&amp;rsquo;t for production if you lover yourself.&lt;/p&gt;
+
+&lt;p&gt;All the code of the post, just in case that you&amp;rsquo;d like to check it out, is under this &lt;a href=&#34;https://gist.github.com/ifraixedes/e9311748c961f1dbb93e&#34; target=&#34;_blank&#34;&gt;gist&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Do you have any other idea to get something similar with the features that ES6 brings? if you have, please share them in the comments.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

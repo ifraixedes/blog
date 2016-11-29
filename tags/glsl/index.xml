@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Glsl on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/glsl/</link>
+    <description>Recent content in Glsl on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 03 Apr 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/glsl/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #7</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150403/</link>
+      <pubDate>Fri, 03 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150403/</guid>
+      <description>&lt;p&gt;Working week is gone as we&amp;rsquo;re on Easter, but no time to rest in the blog; so here there it goes the 5 tweets which captivated me the last 7 days.&lt;/p&gt;
+
+&lt;p&gt;Do you love &lt;a href=&#34;https://www.gnu.org/software/make/&#34;&gt;make&lt;/a&gt; as a build tool? Don&amp;rsquo;t miss to take a look to &lt;a href=&#34;https://martine.github.io/ninja/&#34;&gt;Ninja&lt;/a&gt;, it looks promising in terms of speed between other stuff&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Ninja – A small build system with a focus on speed &lt;a href=&#34;https://t.co/VAhyZD6e51&#34;&gt;https://t.co/VAhyZD6e51&lt;/a&gt;&lt;/p&gt;&amp;mdash; Hacker News (@newsycombinator) &lt;a href=&#34;https://twitter.com/newsycombinator/status/581954162050641921&#34;&gt;March 28, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;For a year and a half I&amp;rsquo;ve fallen in love with &lt;a href=&#34;http://www.vim.org/&#34;&gt;Vim&lt;/a&gt;, but I&amp;rsquo;ve really like what &lt;a href=&#34;http://neovim.org/&#34;&gt;neoVim&lt;/a&gt; is bringing &amp;ldquo;the next generation&amp;rdquo;, and one part of that generation is &lt;strong&gt;an integrated terminal emulator&lt;/strong&gt;, which now it has a brief documentation&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Basic documentation for the builtin terminal emulator is now available:  &lt;a href=&#34;http://t.co/1v5LvyU2Et&#34;&gt;http://t.co/1v5LvyU2Et&lt;/a&gt;&lt;/p&gt;&amp;mdash; Neovim (@Neovim) &lt;a href=&#34;https://twitter.com/Neovim/status/582342442445365248&#34;&gt;March 30, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt; helped me to discover another nice command line tool&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Stop using tail -f (mostly) &lt;a href=&#34;http://t.co/J3wuv8WAAq&#34;&gt;http://t.co/J3wuv8WAAq&lt;/a&gt; &amp;#10;&amp;#10;Or use MultiTail &lt;a href=&#34;http://t.co/pNVgPxssQ7&#34;&gt;http://t.co/pNVgPxssQ7&lt;/a&gt;&amp;#10;&amp;#10;&lt;a href=&#34;https://twitter.com/hashtag/Unix?src=hash&#34;&gt;#Unix&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Sysadmin?src=hash&#34;&gt;#Sysadmin&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Linux?src=hash&#34;&gt;#Linux&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/FreeBSD?src=hash&#34;&gt;#FreeBSD&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/IT?src=hash&#34;&gt;#IT&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OSX?src=hash&#34;&gt;#OSX&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/582588210561187840&#34;&gt;March 30, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;https://npmjs.com&#34;&gt;npm&lt;/a&gt; team has created an amazing web site where you can see how the semantic versioning apply to a chosen npm module&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;introducing the npm semantic version calculator: &lt;a href=&#34;http://t.co/MxrxxAm8oy&#34;&gt;http://t.co/MxrxxAm8oy&lt;/a&gt; &lt;a href=&#34;http://t.co/tG4zXoPHob&#34;&gt;pic.twitter.com/tG4zXoPHob&lt;/a&gt;&lt;/p&gt;&amp;mdash; npmbot (@npmjs) &lt;a href=&#34;https://twitter.com/npmjs/status/583665488980500480&#34;&gt;April 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one is about a new &lt;strong&gt;fragment shader sandbox&lt;/strong&gt; which supports &lt;a href=&#34;https://github.com/stackgl/glslify&#34;&gt;glslify&lt;/a&gt;, still work in progress, but it looks amazing&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;&lt;a href=&#34;http://t.co/UFY6AIEX5H&#34;&gt;http://t.co/UFY6AIEX5H&lt;/a&gt;: a fragment shader sandbox with glslify support! &lt;a href=&#34;http://t.co/4Zsy06QKp3&#34;&gt;pic.twitter.com/4Zsy06QKp3&lt;/a&gt;&lt;/p&gt;&amp;mdash; Hugh Kennedy (@hughskennedy) &lt;a href=&#34;https://twitter.com/hughskennedy/status/583728671678050305&#34;&gt;April 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;re having nice Easter.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

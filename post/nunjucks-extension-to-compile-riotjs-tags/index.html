@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Read why and how I&#39;ve created a Nunjucks extension to compile RiotJS to use in one of my side projects and also see how it looks">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="A Nunjucks extension to compile RiotJS tags">
+  <meta property="og:url" content="http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags">
+  <meta property="og:description" content="Read why and how I&#39;ve created a Nunjucks extension to compile RiotJS to use in one of my side projects and also see how it looks">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://s-media-cache-ak0.pinimg.com/originals/54/7e/12/547e12bf2630c38c30bbb8760f148221.png">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="NodeJS">
+      
+        <meta property="og:tag" content="Web">
+      
+        <meta property="og:tag" content="programming">
+      
+        <meta property="og:tag" content="javascript">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>A Nunjucks extension to compile RiotJS tags</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags"><h1 class="l-title title">A Nunjucks extension to compile RiotJS tags</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">02-03-2016</span>
+    <br>
+    
+
+<p>On the way to London, meanwhile I was flying, I wanted to take advantage of the dead time without internet to write this short blog post about a <a href="http://mozilla.github.io/nunjucks/" target="_blank" >Nunjucks</a>
+, <a href="http://riotjs.com/" target="_blank" >RiotJS</a>
+ and a Nunjucks extension that I&rsquo;ve implemented, for a side project that I&rsquo;m working on, to render RiotJS tags on the server.</p>
+
+<h2 id="nunjucks:8ac3bd955171a9b7779df05ea1abc4d7">Nunjucks</h2>
+
+<p><a href="http://mozilla.github.io/nunjucks/" target="_blank" >Nunjucks</a>
+ is a template engine (yes, another one!) for NodeJS and the browser which is heavily inspired by <a href="http://jinja.pocoo.org/" target="_blank" >jinja2</a>
+.</p>
+
+<p>I&rsquo;d never used before and probably I had heard about it, but I couldn&rsquo;t remember, world is moving fast and almost any time you start a project you can discover lots of new stuff which may be better or a good fit it.</p>
+
+<p>I&rsquo;ve used <a href="http://jade-lang.com/" target="_blank" >Jade</a>
+ and <a href="http://paularmstrong.github.io/swig/" target="_blank" >Swig</a>
+ (a bit less) several times and for this project I was thinking in using <a href="http://markojs.com/" target="_blank" >Marko</a>
+, it has a few nice features as be able to send the content through a stream and a widget system which helps to create reusable components; however I found a bit confusing to start because there are several examples and <a href="https://www.youtube.com/playlist?list=PLZUgs-F38XXQJBxA58UqnwTVMZS_uza_C" target="_blank" >screen casts</a>
+ but <a href="http://markojs.com/docs/marko/javascript-api/#rendertemplatepath-templatedata-streamwritable" target="_blank" >quite few functions have been deprecated in the new version</a>
+ and I don&rsquo;t have the need of streaming the content to enhance performance for this project.</p>
+
+<p>At the same time, I didn&rsquo;t want to spend lots of time in choosing and having to solve quite a few issues in how to use it and use it well to get the advantages, so I found Nunjucks was a good choice between taking something that I know and something that it&rsquo;s new for me.</p>
+
+<p>On the other hand, in the time being I don&rsquo;t expect to use that many advanced features that Nunjucks has, and probably I won&rsquo;t take advantage of its power, but it&rsquo;s OK, as it provides me all the things that I need.</p>
+
+<h2 id="riotjs:8ac3bd955171a9b7779df05ea1abc4d7">RiotJS</h2>
+
+<p><a href="http://riotjs.com/" target="_blank" >RiotJS</a>
+ seems probably out of the context of this post and it could be if I wouldn&rsquo;t have decided to also incorporate since the first few commits.</p>
+
+<p>It also could be React, but I feel that it would add too much complexity to the project, it isn&rsquo;t a big project and it shouldn&rsquo;t have a big code base; moreover I would have to spend more time to nail React and all the things around it so I would end up not making the things done.</p>
+
+<p>I&rsquo;ve had a experience using RiotJS, for a freelancing project that I was working a few weeks ago, it was a project with very hard deadline and I had to build a mobile friendly site for one existing one, created by one big &ldquo;consultancy&rdquo; company which basically they ended up delivering a huge pile of crap; anyway, the only think that matters for this post is that it couldn&rsquo;t be made responsive and in 3 weeks time I had to deep in that horrible code base, make the changes what I needed to serve the content for a <a href="https://en.wikipedia.org/wiki/Single-page_application" target="_blank" >SPA</a>
+ which at the same time I had to create to be served for requests coming from mobile devices.</p>
+
+<p>I had never used RiotJS before, and due its minimalism I was able to read and understand the docs, and just use it to do what I had to do.</p>
+
+<p>For this side project, I could avoid to add Riot, because it makes sense to render the site in the server, however there are a few parts which I would like to render on the client (e.g. a dashboard), maybe not in the first version, but in one, close to the first one.</p>
+
+<p>Choosing RiotJS, I think that I can take advantage of its <a href="http://riotjs.com/guide/" target="_blank" >custom tag</a>
+ to create components which at the beginning I can render in the server into Nunjucks templates and at some point, start to render them in the client side in a few pages or parts of them.</p>
+
+<h2 id="rendering-riotjs-in-nunjucks-templates:8ac3bd955171a9b7779df05ea1abc4d7">Rendering RiotJS in Nunjucks templates</h2>
+
+<p>To do this, I didn&rsquo;t need to create any plugin, I could follow the same approach which you can watch in <a href="https://www.youtube.com/watch?v=6ww1UXGJzcs&amp;feature=youtu.be" target="_blank" >this video using swig</a>
+, but I found that creating a Nunjucks plugin for this purpose was simple and easy and it will save me time to repeat over an over a few statements in any page that I&rsquo;m going to drop RiotJS tags besides the implementation will be less error prone.</p>
+
+<p>The implementation of <a href="http://mozilla.github.io/nunjucks/api.html#custom-tags" target="_blank" >Nunjucks extension</a>
+ is as simple as:</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">const</span> path <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;path&#39;</span>)
+<span style="color: #008800; font-weight: bold">const</span> nunjucks <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;nunjucks&#39;</span>)
+<span style="color: #008800; font-weight: bold">const</span> riot <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;riot&#39;</span>)
+
+<span style="color: #008800; font-weight: bold">function</span> RiotExtension(basePath) {
+  <span style="color: #008800; font-weight: bold">this</span>.tags <span style="color: #333333">=</span> [<span style="background-color: #fff0f0">&#39;riot&#39;</span>]
+
+  <span style="color: #008800; font-weight: bold">this</span>.parse <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> (parser, nodes) {
+    <span style="color: #008800; font-weight: bold">let</span> tok <span style="color: #333333">=</span> parser.nextToken()
+    <span style="color: #008800; font-weight: bold">let</span> args <span style="color: #333333">=</span> parser.parseSignature(<span style="color: #008800; font-weight: bold">null</span>, <span style="color: #008800; font-weight: bold">true</span>)
+    parser.advanceAfterBlockEnd(tok.value)
+
+    parser.parseUntilBlocks(<span style="background-color: #fff0f0">&#39;endriot&#39;</span>)
+    parser.advanceAfterBlockEnd()
+
+    <span style="color: #008800; font-weight: bold">return</span> <span style="color: #008800; font-weight: bold">new</span> nodes.CallExtension(<span style="color: #008800; font-weight: bold">this</span>, <span style="background-color: #fff0f0">&#39;renderRiot&#39;</span>, args, [])
+  }
+
+  <span style="color: #008800; font-weight: bold">this</span>.renderRiot <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> (ctx, view, opts) {
+    <span style="color: #888888">/* eslint-disable global-require */</span>
+    <span style="color: #008800; font-weight: bold">const</span> tag <span style="color: #333333">=</span> require(path.join(basePath, view))
+    <span style="color: #888888">/* eslint-enable global-require */</span>
+    <span style="color: #008800; font-weight: bold">return</span> <span style="color: #008800; font-weight: bold">new</span> nunjucks.runtime.SafeString(riot.render(tag, opts))
+  }
+}
+</pre></div>
+
+
+<p>On the server, I&rsquo;m using <a href="http://koajs.com/" target="_blank" >KoaJS</a>
+ v2, at that time it wasn&rsquo;t support in <a href="https://github.com/queckezz/koa-views" target="_blank" >Koa-views</a>
+ for Koa v2 without using <a href="https://github.com/koajs/convert" target="_blank" >koa-convert</a>
+, maybe <a href="https://github.com/queckezz/koa-views/pull/54" target="_blank" >there will one soon</a>
+, and because I prefer to render views without having side effects in Koa <code>ctx</code> (context), I basically pass the render function where I need and use it to generate the HTML which I assign to <code>ctx.body</code> where I need.</p>
+
+<p>The function which returns a promised render function, looks like</p>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #008800; font-weight: bold">const</span> path <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;path&#39;</span>)
+<span style="color: #008800; font-weight: bold">const</span> nunjucks <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;nunjucks&#39;</span>)
+<span style="color: #008800; font-weight: bold">const</span> riot <span style="color: #333333">=</span> require(<span style="background-color: #fff0f0">&#39;riot&#39;</span>)
+
+<span style="color: #008800; font-weight: bold">function</span> getRenderFn(viewsPath, opts) {
+  riot.settings.brackets <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&#39;${ }&#39;</span>
+
+  <span style="color: #008800; font-weight: bold">const</span> njr <span style="color: #333333">=</span> nunjucks.configure(viewsPath, opts)
+  njr.addExtension(<span style="background-color: #fff0f0">&#39;RiotExtension&#39;</span>, <span style="color: #008800; font-weight: bold">new</span> RiotExtension(path.join(viewsPath, <span style="background-color: #fff0f0">&#39;riot&#39;</span>)))
+
+  <span style="color: #008800; font-weight: bold">return</span> (view, data) <span style="color: #333333">=&gt;</span> {
+    <span style="color: #008800; font-weight: bold">return</span> <span style="color: #008800; font-weight: bold">new</span> Promise((resolve, reject) <span style="color: #333333">=&gt;</span> {
+      njr.render(view, data, (err, html) <span style="color: #333333">=&gt;</span> {
+        <span style="color: #008800; font-weight: bold">if</span> (err) {
+          reject(err)
+          <span style="color: #008800; font-weight: bold">return</span>
+        }
+
+        resolve(html)
+      })
+    })
+  }
+}
+</pre></div>
+</p>
+
+<p>And then, whenever I need to render a Riot tag in a Nunjucks template I only have to do <code>{% riot &quot;my-tag.html&quot; %}{% endriot %}</code></p>
+
+<h2 id="conclusion:8ac3bd955171a9b7779df05ea1abc4d7">Conclusion</h2>
+
+<p>Nunjuks looks as powerful template engine, on the other hand, I love the minimalism of RiotJS; with the combination of both I can render views in the server including components (Riot tags) than later on, I could reuse in the client side.</p>
+
+<p>Nunjucks and RiotJS isn&rsquo;t the only two that you can combine together, there more famous combinations or just one which allow to create templates which can be rendered in the server and the client, but I&rsquo;ve decided to choose those based on my project requirements (technical and non-technical too); my recommendation here, is, do the same, choose the one(s) which fit better to it.</p>
+
+<p>Happy mixing!</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

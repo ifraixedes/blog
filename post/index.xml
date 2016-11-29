@@ -1,0 +1,1725 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/post/</link>
+    <description>Recent content in Posts on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Sun, 18 Sep 2016 22:29:45 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Setting up GPG, GIT with keybase.io</title>
+      <link>http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio</link>
+      <pubDate>Sun, 18 Sep 2016 22:29:45 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio</guid>
+      <description>
+
+&lt;p&gt;Back in April, &lt;a href=&#34;https://github.com/blog/2144-gpg-signature-verification&#34; target=&#34;_blank&#34; &gt;Github started to support signed commits and tags with PGP&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve always wanted that &lt;a href=&#34;https://en.wikipedia.org/wiki/Pretty_Good_Privacy&#34; target=&#34;_blank&#34; &gt;PGP (Pretty Good Privacy)&lt;/a&gt;
+ were widely spread because, for example I would love to easily send confidential emails and avoid repudiation in some others that I receive from third parties, however the lack of support for email clients not just desktop client, web clients and mobile clients which today are that necessary makes very hard that people adopt it, so using it in our daily life is mostly an utopia.&lt;/p&gt;
+
+&lt;p&gt;After Github has added support for it, it has been for me a good excuse to start to use PGP in my daily life, it isn&amp;rsquo;t email, but well, I use Github, as many other geeks, almost in daily basis, or if it isn&amp;rsquo;t Github, it&amp;rsquo;s git, so if it&amp;rsquo;s well integrated then, I don&amp;rsquo;t mind to use in any repo either although it isn&amp;rsquo;t hosted on Github.&lt;/p&gt;
+
+&lt;p&gt;The key point of PGP is, obviously, to have a pair of keys; I had one long time ago, that I ended without using it, after I don&amp;rsquo;t know how many years later, which was around 2 years ago, I got a new PGP key pair with &lt;a href=&#34;https://keybase.io&#34; target=&#34;_blank&#34; &gt;keybase&lt;/a&gt;
+, but being hones the account was almost unactive until last April.&lt;/p&gt;
+
+&lt;p&gt;Keybase.io provides a PGP cloud service which create and host keys attached to people; it provides some mechanisms to identify people through third party social services which today are used by tons of people. Of course, the concept of hosting your private key obligate to the users in trust in their security, something that&amp;rsquo;s very debatable, but being honest, that same thing happens with the digital certificates and in my case, for the usage that I give to the key, it isn&amp;rsquo;t big concern.&lt;/p&gt;
+
+&lt;p&gt;To setup my Keybase key with Github, in order to sign my commits and be marked as verified, I followed the blog awesome &lt;a href=&#34;https://www.ahmadnassri.com/blog/github-gpg-keybase-pgp/&#34; target=&#34;_blank&#34; &gt;blog post Github GPG &amp;#43; Keybase PGP of Ahad Nassri&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;using-gnupg-agent-for-the-sake-of-your-fingers:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Using gnupg-agent for the sake of your fingers&lt;/h2&gt;
+
+&lt;p&gt;A very important thing for me and avoid to disable the signing options of my git configuration is no to have to type the passphrase of my GPG key on each commit. For this purpose, we have an agent, as we have for the &lt;code&gt;ssh&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In my case, I use an Ubuntu Linux for all my development stuff, so here I describe to install and configure &lt;code&gt;gpg-agent&lt;/code&gt; for a Ubuntu Linux, if you use another distro then you may have to make some changes and if you use another OS then, you probably end up changing everything but I hope that you can get, at least, the idea in how to do so.&lt;/p&gt;
+
+&lt;h3 id=&#34;install-it:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Install it&lt;/h3&gt;
+
+&lt;p&gt;Installing the agent is as easy how a simple &lt;code&gt;apt-get install gnupg-agent&lt;/code&gt; command execution.&lt;/p&gt;
+
+&lt;p&gt;You can run the agent manually each time that you login or do the same adding that command to your &lt;code&gt;.bashrc&lt;/code&gt; file or the equivalent &lt;code&gt;rc&lt;/code&gt; file that your shell execute on a new session.&lt;/p&gt;
+
+&lt;p&gt;In my case I use &lt;a href=&#34;https://en.wikipedia.org/wiki/Z_shell&#34; target=&#34;_blank&#34; &gt;Z shell (zsh)&lt;/a&gt;
+ and &lt;a href=&#34;http://ohmyz.sh/&#34; target=&#34;_blank&#34; &gt;Oh My ZSH!&lt;/a&gt;
+ and I use the &lt;a href=&#34;https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/plugins/gpg-agent/gpg-agent.plugin.zsh&#34; target=&#34;_blank&#34; &gt;plugin that it provides for running the `gnupg-agent`&lt;/a&gt;
+, which you can run adding to the &lt;code&gt;plugins&lt;/code&gt; variable list &lt;code&gt;gpg-agent&lt;/code&gt;, for example mine, looks like&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #996633&#34;&gt;plugins&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;=(&lt;/span&gt;ssh-agent zsh-syntax-highlighting gpg-agent&lt;span style=&#34;color: #333333&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;if you&amp;rsquo;re using gnpg-agent version 2&lt;/strong&gt; then you don&amp;rsquo;t need to use the &lt;em&gt;Oh My ZSH!&lt;/em&gt; plugin because the agent will be executed automatically at OS the startup time as any other service; check it with &lt;code&gt;gpg-agent --version&lt;/code&gt;, but you may have to assign and export some variable because &lt;em&gt;gpg&lt;/em&gt; client can connect to the agent version 2, although for unknown reasons, sometimes I haven&amp;rsquo;t needed to export any of them to make it work and sometimes I have to export on or both.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #007020&#34;&gt;export &lt;/span&gt;&lt;span style=&#34;color: #996633&#34;&gt;SSH_AUTH_SOCK&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #996633&#34;&gt;$HOME&lt;/span&gt;/.gnupg/S.gpg-agent.ss
+&lt;span style=&#34;color: #007020&#34;&gt;export &lt;/span&gt;&lt;span style=&#34;color: #996633&#34;&gt;GPG_TTY&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;$(&lt;/span&gt;TTY&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If doesn&amp;rsquo;t work without them, getting an error message about the agent connection then, export &lt;code&gt;GPG_TTY&lt;/code&gt; and if it persists, then export the both.&lt;/p&gt;
+
+&lt;h3 id=&#34;configure-it:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Configure it&lt;/h3&gt;
+
+&lt;p&gt;To configure the agent you have to create a configuration file; by default is located on your &lt;em&gt;user home director&lt;/em&gt; in the directory &lt;code&gt;.gnupg/gpg-agent.conf&lt;/code&gt;, take a look to the &lt;a href=&#34;https://www.gnupg.org/documentation/manuals/gnupg/Agent-Options.html#option%20%2d%2doptions&#34; target=&#34;_blank&#34; &gt;options summary section of the documentation web site&lt;/a&gt;
+ to see all the available options.&lt;/p&gt;
+
+&lt;p&gt;Mine only contains a few options which I wanted to tweak&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Set the default cache time to 1 day.
+default-cache-ttl       86400
+default-cache-ttl-ssh   86400
+
+# Set the max cache time to 30 days.
+max-cache-ttl           2592000
+max-cache-ttl-ssh       2592000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now it&amp;rsquo;s time to add our &lt;em&gt;pgp keys&lt;/em&gt;, due the purpose of this post, I&amp;rsquo;ll add my Keybase Key, but you could whatever &lt;em&gt;pgp key&lt;/em&gt; you own, repeating the process for each key.&lt;/p&gt;
+
+&lt;p&gt;Export your private key through the Keybase command line or through the website and save it somewhere, I&amp;rsquo;ll assume that the key file is in &lt;code&gt;~/my-key&lt;/code&gt; for the rest of this post.&lt;/p&gt;
+
+&lt;p&gt;List the current keys, which we shouldn&amp;rsquo;t have any, but the same command will initialize the key store database on the first call &lt;code&gt;gpg --list-keys&lt;/code&gt;, you should see something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~ ➜  gpg --list-keys
+gpg: /home/vagrant/.gnupg/trustdb.gpg: trustdb created
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Import the key &lt;code&gt;gpg --import ~/my-key&lt;/code&gt;, in my case I got&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~ ➜  gpg --import my-key
+gpg: key B5CB5AD5: secret key imported
+gpg: key B5CB5AD5: public key &amp;quot;keybase.io/ifraixedes &amp;lt;ifraixedes@keybase.io&amp;gt;&amp;quot; imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
+gpg:       secret keys read: 1
+gpg:   secret keys imported: 1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And now if you list the keys (&lt;code&gt;gpg --list-keys&lt;/code&gt;), you should see something like&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;~ ➜  gpg --list-keys
+/home/vagrant/.gnupg/pubring.gpg
+--------------------------------
+pub   4096R/B5CB5AD5 2015-04-15
+uid                  keybase.io/ifraixedes &amp;lt;ifraixedes@keybase.io&amp;gt;
+sub   2048R/97F96DB7 2015-04-15 [expires: 2023-04-13]
+sub   2048R/1C9B754A 2015-04-15 [expires: 2023-04-13]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;configure-git-for-signing-and-use-a-default-key:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Configure GIT for signing and use a default key&lt;/h2&gt;
+
+&lt;p&gt;In my case, I&amp;rsquo;m happy to sign all the commits with the same key, so I don&amp;rsquo;t have the need to constantly specify a key per project so I made all this configurations as global, if you need to configure them per project then remove the &lt;code&gt;--global&lt;/code&gt; options of the commands that I listed below.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s specify the key to use with &lt;code&gt;git config --global user.signingkey ifraixedes@keybase.io&lt;/code&gt; or use the key shorthand &lt;code&gt;git config --global user.signingkey B5CB5AD5&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Then, let&amp;rsquo;s sign all the commits by default, so we don&amp;rsquo;t have to specify &lt;code&gt;-S&lt;/code&gt; to &lt;code&gt;git commit&lt;/code&gt; each time, &lt;code&gt;git config --global commit.gpgsign true&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;With these two options, we are set if the agent is version 1, but &lt;strong&gt;if the agent that you&amp;rsquo;re running in your machine is the version 2&lt;/strong&gt;, then you have to add one configuration parameter more to git, otherwise you&amp;rsquo;ll see a message, on each commit, saying something like &lt;code&gt;agent is not running in this session&lt;/code&gt;; this happens because GIT is using by the default the &lt;code&gt;gpg&lt;/code&gt; binary in your path, and for the version 2 you have to use the &lt;code&gt;gpg2&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;First make sure that you install the &lt;em&gt;gpg v2&lt;/em&gt; with &lt;code&gt;sudo apt-get install gnupg2&lt;/code&gt; and thereafter, tell git to use &lt;em&gt;gpg2&lt;/em&gt; with &lt;code&gt;git config --global gpg.program gpg2&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;wrapping-up:f45bcba25f8956a54cd0645d9d008cc9&#34;&gt;Wrapping up&lt;/h2&gt;
+
+&lt;p&gt;At this point, the best thing before giving it a try is to exit your session and login again, than trying to run the &lt;code&gt;gpg-agent&lt;/code&gt; by hand, because you&amp;rsquo;ll try that everything is running as expected and it&amp;rsquo;s easier.&lt;/p&gt;
+
+&lt;p&gt;Happy signing!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Useful links:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.ahmadnassri.com/blog/github-gpg-keybase-pgp/&#34; target=&#34;_blank&#34; &gt;Github GPG &amp;#43; Keybase PGP&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://help.github.com/categories/gpg/&#34; target=&#34;_blank&#34; &gt;Github help for PGP&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://wiki.archlinux.org/index.php/GnuPG&#34; target=&#34;_blank&#34; &gt;Good summary docs of GnuPG&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Linting Javascript with ESLint</title>
+      <link>http://blog.fraixed.es/post/linting-javascript-with-eslint</link>
+      <pubDate>Sat, 11 Jun 2016 23:12:07 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/linting-javascript-with-eslint</guid>
+      <description>
+
+&lt;h2 id=&#34;linting-javascript:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;Linting Javascript&lt;/h2&gt;
+
+&lt;p&gt;Javascript as you well known, is a dynamic and untyped language; characteristics that have their advantages but which also have a few drawbacks which lead to easily introduce trivial bugs in the implementations.&lt;/p&gt;
+
+&lt;p&gt;For the good or the bad of the Javascript language, nowadays is quite difficult to escape from it because any website with a good UX requires quite certain amount of Javascript code, moreover, if we&amp;rsquo;re talking about of Single Page Application the numbers of lines of code of Javascript increase drastically.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, the big popularity of NodeJS has made Javascript a server side programming language, however if you aren&amp;rsquo;t supporter of it, you can scape of it because on server side there are many options, without having the drawbacks that in Web frontend code you can face when choosing one of the transpilers to escape of it.&lt;/p&gt;
+
+&lt;p&gt;If you are supporter of Javascript or you may not, but you don&amp;rsquo;t have the chance to replace it with anything else, then you must use a linter. Linters aren&amp;rsquo;t new in Javascript, they haven&amp;rsquo;t been for awhile, from the first famous one &lt;a href=&#34;https://github.com/douglascrockford/JSLint&#34; target=&#34;_blank&#34; &gt;JSLint&lt;/a&gt;
+ created by Douglas Crockford, its fork &lt;a href=&#34;https://github.com/jshint/jshint&#34; target=&#34;_blank&#34; &gt;JSHint&lt;/a&gt;
+ and &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;ESLint&lt;/a&gt;
+, between some others.&lt;/p&gt;
+
+&lt;p&gt;A Javascript linter make our codebase more maintainable, because it does a static analysis of the codebase to enforces syntax rules for formatting, which is quite important to keep the code base consistent across the team members, and, even more important, to detect potential errors, without executing the code.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-eslint-benefits:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;The ESLint benefits&lt;/h2&gt;
+
+&lt;p&gt;ESlint marked a difference between the previous linters, reason why it looks the best option today, if you are not looking for the fastest one.&lt;/p&gt;
+
+&lt;p&gt;The main difference between ESLint and its predecessors are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It uses an AST to evaluate patterns in code.&lt;/li&gt;
+&lt;li&gt;It is completely pluggable, every single rule is a plugin and you can add more at runtime.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let&amp;rsquo;s go one by one to see how they benefit to us.&lt;/p&gt;
+
+&lt;p&gt;ESLint uses Espree to construct an AST of the codebase which is used to evaluate all the rules; this is a big difference in how others linters operates (for example JSHint), which they only do a lexical analysis, being faster but at the same time they are limited to check only a set of rules, because some of them are not possible to do it without constructing the AST, for example, &amp;ldquo;Require Consistent This&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;The drawback of doing so it&amp;rsquo;s that the the linter is slower, but if the number of rules used aren&amp;rsquo;t huge, it&amp;rsquo;s totally acceptable and the benefits are worth.&lt;/p&gt;
+
+&lt;p&gt;Being pluggable allow us to enable and disable any rule, so we can configure to fit our team needs or just set in place in current implementations where some rules are constrained to it than the option that we would desire. There are several plugins available, some of them allows to uses lint code for some frameworks, for example, &lt;a href=&#34;https://github.com/babel/babel-eslint&#34; target=&#34;_blank&#34; &gt;ES7 features&lt;/a&gt;
+, &lt;a href=&#34;https://github.com/Gillespie59/eslint-plugin-angular&#34; target=&#34;_blank&#34; &gt;AngularJS&lt;/a&gt;
+, &lt;a href=&#34;https://github.com/zertosh/eslint-plugin-flow-vars&#34; target=&#34;_blank&#34; &gt;flow type annotations&lt;/a&gt;
+, etc.&lt;/p&gt;
+
+&lt;p&gt;ESLint also allows to extend configuration files, so we can extend set of rules a defined file and add or override certain rules to fit in our configuration file using the ones listed in the &lt;a href=&#34;http://eslint.org/docs/rules/&#34; target=&#34;_blank&#34; &gt;its long list&lt;/a&gt;
+, using new ones which has been created  by the community or implement our ones if there isn&amp;rsquo;t any which fits what we need.&lt;/p&gt;
+
+&lt;h2 id=&#34;eslint-setup:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;ESLint Setup&lt;/h2&gt;
+
+&lt;p&gt;Setting up ESLint in your Javascript project is pretty straightforward, as it&amp;rsquo;s available as an &lt;a href=&#34;https://www.npmjs.com&#34; target=&#34;_blank&#34; &gt;NPM&lt;/a&gt;
+ package.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have installed, an add to your PATH, &lt;a href=&#34;https://nodejs.org&#34; target=&#34;_blank&#34; &gt;NodeJS&lt;/a&gt;
+ which brings NPM, let&amp;rsquo;s see how to proceed to setup ESLint and configure it.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go to the folder where you have your JS project;&lt;/li&gt;
+&lt;li&gt;For simplicity, we install ESLint globally in the machine with &lt;code&gt;npm install -g eslint&lt;/code&gt;; however it&amp;rsquo;s advisable to install it locally to the project to have more control of the version to use, which is very helpful if you have other projects than use an old version of ESLint or you start now with this but in future project you end up using a newer version, to do so, make sure that you have a &lt;code&gt;package.json&lt;/code&gt; in the project or create one with &lt;code&gt;npm init&lt;/code&gt; and after execute &lt;code&gt;npm install --save-dev eslint&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Create a minimal ESLint configuration file executing &lt;code&gt;eslint --init&lt;/code&gt;; reply the question that ESLint asks in order to set the minimum rules which fit to your code style, if you use ES6 or JSX, define the environment where JS executes, the Browser or NodeJS and choose the format that you want between JS, JSON or YAML to store the configuration; you also have the option to set this configuration in &lt;code&gt;package.json&lt;/code&gt; file with the property &lt;code&gt;eslintConfig&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Right now you should see that you have a file in your folder named &lt;code&gt;.eslintrc.*&lt;/code&gt; where &lt;code&gt;*&lt;/code&gt; is the extension used for the format that you have chosen. It&amp;rsquo;s worth to mention that JSON &amp;amp; YAML formats support JS commends to make them more human-friendly, however they aren&amp;rsquo;t supported in &lt;code&gt;package.json&lt;/code&gt; file.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The basic file which has been generated probably contains only a few properties which ESLint support; probably you&amp;rsquo;ll have the &lt;code&gt;env&lt;/code&gt; which define the environment where code is executed, which module system is used and ES6 version is used. To see all the options that you can set in this property check &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;Specifying Environments in the documentation&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;This basic file extends the rules from the &lt;code&gt;eslint:recommended&lt;/code&gt; configuration as you can see in the value of &lt;code&gt;extends&lt;/code&gt; property, but just leaved it this for now and see the &lt;code&gt;rules&lt;/code&gt; property.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;rules&lt;/code&gt; property contains the rules that we want to use to lint our code base; as commented above, if we extend them from another then we can set ones that the base version doesn&amp;rsquo;t set to cover parts that the base configuration doesn&amp;rsquo;t and set the same one than base configuration has in order to override the rule configuration.&lt;/p&gt;
+
+&lt;p&gt;If you never seen how the &lt;code&gt;rules&lt;/code&gt; are specified in ESLint, you may thing that the format it&amp;rsquo;s odd; they use the name of the rule as a property name, which is very usual, and the value can be an array; they value is the part that it can looks odd because, you can see sometimes an string, an integer or an array, but nothing is weird when you know what they define.&lt;/p&gt;
+
+&lt;p&gt;The rule values can have the next string values:
+* &amp;ldquo;off&amp;rdquo;: The rules doesn&amp;rsquo;t apply. By default ESLint doesn&amp;rsquo;t apply any rule so all they are off, however it&amp;rsquo;s useful to set a rule to off when you extends from a base configuration and you want to disable some of the rules.
+* &amp;ldquo;warn&amp;rdquo;: The rules applies with a warning; when ESLint finds parts of the code base where a rule set as a warning, it shows the output message as warning and it ignores them in terms of the exit code, hence ESLint exits with 0 if only rules set as a warning aren&amp;rsquo;t respected in the code base.
+* &amp;ldquo;error&amp;rdquo;: The rules set as error, are show in the output message an an error and if any of them are found during the linting process, then ESLint exit with 1.&lt;/p&gt;
+
+&lt;p&gt;Ok, but what an integer means as value then? they can only be 0, 1, 2 and they have the same meaning than above, 0 = &amp;ldquo;off&amp;rdquo;, 1 =&amp;ldquo;warn&amp;rdquo; and 2 =&amp;ldquo;error&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;The last form of value for a rule is an array. Arrays are used when the rule accepts options, the first value of the array is a string or integer as defined above and the rest depends of the rule, for example the &lt;a href=&#34;http://eslint.org/docs/rules/quote-props&#34; target=&#34;_blank&#34; &gt;rule &amp;#34;quote-props&amp;#34;&lt;/a&gt;
+ allows to define if we allow to surround the object properties by quotes, the first option (second position in the array) is to set how ESLint should interpret the rules and depending of which value is selected as a first option, it is possible to define the behavior, which is set as a sub-option (third position in the array).&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see the next simple snipped which shows an example of a basic &lt;code&gt;.eslintrc.json&lt;/code&gt; file, using the different value formats commented&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;browser&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;commonjs&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;es6&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;
+  },
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;extends&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;eslint:recommended&amp;quot;&lt;/span&gt;,
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;rules&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;indent&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;error&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;linebreak-style&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;unix&amp;quot;&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;quotes&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;semi&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;never&amp;quot;&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;quote-props&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;warn&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;consistent-as-needed&amp;quot;&lt;/span&gt;, { &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;keywords&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt; }],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;brace-style&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;off&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;ESLint has other setting for more advanced tweaking, for example, options to set to the parser, parser to use and so on; &lt;a href=&#34;http://eslint.org/docs/developer-guide/working-with-plugins&#34; target=&#34;_blank&#34; &gt;it also has plugins which allow to define, not just rules and environments but how to process non pure JS files&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, ESLint also allows &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#ignoring-files-and-directories&#34; target=&#34;_blank&#34; &gt;to ignore files and directories as git does, through a `.eslintignore` file&lt;/a&gt;
+ and &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments&#34; target=&#34;_blank&#34; &gt;to define settings to apply only in parts of the source code using comments&lt;/a&gt;
+, for example &lt;code&gt;/* eslint-disable semi */&lt;/code&gt; will disable the rule from the line of this comment until the end of the file.&lt;/p&gt;
+
+&lt;h2 id=&#34;running-eslint:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;Running ESLint&lt;/h2&gt;
+
+&lt;p&gt;Once you setup ESLint in you project you have to execute it.&lt;/p&gt;
+
+&lt;p&gt;The command line interface of ESLint is as usual as any other command line; you can see the help information with &lt;code&gt;-h&lt;/code&gt; option an see all the options that you can pass it.&lt;/p&gt;
+
+&lt;p&gt;If you have set the configuration in any of the files which ESLint detect, then you can can run the command an pass the path to sources files or folder where the source files are; the paths are defined with globs so you can set a root folder and it recursively will check all the sources files contained in the folder and the children folders, for example &lt;code&gt;eslint src/**/*&lt;/code&gt; will check all the source files in src and all the folder subtree inside of it.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#using-configuration-files&#34; target=&#34;_blank&#34; &gt;With `-c` option you can specify a specific configuration file&lt;/a&gt;
+; this option is quite useful when you want different configurations for different parts of a project;  however if you are using the configurations files or &lt;code&gt;package.json&lt;/code&gt; property mentioned in the previous version, it will use them automatically and moreover you can have several of them in different subfolders of the root filesystem to walk specifying different configurations for the sources contained in the subtree and it will use the closest one found to the analyzed source file, see an example of this case in the &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy&#34; target=&#34;_blank&#34; &gt;documentation&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Another important option to use to speed up the linting process is &lt;code&gt;--cache&lt;/code&gt;; enabling it ESLint store information about the processed files in order to only check the ones that have been modified in the following runs. The cache file is store in the root directory with the name &lt;code&gt;.eslintcache&lt;/code&gt; but you can configure the location with the &lt;code&gt;--cache-location&lt;/code&gt; option.&lt;/p&gt;
+
+&lt;p&gt;ESLint documentation has a dedicated page for &lt;a href=&#34;http://eslint.org/docs/user-guide/command-line-interface&#34; target=&#34;_blank&#34; &gt;its command line interface&lt;/a&gt;
+, check it if you want to know all the other options which accepts.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s all for today folks&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>3 Weeks Backpacking India: Jaipur</title>
+      <link>http://blog.fraixed.es/post/3-weeks-backpacking-india-6</link>
+      <pubDate>Mon, 28 Mar 2016 20:00:49 +0530</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/3-weeks-backpacking-india-6</guid>
+      <description>
+
+&lt;p&gt;After my &lt;a href=&#34;http://blog.fraixed.es/post/3-weeks-backpacking-india-5&#34;&gt;pretty bad experience in Agra&lt;/a&gt;, I traveled to &lt;a href=&#34;https://en.wikipedia.org/wiki/Jaipur&#34; target=&#34;_blank&#34; &gt;Jaipur, the Pink City&lt;/a&gt;
+, and this is how it went.&lt;/p&gt;
+
+&lt;h2 id=&#34;getting-the-agra-station:b70b50288b78da08a4c5d1e1f0f403aa&#34;&gt;Getting the Agra station&lt;/h2&gt;
+
+&lt;p&gt;I took my train from Agra to Jaipur in a secondary station in Agra, my hotel was close to there (20 minutes walk).&lt;/p&gt;
+
+&lt;p&gt;In my walk I realized even more, how Agra is quite rural city, regardless its big amount of tourism due Taj Mahal, because the way to the station was only partially illuminated and was a little bit scary due the dogs hanging around barking when I got close to them.&lt;/p&gt;
+
+&lt;p&gt;Despite of that, I reached the station without any problem, took my train and nothing interesting happened during the journey.&lt;/p&gt;
+
+&lt;h2 id=&#34;arrival-to-jaipur:b70b50288b78da08a4c5d1e1f0f403aa&#34;&gt;Arrival to Jaipur&lt;/h2&gt;
+
+&lt;p&gt;When I&amp;rsquo;ve arrived to Jaipur, around 9.45 hours, I saw a guy who was looking at me since I stepped out of the train; I thought that he was a tout and I tried to avoid to see if he paid the attention to other person; but he was in the way that I had to take so I had to go in that way and faced with him.&lt;/p&gt;
+
+&lt;p&gt;As usual he was trying to help but I was saying that &amp;ldquo;I don&amp;rsquo;t need anything, thanks&amp;rdquo; but he said that he only wanted to chat, so I said him &amp;ldquo;it&amp;rsquo;s fine&amp;rdquo;; he was kind and he told me that he didn&amp;rsquo;t want to sell me anything, but that&amp;rsquo;s also usual ;D&lt;/p&gt;
+
+&lt;p&gt;At the end we went out and he told me that he is a &lt;a href=&#34;https://en.wikipedia.org/wiki/Auto_rickshaw&#34; target=&#34;_blank&#34; &gt;tuk-tuk&lt;/a&gt;
+ driver and if I did&amp;rsquo;t need anything was alright, but if I would need a rickshaw during those days or anybody in the hostel, I could call him and told me that he will carry us the whole day in Jaipur for 500 Rupees. That approach is not very usual in India, so I was happy to take his phone number just in case, however as you&amp;rsquo;d have realized if I have read my previous post of this travel, my aim was trying to walk everywhere and only to use rickshaw or another metropolitan transport in especial situations.&lt;/p&gt;
+
+&lt;p&gt;I walked to the hostel, as it was 15 minutes from the station, and when I got into, I discovered that &lt;a href=&#34;http://www.moustachehostel.com/home.html&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Mustache hostel&lt;/a&gt;
+ , it was totally another concept from the guest houses and hostels that I had stayed previously.&lt;/p&gt;
+
+&lt;p&gt;After left my bags, I checked Internet to reply some messages, load maps, etc, because last time it was almost 48 hours ago, just before I stepped in damn Agra.&lt;/p&gt;
+
+&lt;h2 id=&#34;visiting-raipur:b70b50288b78da08a4c5d1e1f0f403aa&#34;&gt;Visiting Raipur&lt;/h2&gt;
+
+&lt;p&gt;When I finished everything that I had to do on Internet, around 12.30 hours, I went out to visit &lt;a href=&#34;https://en.wikipedia.org/wiki/Amer_Fort&#34; target=&#34;_blank&#34; &gt;Amer Forte&lt;/a&gt;
+ which is, yes, another fort, but this ones is located in a hill which is in one side of the city.&lt;/p&gt;
+
+&lt;p&gt;As usual I was walking until there, sneaking in the narrow streets to reach a foot path which allowed me climb up to the hill. I looked at some pretty nice panoramic pictures of the city and after, I went down to return back to the hostel.&lt;/p&gt;
+
+&lt;p&gt;However, I took a look to the map and I made the decision to take another way to see a different part of the city and during that way I got into the Pink City, besides to extend my way a little bit more to visit the Central Park, which was very unusual clean, by the way.&lt;/p&gt;
+
+&lt;h2 id=&#34;hostel:b70b50288b78da08a4c5d1e1f0f403aa&#34;&gt;Hostel&lt;/h2&gt;
+
+&lt;p&gt;When I was back from my walk, it was around 5pm; it was good time because it was the tea time; Mustache hostel serves Indian tea (&lt;a href=&#34;https://en.wikipedia.org/wiki/Masala_chai&#34; target=&#34;_blank&#34; &gt;chai&lt;/a&gt;
+) with biscuits, and I realized that Indian tea is very tasty and I did like it a lot, something that I cannot say of the English tea.&lt;/p&gt;
+
+&lt;p&gt;After that I was hanging around Internet, connecting with my family and talking with a few travelers and the hostel staff which were very friendly, something unusual too.&lt;/p&gt;
+
+&lt;p&gt;After I went to take a shower in so clean shower and went to bed.&lt;/p&gt;
+
+&lt;p&gt;Following day, I got up and I had a breakfast in the hostel, in its terrace, which is on the roof; it was, actually, a very nice way to start my day.&lt;/p&gt;
+
+&lt;p&gt;During my breakfast I was chatting with an interesting Australian guy and an Indian couple who was having a break in Jaipur.&lt;/p&gt;
+
+&lt;p&gt;Right after I went to the living room and I spent my whole day there chatting with Kirk (an USA lady) who is bootstrapping a business in India and USA and bunch other traveler from different places. I didn&amp;rsquo;t go to anywhere as I realized that &lt;strong&gt;I visited all the city in roughly 5 hours walking&lt;/strong&gt; the day before.&lt;/p&gt;
+
+&lt;p&gt;Following day, it was the time to go back Delhi for a transition day; the train departed at 6am, so I had to get up pretty early.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:b70b50288b78da08a4c5d1e1f0f403aa&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Been in Jaipur in Mustache I realized that there are some cheap and nice places to stay, and not only crappy ones, at the level of the ones that I had stayed in my Western-Central Europe backpacking travel.&lt;/p&gt;
+
+&lt;p&gt;I met a lot of people and they told me that in India there are a few places than nice as Mustache; they gave me the name for one in &lt;a href=&#34;https://en.wikipedia.org/wiki/Rishikesh&#34; target=&#34;_blank&#34; &gt;Rishikesh&lt;/a&gt;
+, my next destination, they told me the name of other ones, so I learnt that &lt;a href=&#34;http://www.hostelbookers.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Hostel Bookers&lt;/a&gt;
+ wasn&amp;rsquo;t that good for India as I found to find hostels in Europe.&lt;/p&gt;
+
+&lt;p&gt;See you in the next post.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Talk at Golang BCN about Profiling Go Programs</title>
+      <link>http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs</link>
+      <pubDate>Tue, 15 Mar 2016 19:30:46 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs</guid>
+      <description>
+
+&lt;p&gt;This post has two main purposes:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Have a kind of script for my talk, at &lt;a href=&#34;http://golangbcn.org/&#34; target=&#34;_blank&#34; &gt;Golang BCN&lt;/a&gt;
+, for the topic mentioned in the title of this post&lt;/li&gt;
+&lt;li&gt;The place where the attendees and followers of Golang BCN can access to the material used in my talk&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;My talk doesn&amp;rsquo;t have any slide, I think that&amp;rsquo;s better to spend my time mentioning the code to run and what I do to use the profiler with the basic implementation which I&amp;rsquo;ve created for this purpose.&lt;/p&gt;
+
+&lt;h2 id=&#34;get-ready:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Get Ready&lt;/h2&gt;
+
+&lt;p&gt;To follow me you have first to make sure that you have installed in your machine:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Golang 1.6; probably an early close version would work too, however I used that one because it was the last stable release at the time that I prepared the talk.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.graphviz.org/&#34; target=&#34;_blank&#34; &gt;Graphviz&lt;/a&gt;
+ which is required to be able to generate &lt;code&gt;svg&lt;/code&gt; with &lt;code&gt;pprof&lt;/code&gt; (The tool offered by Golang out of the box to profile your programs)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;NOTE that I used a linux machine to run it; I haven&amp;rsquo;t done anything which doesn&amp;rsquo;t look cross platform, but bear in mind that you may have issues run it on other operative system&lt;/p&gt;
+
+&lt;p&gt;Get the code, cloning this &lt;a href=&#34;https://gist.github.com/ifraixedes/fd8b585c3da6dacb6385&#34; target=&#34;_blank&#34; &gt;gist&lt;/a&gt;
+ in your &lt;code&gt;GOPATH&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;basic-implementation-examples:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Basic implementation examples&lt;/h2&gt;
+
+&lt;p&gt;To give this introductory talk to Golan profiler, I&amp;rsquo;ve implemented 4 flavors of a &lt;a href=&#34;https://en.wikipedia.org/wiki/Power_of_two&#34; target=&#34;_blank&#34; &gt;Power of 2 function&lt;/a&gt;
+ and 4 flavors of function which returns &lt;a href=&#34;https://en.wikipedia.org/wiki/Fibonacci_number&#34; target=&#34;_blank&#34; &gt;Fibonacci numbers&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The implementation have a test for each function, to make sure that they work as expected, some benchmarks which will use to profile the 8 mentioned functions and a basic server with 2 endpoints to show how &lt;code&gt;net/http/pprof&lt;/code&gt; package expose profile information on an http server just only importing it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve also added a &lt;code&gt;Makefile&lt;/code&gt; as helper to run the most of the commands which I need to profile the benchmarks and the basic http server.&lt;/p&gt;
+
+&lt;h2 id=&#34;profiling-benchmarks:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Profiling benchmarks&lt;/h2&gt;
+
+&lt;p&gt;To profile benchmarks, we need to run the benchmarks with some flags to get profile metrics data files; we also have to get the compiled binary, because, thereafter, we can match the profile metrics with the function names and the lines of the source code where those metrics refer.&lt;/p&gt;
+
+&lt;p&gt;So we do something like &lt;code&gt;go test -bench . -benchmem -memprofile mem.out -cpuprofile cpu.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;With the previous command, run the benchmarks and output a memory and cpu profile data; the binary is also generated with an auto-generated name, pass &lt;code&gt;-o mybin&lt;/code&gt; to give it the name that you would like.&lt;/p&gt;
+
+&lt;p&gt;With the output generated in our terminal, we already know which flavor function (on each functions set) is the fastest. However, having the profiling data we can know from each function, which are the cost of their internal operations; for this simple functions isn&amp;rsquo;t worth as they only have a few instructions, however in large programs where there are quite a few nested function calls, we can see which are the cost of each call and deepen in those ones which are the most costly and know where the bottlenecks are to see if we can change the implementation for more optimized ones.&lt;/p&gt;
+
+&lt;p&gt;The profiling data can be analyzed using &lt;code&gt;pprof&lt;/code&gt; tool, executing something like &lt;code&gt;go tool pprof mybin cpu.out&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;When we run pprof in that way, we get into a &amp;ldquo;repl&amp;rdquo; where we can execute commands to read the the different information which profile data file contains and see some of them next to the line of the implementation which they refer&lt;/p&gt;
+
+&lt;p&gt;Another way, which probably is the most practical, is to generate a flow graph of the function calls with the cost of each (or the most costly if there are too many) function call; we can get that executing something like &lt;code&gt;go tool pprof -svg -output cpu.svg mybin cpu.out&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;And we are ready to open &lt;code&gt;cpu.svg&lt;/code&gt; and see where are our bottlenecks.&lt;/p&gt;
+
+&lt;h2 id=&#34;profiling-a-service:7487b8ebfaae1eb63a113e65a5c6e2a6&#34;&gt;Profiling a service&lt;/h2&gt;
+
+&lt;p&gt;A service is an application that, ideally, will run forever, exposing an interface which other applications (clients) can request to perform the exposed operations. Due they behavior, they have to offer an interface to get the profile data or they have to export it on a defined intervals of time.&lt;/p&gt;
+
+&lt;p&gt;Golang has the package &lt;code&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/pprof/&#34; target=&#34;_blank&#34; &gt;net/http/pprof&lt;/a&gt;
+&lt;/code&gt; which allows to expose, automatically, a few HTTP endpoints to collect the profile data, if the service has an http server, otherwise we can create one HTTP only for that purpose.&lt;/p&gt;
+
+&lt;p&gt;The exposed endpoints are listed under &lt;code&gt;/debug/pprof/&lt;/code&gt; path and to collect the profile data we execute &lt;code&gt;pprof&lt;/code&gt; pointing to the specific path, for example&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;cpu: &lt;code&gt;go tool pprof http://localhost:8000/debug/pprof/profile&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;heap: &lt;code&gt;go tool pprof http://localhost:8000/debug/pprof/heap&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;goroutine block: &lt;code&gt;go tool pprof http://localhost:8000/debug/pprof/block&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Each of those calls generate an output profile data file as we has got from the benchmark and with those you can use &lt;code&gt;pprof&lt;/code&gt; in the same way to analyze the data.&lt;/p&gt;
+
+&lt;p&gt;This is all for now!&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Related links&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The main reference about profiling Go programs posted in the Golang official Blog: &lt;a href=&#34;http://blog.golang.org/profiling-go-programs&#34; target=&#34;_blank&#34; &gt;Profiling Go Programs&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;I wrote a couple of post in my early days in Golang; I used the profiler to drop my curiosity about the performance of values and pointers passed as a parameter, so you can read other place how to use the profiler, &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics/&#34; target=&#34;_blank&#34; &gt;gathering the metrics&lt;/a&gt;
+ and &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics/&#34; target=&#34;_blank&#34; &gt;analyzing them&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Nunjucks extension to compile RiotJS tags</title>
+      <link>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</link>
+      <pubDate>Wed, 02 Mar 2016 16:05:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</guid>
+      <description>
+
+&lt;p&gt;On the way to London, meanwhile I was flying, I wanted to take advantage of the dead time without internet to write this short blog post about a &lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+, &lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ and a Nunjucks extension that I&amp;rsquo;ve implemented, for a side project that I&amp;rsquo;m working on, to render RiotJS tags on the server.&lt;/p&gt;
+
+&lt;h2 id=&#34;nunjucks:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Nunjucks&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+ is a template engine (yes, another one!) for NodeJS and the browser which is heavily inspired by &lt;a href=&#34;http://jinja.pocoo.org/&#34; target=&#34;_blank&#34; &gt;jinja2&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;d never used before and probably I had heard about it, but I couldn&amp;rsquo;t remember, world is moving fast and almost any time you start a project you can discover lots of new stuff which may be better or a good fit it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used &lt;a href=&#34;http://jade-lang.com/&#34; target=&#34;_blank&#34; &gt;Jade&lt;/a&gt;
+ and &lt;a href=&#34;http://paularmstrong.github.io/swig/&#34; target=&#34;_blank&#34; &gt;Swig&lt;/a&gt;
+ (a bit less) several times and for this project I was thinking in using &lt;a href=&#34;http://markojs.com/&#34; target=&#34;_blank&#34; &gt;Marko&lt;/a&gt;
+, it has a few nice features as be able to send the content through a stream and a widget system which helps to create reusable components; however I found a bit confusing to start because there are several examples and &lt;a href=&#34;https://www.youtube.com/playlist?list=PLZUgs-F38XXQJBxA58UqnwTVMZS_uza_C&#34; target=&#34;_blank&#34; &gt;screen casts&lt;/a&gt;
+ but &lt;a href=&#34;http://markojs.com/docs/marko/javascript-api/#rendertemplatepath-templatedata-streamwritable&#34; target=&#34;_blank&#34; &gt;quite few functions have been deprecated in the new version&lt;/a&gt;
+ and I don&amp;rsquo;t have the need of streaming the content to enhance performance for this project.&lt;/p&gt;
+
+&lt;p&gt;At the same time, I didn&amp;rsquo;t want to spend lots of time in choosing and having to solve quite a few issues in how to use it and use it well to get the advantages, so I found Nunjucks was a good choice between taking something that I know and something that it&amp;rsquo;s new for me.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, in the time being I don&amp;rsquo;t expect to use that many advanced features that Nunjucks has, and probably I won&amp;rsquo;t take advantage of its power, but it&amp;rsquo;s OK, as it provides me all the things that I need.&lt;/p&gt;
+
+&lt;h2 id=&#34;riotjs:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;RiotJS&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ seems probably out of the context of this post and it could be if I wouldn&amp;rsquo;t have decided to also incorporate since the first few commits.&lt;/p&gt;
+
+&lt;p&gt;It also could be React, but I feel that it would add too much complexity to the project, it isn&amp;rsquo;t a big project and it shouldn&amp;rsquo;t have a big code base; moreover I would have to spend more time to nail React and all the things around it so I would end up not making the things done.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve had a experience using RiotJS, for a freelancing project that I was working a few weeks ago, it was a project with very hard deadline and I had to build a mobile friendly site for one existing one, created by one big &amp;ldquo;consultancy&amp;rdquo; company which basically they ended up delivering a huge pile of crap; anyway, the only think that matters for this post is that it couldn&amp;rsquo;t be made responsive and in 3 weeks time I had to deep in that horrible code base, make the changes what I needed to serve the content for a &lt;a href=&#34;https://en.wikipedia.org/wiki/Single-page_application&#34; target=&#34;_blank&#34; &gt;SPA&lt;/a&gt;
+ which at the same time I had to create to be served for requests coming from mobile devices.&lt;/p&gt;
+
+&lt;p&gt;I had never used RiotJS before, and due its minimalism I was able to read and understand the docs, and just use it to do what I had to do.&lt;/p&gt;
+
+&lt;p&gt;For this side project, I could avoid to add Riot, because it makes sense to render the site in the server, however there are a few parts which I would like to render on the client (e.g. a dashboard), maybe not in the first version, but in one, close to the first one.&lt;/p&gt;
+
+&lt;p&gt;Choosing RiotJS, I think that I can take advantage of its &lt;a href=&#34;http://riotjs.com/guide/&#34; target=&#34;_blank&#34; &gt;custom tag&lt;/a&gt;
+ to create components which at the beginning I can render in the server into Nunjucks templates and at some point, start to render them in the client side in a few pages or parts of them.&lt;/p&gt;
+
+&lt;h2 id=&#34;rendering-riotjs-in-nunjucks-templates:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Rendering RiotJS in Nunjucks templates&lt;/h2&gt;
+
+&lt;p&gt;To do this, I didn&amp;rsquo;t need to create any plugin, I could follow the same approach which you can watch in &lt;a href=&#34;https://www.youtube.com/watch?v=6ww1UXGJzcs&amp;amp;feature=youtu.be&#34; target=&#34;_blank&#34; &gt;this video using swig&lt;/a&gt;
+, but I found that creating a Nunjucks plugin for this purpose was simple and easy and it will save me time to repeat over an over a few statements in any page that I&amp;rsquo;m going to drop RiotJS tags besides the implementation will be less error prone.&lt;/p&gt;
+
+&lt;p&gt;The implementation of &lt;a href=&#34;http://mozilla.github.io/nunjucks/api.html#custom-tags&#34; target=&#34;_blank&#34; &gt;Nunjucks extension&lt;/a&gt;
+ is as simple as:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; RiotExtension(basePath) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.tags &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;]
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.parse &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (parser, nodes) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; tok &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.nextToken()
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; args &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.parseSignature(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;)
+    parser.advanceAfterBlockEnd(tok.value)
+
+    parser.parseUntilBlocks(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;endriot&amp;#39;&lt;/span&gt;)
+    parser.advanceAfterBlockEnd()
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nodes.CallExtension(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;renderRiot&amp;#39;&lt;/span&gt;, args, [])
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.renderRiot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (ctx, view, opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-disable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; tag &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(path.join(basePath, view))
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-enable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nunjucks.runtime.SafeString(riot.render(tag, opts))
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On the server, I&amp;rsquo;m using &lt;a href=&#34;http://koajs.com/&#34; target=&#34;_blank&#34; &gt;KoaJS&lt;/a&gt;
+ v2, at that time it wasn&amp;rsquo;t support in &lt;a href=&#34;https://github.com/queckezz/koa-views&#34; target=&#34;_blank&#34; &gt;Koa-views&lt;/a&gt;
+ for Koa v2 without using &lt;a href=&#34;https://github.com/koajs/convert&#34; target=&#34;_blank&#34; &gt;koa-convert&lt;/a&gt;
+, maybe &lt;a href=&#34;https://github.com/queckezz/koa-views/pull/54&#34; target=&#34;_blank&#34; &gt;there will one soon&lt;/a&gt;
+, and because I prefer to render views without having side effects in Koa &lt;code&gt;ctx&lt;/code&gt; (context), I basically pass the render function where I need and use it to generate the HTML which I assign to &lt;code&gt;ctx.body&lt;/code&gt; where I need.&lt;/p&gt;
+
+&lt;p&gt;The function which returns a promised render function, looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; getRenderFn(viewsPath, opts) {
+  riot.settings.brackets &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;${ }&amp;#39;&lt;/span&gt;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; njr &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; nunjucks.configure(viewsPath, opts)
+  njr.addExtension(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;RiotExtension&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; RiotExtension(path.join(viewsPath, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)))
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (view, data) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Promise((resolve, reject) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+      njr.render(view, data, (err, html) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+          reject(err)
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt;
+        }
+
+        resolve(html)
+      })
+    })
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And then, whenever I need to render a Riot tag in a Nunjucks template I only have to do &lt;code&gt;{% riot &amp;quot;my-tag.html&amp;quot; %}{% endriot %}&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Nunjuks looks as powerful template engine, on the other hand, I love the minimalism of RiotJS; with the combination of both I can render views in the server including components (Riot tags) than later on, I could reuse in the client side.&lt;/p&gt;
+
+&lt;p&gt;Nunjucks and RiotJS isn&amp;rsquo;t the only two that you can combine together, there more famous combinations or just one which allow to create templates which can be rendered in the server and the client, but I&amp;rsquo;ve decided to choose those based on my project requirements (technical and non-technical too); my recommendation here, is, do the same, choose the one(s) which fit better to it.&lt;/p&gt;
+
+&lt;p&gt;Happy mixing!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>KoaJS v2, BabelJS &amp; npm scripts</title>
+      <link>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</link>
+      <pubDate>Thu, 25 Feb 2016 09:14:11 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</guid>
+      <description>
+
+&lt;p&gt;Koa v2 has changed completely the middleware function signature, used in v1.x, to use &lt;a href=&#34;http://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;ES2016 async/await functions&lt;/a&gt;
+ over &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*&#34; target=&#34;_blank&#34; &gt;generators&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s still in alpha even thought the Koa&amp;rsquo;s team says that it&amp;rsquo;s production ready, because it&amp;rsquo;s currently used in some systems which are in production, however &lt;a href=&#34;https://github.com/koajs/koa/issues/533&#34; target=&#34;_blank&#34; &gt;the issues is that NodeJS doesn&amp;#39;t still support async/await function natively&lt;/a&gt;
+, hence you need a transpiler to be able to use async/await functions.&lt;/p&gt;
+
+&lt;p&gt;One, and probably the most famous, ES2015 tranpilers which also supports some of the features proposed for ES2016, and between then Async/Await functions, is &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; &gt;BabelJS&lt;/a&gt;
+; it&amp;rsquo;s also the one, most mentioned, in the Koa&amp;rsquo;s issue linked above, but it doesn&amp;rsquo;t look fancy having to transpile server code because it can be very painful, however Koa v2 doesn&amp;rsquo;t only accept async/await functions as a middleware, it also accepts function which return Promises (&lt;a href=&#34;https://nodejs.org/en/docs/es6/#which-features-ship-with-node-js-by-default-no-runtime-flag-required&#34; target=&#34;_blank&#34; &gt;which are already supported natively by last productions releases (LTS and no LTS)&lt;/a&gt;
+) because at the end an async/await function returns a Promise to the caller.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-we-can-do-now:4aa0da6c353d68f2346342f02b552d25&#34;&gt;What we can do now&lt;/h2&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t want to use BabelJS to write server code because it may be a pain the ass having in your development pipeline, then &lt;a href=&#34;https://github.com/koajs/koa/tree/2.0.0-alpha.3#example&#34; target=&#34;_blank&#34; &gt;you can still use Koa v2 using functions which return Promises&lt;/a&gt;
+; you don&amp;rsquo;t have to worry in having to rewrite those middlewares again when async/await functions be natively supported by NodeJS, you could use those ones and the new ones that implemented with async/async function seamless.&lt;/p&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t mind to use BabelJS in your server code, because it&amp;rsquo;s a new development which isn&amp;rsquo;t going to be a very big codebase, or because the implementation progress is going to be slow for whatever reason or you have any other reason which isn&amp;rsquo;t relevant for the purpose of this post then go for it and when NodeJS support async/away function natively then kill BabelJS.&lt;/p&gt;
+
+&lt;h2 id=&#34;koa-v2-babeljs-with-nodemon-npm-scripts:4aa0da6c353d68f2346342f02b552d25&#34;&gt;Koa v2, BabelJS, with Nodemon &amp;amp; npm scripts&lt;/h2&gt;
+
+&lt;p&gt;In case that you want to use BabelJS, and you don&amp;rsquo;t have any prepared boilerplate to develop a server side with Babel with server restarting automatically on each change, then you can follow this steps to install it, configure it and run it with npm.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have ran &lt;code&gt;npm init&lt;/code&gt; in a folder and you&amp;rsquo;re in your terminal on it execute&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Install Koa v2 &lt;code&gt;npm install --save koa@next&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install Babel and the presets and plugins needed to transpile ES6/7 features not supported natively by NodeJS; I recommend only use the async/await functions to be able to run your code as soon as async/await function are supported by NodeJS and may not others as spread paramaters, etc.
+&lt;code&gt;npm install --save-dev babel-core babel-cli babel-preset-es2015-node5  babel-plugin-transform-async-to-generator&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install nodemon &lt;code&gt;npm install --save-dev nodemon&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then setup babel creating a &lt;code&gt;.babelrc&lt;/code&gt; file with this content:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;development&amp;quot;&lt;/span&gt;: {
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;es2015-node5&amp;quot;&lt;/span&gt;],
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;transform-async-to-generator&amp;quot;&lt;/span&gt;]
+    }
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then you can create, into the property name &lt;code&gt;scripts&lt;/code&gt; of &lt;code&gt;package.json&lt;/code&gt;, something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;scripts&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;dev&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --exec npm run -s serve&amp;quot;&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;serve&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;babel-node -- src/server.js&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In case that you use &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;eslint&lt;/a&gt;
+ to lint your code, to avoid linter issues with async/await functions you have to install it and babel plugin&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;npm install --save-dev eslint babel-eslint&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;then set in &lt;code&gt;.eslintrc&lt;/code&gt; file the property &lt;code&gt;&amp;quot;parser&amp;quot;: &amp;quot;babel-eslint&amp;quot;&lt;/code&gt;. Bear in mind that you will have to enable the &lt;code&gt;es6&lt;/code&gt; features too, enabling &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;`es6` environtment&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;and you can also setup a watch mode in package.json &lt;code&gt;scripts&lt;/code&gt; property&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;lint-w&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --watch src -e js --exec eslint .&amp;quot;&lt;/span&gt;
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;then you can run the &amp;ldquo;dev&amp;rdquo; script target in one terminal tab and in other this one and enjoy developing a Koa v2 app, with asyn/await function with live restart and live linting.&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t wait until Koa v2 to be announced as production version, use it now with Babel or without, just use it now.&lt;/p&gt;
+
+&lt;p&gt;Happy coding!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How Arrow Functions Perform on Node?</title>
+      <link>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</link>
+      <pubDate>Thu, 18 Feb 2016 19:18:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</guid>
+      <description>
+
+&lt;p&gt;ES2015 Arrow functions are offered natively on NodeJS since while ago; they look as &lt;strong&gt;a convenient way to write anonymous functions than using function expressions&lt;/strong&gt;, because they have a &lt;a href=&#34;https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions&#34; target=&#34;_blank&#34; &gt;shorter syntax, but they also bind `this` value lexically&lt;/a&gt;
+, which is the thing that got my attention to do this short performance test to know if they run slower, faster or equally than function expressions.&lt;/p&gt;
+
+&lt;p&gt;As I mentioned in several posts, performance may be very important, but the most of the times, it&amp;rsquo;s quite less important than other things, as having a clean, simple and easy to understand and maintain code base which may performs not that fast as another one without those properties, or other reasons as using implementations (a.k.a frameworks) which are more generic so they allow to build fast, with less resources and many people can start to work quick because are well know by a certain amount of them.&lt;/p&gt;
+
+&lt;p&gt;I always consider the things mentioned above, however I&amp;rsquo;m not lazy if I have to type a bit more to get better performance without compromising any other important property, so in this case I would say that if arrow functions perform slower than function expressions, I would follow using function expressions because I don&amp;rsquo;t really mind to type the word &lt;code&gt;function&lt;/code&gt;, moreover that I think that in some situations the line of code is more clear having the keyword &lt;code&gt;function&lt;/code&gt; than the shorter syntax of the arrow functions, nonetheless that&amp;rsquo;s out of the scope of this post.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance-test:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Performance test&lt;/h2&gt;
+
+&lt;p&gt;Note, my purpose here is only &lt;strong&gt;to analyze those situations where the anonymous functions used don&amp;rsquo;t access to &lt;code&gt;this&lt;/code&gt; pointer&lt;/strong&gt;, because the most of the times that I&amp;rsquo;ve seen replacing functions expressions by arrow functions are on those situations and my worries are if arrow functions perform slower due the fact that they lexically bind &lt;code&gt;this&lt;/code&gt; pointer.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not analyzing those ones which the functions access to the lexical scope where functions expression should do through &lt;code&gt;bind&lt;/code&gt; or assigning lexical &lt;code&gt;this&lt;/code&gt; to a variable defined in the lexical scope, which at least, &lt;a href=&#34;http://stackoverflow.com/questions/17638305/why-is-bind-slower-than-a-closure&#34; target=&#34;_blank&#34; &gt;a few years ago, `bind` didn&amp;#39;t look as a good options from the performance point of view and we should see what happen now with the arrow functions&lt;/a&gt;
+, however that&amp;rsquo;s out of the main goal of this post.&lt;/p&gt;
+
+&lt;p&gt;To know the different running times between then I wrote a small script using &lt;a href=&#34;https://benchmarkjs.com/&#34; target=&#34;_blank&#34; &gt;Benchmark.js&lt;/a&gt;
+ with &lt;a href=&#34;https://github.com/wadey/node-microtime&#34; target=&#34;_blank&#34; &gt;Microtime&lt;/a&gt;
+ which looks like&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;use strict&amp;#39;&lt;/span&gt;;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; benchmark &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;benchmark&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; obj &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  execFe&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (a, b, c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c;
+    }(a, b, c));
+  },
+  execAf&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; ((a, b, c) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c)(a, b, c);
+  }
+};
+
+module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; obj;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; suite &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; benchmark.Suite;
+
+suite.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;arrow function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execAf(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;normal function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execFe(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;complete&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.forEach(b &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} &lt;span style=&#34;color: #333333&#34;&gt;-&amp;gt;&lt;/span&gt; mean&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${b.stats.mean}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  });
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; b &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; m &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; diff &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; b.stats.mean &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt; m.stats.mean;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} is ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;faster&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;slower&amp;#39;&lt;/span&gt;} than ${m.name} by ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt;diff &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; diff} seconds&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;Fastest is&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.filter(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fastest&amp;#39;&lt;/span&gt;).map(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;)}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+})
+.run({ async&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;false&lt;/span&gt; });
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also find it on the &lt;a href=&#34;https://gist.github.com/ifraixedes/e697740cd43bec83cd37&#34; target=&#34;_blank&#34; &gt;gist which I&amp;#39;ve created for its purpose&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;results:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Results&lt;/h2&gt;
+
+&lt;p&gt;I ran it several times (with NodeJS v5.6.0) and I didn&amp;rsquo;t find any performance run time difference between the arrow functions and the functions expressions. Each time that I executed the test I got different result, some of them the arrow function was faster and in others the function expressions, besides that the time difference between them was so tiny, so that&amp;rsquo;s more the usual differences that you can find in benchmark libraries than a real fact.&lt;/p&gt;
+
+&lt;p&gt;Below you can see the result of two of the executions that I did&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.1797950413531386e-8
+normal function -&amp;gt; mean: 3.236298102991821e-8
+arrow function is faster than normal function by 5.650306163868237e-10 seconds
+Fastest is: arrow function,normal function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.478900530420292e-8
+normal function -&amp;gt; mean: 3.4248199017909106e-8
+arrow function is slower than normal function by 5.408062862938166e-10 seconds
+Fastest is: normal function,arrow function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, the difference is negligible.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;Arrow functions and function expressions have the same performance execution, at least in Node.&lt;/p&gt;
+
+&lt;p&gt;Best!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;I&amp;rsquo;ve updated this post on 23/03/2016 to clarify what I wanted to analyze related arrow functions&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>3 weeks backpacking India: Agra</title>
+      <link>http://blog.fraixed.es/post/3-weeks-backpacking-india-5</link>
+      <pubDate>Mon, 01 Feb 2016 08:23:45 +0530</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/3-weeks-backpacking-india-5</guid>
+      <description>
+
+&lt;p&gt;My stop in Agra was because even though I wasn&amp;rsquo;t much interested in see &lt;a href=&#34;https://en.wikipedia.org/wiki/Taj_Mahal&#34; target=&#34;_blank&#34; &gt;Taj Mahal&lt;/a&gt;
+, the most of the people told me that I should visit if I was traveling India and I was going to be around it, so they convinced me to go and visit it.&lt;/p&gt;
+
+&lt;h2 id=&#34;hotel:be2b7bd2782d1778119a788dbdba8cdb&#34;&gt;Hotel&lt;/h2&gt;
+
+&lt;p&gt;When I got up in the morning after &lt;a href=&#34;http://blog.fraixed.es/post/3-weeks-backpacking-india-4#reaching-the-hotel-in-agra:5cd93711f54594d4757fa90fb8296e73&#34;&gt;I reached it the previous nigh&lt;/a&gt;, I wanted to check Internet because I couldn&amp;rsquo;t do it at the time I had arrived.&lt;/p&gt;
+
+&lt;p&gt;I asked them for the password of the Wi-Fi and I went upstairs; but there was only a patio with doors to several rooms, so I had to sit on the floor as there wasn&amp;rsquo;t any other option, however that wasn&amp;rsquo;t the main issue, the big issue was that Wi-Fi signal wasn&amp;rsquo;t strong enough and my devices couldn&amp;rsquo;t connect.&lt;/p&gt;
+
+&lt;p&gt;I complained about and they told me, &amp;ldquo;now it isn&amp;rsquo;t working, it will work later&amp;rdquo;, so I started to think that they were cheating me.&lt;/p&gt;
+
+&lt;p&gt;The hotel was cheap, but more expensive than Delhi one, besides I had to pay double because they didn&amp;rsquo;t have rooms for a single person; but the cleaning conditions and the embarrassing service deserved my rant in this post.&lt;/p&gt;
+
+&lt;p&gt;The room was quite dirty, I don&amp;rsquo;t complain about old or quality and either if it hadn&amp;rsquo;t been very clean, but it was so dirty, as dirty that could swipe the table of the room with a white tissue and it became black, the bathroom was disgusting, but not only the toilet and the sink (in India not showers the same bathroom is a shower), the buckets which were supposed to be used to take a shower were insalubrious and you couldn&amp;rsquo;t avoid to use them because the pipe of the shower to drop the water over you was broken besides there wasn&amp;rsquo;t hot water, something that&amp;rsquo;s not very important as the weather was hot but it was another point to see how bad the treat their clients.&lt;/p&gt;
+
+&lt;p&gt;But those were all, the hotel is a restaurant and the door of the room was in the eating area, quite noisy if you want to sleep early around 21.30 as I did the second nigh, but also during the night and early in the morning around 4am they started to put music and make noise as in the middle of the day.&lt;/p&gt;
+
+&lt;p&gt;So it&amp;rsquo;s terrible, a hotel can be cheap, but keep a few minimum things, &lt;a href=&#34;http://blog.fraixed.es/post/3-weeks-backpacking-india-4&#34;&gt;as Delhi one&lt;/a&gt;, if it doesn&amp;rsquo;t have all the minimum, at least a few them, but this one didn&amp;rsquo;t have any at all, it totally was a piece of crap.&lt;/p&gt;
+
+&lt;div class=&#34;image-group&#34;&gt;
+  &lt;div class=&#34;two&#34;&gt;
+    &lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/564x/f3/6e/77/f36e773ad628b6c06e114874f705024d.jpg&#34; alt=&#34;Insalubrious toilet in Agra hotel, Rose Home Stay&#34; class=&#34;graphic-small&#34;&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;two&#34;&gt;
+    &lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/564x/74/93/65/74936579d4e3ee3e00570fc47fc5dd57.jpg&#34; alt=&#34;Insalubrious room in Agra hotel, Rose Home Stay&#34; class=&#34;graphic-small&#34;&gt;
+  &lt;/div&gt;
+  &lt;span&gt;The shitty hotel in Agra: &lt;a href=&#34;http://www.rosehomestay.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Rose Home Stay&lt;/a&gt;
+&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Don&amp;rsquo;t do my same mistake so don&amp;rsquo;t never book any room there.&lt;/p&gt;
+
+&lt;p&gt;As I thought after all the excuses that they gave since the beginning, Internet never worked, I asked at least 7 times, during the day, and the last reply was that they were fixing the wires outside and they couldn&amp;rsquo;t do anything, hence it was very clear that they cheated me in an embarrassing way all the time.&lt;/p&gt;
+
+&lt;h2 id=&#34;taj-mahal:be2b7bd2782d1778119a788dbdba8cdb&#34;&gt;Taj Mahal&lt;/h2&gt;
+
+&lt;p&gt;I went to Taj Mahal on my usual way, on foot.&lt;/p&gt;
+
+&lt;p&gt;I could see Agra through my way and started to confirm what a few backpacker had told me; in Agra there isn&amp;rsquo;t anything to see than Taj Mahal and maybe 2 iconic places more, the rest of the city is very ugly.&lt;/p&gt;
+
+&lt;p&gt;I visited Taj Mahal as I already knew, they charge to foreigners at least 10 times more; moreover around the entry there are people around selling lots of useless stuff, however I found that was even _&lt;strong&gt;worse the tourist guides which carry an identity card to be identified as official professional of the government tourist office&lt;/strong&gt;, who are trying to sell their private tourist visit or carry you to a shop where you can leave your bag as alternative to leave it in the cloak, mentioning at the same time with a similar identity card that the shop is from the government; as you can image, it&amp;rsquo;s pure bullshit.&lt;/p&gt;
+
+&lt;p&gt;Being honest, Taj Mahal is alright to see but I didn&amp;rsquo;t feel that it&amp;rsquo;s great monument, after I&amp;rsquo;ve visited a lot of European cathedrals and old big buildings.&lt;/p&gt;
+
+&lt;h2 id=&#34;end-of-the-day:be2b7bd2782d1778119a788dbdba8cdb&#34;&gt;End of the day&lt;/h2&gt;
+
+&lt;p&gt;After Taj Mahal I didn&amp;rsquo;t want to visit the other Agra iconic places, as Agra Fort, so I was walking around, trying to find a place with Internet, I couldn&amp;rsquo;t find any, if there is some then they are a only a few and I couldn&amp;rsquo;t find them, so I got back to my shitty hotel to rest because my train to go Jaipur, the next day, was at 5.17h in the morning so I had to get up by 4h.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:be2b7bd2782d1778119a788dbdba8cdb&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t have a main interest in see Taj Mahal, don&amp;rsquo;t go to Agra, it&amp;rsquo;s totally worthless, nothing to see and very full of tiring people trying to sell you things or services; in my case it was worse because I was in a very crappy hotel so I couldn&amp;rsquo;t get anything good from it and I wanted to quite as soon as possible.&lt;/p&gt;
+
+&lt;p&gt;Anything about it, drop a comment.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Speaking at BarcelonaJS: Generators &amp; Async Functions</title>
+      <link>http://blog.fraixed.es/post/speaking-bcnjs-generators-and-async-functions</link>
+      <pubDate>Tue, 12 Jan 2016 18:00:58 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/speaking-bcnjs-generators-and-async-functions</guid>
+      <description>&lt;p&gt;Tuesday (12th of January of 2016), at &lt;strong&gt;&lt;a href=&#34;http://barcelonajs.org/&#34; target=&#34;_blank&#34; &gt;BarcelonaJS Organisation&lt;/a&gt;
+&lt;/strong&gt;, I gave an introductory talk about &lt;strong&gt;&lt;a href=&#34;http://www.ecma-international.org/ecma-262/6.0/#sec-generatorfunction-objects&#34; target=&#34;_blank&#34; &gt;Generators Functions which are available in EcmaScript 2015&lt;/a&gt;
+&lt;/strong&gt; and &lt;strong&gt;&lt;a href=&#34;https://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;Async Functions which are defined in the draft proposal for EcmaScript 2016&lt;/a&gt;
+&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;I wrote just these few slides&lt;/p&gt;
+
+&lt;p&gt;&lt;div style=&#34;margin: auto; text-align: center;&#34;&gt;
+  &lt;iframe width=&#34;750&#34; height=&#34;563&#34; frameborder=&#34;0&#34; scrolling=&#34;no&#34; marginheight=&#34;0&#34; marginwidth=&#34;0&#34; src=&#34;http://blog.fraixed.es/slides/bcnjs-201601/&#34;
+    &lt;p&gt;Your browser doesn&amp;rsquo;t support iframes&lt;/p&gt;
+  &lt;/iframe&gt;
+  &lt;br&gt;
+  &lt;a href=http://blog.fraixed.es/slides/bcnjs-201601/ target=&#34;_blank&#34;&gt;See these slides in a single page &amp;amp; don&amp;rsquo;t forget to press &amp;ldquo;p&amp;rdquo; to see a few notes which I&amp;rsquo;ve written&lt;/a&gt;
+&lt;/div&gt;
+&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;and mostly I spent my time talking about them through examples which you can find &lt;a href=&#34;https://gist.github.com/ifraixedes/62a7155b87e7e7d0c71d&#34; target=&#34;_blank&#34; &gt;in a public gist on my Github&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If you were there, I hope that you enjoyed or at least got something good from my talk and please don&amp;rsquo;t forget &lt;strong&gt;to drop a few comments with your feedback&lt;/strong&gt;; it will be very valuable for me to keep improving.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>3 weeks backpacking India: transition day in Delhi</title>
+      <link>http://blog.fraixed.es/post/3-weeks-backpacking-india-4</link>
+      <pubDate>Sun, 10 Jan 2016 17:18:44 +0530</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/3-weeks-backpacking-india-4</guid>
+      <description>
+
+&lt;p&gt;After &lt;a href=&#34;http://blog.fraixed.es/post/3-weeks-backpacking-india-3#the-journey:7652ccde95136cfc41a251972ddc09ed&#34;&gt;my turbulent travel by train from Mumbai and going around in Delhi to buy a new phone&lt;/a&gt;, I reached my hotel in the evening.&lt;/p&gt;
+
+&lt;p&gt;Hotel was quite shitty, but for the price which I paid, it isn&amp;rsquo;t fair to rant too much.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-night-in-the-hotel:5cd93711f54594d4757fa90fb8296e73&#34;&gt;The night in the hotel&lt;/h2&gt;
+
+&lt;p&gt;That evening I was quite busy, I had set up the minimum things that I needed in my phone; email accounts, Google maps, downloading ticket trains, etc.&lt;/p&gt;
+
+&lt;p&gt;The hassle to losing my phone wasn&amp;rsquo;t only for the value of the devise, I lost a few pictures and videos which I didn&amp;rsquo;t have the change to upload to the cloud besides the Indian SIM card which &lt;a href=&#34;http://blog.fraixed.es/post/3-weeks-backpacking-india-2#third-day:2b8e083a4d39ca418d38eb68f1f4cc22&#34;&gt;was a pain in the ass to get it&lt;/a&gt; and to get it back a new one, with all the services which I had paid, I had to wait 3 days and I wasn&amp;rsquo;t going to be in Delhi again until 6 days later so at the end the SIM card only was going to be useful for the last week of the travel.&lt;/p&gt;
+
+&lt;p&gt;The SIM card had to provide me an Internet connection to easily walk in the cities, find the places and the way to reach them, search information but most important thing which I could not replace for any offline medium was the access to my email and online tickets.&lt;/p&gt;
+
+&lt;p&gt;So part of that night I had to download every possible thing that I&amp;rsquo;d need, tickets, hotel bookings and off-line maps; moreover I had to check how to go to the Spanish embassy in the morning, to report the issue and how to return back to the hotel to take my luggage and go the train station, where my train was going to departure to Agra.&lt;/p&gt;
+
+&lt;h2 id=&#34;one-day-transition-in-delhi:5cd93711f54594d4757fa90fb8296e73&#34;&gt;One day transition in Delhi&lt;/h2&gt;
+
+&lt;p&gt;Before I had my train to Agra around 17:35h, as I commented above, I went to the embassy on foot because I wanted to take advantage and those parts of Delhi that which were on my way.&lt;/p&gt;
+
+&lt;p&gt;I did it and I&amp;rsquo;m proud; I could visit a few places besides to report the issue to the embassy and stretched my legs after 25 hours stuck in a train.&lt;/p&gt;
+
+&lt;div class=&#34;image-group&#34;&gt;
+  &lt;div class=&#34;two&#34;&gt;
+    &lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/14/47/45/14474537ceccc4d63610bfd0ee13830c.jpg&#34; alt=&#34;The India Gate, New Delhi&#34; class=&#34;graphic-small&#34;&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;two&#34;&gt;
+    &lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/b8/7e/18/b87e1800efd1d14e279c31f4337e8941.jpg&#34; alt=&#34;A palace in New Delhi&#34; class=&#34;graphic-small&#34;&gt;
+  &lt;/div&gt;
+  &lt;span&gt;Pictures of my transition day in Delhi&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&#34;train-to-agra:5cd93711f54594d4757fa90fb8296e73&#34;&gt;Train to Agra&lt;/h2&gt;
+
+&lt;p&gt;My journey from Delhi to Agra was 5 hours and half, I bought a ticket in AC Chair class.&lt;/p&gt;
+
+&lt;p&gt;The train it was supposed to departure at 17.35h but it was delayed until 18:45h, hence I was stuck in the station for almost 2 hours; locals had told me that delays happen frequently, in India, so I wasn&amp;rsquo;t surprised and I think that it had to happen to achieve the goal to have a real Indian experience.&lt;/p&gt;
+
+&lt;p&gt;The problem wasn&amp;rsquo;t to have to wait in the station, it was that I would get in Agra by 23:20h, then it was going to have a more unpleasant time to walk from the station to the hotel.&lt;/p&gt;
+
+&lt;h2 id=&#34;reaching-the-hotel-in-agra:5cd93711f54594d4757fa90fb8296e73&#34;&gt;Reaching the hotel in Agra&lt;/h2&gt;
+
+&lt;p&gt;When I arrived to the station you can imagine what happened, &lt;strong&gt;it was full of &lt;a href=&#34;https://en.wikipedia.org/wiki/Cycle_rickshaw&#34; target=&#34;_blank&#34; &gt;rickshaws&lt;/a&gt;
+ and &lt;a href=&#34;https://en.wikipedia.org/wiki/Auto_rickshaw&#34; target=&#34;_blank&#34; &gt;tuk-tuk (auto rickshaw)&lt;/a&gt;
+&lt;/strong&gt; approaching me, in very tiring way, to get me to my hotel or whatever hotel which they may have commission.&lt;/p&gt;
+
+&lt;p&gt;I tried to avoid them, the hotel was supposed to be not far, so I could walk even though they are quite cheap for Western people; in Agra, as I had read, people push a lot of more to sell or hire services than any other place in India, but I had got used and dealing with them and ignoring them had become easier.&lt;/p&gt;
+
+&lt;p&gt;To reach the hotel was a nightmare, the Google Map point was wrong and it was close, it was in other street connected by a road; I was walking around the place for half an hour that without success; I wanted to call them, but my UK line didn&amp;rsquo;t have signal.&lt;/p&gt;
+
+&lt;p&gt;The streets and roads were full of rickshaws and tuck-tuck(s) which were still approaching me constantly but none of them seemed to understand the name of the hotel until one of them seemed to have understood me and offered to carry me for less than the minimum rate, so I surrendered to the deal.&lt;/p&gt;
+
+&lt;p&gt;At the beginning of the journey, I thought that he didn&amp;rsquo;t know because we were moving far away very fast through the main road. After several meters he took a street and I started to ask him several times &amp;ldquo;are you sure? that you know where it is&amp;rdquo;, he always replied &amp;ldquo;yes&amp;rdquo; and yes, he knew it as he stopped just in front of the hotel.&lt;/p&gt;
+
+&lt;p&gt;It was 1.15h, I got in the hotel after 30 minutes filling forms and I wanted to check internet to reply some message that I may have received but the staff told me that there was Wi-Fi in the rooms and only upstairs, even though they mentioned on Internet they had the service. Therefore I took a shower and went to bed straightaway.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:5cd93711f54594d4757fa90fb8296e73&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;Rickshaws can be useful to bring you to the place, you have to insist a lot where the place is and if you know that it&amp;rsquo;s close, don&amp;rsquo;t trust in them if they tell you that it&amp;rsquo;s far; if it&amp;rsquo;s close and they want to carry you, &lt;strong&gt;negotiate a fix price below the minimum rate&lt;/strong&gt; so you will make sure that he knows where the place is as they don&amp;rsquo;t want to have a long journey for less money than the minimum rate.&lt;/p&gt;
+
+&lt;p&gt;One thing that I had learnt at that time, in &lt;strong&gt;India always negotiate hard&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Feel free to have a watch to any of the following mobile made videos and drop a comment for any doubt&lt;/p&gt;
+
+&lt;div class=&#34;video-group&#34;&gt;
+
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/JVML9xaz5ak&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+ 
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/2UoR4d0atus&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+
+&lt;/div&gt;
+&lt;div class=&#34;video-group&#34;&gt;
+
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/s5VVpr1itos&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+ 
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/_xKLh3-vpwY&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Walk through Golang Package Interfaces</title>
+      <link>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</link>
+      <pubDate>Wed, 06 Jan 2016 08:24:56 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</guid>
+      <description>
+
+&lt;p&gt;Golang interface is one of things that people love due its simplicity and how they make possible to create small things which can be composed to create more complex ones.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s well know that defining interfaces in the implementations make them more flexible and reusable; defining interfaces with just one or a couple of functions signatures is one of the good practices of writing Golang applications, because they make the implementations more modular due they can be composed to get new ones for more specific needs.&lt;/p&gt;
+
+&lt;p&gt;Having this big set of small interface give the opportunity to have a bigger set of generic functions because they only constrain the parameters to implement one of those; so they can be use for any user defined type which implements at least that specific interface.&lt;/p&gt;
+
+&lt;p&gt;Everything above is well know and there are lots of posts about this matter, hence my goal in this post isn&amp;rsquo;t to add a new one more or extend this topic even more; there already good literature about it that you can find easily.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;My goal is to provide the list of interfaces which I&amp;rsquo;ve found, and hopefully I haven&amp;rsquo;t missed any, in Golang 1.5 standard package and highlight few of them&lt;/strong&gt; which I think that we have to bear in mind when we are developing common applications or services.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-ones-useful-for-the-most-common-applications:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The ones useful for the most common applications&lt;/h2&gt;
+
+&lt;h3 id=&#34;sql-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sql package&lt;/h3&gt;
+
+&lt;p&gt;The sql package has two without including the ones defined in the driver subpackage which I&amp;rsquo;ve skipped due that in common applications development is unusual having to implement a new driver.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These ones gathered my attention due that it isn&amp;rsquo;t that rare to store types in a database which aren&amp;rsquo;t basic types defined in the used database system; while we can do the mapping each time that we read those values from the database, the Scanner interface is very convenient to be implemented and get the benefits to get the mapping automatically when the values are read from the database, by the Scan function.&lt;/p&gt;
+
+&lt;p&gt;One example of this case is &lt;a href=&#34;https://godoc.org/github.com/satori/go.uuid#UUID.Scan&#34; target=&#34;_blank&#34; &gt;go.uuid&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;encoding-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;encoding Package&lt;/h3&gt;
+
+&lt;p&gt;The encoding/decoding data is another common operation to perform in common application development. Golang encoding package defines two pairs, marshare/unmarsheler, of interfaces, one for binary and another for text:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryMarshaler&#34; target=&#34;_blank&#34; &gt;BinaryMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryUnmarshaler&#34; target=&#34;_blank&#34; &gt;BinaryUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextMarshaler&#34; target=&#34;_blank&#34; &gt;TextMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextUnmarshaler&#34; target=&#34;_blank&#34; &gt;TextUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It also defines the same pair for specific encodings which usage is very spread&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;gob&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobDecoder&#34; target=&#34;_blank&#34; &gt;GobDecoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobEncoder&#34; target=&#34;_blank&#34; &gt;GobEncoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;json&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;xml&lt;/strong&gt;: which has one pair to allow to encode/decode attributes
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#MarshalerAttr&#34; target=&#34;_blank&#34; &gt;MarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#UnmarshalerAttr&#34; target=&#34;_blank&#34; &gt;UnmarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And one more for binary encoding
+* &lt;a href=&#34;https://golang.org/pkg/encoding/binary/#ByteOrder&#34; target=&#34;_blank&#34; &gt;ByteOrder&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;flag-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;flag package&lt;/h3&gt;
+
+&lt;p&gt;Another common stuff is to pass argument to our application when it starts; &lt;em&gt;flag package&lt;/em&gt; contains two interface which allow to define types to map values passed through command line arguments.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Getter&#34; target=&#34;_blank&#34; &gt;Getter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;fmt-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;fmt package&lt;/h3&gt;
+
+&lt;p&gt;The fmt package defines a set of interfaces to format I/O, which is another functionality which can be needed in common applications development.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Formatter&#34; target=&#34;_blank&#34; &gt;Formatter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#GoStringer&#34; target=&#34;_blank&#34; &gt;GoStringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#ScanState&#34; target=&#34;_blank&#34; &gt;ScanState&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#State&#34; target=&#34;_blank&#34; &gt;State&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Stringer&#34; target=&#34;_blank&#34; &gt;Stringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;sort-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sort package&lt;/h3&gt;
+
+&lt;p&gt;Some applications also requires to sort element in slices, so the types which implement sort interface can use after the routines of sort package to be sorted.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sort/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-rest:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The rest&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Compress package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;flate&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Reader&#34; target=&#34;_blank&#34; &gt;falate/Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Resetter&#34; target=&#34;_blank&#34; &gt;falate/Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;zlib&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/zlib/#Resetter&#34; target=&#34;_blank&#34; &gt;Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Heap package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/container/heap/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Crypto package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Decrypter&#34; target=&#34;_blank&#34; &gt;Decrypter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Signer&#34; target=&#34;_blank&#34; &gt;Signer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#SignerOpts&#34; target=&#34;_blank&#34; &gt;SignerOpts&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cipher&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#AEAD&#34; target=&#34;_blank&#34; &gt;AEAD&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Block&#34; target=&#34;_blank&#34; &gt;Block&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#BlockMode&#34; target=&#34;_blank&#34; &gt;BlockMode&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Stream&#34; target=&#34;_blank&#34; &gt;Stream&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;elliptic&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/elliptic/#Curve&#34; target=&#34;_blank&#34; &gt;Curve&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/tls/#ClientSessionCache&#34; target=&#34;_blank&#34; &gt;ClientSessionCache&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sql/driver package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ColumnConverter&#34; target=&#34;_blank&#34; &gt;ColumnConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Driver&#34; target=&#34;_blank&#34; &gt;Driver&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Execer&#34; target=&#34;_blank&#34; &gt;Execer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Queryer&#34; target=&#34;_blank&#34; &gt;Queryer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Tx&#34; target=&#34;_blank&#34; &gt;Tx&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ValueConverter&#34; target=&#34;_blank&#34; &gt;ValueConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Valuer&#34; target=&#34;_blank&#34; &gt;Valuer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;debug package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;dwarf&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/dwarf/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;macho&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/macho/#Load&#34; target=&#34;_blank&#34; &gt;Load&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;expvar package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/expvar/#Var&#34; target=&#34;_blank&#34; &gt;Var&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;ast package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Decl&#34; target=&#34;_blank&#34; &gt;Decl&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Expr&#34; target=&#34;_blank&#34; &gt;Expr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Spec&#34; target=&#34;_blank&#34; &gt;Spec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Visitor&#34; target=&#34;_blank&#34; &gt;Visitor&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;constant package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/constant/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;types package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Importer&#34; target=&#34;_blank&#34; &gt;Importer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Object&#34; target=&#34;_blank&#34; &gt;Object&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Sizes&#34; target=&#34;_blank&#34; &gt;Sizes&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;hash package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash64&#34; target=&#34;_blank&#34; &gt;Hash64&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;image package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#PalettedImage&#34; target=&#34;_blank&#34; &gt;PalettedImage&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;color&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Color&#34; target=&#34;_blank&#34; &gt;Color&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Model&#34; target=&#34;_blank&#34; &gt;Model&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;draw&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Drawer&#34; target=&#34;_blank&#34; &gt;Drawer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Quantizer&#34; target=&#34;_blank&#34; &gt;Quantizer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;jpeg&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/jpeg/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;io package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteReader&#34; target=&#34;_blank&#34; &gt;ByteReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteScanner&#34; target=&#34;_blank&#34; &gt;ByteScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteWriter&#34; target=&#34;_blank&#34; &gt;ByteWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Closer&#34; target=&#34;_blank&#34; &gt;Closer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadCloser&#34; target=&#34;_blank&#34; &gt;ReadCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadSeeker&#34; target=&#34;_blank&#34; &gt;ReadSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteCloser&#34; target=&#34;_blank&#34; &gt;ReadWriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteSeeker&#34; target=&#34;_blank&#34; &gt;ReadWriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriter&#34; target=&#34;_blank&#34; &gt;ReadWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderAt&#34; target=&#34;_blank&#34; &gt;ReaderAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderFrom&#34; target=&#34;_blank&#34; &gt;ReaderFrom&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneReader&#34; target=&#34;_blank&#34; &gt;RuneReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneScanner&#34; target=&#34;_blank&#34; &gt;RuneScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Seeker&#34; target=&#34;_blank&#34; &gt;Seeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteCloser&#34; target=&#34;_blank&#34; &gt;WriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteSeeker&#34; target=&#34;_blank&#34; &gt;WriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Writer&#34; target=&#34;_blank&#34; &gt;Writer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterAt&#34; target=&#34;_blank&#34; &gt;WriterAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterTo&#34; target=&#34;_blank&#34; &gt;WriterTo&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;math/rand package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/math/rand/#Source&#34; target=&#34;_blank&#34; &gt;Source&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;mine/multipart package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/mime/multipart/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;net package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Addr&#34; target=&#34;_blank&#34; &gt;Addr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Listener&#34; target=&#34;_blank&#34; &gt;Listener&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#PacketConn&#34; target=&#34;_blank&#34; &gt;PacketConn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;http&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CloseNotifier&#34; target=&#34;_blank&#34; &gt;CloseNotifier&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CookieJar&#34; target=&#34;_blank&#34; &gt;CookieJar&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#FileSystem&#34; target=&#34;_blank&#34; &gt;FileSystem&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Flusher&#34; target=&#34;_blank&#34; &gt;Flusher&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Handler&#34; target=&#34;_blank&#34; &gt;Handler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Hijacker&#34; target=&#34;_blank&#34; &gt;Hijacker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#ResponseWriter&#34; target=&#34;_blank&#34; &gt;ResponseWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#RoundTripper&#34; target=&#34;_blank&#34; &gt;RoundTripper&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cookiejar&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/cookiejar/#PublicSuffixList&#34; target=&#34;_blank&#34; &gt;PublicSuffixList&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;rpc&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ClientCodec&#34; target=&#34;_blank&#34; &gt;ClientCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ServerCodec&#34; target=&#34;_blank&#34; &gt;ServerCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;smtp&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/smtp/#Auth&#34; target=&#34;_blank&#34; &gt;Auth&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;os&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#FileInfo&#34; target=&#34;_blank&#34; &gt;FileInfo&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#Signal&#34; target=&#34;_blank&#34; &gt;Signal&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;reflect package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/reflect/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;runtime package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/runtime/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sync package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sync/#Locker&#34; target=&#34;_blank&#34; &gt;Locker&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;syscall package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/syscall/#Sockaddr&#34; target=&#34;_blank&#34; &gt;Sockaddr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;tesing package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/#TB&#34; target=&#34;_blank&#34; &gt;TB&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;quick&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/quick/#Generator&#34; target=&#34;_blank&#34; &gt;Generator&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;text/template/parse&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/text/template/parse/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;conclusion:8299f908315f8a7f26ec77fc52719a89&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Golang interfaces are the most powerful and simple feature that the language expose to create modular and reusable implementations.&lt;/p&gt;
+
+&lt;p&gt;Golang standard library contains a bunch of already defined interfaces which can be implemented by our applications or services without having to think in new ones for the same purpose besides to ease and speed up to any Golang developer to understand our implementations.&lt;/p&gt;
+
+&lt;p&gt;Collecting all of them in in this post allowed me to discover some of them which I haven&amp;rsquo;t seen before even though I&amp;rsquo;ve been developing in Golang for one year and a half. Some of them I had never seen because I haven&amp;rsquo;t had to use them, others I had seen when I was reading a specific package documentation and other I saw at some point but I didn&amp;rsquo;t assimilate at the first glance, so this post has been a good exercise.&lt;/p&gt;
+
+&lt;p&gt;If I&amp;rsquo;ve missed any and you know which ones, please let me know with an innocent comment.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>3 Weeks Backpacking India: 25h in a Train</title>
+      <link>http://blog.fraixed.es/post/3-weeks-backpacking-india-3</link>
+      <pubDate>Sun, 03 Jan 2016 10:03:01 +0530</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/3-weeks-backpacking-india-3</guid>
+      <description>
+
+&lt;p&gt;&lt;strong&gt;Train is the main transport that Indians use for long distances, is cheaper than others and they run frequently between main cities&lt;/strong&gt;; so &lt;a href=&#34;http://blog.fraixed.es/post/3-weeks-backpacking-india-2&#34;&gt;after almost a week in Mumbai&lt;/a&gt;, I took a train to have a long travel to go to Delhi; here you can read how it was.&lt;/p&gt;
+
+&lt;h2 id=&#34;booking:7652ccde95136cfc41a251972ddc09ed&#34;&gt;Booking&lt;/h2&gt;
+
+&lt;p&gt;Booking trains in India is a bit chaotic, at least if you don&amp;rsquo;t want to use the General Class (no air condition), which I heard, is very crowded but you&amp;rsquo;ll probably be able to get a ticket for the same day in the station.&lt;/p&gt;
+
+&lt;p&gt;In my case I didn&amp;rsquo;t want to use general class tickets because I wanted to have some work done during the hours of journey, then I decided to use AC classes. AC classes have air condition and &lt;strong&gt;sometimes sockets and less demand of tickets therefore more chances to get a ticket online&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;When you travel very long distances, or in the night, is worth to buy one of the options with berth, there are several classes; starting from the 3AC (3rd class AC), all of them with air condition and are differentiated by less berths in the carriage, curtains, food, etc. I&amp;rsquo;m not going to explain each class, there are quite a few posts describing those thoroughly and probably with more research than the one that I did.&lt;/p&gt;
+
+&lt;p&gt;You can do the actually booking in the stations in advance or in main cities there are ticket offices that they sell tickets in foreign quota; I read about it but I never used because I preferred to do it online to save time, with the tradeoff to take some trains in non-pleasant hours and have to plan a few days in advance. To be able to __book online the best thing that I found was &lt;a href=&#34;http://www.cleartrip.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Cleartrip&lt;/a&gt;
+, which offers a wrapper for the government website (IRCTC) but allow you to pay by non-Indian cards; as commented above there are several posts telling about it, but just bear in mind &lt;strong&gt;to register an account before your travel&lt;/strong&gt; because you will have to register with IRCTC, too and they require to validate your account by email and Indian mobile phone number with a workaround if you don&amp;rsquo;t have an Indian phone, which is the most often case for tourists; don&amp;rsquo;t worry Cleartrip inform you of the steps to follow, but it&amp;rsquo;s awkward so take the time to read about it and retry if you don&amp;rsquo;t receive the IRCTC validation codes.&lt;/p&gt;
+
+&lt;p&gt;This post is about the only very long travel which I did by train, I booked it online, and I traveled on 3AC which is the closes one to the inferior one (sleeper) but with sockets and air condition.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-train:7652ccde95136cfc41a251972ddc09ed&#34;&gt;The train&lt;/h2&gt;
+
+&lt;p&gt;Bear in mind that my comments here are related with the class that I used (AC3 tier).&lt;/p&gt;
+
+&lt;p&gt;Train was quite old and not maintained if we look to it from the West Europe point of view. I have to say that toilets were very dirty, smelly and you may think that it isn&amp;rsquo;t a toilet, but that&amp;rsquo;s the good part of India being honest, if I want luxuries then I&amp;rsquo;d have remained in West Europe.&lt;/p&gt;
+
+&lt;div class=&#34;image-group&#34;&gt;
+  &lt;div class=&#34;two&#34;&gt;
+    &lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/736x/3a/05/35/3a05357da24e32156b2490cb272af50a.jpg&#34; alt=&#34;The toilet of an Indian train in AC3 class&#34; class=&#34;graphic-small&#34;&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;two&#34;&gt;
+    &lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/736x/e7/86/9f/e7869f97812989bc15d3dcd3bd3def47.jpg&#34; alt=&#34;The toilet sink of an Indian train in AC3 class&#34; class=&#34;graphic-small&#34;&gt;
+  &lt;/div&gt;
+  &lt;span&gt;Pictures from a Indian train (AC3 class)&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;p&gt;During the day people sit where the bottom berth lean (it is never folded); the berths of the middle heigh are fold (they are around your head when you are sat) and upper berths are fix, so if you pick one of those you can always lie down. The berths are grouped by slots (kind of a compartment without door) of 6, 3 in one side and 3 in the other, each carriage have several of those; next to the slots are the windows and the corridor with no door, AC3 tier does not have compartments; in front of them in the other side of the corridor there are 2 berths perpendiculars to the berths in the slot, they are call side berths, one bottom and one top, bottom one is composed by two parts, which one fold to the side and top one never fold as the top one of the mentioned slot.&lt;/p&gt;
+
+&lt;p&gt;My recommendation is, if you can, to book a top berth in the slot, basically because you can lie down whenever you want and &lt;strong&gt;the sockets are in the slot just next to the window, sides berths don&amp;rsquo;t have sockets.&lt;/strong&gt; I learnt that paying a very expensive bill, which I tell you later in this post, due the problem of not having socket next to me.&lt;/p&gt;
+
+&lt;p&gt;There are, or somebody will bring, 2 sheets and 1 blanked for each berth; you will have to put them in the berth at the time that people are happy to unfold the beds to sleep.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-journey:7652ccde95136cfc41a251972ddc09ed&#34;&gt;The journey&lt;/h2&gt;
+
+&lt;p&gt;The journey started OK, people were quiet and you found somebody who was willing to chat with me; no everybody could do because some of them didn&amp;rsquo;t speak English at a minimum level to follow a conversation.&lt;/p&gt;
+
+&lt;p&gt;Crew offered me food at the times of the main meals; I guess that if you order they will bring it to you at the time but you will always have the option to buy food from random people who go around selling &lt;a href=&#34;https://en.wikipedia.org/wiki/Masala_chai&#34; target=&#34;_blank&#34; &gt;tea (call it chai)&lt;/a&gt;
+, sweets, soft drinks, ice cream, some home food, etc; but those aren&amp;rsquo;t the only options You can also step down to the stations meanwhile the train stop, in some of them (probably the main ones) you will have 5, 10 or 15 minutes (depending of the station) and buy something in the kiosk which are in the platforms, some of them they have even hot food (rice, Indian bread, etc).&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;You also have to consider is that trains are a little bit bumpy some times, so it makes a bit hard to work with your laptop, but you can deal with it&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;My journey was OK until, I put my phone to charge. I left it inside of a textile bag that I used to tie to the place to leave bottles of water. I put in a slot where it was a whole family, 1 man, 2 women and 3 children, I asked him for it when they were sleeping and he was still awake. After I laid in my berth which was the top in side next to that slot.&lt;/p&gt;
+
+&lt;p&gt;That was my huge mistake, during the night, I was getting awake a few times and I could see the light of the charger there, so I was feeling OK with my phone. In the morning, they got up before me and they were sat with everything pack; at that time I got up and I went for my phone, the charger was there and he was using it, the bag was there but no the phone. I asked him and he told me I don&amp;rsquo;t know, probably it dropped, something that it was impossible because it was inside of the bag and the bag was still there tied.&lt;/p&gt;
+
+&lt;p&gt;When that happens I looked around and I wanted to contact with the train officer but at that moment the train stopped in a station and they stood up to get out; I was in the middle of the corridor and I was asking him to get back my phone then he started to push me violently to go out; I didn&amp;rsquo;t make an opposite force to avoid to get in troubles because my aim was to make time until the train officer reach our carriage.&lt;/p&gt;
+
+&lt;p&gt;At the end they went out and train ran away, so he lost the opportunity to demonstrate his innoncence; my thoughts are that he took it just before I got up, thinking that I wasn&amp;rsquo;t going to get up before their station, so I think that if I had got up 10 minutes before the phone had been there.&lt;/p&gt;
+
+&lt;p&gt;Anyway it happened and even though I am always very mistrustful, but this time  I was beaten for not being it.&lt;/p&gt;
+
+&lt;p&gt;After that the train officer came, I reported and some Indian guys around helped me a lot with it; one of those, Rishi, was the one that I started to talk at the beginning of the journey.&lt;/p&gt;
+
+&lt;h2 id=&#34;arrival:7652ccde95136cfc41a251972ddc09ed&#34;&gt;Arrival&lt;/h2&gt;
+
+&lt;p&gt;When I arrived to Delhi, those guys went with me to the police station which was in the same station and helped me to report to the police; for me was something that I had never expected as we needed one hour something to finish all the process.&lt;/p&gt;
+
+&lt;p&gt;Moreover Rishi, who had to take a bus to go to &lt;a href=&#34;https://en.wikipedia.org/wiki/Chandigarh&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Chandigarh&lt;/a&gt;
+, where he lives, delayed his trip until late in the night to carry me around Delhi to places where to buy a new phone and request a duplicate of Indian SIM card which was so hard to get.&lt;/p&gt;
+
+&lt;p&gt;In the evening after I sorted out all those things with his help we split our journey, he took a metro to reach the bus station and myself to go which I was booked in advance.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:7652ccde95136cfc41a251972ddc09ed&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;The experience to travel by train in India is something that I recommend to do if you want to see the real India. I also learnt from my mistake of being trustful, however I could meet awesome people due that experience.&lt;/p&gt;
+
+&lt;p&gt;I wanted to say thanks so much to Rishi and the others who helped me.&lt;/p&gt;
+
+&lt;p&gt;Any question, clarification or whatever you want to know, drop a comment.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Thoughts about Software Engineering in 2015</title>
+      <link>http://blog.fraixed.es/post/thoughts-about-software-engineering-2015</link>
+      <pubDate>Thu, 31 Dec 2015 18:03:32 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/thoughts-about-software-engineering-2015</guid>
+      <description>&lt;p&gt;In last hours of this year I&amp;rsquo;ve decided to write which are my thoughts, in 2015, about &lt;strong&gt;Software Engineering&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Engineering&lt;/strong&gt; is the science applied to the real world, so a &lt;strong&gt;software engineer&lt;/strong&gt; should solve problems 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;#engineering is the science applied to the real world, so a software engineer should solve problems&#34;    data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+ related with software. Problems are constrained for many different issues: technical, financial, economical, social, etc. Understanding and applying rational thinking are king to solve them.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;People who &lt;strong&gt;write code&lt;/strong&gt; and are passionate about, do not mean (at least for all of them) that they want to write instructions for a machine without any sense of just because somebody dictates them due a destructive bureaucracy.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Software Engineering is about &lt;strong&gt;creating good software&lt;/strong&gt;. Good software is about &lt;strong&gt;applying best practices&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;Software #engineering is about creating good software applying best practices&#34;    data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+which have been proof by identified experience put in practice than only been theories written in books, taught on universities degrees programs or even worse, spread through marketing campaigns, branding and so on.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;There is no solution which works well for all the use cases&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;There is no solution which works well for all the use cases&#34;   data-hashtags=&#34;engineering&#34; data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+. Identifying the problems and limit them than trying to look for a solution for all of them, make the solution stronger and better; solutions which try to solve too many problems are bloated and make them weak.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Experiments are good as long as they are clearly identified&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;experiments are good as long as they are clearly identified&#34;   data-hashtags=&#34;engineering&#34; data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+; knowing and clearly identifying their trade-offs is a good start point to believe that they have been created with engineering in mind.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Simplicity is hard to achieve&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;#simplicity is hard to achieve&#34;    data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+, it has to be constrained in a scope and can only be created by a group of people who actively participate and provide feedback.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Being specialist in some technology or programming language is fine, as long you have some knowledge of the lower layers; not having them or having the interest in acquiring them, limit the ability of the people to solve the problems which aren&amp;rsquo;t solved by the specific technology out of the box.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Managers, who don&amp;rsquo;t work close to the tech, do not design nor build software&lt;/strong&gt; 
+  &lt;a href=&#34;https://twitter.com/share&#34; class=&#34;twitter-share-button&#34; data-via=&#34;ifraixedes&#34; data-text=&#34;Managers, who don&amp;#39;t work close to the tech, do not design nor build software&#34;   data-hashtags=&#34;engineering&#34; data-url=&#34;http://blog.fraixed.es/post/thoughts-about-software-engineering-2015&#34;&gt;&gt;Tweet&lt;/a&gt;
+  &lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?&#39;http&#39;:&#39;https&#39;;if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+&#39;://platform.twitter.com/widgets.js&#39;;fjs.parentNode.insertBefore(js,fjs);}}(document, &#39;script&#39;, &#39;twitter-wjs&#39;);&lt;/script&gt;
+
+. Having years of experience in software engineering allows people make decisions based on those, however if they do not keep connected with the technology, they should become a non executive feedback providers.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Probably I&amp;rsquo;ve missed a few more things to say, but they are enough for this year.&lt;/p&gt;
+
+&lt;p&gt;Have a good end of this year and good start for the next one.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>3 Weeks Backpacking India: Acclimatization</title>
+      <link>http://blog.fraixed.es/post/3-weeks-backpacking-india-2</link>
+      <pubDate>Fri, 25 Dec 2015 10:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/3-weeks-backpacking-india-2</guid>
+      <description>
+
+&lt;p&gt;Obviously when I just reached the hotel and agreed with the price that I knew from Internet, I took a shower and fell asleep for 1.5 hours due my journey which was 36 hours long besides Mumbai weather which is very humid and hot, so you could already imagine that after &lt;a href=&#34;http://blog.fraixed.es/post/3-weeks-backpacking-india-1#arriving:cea9954e029d918ab358a782b3edb02b&#34;&gt;I walked from the airport to the hotel&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;first-day:2b8e083a4d39ca418d38eb68f1f4cc22&#34;&gt;First day&lt;/h2&gt;
+
+&lt;p&gt;After I got up from my nap I went to Mumbai central, however the hotel was in &lt;a href=&#34;https://en.wikipedia.org/wiki/Andheri&#34; target=&#34;_blank&#34; &gt;Andheri&lt;/a&gt;
+ hence I walked to the close rail station to reach it.&lt;/p&gt;
+
+&lt;p&gt;In my walk to the stations, I could see the &lt;strong&gt;suburbs of Mumbai, which are different from Mumbai which is more urbanized and ruled&lt;/strong&gt; in terms of traffic, sidewalks, etc, but far away of any European &amp;amp; USA city.&lt;/p&gt;
+
+&lt;p&gt;At the same time I was taking care to lean of the way back and asking in shops which had a lot of mobile telecommunication companies advertising to buy a SIM cards. I had knew that nowadays is hard to get a SIM card in India and you can consider that&amp;rsquo;s a luxury which you can avoid, however having a mobile phone with Internet is one, probably the only one, luxury that I wanted to have, basically because it helps me to search cheap accommodations with no cheating, move around, read information of the places and do some work on wasted times (long journeys, waiting in the stations, etc).&lt;/p&gt;
+
+&lt;p&gt;I found a shop which wanted to sell me a SIM, but I had to give so much information, &lt;strong&gt;specifically a photocopy of my passport and my VISA, two pictures of passport size and sign everything besides a the form to fill&lt;/strong&gt;. I also had give the address where I was staying and the phone contact number. On top of it, I had to wait 48 hours for the verification :(&lt;/p&gt;
+
+&lt;p&gt;Finally I reached the rail station; this is another chaotic place; the &lt;strong&gt;led panels only show one or 2 letters which is the destination&lt;/strong&gt;, the time, &amp;rsquo;S&amp;rsquo; or &amp;lsquo;F&amp;rsquo; which means &amp;ldquo;Slow&amp;rdquo; (it stops in all the stations) and &amp;ldquo;Fast&amp;rdquo; (it stops only in main stations) and number which I did never understand and anyway I did never need to do it.&lt;/p&gt;
+
+&lt;h2 id=&#34;second-day:2b8e083a4d39ca418d38eb68f1f4cc22&#34;&gt;Second day&lt;/h2&gt;
+
+&lt;p&gt;I went from the hotel to Andheri station, as the day before, but this time I went to Mumbai C.S.T and I went back to the hotel from &lt;a href=&#34;https://en.wikipedia.org/wiki/Churchgate&#34; target=&#34;_blank&#34; &gt;Churchgate&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;This Mumbai part is more fancy, you can visit the &lt;a href=&#34;https://en.wikipedia.org/wiki/Gateway_of_India&#34; target=&#34;_blank&#34; &gt;Gate of India&lt;/a&gt;
+ and the surroundings; I felt this part more monumental and Mumbai central more residential.&lt;/p&gt;
+
+&lt;p&gt;At the same time I started to poll to the merchants about prices, to have the references to be able to buy things closer to the prices that locals pay.&lt;/p&gt;
+
+&lt;h2 id=&#34;third-day:2b8e083a4d39ca418d38eb68f1f4cc22&#34;&gt;Third day&lt;/h2&gt;
+
+&lt;p&gt;Third day was going to be a full day to work, plan the next and rest. With only two days of tourism in Mumbai I had enough, and the only thing that I had in my plan for the following days was long journey (around 25 hours) by train, 4 days later, to Delhi; the plan for the days before the journey was to stay with a fried of mine who lives &lt;a href=&#34;https://en.wikipedia.org/wiki/Bandra&#34; target=&#34;_blank&#34; &gt;Bandra&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I started with some work and swapping with the planing, looking for places to visit, booking tickets and hotels; one of the most painful in India is booking long distance trains tickets, they&amp;rsquo;re very crowded because people book so many tickets in advance which quite a few of them release after but obviously as a tourist I didn&amp;rsquo;t want to depend of a &amp;ldquo;wait list&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Moreover when you are backpacking and you don&amp;rsquo;t want to depend that much of taxis, as me, you have to take care of the stations location and hotels to try to get the best departure and arrivals statins and times.&lt;/p&gt;
+
+&lt;p&gt;However the day was fucked up, I had to solve another issue; the 48 hours gap time to activate my SIM card was due and the line didn&amp;rsquo;t get signal; I had to go to the shop to see what was happending; the issue was really annoying, &lt;a href=&#34;www.vodafone.in&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Vodafone&lt;/a&gt;
+ called to the hotel to confirm that I was really staying on it, &lt;a href=&#34;http://www.booking.com/hotel/in/cosmo.en-gb.html?aid=311984;label=cosmo-irqflUvyRyaZuRYi7oLWLwS32437057393%3Apl%3Ata%3Ap1%3Ap2%3Aac%3Aap1t1%3Aneg%3Afi%3Atikwd-33550521504%3Alp1005424%3Ali%3Adec%3Adm;sid=8610392c5235560eb14cf17ef406d8c9;dcid=4;dist=0;room1=A%2CA;sb_price_type=total;srfid=6c88dde662a5363550da1b66c76a98204e936bb3X1;type=total;ucfs=1&amp;amp;&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;the hotel (Cosmo Hotel)&lt;/a&gt;
+ said that they didn&amp;rsquo;t know me, so basically they made my travel more complicated with no reason.&lt;/p&gt;
+
+&lt;p&gt;At the end I could sort out that mess, doing all the bureaucratic process again and changing the contact to verify my staying in India to my friend based in &lt;a href=&#34;https://en.wikipedia.org/wiki/Bandra&#34; target=&#34;_blank&#34; &gt;Bandra (Mumbai)&lt;/a&gt;
+; hopefully the verification for the activation took only 7 hours, this time, no idea why it was shorter so probably they probably cheated me the first time.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-rest-of-the-days-in-mumbai:2b8e083a4d39ca418d38eb68f1f4cc22&#34;&gt;The rest of the days in Mumbai&lt;/h2&gt;
+
+&lt;p&gt;The fourth day I moved to my friend&amp;rsquo;s flat who lives in &lt;a href=&#34;https://en.wikipedia.org/wiki/Bandra&#34; target=&#34;_blank&#34; &gt;Bandra&lt;/a&gt;
+; these days I could rest, hangout with them and finish my last bookings with their recommendations besides to have a view the surroundings, cooked Indian food and also carried me to eat Indian food.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;The food that my friends cooked for me&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/736x/d4/f3/17/d4f31790f9020d21710f98f72b1a9e47.jpg&#34; class=&#34;graphic-small graphic-small-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:2b8e083a4d39ca418d38eb68f1f4cc22&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;At the beginning when I realized that I visited Mumbai in 2 days I thought that I was going to waste my time however I don&amp;rsquo;t feel after the experience that I did because those days I could learn how a few things work in India, which ended up to be quite important for my travel; moreover I solved the problem with the mobile phone line because if I had moved to other place I hadn&amp;rsquo;t been able to sort it out.&lt;/p&gt;
+
+&lt;p&gt;Continue reading the next post to know the rest of the travel; drop me a comment if you are curious about something that I haven&amp;rsquo;t written.&lt;/p&gt;
+
+&lt;p&gt;By the way, I recorded a totally mobile crafted videos during those days, so give them a watch&lt;/p&gt;
+
+&lt;div class=&#34;video-group&#34;&gt;
+
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/YTEh3415C-E&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+ 
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/71-3XgaE9I8&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+ 
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/4c8-dWFGIB0&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+
+&lt;/div&gt;
+&lt;div class=&#34;video-group&#34;&gt;
+
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/M-YLM7ioF9g&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+ 
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/4uzf7wxjQFk&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+ 
+&lt;div class=&#34;video-row&#34;&gt;
+  &lt;iframe width=&#34;100%&#34; src=&#34;https://www.youtube.com/embed/gEYKwMTwktI&#34; frameborder=&#34;0&#34; allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My Last 2is Years Have Ended Up Today</title>
+      <link>http://blog.fraixed.es/post/my-last-2is-years-have-ended-up-today</link>
+      <pubDate>Mon, 21 Dec 2015 20:57:48 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/my-last-2is-years-have-ended-up-today</guid>
+      <description>&lt;p&gt;This is short post to announce the end of my last 2 years something professional path.&lt;/p&gt;
+
+&lt;p&gt;Company had to make the hard decision to make redundant myself and a few colleagues to reduce the workforce at the minimum to keep the company running and have, at least, a bit of chances to be able to show how the image discovery technology offered can help to increase the conversions of online businesses.&lt;/p&gt;
+
+&lt;p&gt;It has been awesome 2 year and a few months which I&amp;rsquo;ve worked with &lt;strong&gt;an amazing team&lt;/strong&gt;, composed by several engineers whose I&amp;rsquo;ve been able to learn a lot about &lt;strong&gt;best software and system engineering practices, scalability, infrastructure, team collaboration&lt;/strong&gt;, etc. We&amp;rsquo;ve also faced &lt;strong&gt;hard problems&lt;/strong&gt; which we&amp;rsquo;ve solved and other which are still there. This tech experience and culture has been awesome and I am also glad to have taken a lot of advantage to enrich it more through all the spare time that I&amp;rsquo;ve invested on top following the things learnt like rails&lt;/p&gt;
+
+&lt;p&gt;Unfortunately startups are hard and in this case the business decisions haven&amp;rsquo;t been able to keep going further than the investments received, but I don&amp;rsquo;t know about business at all, so I don&amp;rsquo;t judge them.&lt;/p&gt;
+
+&lt;p&gt;I hope the best for their last run and in my case I will be drawing my near future during the next days.&lt;/p&gt;
+
+&lt;p&gt;Stay tuned.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

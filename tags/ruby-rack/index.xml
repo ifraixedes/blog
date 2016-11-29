@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ruby Rack on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/ruby-rack/</link>
+    <description>Recent content in Ruby Rack on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Wed, 03 Jun 2015 11:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/ruby-rack/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Rack Style Golang HTTP Handlers</title>
+      <link>http://blog.fraixed.es/post/rack-style-golang-http-handlers</link>
+      <pubDate>Wed, 03 Jun 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/rack-style-golang-http-handlers</guid>
+      <description>
+
+&lt;p&gt;A couple of weeks ago &lt;a href=&#34;http://blog.fraixed.es/post/thoughts-about-golang-action-responses&#34; target=&#34;_blank&#34;&gt;I published a blog post with some thoughts&lt;/a&gt; about  &lt;strong&gt;&lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;actions&amp;rdquo; HTTP Handlers in Golang&lt;/a&gt;&lt;/strong&gt;, which specifies an opinionated way to have a handler function signature to define common responses for HTTP applications.&lt;/p&gt;
+
+&lt;p&gt;In my blog post, I also showed the results of a tiny benchmark test about how the approach performs over a &lt;a href=&#34;http://golang.org/pkg/net/http/#Handler&#34; target=&#34;_blank&#34;&gt;Standard HTTP Handlers&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;After that and getting the firsts steps of a web service implementation with the approach, with a few changes that we had to do to afford several needs, I&amp;rsquo;ve been thinking how to get another approach which keeps the befits of the original one, besides to have a central point for error management, to be able to perform global tasks as Logging, common responses for those errors avoiding to leak system information, and so on.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-i-m-talking-about:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;What I&amp;rsquo;m Talking About&lt;/h2&gt;
+
+&lt;p&gt;After the title and the introduction probably the most of you are wondering &amp;ldquo;what exactly I&amp;rsquo;m talking about&amp;rdquo;, &amp;ldquo;a new revolutionary way?&amp;rdquo;&amp;ldquo;, actually no, this isn&amp;rsquo;t the heaven ;D&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s first start with the firs sentence that we can read in &lt;strong&gt;&lt;a href=&#34;http://rack.github.io/&#34; target=&#34;_blank&#34;&gt;Ruby Rack&amp;rsquo;s web site&lt;/a&gt;&lt;/strong&gt;: &lt;strong&gt;&lt;em&gt;To use Rack, provide an &amp;lsquo;app&amp;rsquo;: an object that responds to the call method, taking the environment hash as a parameter, and returning an Array with three elements&amp;rdquo;&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The interesting words, for the purpose of the approach which I&amp;rsquo;m talking about are: &lt;strong&gt;returning and Array with three elements&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, that sucks in Golang, do you know?; Golang is type checking, so you cannot mix &amp;amp; match different types in an &lt;a href=&#34;https://blog.golang.org/slices&#34; target=&#34;_blank&#34;&gt;Array or Slice&lt;/a&gt;, sure nonetheless it has a very nice feature which I really love, &amp;ldquo;&lt;strong&gt;&lt;a href=&#34;https://golang.org/doc/effective_go.html#multiple-returns&#34; blank=&#34;_blank&#34;&gt;Functions can return Multiple Values&lt;/a&gt;&lt;/strong&gt;&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Bearing in mind that we can have the same concept than Rack, even better we get the type checking guarantee, so great to get some programming errors at compiling time.&lt;/p&gt;
+
+&lt;p&gt;That was great to me to go through, however I&amp;rsquo;ve had a thought later on, which I feel as it&amp;rsquo;s more in the Go&amp;rsquo;s way, so I&amp;rsquo;ve come up with the idea to add a fourth value to return, which is an &lt;strong&gt;&lt;a href=&#34;http://golang.org/pkg/builtin/#error&#34; target=&#34;_blank&#34;&gt;Error type&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;some-code-doesn-t-hurt:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;Some Code doesn&amp;rsquo;t Hurt&lt;/h2&gt;
+
+&lt;p&gt;Probably, I could skip to write any code in this post, so it may not needed; every one who&amp;rsquo;s read the previous section, has understood the concept, at least if they have read &lt;a href=&#34;http://blog.fraixed.es/post/thoughts-about-golang-action-responses&#34; target=&#34;_blank&#34;&gt;my previous blog post&lt;/a&gt; and &lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Go Actions&amp;rdquo; blog post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;However I think that adding a few line of code doesn&amp;rsquo;t hurt and I guess that it helps to digest the concept moreover if you&amp;rsquo;ve landed into it with no clue about the mentioned posts; therefore there it goes&lt;sup&gt;1&lt;sup&gt;&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; RackHandler &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt;(&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;http.Request) (status &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;int&lt;/span&gt;, headers [][&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;, body []&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;byte&lt;/span&gt;, err &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;error&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; Wrap(action RackHandler) http.Handler {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; http.HandlerFunc(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt;(w http.ResponseWriter, r &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;http.Request) {
+		s, hs, b, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; action(r)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			&lt;span style=&#34;color: #888888&#34;&gt;// Do something with the error. e.g. logging&lt;/span&gt;
+			&lt;span style=&#34;color: #888888&#34;&gt;// Using a switch statement to perform different actions depending status code&lt;/span&gt;
+			&lt;span style=&#34;color: #888888&#34;&gt;// If error happens, body should contain only user friendly information which&lt;/span&gt;
+			&lt;span style=&#34;color: #888888&#34;&gt;// doesn&amp;#39;t leak any system information&lt;/span&gt;
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;switch&lt;/span&gt; s {
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; http.StatusInternalServerError:
+				&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;fallthrough&lt;/span&gt;
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;default&lt;/span&gt;:
+				hs = &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+				s = http.StatusInternalServerError
+				b = &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+			}
+		}
+
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; hs &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			header &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; w.Header()
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; _, h &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; hs {
+				header.Add(h[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;], h[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;])
+			}
+		}
+
+		w.WriteHeader(s)
+
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; b &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			w.Write(b)
+		}
+	})
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Pretty much the concept is that simple; of course you&amp;rsquo;ll probably have to add more stuff to afford all the functionalities that a serious HTTP application needs, as the previous snippet is only a bare implementation.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see, as well, how an &amp;ldquo;actions&amp;rdquo; looks&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; responseCounter = &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; HelloBuddy(req &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;http.Request) (&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;int&lt;/span&gt;, [][&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;, []&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;byte&lt;/span&gt;, &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;error&lt;/span&gt;) {
+	responseCounter&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt;
+	op &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; responseCounter &lt;span style=&#34;color: #333333&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;switch&lt;/span&gt; op {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;:
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;200&lt;/span&gt;,
+			[][&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;{{&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;Content-Type&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;text/html&amp;quot;&lt;/span&gt;}},
+			[]&lt;span style=&#34;color: #007020&#34;&gt;byte&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;`&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;			&amp;lt;html&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;				&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Hello&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;				&amp;lt;body&amp;gt;&amp;lt;h1&amp;gt;Hello Buddy!&amp;lt;/h1&amp;gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;			&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;		`&lt;/span&gt;), &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;default&lt;/span&gt;:
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; http.StatusInternalServerError, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;, errors.New(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;Odd request&amp;quot;&lt;/span&gt;)
+	}
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Sorry, for the silly functionality of the &amp;ldquo;action&amp;rdquo;, I hope that you understand that it is not about what it does, is how it looks besides that it matches with the &lt;a href=&#34;https://gist.github.com/ifraixedes/056175e0cf312db88f0e#file-response-go-L71&#34; target=&#34;_blank&#34;&gt;same one implemented for the benchmark test of my previous post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;a-few-comments-about-the-approach:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;A Few Comments about The Approach&lt;/h2&gt;
+
+&lt;p&gt;The implementation, from my point of view, it looks a little bit simpler, because it doesn&amp;rsquo;t need a struct to wrap the response, nonetheless it&amp;rsquo;s my personal opinion.&lt;/p&gt;
+
+&lt;p&gt;The place where I see a benefit is the &lt;code&gt;Wrap&lt;/code&gt; function, because it can check if the &amp;ldquo;action&amp;rdquo; returns an error and do general tasks, as I&amp;rsquo;ve already mentioned, &amp;ldquo;logging&amp;rdquo;, returning defined errors which don&amp;rsquo;t have any important information of the infrastructure behind the HTTP application, and so on.&lt;/p&gt;
+
+&lt;p&gt;Having a returned error value we can use &lt;strong&gt;&lt;a href=&#34;http://blog.golang.org/errors-are-values&#34; target=&#34;_blank&#34;&gt;defined values&lt;/a&gt;&lt;/strong&gt; and/or &lt;strong&gt;&lt;a href=&#34;http://blog.golang.org/error-handling-and-go&#34; target=&#34;_blank&#34;&gt;specific types&lt;/a&gt;&lt;/strong&gt; to execute different actions and having homogeneous error responses for defined issues.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, an inconvenient, for somebody, can be, in the return statement of the &amp;ldquo;actions&amp;rdquo;, they may look rare and/or verbose, but you know, there is always some tradeoffs.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Go Actions&amp;rdquo;&lt;/a&gt; looks as a nice approach, however I&amp;rsquo;ve felt a little bit uncomfourtable&lt;sup&gt;2&lt;/sup&gt; having a struct which wraps the response to send back to the client.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, I&amp;rsquo;ve prefer error values and types to be able to have a central point to manage the errors and send back the response to the client than having to create different functions to return different error responses, nonetheless that can be achieved in &amp;ldquo;Go Actions&amp;rdquo; just adding an second error type return value to the &amp;ldquo;action&amp;rdquo; function signature.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Go Action&amp;rdquo; approach is used, with some tweaks, in the implementation of a real HTTP Application which we&amp;rsquo;re building, however I&amp;rsquo;m feeling that we&amp;rsquo;re getting some pains that the &amp;ldquo;Rack&amp;rdquo; approach could solve or a least making those less painful, however it hasn&amp;rsquo;t been used under the same scenario, so far, hence I&amp;rsquo;m not really sure if it can be better or worse.&lt;/p&gt;
+
+&lt;p&gt;Do you have any thought about these approaches or a new ones that aren&amp;rsquo;t popular? I&amp;rsquo;ll appreciate if you have some, you share them though the comments.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;1&lt;/sup&gt; code of this post is released under &lt;a href=&#34;http://www.wtfpl.net/txt/copying/&#34; target=&#34;_blank&#34;&gt;WTFPL&lt;/a&gt;&lt;/p&gt;
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;2&lt;/sup&gt; It&#39;s my own personal opinion&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

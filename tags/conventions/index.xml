@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Conventions on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/conventions/</link>
+    <description>Recent content in Conventions on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Mon, 09 Mar 2015 11:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/conventions/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>The Slices of Structs or Slices of Pointers to Structs Dilemma</title>
+      <link>http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma</link>
+      <pubDate>Mon, 09 Mar 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Golang&lt;/a&gt; is a &lt;a href=&#34;http://golang.org/doc/faq#ancestors&#34; target=&#34;_blank&#34;&gt;C family language&lt;/a&gt; which has brought me, again, the ability to use memory references through pointers, even though with some significant differences: &lt;a href=&#34;http://golang.org/doc/faq#no_pointer_arithmetic&#34; target=&#34;_blank&#34;&gt;no pointers arithmetic&lt;/a&gt; and &lt;a href=&#34;http://golang.org/doc/faq#garbage_collection&#34; target=&#34;_blank&#34;&gt;garbage collector&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Its similarities with C, drove me, in the beginning, to some confusions about using pointers or values in one of its native internal powerful types, &lt;a href=&#34;http://blog.golang.org/slices&#34; target=&#34;_blank&#34;&gt;slices&lt;/a&gt;, here I&amp;rsquo;m going to talk about those.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-context:3653a82367ee70ab851135843e3e77ae&#34;&gt;The context&lt;/h3&gt;
+
+&lt;p&gt;Some months ago, I&amp;rsquo;ve started to read a little bit &lt;a href=&#34;http://golang.org/doc/effective_go.html&#34;&gt;Go documentation&lt;/a&gt;, visit its &lt;a href=&#34;http://tour.golang.org/&#34; target=&#34;_blank&#34;&gt;tour&lt;/a&gt; and tinker it with some small implementations, just to get use with the syntax, types and quirks.&lt;/p&gt;
+
+&lt;p&gt;The last five months I&amp;rsquo;ve been increasing the number of hours to spend with it; following some resources which provide me good resources as videos, blog posts and marvelous repositories and at the same time to have the chance to use that theoretical knowledge in my professional environment.&lt;/p&gt;
+
+&lt;p&gt;Quite a few times a more active activity than consuming good resources, has been reading code, making small refactorings or adding small features and reviewing code; however that code has been generated for us (my own team members) and everyone are embracing Go roughly for the same period of time, even though some of them worked in the first implementation of one of the main company services, therefore the experience on hands on it is slightly different.&lt;/p&gt;
+
+&lt;p&gt;With this is small introductions to read and write lines of code inside of a small team with not that much experience in Go, allowed us to have the chance to discuss easily things as &amp;ldquo;why A and not B&amp;rdquo; when we&amp;rsquo;ve read something that we&amp;rsquo;ve seen that it&amp;rsquo;s odd, messy, awkward or basically because some of us (myself included) don&amp;rsquo;t understand why the author wrote it. Even though the author has reasons for for it, we have raised some doubts about &lt;strong&gt;code organisation&lt;/strong&gt;, how to write more &lt;strong&gt;comprehensible and clear code&lt;/strong&gt;, how &lt;strong&gt;to use Go idioms&lt;/strong&gt;, what can &lt;strong&gt;perform better&lt;/strong&gt; and so on.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-concerns-about-slices-of-structs:3653a82367ee70ab851135843e3e77ae&#34;&gt;The concerns about slices of structs&lt;/h3&gt;
+
+&lt;p&gt;In the first instance, due the &lt;strong&gt;nature of the &lt;a href=&#34;http://blog.golang.org/go-slices-usage-and-internals&#34; target=&#34;_blank&#34;&gt;slices&lt;/a&gt;&lt;/strong&gt; is easy to think that it doesn&amp;rsquo;t matter if you store into them, structs or pointers to structs, because slices are structures &amp;ldquo;which point to their elements&amp;rdquo;, and it they are passed as a parameter to a function or returned from it, there wouldn&amp;rsquo;t be any difference in terms of performance,  because their elements are not copied due they contain a reference to the memory space which the elements are alocated.&lt;/p&gt;
+
+&lt;p&gt;Nonetheless it isn&amp;rsquo;t very strange to have, or find, a &lt;strong&gt;function which creates a new type struct&lt;/strong&gt; to wrap all the operations needed to initialised it than have to do them manually each time that one has to be created. Basically it&amp;rsquo;s very usual to have one function that create a structure when it&amp;rsquo;s not a straightforward struct where some of there values are initialised, worked out, composed or converted from other types or they have methods defined; several native Go packages use this approach for example &lt;a href=&#34;http://golang.org/pkg/net/http/#NewRequest&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Request&lt;/a&gt;, moreover it&amp;rsquo;s part of the &lt;a href=&#34;http://golang.org/doc/effective_go.html#package-names&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;constructors convention&amp;rdquo;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;We probably agree that those &lt;strong&gt;&amp;ldquo;constructors&amp;rdquo; clearly perform better returning  a pointer to the struct than the itself struct&lt;/strong&gt;; returning those by value doesn&amp;rsquo;t make sense because they&amp;rsquo;d be copied and those copies don&amp;rsquo;t provide any benefit because they have been created inside of the function hence any other reference to them exist at that moment, at least if nothing crazy has been implemented, as passing a pointer which will be pointed to it moreover to return it and we&amp;rsquo;d like to keep their independent then to return a copy would offer that independence, however let&amp;rsquo;s forget the crazy scenarios that the most of the time they don&amp;rsquo;t probably make sense.&lt;/p&gt;
+
+&lt;p&gt;Considering those &lt;strong&gt;&amp;ldquo;constructors&amp;rdquo; functions&lt;/strong&gt;, if we need to &lt;strong&gt;create slices&lt;/strong&gt; of those types structs then, the most obvious thing is to have slices of pointers, because when we have to create room for the slice, we&amp;rsquo;ll only allocate memory for those pointers, otherwise we&amp;rsquo;d allocate memory for those structs and thereafter, when the constructor return a new one, the values should be copied from the pointer returned by the constructor to the struct allocated in the slice.&lt;/p&gt;
+
+&lt;p&gt;Here there is a simple snipped of code with this concept&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	id &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	upper &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+	lower &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Return pointer to a struct to avoid to&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;//return a copy of it which has been created inside&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; newToStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Return a slice of pointer to a struct because they structs are created&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// by a constructor function then added to the slice, and having pointers&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// we avoid to copy their values, each time that one is added&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSlice(fss []fromStruct) (tss []&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;([]&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;With &lt;strong&gt;this prospect everything is quite clear&lt;/strong&gt; and the &lt;strong&gt;answer is to use slice of pointers to structs&lt;/strong&gt;, nonetheless I didn&amp;rsquo;t find that conclusion straightaway when I didn&amp;rsquo;t have that perspective and when I read several lines of code where slices of pointers to struct are passed to functions, because my first thought was that who wrote them, used pointers to struct to avoid to pass copies of those to functions, due as easy is as to get confused between &lt;a href=&#34;http://blog.golang.org/go-slices-usage-and-internals&#34;&gt;slices and arrays&lt;/a&gt; which is &lt;a href=&#34;http://golang.org/doc/effective_go.html#allocation_make&#34; target=&#34;blank&#34;&gt;mentioned in the documentation&lt;/a&gt; but when it&amp;rsquo;s read in one go is easy not to assimilate the concept in the first read; by the way, when I read and that though raised, I asked about it, however I didn&amp;rsquo;t get the previously exposed prospect and the answer was that probably were for that confusing reason what slices really are and at that moment to write that implementation, the concept was unknown.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Reading some open source code&lt;/strong&gt;, I&amp;rsquo;ve discover a &lt;strong&gt;simple and elegant way to avoid to see stars between the square brackets and the type name&lt;/strong&gt;; defining a type for slices of pointer to structs free your function declaration of several brackets and start. Applying this in the code snipped that I&amp;rsquo;ve written perviously, it looks as&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	id &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStruct &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;struct&lt;/span&gt; {
+	upper &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+	lower &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint32&lt;/span&gt;
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; fromStructSlice []fromStruct
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; toStructSlice []&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; newToStruct(num &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;uint64&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;toStruct {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;&amp;amp;&lt;/span&gt;toStruct{
+		upper: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num &lt;span style=&#34;color: #333333&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;32&lt;/span&gt;),
+		lower: &lt;span style=&#34;color: #007020&#34;&gt;uint32&lt;/span&gt;(num),
+	}
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; fromStructSliceToStructSlice(fss fromStructSlice) (tss toStructSlice) {
+	tss = &lt;span style=&#34;color: #007020&#34;&gt;make&lt;/span&gt;(toStructSlice, &lt;span style=&#34;color: #007020&#34;&gt;len&lt;/span&gt;(fss))
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; i, fs &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; fss {
+		tss[i] = newToStruct(fs.id)
+	}
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; tss
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If you want to see an example of one open source project, you can see it, in one of the &lt;a href=&#34;https://github.com/spf13/hugo/blob/91d16fbba09d3552af7b5327797dd2b5d9861b35/hugolib/pagination.go#L31&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;hugo packages&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:3653a82367ee70ab851135843e3e77ae&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;In Go, whenever you have a type struct, which is created through a &amp;ldquo;constructor&amp;rdquo; function, which will be used into slices, use slices of pointers to structs and define types for those if you don&amp;rsquo;t like to see lots of stars and brackets in your function declarations.&lt;/p&gt;
+
+&lt;p&gt;Hope that you read before you have had to figure yourself.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

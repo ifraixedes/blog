@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Software development involves refactoring in it own nature, applying some small things can help you to have an easy and painless refactoring process">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="3 Little Things in NodeJS which Help When You Have to Refactor">
+  <meta property="og:url" content="http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor">
+  <meta property="og:description" content="Software development involves refactoring in it own nature, applying some small things can help you to have an easy and painless refactoring process">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="refactoring">
+      
+        <meta property="og:tag" content="NodeJS">
+      
+        <meta property="og:tag" content="javascript">
+      
+        <meta property="og:tag" content="expressjs">
+      
+        <meta property="og:tag" content="prototyping">
+      
+        <meta property="og:tag" content="soft dev">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>3 Little Things in NodeJS which Help When You Have to Refactor</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor"><h1 class="l-title title">3 Little Things in NodeJS which Help When You Have to Refactor</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">02-02-2015</span>
+    <br>
+    
+
+<p>We can say that in software development the concept of <a href="http://martinfowler.com/books/refactoring.html" target="_blank">refactoring</a> is present all the time; it seems that is in its nature.</p>
+
+<p>We refactor code for several purposes, having a list with all of them, can be tricky, however here there are some:</p>
+
+<ul>
+<li>We are building a prototype and we iterate over it to add, remove or change features.</li>
+<li>We must clean code which was created in some point in a rush or it was created in the prototype cycle.</li>
+<li>We must fix a bug.</li>
+<li>We must upgrade dependencies which have changed the exposed API.</li>
+<li>We must fix a performance issue.</li>
+<li>We&rsquo;ve come up with a new way/idea to get a cleaner or optimised implementation.</li>
+</ul>
+
+<p>In my case, we are doing code refactoring almost everyday, even though, in my case, when I&rsquo;m working in a new feature over a existent code base, sometimes I find some existent part which may have a little refactoring, and then I do, or if I&rsquo;m working in a totally new implementation, I usually start from a roughly idea, which I <a href="http://www.extremeprogramming.org/rules/spike.html" target="_blank">create a spike</a> and then I refactor iteratively.</p>
+
+<p>In this post, I&rsquo;m going to mention 3 little things that I&rsquo;ve learnt of refactoring NodeJS code bases, personal and professional ones, therefore I&rsquo;ve learnt some of them from my own mistakes.</p>
+
+<h2 id="extracting-options-object-parameter-at-the-beginning-of-the-function:2c29a7760b52cbec7c90eef041aacf02">Extracting <code>options</code> object parameter at the beginning of the function</h2>
+
+<p>One of the common implementation pattern that I use a lot in NodeJS is creating scripts that expose a function which receives only one parameter, an options object, e.g.</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%">  <span style="color: #888888">// @param {Object} opts</span>
+  module.exports <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> (opts) {
+    <span style="color: #888888">// Do whatever</span>
+
+    <span style="color: #008800; font-weight: bold">return</span> {
+      tell<span style="color: #333333">:</span> tell
+    };
+  };
+
+  <span style="color: #008800; font-weight: bold">function</span> tell(somebody, message) {
+    <span style="color: #008800; font-weight: bold">return</span> <span style="background-color: #fff0f0">&#39;Hey &#39;</span> <span style="color: #333333">+</span> somebody <span style="color: #333333">+</span> <span style="background-color: #fff0f0">&#39;, Ivan wants to tell you: &#39;</span> <span style="color: #333333">+</span> message;
+  }
+</pre></div>
+
+
+<p>This pattern help me to prototype implementations because I can add more functionalities which require some options without changing the expose signature of the function, nonetheless don&rsquo;t take me how it has to be used everywhere or keep it as the pattern to use to expose any API.</p>
+
+<p>Ok, the pattern is great and if the function only has a few lines it is easy to take it to use in another prototype which may reuse it, however if the implementation is larger in number of lines or complex, for example it performs asynchronous operations (if you use callbacks then I would add, to the function of the example, a second parameter to pass the callback) then, knowing what options the function requires is painful, if they are accessed any where in the function.</p>
+
+<p>One solution for that is to add a block comment on top of the function declaration with all the options parameters required and optional, nonetheless it isn&rsquo;t in my likes, because if you&rsquo;re prototyping, it&rsquo;ll require to keep update when one parameter is added, removed or swapped from required to optional or vice versa, therefore it is prone to be outdated, hence useless.</p>
+
+<p>A second solution, which is in my preferences, is extracting the options parameters just at the beginning of the function, just after you make all the validations of the required options or having a function with that purpose, which returns an opts object with the required values if opts pass the needed validations; you may already know what I mean, nonetheless let&rsquo;s see an example:</p>
+
+<div class="highlight" style="background: #ffffff"><pre style="line-height: 125%"><span style="color: #888888">// @param {Object} opts</span>
+module.exports <span style="color: #333333">=</span> <span style="color: #008800; font-weight: bold">function</span> (opts) {
+  <span style="color: #888888">// Having a helper function for the validations is</span>
+  <span style="color: #888888">// worthwhile when there are several options to check</span>
+  <span style="color: #888888">// values and/or types</span>
+  <span style="color: #008800; font-weight: bold">if</span> (<span style="color: #333333">!</span>opts) {
+    <span style="color: #008800; font-weight: bold">throw</span> <span style="color: #008800; font-weight: bold">new</span> <span style="color: #007020">Error</span>(<span style="background-color: #fff0f0">&#39;opts is required&#39;</span>);
+  }
+
+  <span style="color: #008800; font-weight: bold">var</span> greeting <span style="color: #333333">=</span> opts.greeting <span style="color: #333333">||</span> <span style="background-color: #fff0f0">&#39;Hey&#39;</span>;
+  <span style="color: #008800; font-weight: bold">var</span> teller <span style="color: #333333">=</span> opts.teller <span style="color: #333333">||</span> <span style="background-color: #fff0f0">&#39;Ivan&#39;</span>;
+
+  <span style="color: #008800; font-weight: bold">return</span> {
+    tell<span style="color: #333333">:</span> tell.bind(<span style="color: #008800; font-weight: bold">null</span>, greeting, teller)
+  };
+};
+
+<span style="color: #008800; font-weight: bold">function</span> tell(greeting, teller, somebody, message) {
+  <span style="color: #008800; font-weight: bold">return</span> greeting <span style="color: #333333">+</span> <span style="background-color: #fff0f0">&#39; &#39;</span> <span style="color: #333333">+</span> somebody <span style="color: #333333">+</span> <span style="background-color: #fff0f0">&#39;, &#39;</span> <span style="color: #333333">+</span> teller <span style="color: #333333">+</span> <span style="background-color: #fff0f0">&#39; wants to tell you: &#39;</span> <span style="color: #333333">+</span> message;
+}
+</pre></div>
+
+
+<p>If the function is used internally and the options values are set by our implementation, validations are very basic, then extracting is clearer; hence as a rule of thumb keep the extraction in only one place because, with a quick glance, you can figure out in the future what option parameters the function needs.</p>
+
+<p>On the other hand, the good news is that ECMAScript 6 (ES6) will bring a destructuring feature, which allow to do something like this but compacted in the function signature, besides other cool stuff. You can read about it in the awesome Alex Rauschmayer blog post called <a href="http://www.2ality.com/2015/01/es6-destructuring.html" target="_blank">Destructuring and parameter handling in ECMAScript 6</a> to know deeply about ES6 destructuring and <a href="http://www.2ality.com/2015/01/es6-destructuring.html#simulating_named_parameters_in_javascript" href="_blank">Simulating Named Parameters in JavaScript</a> section to see the exposed case.</p>
+
+<h2 id="environment-variables-can-be-evil:2c29a7760b52cbec7c90eef041aacf02">Environment variables can be evil</h2>
+
+<p>Environment variables can be very useful to parametrise your applications and change the application behaviour however using too many or not to add them into documentation easy to find, can be a nightmare if they are accessed across all the code base.</p>
+
+<p>However if they are used with awareness, only using a few and very identified then, they avoid to have a burden configuration file which has to be versioned for different environments.</p>
+
+<p>In NodeJS, there is the famous NODE_ENV environment variable and it&rsquo;s fine to define change the behaviour of your application or library (if it is justified), however I&rsquo;ve found that not always is good to rely on it due that some npm packages use it to operate differently in production than development or testing environments.</p>
+
+<p>The cases that I&rsquo;ve found they are better to use other variable than NODE_ENV to specify the environment is when you have something that only has to run exclusively in production, for example, you  would like to set NODE_ENV to production to do load testing of your application, but you don&rsquo;t want to send errors message to a central service that you use to collect them, because obviously you&rsquo;re testing it in a controlled environment and don&rsquo;t want to pollute your productions logs.</p>
+
+<p>Anyway if your implementations need environment variables, I would pull all of them out in one place and would spread them as a property of an options object parameter, similar what I exposed in the previous section; unifying to one place where the application take them, eases to see in quick view what environment variables your application needs and what default values are assigned if they could be not specified, then know easily what values to set in other environments when the default values aren&rsquo;t appropriated.</p>
+
+<h2 id="use-absolute-url-computed-into-variables:2c29a7760b52cbec7c90eef041aacf02">Use absolute URL computed into variables</h2>
+
+<p>This is a recommendation bound to <a href="http://expressjs.com/4x/api.html" target="_blank">express 4.x</a>, specifically to <a href="http://expressjs.com/4x/api.html#router" target="_blank">Router</a> feature which is available since version 4, nonetheless it may apply for others Web frameworks in a similar way.</p>
+
+<p>Router is one of the awesome features that express 4 has brought, it allows to create mini-applications which specify their routes, middlewares included; they offer the possibility to reuse your implemented routes in different applications, obviously if they are quite generic and you developed them bearing in mind that autonomy.</p>
+
+<p>However, I created some of them bearing in mind that, but I missed one thing. My routes render views rather than to send JSON, however it could apply to JSON if you have to send URLs to follow, and they need to link one to another and vice versa.</p>
+
+<p>Because route can be mounted by other <a href="http://expressjs.com/4x/api.html#app.use" target="_blank">Routers and a App</a> you cannot hardcode an absolute URL, then I thought use relative URLs.</p>
+
+<p>For example, having this two routes in a router:</p>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%">  router.get(<span style="background-color: #fff0f0">&#39;/user/:id&#39;</span>, <span style="color: #008800; font-weight: bold">function</span> (req, res, next) { ... });
+  router.get(<span style="background-color: #fff0f0">&#39;/group/:id&#39;</span>, <span style="color: #008800; font-weight: bold">function</span> (req, res, next) { ... })
+</pre></div>
+</p>
+
+<p>Then each route view has a link to each other, e.g.</p>
+
+<ul>
+<li>user view</li>
+</ul>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%">  <span style="color: #007700">&lt;a</span> <span style="color: #0000CC">href=</span><span style="background-color: #fff0f0">&quot;group/10&quot;</span><span style="color: #007700">&gt;</span>NodeJS developers<span style="color: #007700">&lt;/a&gt;</span>
+</pre></div>
+</p>
+
+<ul>
+<li>group view</li>
+</ul>
+
+<p><div class="highlight" style="background: #ffffff"><pre style="line-height: 125%">  <span style="color: #007700">&lt;a</span> <span style="color: #0000CC">href=</span><span style="background-color: #fff0f0">&quot;user/0&quot;</span><span style="color: #007700">&gt;</span>Group Administrator<span style="color: #007700">&lt;/a&gt;</span>
+</pre></div>
+</p>
+
+<p>Then I got in troubles because the links don&rsquo;t work, because if you are, for example, in a users view, your browser url could be something <code>http://communi.ty/user/10</code>, then when you press the link to the group &ldquo;NodeJS developers&rdquo; your browser will request <code>http://communi.ty/user/group/10</code>, then the URL does not match with the &ldquo;group&rdquo; route of the Router.</p>
+
+<p>In front of it, you can think to use absolute URLs, however if you use that Router in another application or your mount it in another path, then they won&rsquo;t work. Perhaps, you decide that the views are not portable and they have to be implemented on each application, well&hellip; that make sense, views are very bound to the application and they cannot probably be reused but you still have the issue that if you mount the Router under another path in the same application, because you are prototyping then you could realise that a new path fits better, then you would have to update your views without haven&rsquo;t ported your router to another application; even worse, in the JSON case that I mentioned above, using relative URLs will require to update the Router, then it wouldn&rsquo;t be reusable.</p>
+
+<p>The solutions is easy, always compute the links with their absolute URL in the route and pass them to the render as variables, and likewise when you send JSON.</p>
+
+<p>You can get the absolute URL even though you are in a Router&rsquo;s route with <a href="http://expressjs.com/4x/api.html#req.originalUrl" target="_blank"><code>req.originalUrl</code></a> and then you can compute the URLs to the other routes; in this example, stripping &ldquo;/group/<em>&rdquo; and &ldquo;/user/</em>&rdquo; and after appending whatever is needed in each case would be enough to get the expected result.</p>
+
+<h2 id="conclusion:2c29a7760b52cbec7c90eef041aacf02">Conclusion</h2>
+
+<p>As software developers, we are refactoring all the time, software always can be better or it has to change for any reason; sometimes we have to prototype and move the prototypes to a product as soon as possible hence we don&rsquo;t have time enough to spend thinking all the cases that our applications will face, even we&rsquo;d have it, we&rsquo;d probably fail, for that reason I guess that agile methodologies appeared; then in front of of this situation, we can craft software as better as we can and apply tiny things that we learn throughout our experience to make those refactoring less painful.</p>
+
+<p>Thanks for reading it.</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

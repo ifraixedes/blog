@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A real story about what there is behind the scene of a Gumtree spoofed email">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Behind the scene of a Gumtree Spoofed email">
+  <meta property="og:url" content="http://blog.fraixed.es/post/behind-scene-gumtree-spoofed-email">
+  <meta property="og:description" content="A real story about what there is behind the scene of a Gumtree spoofed email">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="general public">
+      
+        <meta property="og:tag" content="security">
+      
+        <meta property="og:tag" content="email">
+      
+        <meta property="og:tag" content="cybercrime">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/behind-scene-gumtree-spoofed-email">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Behind the scene of a Gumtree Spoofed email</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/behind-scene-gumtree-spoofed-email"><h1 class="l-title title">Behind the scene of a Gumtree Spoofed email</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">23-02-2015</span>
+    <br>
+    
+
+<p>In my previous post, I wrote about <a href="http://blog.fraixed.es/post/basic-hints-indentify-gumtree-spoofed-email" target="_blank">Basic Hints to Identify a Gumtree Spoofed email</a>, which is an introduction and the context of this post.</p>
+
+<p>In this post I&rsquo;m writing about what I found in the URL linked by that spoofed email.</p>
+
+<p>This post, as the previous one related with this topic, doesn&rsquo;t bring any hacking technique, again, I&rsquo;m not a hacker, I&rsquo;m another common geek guy, hence don&rsquo;t expect to read a new kind of attack or hacking trend, just a little bit more technical stuff of what I just did for fun when I received that email.</p>
+
+<h2 id="the-raw-content-of-the-email:8e0c4f2e9445ffcb49b9e62648e9c29a">The raw content of the email</h2>
+
+<p>The first thing that I did, was taking a look to the raw format of the email, however as I already expected, nothing important was there, <a href="http://en.wikipedia.org/wiki/Sender_Policy_Framework" target="_blank">SPF</a> passed how it was expected because the email sender address is a gmail one, hence Google isn&rsquo;t going to ban itself if the email has been sent through their servers and nobody is going to use a gmail email address to send through other servers than the official ones because nobody gets any value of it; if somebody wants to do that, is because they want to send you an email with the domain address that they try to fake the original sender, in this case would be <a href="http://gumtree.com" target="_blank" rel="nofollow">Gumtree</a> not gmail.</p>
+
+<p>Moreover in this case the content of the email was encoded in base64, so it was easy to see the domain name where the link is pointing, just hovering with the mouse and taking a look to the bottom of the browser window than decode the base64. Anyway, the content was the next</p>
+
+<p><img src="https://s-media-cache-ak0.pinimg.com/originals/bc/ef/1c/bcef1c808165c0b85b7a0682c434b9d7.jpg" alt="phishing email raw format" /></p>
+
+<h2 id="following-the-links-via-curl:8e0c4f2e9445ffcb49b9e62648e9c29a">Following the links via <code>curl</code></h2>
+
+<p>I got the link, nonetheless, I don&rsquo;t trust too much to visit the link straightaway without taking a look a little bit what behind it without a usual browser, just in case that they could take advantage of some security hole; although I&rsquo;d probably browser it at the end, I prefer to have a roughly idea what scripts and URLs includes.</p>
+
+<p>Then <code>curl</code> the URL</p>
+
+<p><img alt="curl the URL" src="http://zippy.gfycat.com/FeistyFrequentAndeancockoftherock.gif" class="graphic-medium graphic-medium-centre"></p>
+
+<p>After that I realised that they used a URL in the middle to redirect to the proper site, <a href="http://curl.haxx.se/docs/manpage.html" target="_blank"><code>curl</code></a> doesn&rsquo;t manage redirections by default, then I followed the redirection with <code>curl -L</code>.</p>
+
+<p><img alt="curl the URL with redirection" src="http://zippy.gfycat.com/ShamelessQuaintAntipodesgreenparakeet.gif" class="graphic-medium graphic-medium-centre"></p>
+
+<p>As we can see, it&rsquo;s not only one redirection, they added a second one, this time a javascript one.</p>
+
+<p>Why did they do all of these? I don&rsquo;t know the right answer, I haven&rsquo;t built it ;P, however I guess that they did for these reasons:</p>
+
+<ol>
+<li>The link&rsquo;s URL is to avoid to be marked as spam in gmail, having a URL that the path (last part of the URL) is <code>images</code> helps to sidetrack the spam filters.</li>
+<li>That URL response with a <a href="http://en.wikipedia.org/wiki/HTTP_301" target="_blank">301 HTTP status code (Moved Permanently)</a> adds another barrier for <a href="http://en.wikipedia.org/wiki/Web_crawler" target="_blank">crawler</a> which may follow the link, some of them don&rsquo;t follow those redirections then, more difficult to get there and find out that it&rsquo;s faking Gumtree.</li>
+<li>Following the 301 redirection, the content of the page is just a simple chunk of javascript which redirect the browser when it gets execute; they added this new one to be harder to follow by crawlers, the most of them don&rsquo;t execute javascript, therefore the probability to detect the scam automatically drops down a lot.</li>
+</ol>
+
+<p>Then, I followed the javascript redirection, expecting that would be the last one, because the URL revealed the Gumtree domain name on it, hence what is the point to another one when there isn&rsquo;t anything to hide behind it?</p>
+
+<p>Due that, I decided to <code>curl</code> the URL and filter the content (with <a href="http://en.wikipedia.org/wiki/Grep" target="_blank"><code>grep</code></a>) that could harm, however it&rsquo;s not the only one, but finding out <code>css</code>, <code>js</code> links, <code>&lt;script&gt;</code> tags and <code>src</code> attributes will show what in the page may be dangerous with no much effort.</p>
+
+<p><img alt="curl and filter the content" src="http://zippy.gfycat.com/FinishedWebbedAdouri.gif" class="graphic-medium graphic-medium-centre"></p>
+
+<p>Great, just only some css and one image, moreover they are linked to Gumtree domain (sa.gumtree.com), then if we trust in Gumtree, we know that they shouldn&rsquo;t contain any malicious stuff.</p>
+
+<h4 id="visit-the-web-site-with-a-browser:8e0c4f2e9445ffcb49b9e62648e9c29a">Visit the web site with a browser</h4>
+
+<p>After all of those steps, I was ready to browse the URL with my browser (last official <a href="http://www.google.com/chrome/" target="_blank" rel="nofollow">Chrome</a> version), however, I always prefer to do in <a href="https://support.google.com/chrome/answer/95464?hl=en-GB"  target="_blank">incognito mode</a> and disable javascript execution (just in case) and cache to avoid to leave sh** in my computer.</p>
+
+<p><img alt="disabling javascript and cache and browsing the URL" src="http://zippy.gfycat.com/FirmYearlyKitten.gif" class="graphic-medium graphic-medium-centre"></p>
+
+<p>As we can see the web site try to simulate Gumtree login form; have you got the point of the URL? they added Gumtree domain name into it to mislead the visitor and try to get him/her to believe that he/she is in a Gumtree web page, but clearly it&rsquo;s at the end in the <a href="http://en.wikipedia.org/wiki/Query_string" target="_blank">query string part of the URL</a> so it doesn&rsquo;t apply to the domain name.</p>
+
+<p>Obviously, I wasn&rsquo;t going to introduce my login details there as you must not too; I took a look to the HTML code to see what is the URL that collects the form data and take a simple look to see if there was something weird there, however, remember that we haven&rsquo;t seen any javascript in page so probably the form shouldn&rsquo;t have any javascript validation.</p>
+
+<p><img alt="taking a look to the HTML code of the form" src="http://media.giphy.com/media/ytwDCK1o9L7KmGqefm/giphy.gif" class="graphic-medium graphic-medium-centre"></p>
+
+<p>I could press the button to go to that URL, however I preferred to load the URL straightaway and see how good they built it.</p>
+
+<p><img alt="loading the URL from straightaway than submitting it" src="http://media.giphy.com/media/5yLgocc3WHwbwoTn7Us/giphy.gif" class="graphic-medium graphic-medium-centre"></p>
+
+<p>Clearly, no quality at all, they didn&rsquo;t implement any check, the URL could be loaded by <a href="http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods" target="_blank">GET than POST</a> and the Gumtree domain in the URL is just a visual misleading.</p>
+
+<p>We see that the page after that it&rsquo;s the interesting one for them, they want to collect our credit/debit card details, basically from where they make money after all their effort; I applied the same technique than previously and I loaded the URL straightaway, I&rsquo;m feeling a little bit safe with it, but I don&rsquo;t have any strong technical argument to do it.</p>
+
+<p>And that&rsquo;s it, they should get that they want, then they show you the expected message and redirect you to Gumtree home page to avoid that the victim realises of their domain, just in case that he/she hasn&rsquo;t before, and lose the income.</p>
+
+<p><img alt="loading credit/debit card details URL form straightaway" src="http://media.giphy.com/media/5yLgociQbt93scFPyPC/giphy.gif" class="graphic-medium graphic-medium-centre"></p>
+
+<p><img alt="the redirection to Gumtree home page" src="http://media.giphy.com/media/5yLgocjcqYJrKdSpGqk/giphy.gif" class="graphic-medium graphic-medium-centre"></p>
+
+<h3 id="conclusion:8e0c4f2e9445ffcb49b9e62648e9c29a">Conclusion</h3>
+
+<p>Phishing emails are something that still existing; nowadays, I guess that less people get haunted with those however they probably get some, even though the rate should be low, to build a fake Gumtree one is easy and cheap in terms of look &amp; feel and the place to store the data collected for those forms.</p>
+
+<p>As an advise, check always the <strong>entire URL</strong> of the browser and don&rsquo;t get distracted by a part of the URL and ask yourself to check thoroughly to see if you can see any strange thing before sending any credit/debit card information.</p>
+
+<p>Be safe.</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

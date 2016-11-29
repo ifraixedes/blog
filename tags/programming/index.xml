@@ -1,0 +1,1014 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Programming on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/programming/</link>
+    <description>Recent content in Programming on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Sat, 11 Jun 2016 23:12:07 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/programming/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Linting Javascript with ESLint</title>
+      <link>http://blog.fraixed.es/post/linting-javascript-with-eslint</link>
+      <pubDate>Sat, 11 Jun 2016 23:12:07 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/linting-javascript-with-eslint</guid>
+      <description>
+
+&lt;h2 id=&#34;linting-javascript:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;Linting Javascript&lt;/h2&gt;
+
+&lt;p&gt;Javascript as you well known, is a dynamic and untyped language; characteristics that have their advantages but which also have a few drawbacks which lead to easily introduce trivial bugs in the implementations.&lt;/p&gt;
+
+&lt;p&gt;For the good or the bad of the Javascript language, nowadays is quite difficult to escape from it because any website with a good UX requires quite certain amount of Javascript code, moreover, if we&amp;rsquo;re talking about of Single Page Application the numbers of lines of code of Javascript increase drastically.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, the big popularity of NodeJS has made Javascript a server side programming language, however if you aren&amp;rsquo;t supporter of it, you can scape of it because on server side there are many options, without having the drawbacks that in Web frontend code you can face when choosing one of the transpilers to escape of it.&lt;/p&gt;
+
+&lt;p&gt;If you are supporter of Javascript or you may not, but you don&amp;rsquo;t have the chance to replace it with anything else, then you must use a linter. Linters aren&amp;rsquo;t new in Javascript, they haven&amp;rsquo;t been for awhile, from the first famous one &lt;a href=&#34;https://github.com/douglascrockford/JSLint&#34; target=&#34;_blank&#34; &gt;JSLint&lt;/a&gt;
+ created by Douglas Crockford, its fork &lt;a href=&#34;https://github.com/jshint/jshint&#34; target=&#34;_blank&#34; &gt;JSHint&lt;/a&gt;
+ and &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;ESLint&lt;/a&gt;
+, between some others.&lt;/p&gt;
+
+&lt;p&gt;A Javascript linter make our codebase more maintainable, because it does a static analysis of the codebase to enforces syntax rules for formatting, which is quite important to keep the code base consistent across the team members, and, even more important, to detect potential errors, without executing the code.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-eslint-benefits:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;The ESLint benefits&lt;/h2&gt;
+
+&lt;p&gt;ESlint marked a difference between the previous linters, reason why it looks the best option today, if you are not looking for the fastest one.&lt;/p&gt;
+
+&lt;p&gt;The main difference between ESLint and its predecessors are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It uses an AST to evaluate patterns in code.&lt;/li&gt;
+&lt;li&gt;It is completely pluggable, every single rule is a plugin and you can add more at runtime.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let&amp;rsquo;s go one by one to see how they benefit to us.&lt;/p&gt;
+
+&lt;p&gt;ESLint uses Espree to construct an AST of the codebase which is used to evaluate all the rules; this is a big difference in how others linters operates (for example JSHint), which they only do a lexical analysis, being faster but at the same time they are limited to check only a set of rules, because some of them are not possible to do it without constructing the AST, for example, &amp;ldquo;Require Consistent This&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;The drawback of doing so it&amp;rsquo;s that the the linter is slower, but if the number of rules used aren&amp;rsquo;t huge, it&amp;rsquo;s totally acceptable and the benefits are worth.&lt;/p&gt;
+
+&lt;p&gt;Being pluggable allow us to enable and disable any rule, so we can configure to fit our team needs or just set in place in current implementations where some rules are constrained to it than the option that we would desire. There are several plugins available, some of them allows to uses lint code for some frameworks, for example, &lt;a href=&#34;https://github.com/babel/babel-eslint&#34; target=&#34;_blank&#34; &gt;ES7 features&lt;/a&gt;
+, &lt;a href=&#34;https://github.com/Gillespie59/eslint-plugin-angular&#34; target=&#34;_blank&#34; &gt;AngularJS&lt;/a&gt;
+, &lt;a href=&#34;https://github.com/zertosh/eslint-plugin-flow-vars&#34; target=&#34;_blank&#34; &gt;flow type annotations&lt;/a&gt;
+, etc.&lt;/p&gt;
+
+&lt;p&gt;ESLint also allows to extend configuration files, so we can extend set of rules a defined file and add or override certain rules to fit in our configuration file using the ones listed in the &lt;a href=&#34;http://eslint.org/docs/rules/&#34; target=&#34;_blank&#34; &gt;its long list&lt;/a&gt;
+, using new ones which has been created  by the community or implement our ones if there isn&amp;rsquo;t any which fits what we need.&lt;/p&gt;
+
+&lt;h2 id=&#34;eslint-setup:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;ESLint Setup&lt;/h2&gt;
+
+&lt;p&gt;Setting up ESLint in your Javascript project is pretty straightforward, as it&amp;rsquo;s available as an &lt;a href=&#34;https://www.npmjs.com&#34; target=&#34;_blank&#34; &gt;NPM&lt;/a&gt;
+ package.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have installed, an add to your PATH, &lt;a href=&#34;https://nodejs.org&#34; target=&#34;_blank&#34; &gt;NodeJS&lt;/a&gt;
+ which brings NPM, let&amp;rsquo;s see how to proceed to setup ESLint and configure it.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go to the folder where you have your JS project;&lt;/li&gt;
+&lt;li&gt;For simplicity, we install ESLint globally in the machine with &lt;code&gt;npm install -g eslint&lt;/code&gt;; however it&amp;rsquo;s advisable to install it locally to the project to have more control of the version to use, which is very helpful if you have other projects than use an old version of ESLint or you start now with this but in future project you end up using a newer version, to do so, make sure that you have a &lt;code&gt;package.json&lt;/code&gt; in the project or create one with &lt;code&gt;npm init&lt;/code&gt; and after execute &lt;code&gt;npm install --save-dev eslint&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Create a minimal ESLint configuration file executing &lt;code&gt;eslint --init&lt;/code&gt;; reply the question that ESLint asks in order to set the minimum rules which fit to your code style, if you use ES6 or JSX, define the environment where JS executes, the Browser or NodeJS and choose the format that you want between JS, JSON or YAML to store the configuration; you also have the option to set this configuration in &lt;code&gt;package.json&lt;/code&gt; file with the property &lt;code&gt;eslintConfig&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Right now you should see that you have a file in your folder named &lt;code&gt;.eslintrc.*&lt;/code&gt; where &lt;code&gt;*&lt;/code&gt; is the extension used for the format that you have chosen. It&amp;rsquo;s worth to mention that JSON &amp;amp; YAML formats support JS commends to make them more human-friendly, however they aren&amp;rsquo;t supported in &lt;code&gt;package.json&lt;/code&gt; file.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The basic file which has been generated probably contains only a few properties which ESLint support; probably you&amp;rsquo;ll have the &lt;code&gt;env&lt;/code&gt; which define the environment where code is executed, which module system is used and ES6 version is used. To see all the options that you can set in this property check &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;Specifying Environments in the documentation&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;This basic file extends the rules from the &lt;code&gt;eslint:recommended&lt;/code&gt; configuration as you can see in the value of &lt;code&gt;extends&lt;/code&gt; property, but just leaved it this for now and see the &lt;code&gt;rules&lt;/code&gt; property.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;rules&lt;/code&gt; property contains the rules that we want to use to lint our code base; as commented above, if we extend them from another then we can set ones that the base version doesn&amp;rsquo;t set to cover parts that the base configuration doesn&amp;rsquo;t and set the same one than base configuration has in order to override the rule configuration.&lt;/p&gt;
+
+&lt;p&gt;If you never seen how the &lt;code&gt;rules&lt;/code&gt; are specified in ESLint, you may thing that the format it&amp;rsquo;s odd; they use the name of the rule as a property name, which is very usual, and the value can be an array; they value is the part that it can looks odd because, you can see sometimes an string, an integer or an array, but nothing is weird when you know what they define.&lt;/p&gt;
+
+&lt;p&gt;The rule values can have the next string values:
+* &amp;ldquo;off&amp;rdquo;: The rules doesn&amp;rsquo;t apply. By default ESLint doesn&amp;rsquo;t apply any rule so all they are off, however it&amp;rsquo;s useful to set a rule to off when you extends from a base configuration and you want to disable some of the rules.
+* &amp;ldquo;warn&amp;rdquo;: The rules applies with a warning; when ESLint finds parts of the code base where a rule set as a warning, it shows the output message as warning and it ignores them in terms of the exit code, hence ESLint exits with 0 if only rules set as a warning aren&amp;rsquo;t respected in the code base.
+* &amp;ldquo;error&amp;rdquo;: The rules set as error, are show in the output message an an error and if any of them are found during the linting process, then ESLint exit with 1.&lt;/p&gt;
+
+&lt;p&gt;Ok, but what an integer means as value then? they can only be 0, 1, 2 and they have the same meaning than above, 0 = &amp;ldquo;off&amp;rdquo;, 1 =&amp;ldquo;warn&amp;rdquo; and 2 =&amp;ldquo;error&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;The last form of value for a rule is an array. Arrays are used when the rule accepts options, the first value of the array is a string or integer as defined above and the rest depends of the rule, for example the &lt;a href=&#34;http://eslint.org/docs/rules/quote-props&#34; target=&#34;_blank&#34; &gt;rule &amp;#34;quote-props&amp;#34;&lt;/a&gt;
+ allows to define if we allow to surround the object properties by quotes, the first option (second position in the array) is to set how ESLint should interpret the rules and depending of which value is selected as a first option, it is possible to define the behavior, which is set as a sub-option (third position in the array).&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see the next simple snipped which shows an example of a basic &lt;code&gt;.eslintrc.json&lt;/code&gt; file, using the different value formats commented&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;browser&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;commonjs&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;es6&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;
+  },
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;extends&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;eslint:recommended&amp;quot;&lt;/span&gt;,
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;rules&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;indent&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;error&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;linebreak-style&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;unix&amp;quot;&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;quotes&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;semi&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;never&amp;quot;&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;quote-props&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;warn&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;consistent-as-needed&amp;quot;&lt;/span&gt;, { &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;keywords&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt; }],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;brace-style&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;off&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;ESLint has other setting for more advanced tweaking, for example, options to set to the parser, parser to use and so on; &lt;a href=&#34;http://eslint.org/docs/developer-guide/working-with-plugins&#34; target=&#34;_blank&#34; &gt;it also has plugins which allow to define, not just rules and environments but how to process non pure JS files&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, ESLint also allows &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#ignoring-files-and-directories&#34; target=&#34;_blank&#34; &gt;to ignore files and directories as git does, through a `.eslintignore` file&lt;/a&gt;
+ and &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments&#34; target=&#34;_blank&#34; &gt;to define settings to apply only in parts of the source code using comments&lt;/a&gt;
+, for example &lt;code&gt;/* eslint-disable semi */&lt;/code&gt; will disable the rule from the line of this comment until the end of the file.&lt;/p&gt;
+
+&lt;h2 id=&#34;running-eslint:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;Running ESLint&lt;/h2&gt;
+
+&lt;p&gt;Once you setup ESLint in you project you have to execute it.&lt;/p&gt;
+
+&lt;p&gt;The command line interface of ESLint is as usual as any other command line; you can see the help information with &lt;code&gt;-h&lt;/code&gt; option an see all the options that you can pass it.&lt;/p&gt;
+
+&lt;p&gt;If you have set the configuration in any of the files which ESLint detect, then you can can run the command an pass the path to sources files or folder where the source files are; the paths are defined with globs so you can set a root folder and it recursively will check all the sources files contained in the folder and the children folders, for example &lt;code&gt;eslint src/**/*&lt;/code&gt; will check all the source files in src and all the folder subtree inside of it.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#using-configuration-files&#34; target=&#34;_blank&#34; &gt;With `-c` option you can specify a specific configuration file&lt;/a&gt;
+; this option is quite useful when you want different configurations for different parts of a project;  however if you are using the configurations files or &lt;code&gt;package.json&lt;/code&gt; property mentioned in the previous version, it will use them automatically and moreover you can have several of them in different subfolders of the root filesystem to walk specifying different configurations for the sources contained in the subtree and it will use the closest one found to the analyzed source file, see an example of this case in the &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy&#34; target=&#34;_blank&#34; &gt;documentation&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Another important option to use to speed up the linting process is &lt;code&gt;--cache&lt;/code&gt;; enabling it ESLint store information about the processed files in order to only check the ones that have been modified in the following runs. The cache file is store in the root directory with the name &lt;code&gt;.eslintcache&lt;/code&gt; but you can configure the location with the &lt;code&gt;--cache-location&lt;/code&gt; option.&lt;/p&gt;
+
+&lt;p&gt;ESLint documentation has a dedicated page for &lt;a href=&#34;http://eslint.org/docs/user-guide/command-line-interface&#34; target=&#34;_blank&#34; &gt;its command line interface&lt;/a&gt;
+, check it if you want to know all the other options which accepts.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s all for today folks&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Nunjucks extension to compile RiotJS tags</title>
+      <link>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</link>
+      <pubDate>Wed, 02 Mar 2016 16:05:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</guid>
+      <description>
+
+&lt;p&gt;On the way to London, meanwhile I was flying, I wanted to take advantage of the dead time without internet to write this short blog post about a &lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+, &lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ and a Nunjucks extension that I&amp;rsquo;ve implemented, for a side project that I&amp;rsquo;m working on, to render RiotJS tags on the server.&lt;/p&gt;
+
+&lt;h2 id=&#34;nunjucks:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Nunjucks&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+ is a template engine (yes, another one!) for NodeJS and the browser which is heavily inspired by &lt;a href=&#34;http://jinja.pocoo.org/&#34; target=&#34;_blank&#34; &gt;jinja2&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;d never used before and probably I had heard about it, but I couldn&amp;rsquo;t remember, world is moving fast and almost any time you start a project you can discover lots of new stuff which may be better or a good fit it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used &lt;a href=&#34;http://jade-lang.com/&#34; target=&#34;_blank&#34; &gt;Jade&lt;/a&gt;
+ and &lt;a href=&#34;http://paularmstrong.github.io/swig/&#34; target=&#34;_blank&#34; &gt;Swig&lt;/a&gt;
+ (a bit less) several times and for this project I was thinking in using &lt;a href=&#34;http://markojs.com/&#34; target=&#34;_blank&#34; &gt;Marko&lt;/a&gt;
+, it has a few nice features as be able to send the content through a stream and a widget system which helps to create reusable components; however I found a bit confusing to start because there are several examples and &lt;a href=&#34;https://www.youtube.com/playlist?list=PLZUgs-F38XXQJBxA58UqnwTVMZS_uza_C&#34; target=&#34;_blank&#34; &gt;screen casts&lt;/a&gt;
+ but &lt;a href=&#34;http://markojs.com/docs/marko/javascript-api/#rendertemplatepath-templatedata-streamwritable&#34; target=&#34;_blank&#34; &gt;quite few functions have been deprecated in the new version&lt;/a&gt;
+ and I don&amp;rsquo;t have the need of streaming the content to enhance performance for this project.&lt;/p&gt;
+
+&lt;p&gt;At the same time, I didn&amp;rsquo;t want to spend lots of time in choosing and having to solve quite a few issues in how to use it and use it well to get the advantages, so I found Nunjucks was a good choice between taking something that I know and something that it&amp;rsquo;s new for me.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, in the time being I don&amp;rsquo;t expect to use that many advanced features that Nunjucks has, and probably I won&amp;rsquo;t take advantage of its power, but it&amp;rsquo;s OK, as it provides me all the things that I need.&lt;/p&gt;
+
+&lt;h2 id=&#34;riotjs:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;RiotJS&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ seems probably out of the context of this post and it could be if I wouldn&amp;rsquo;t have decided to also incorporate since the first few commits.&lt;/p&gt;
+
+&lt;p&gt;It also could be React, but I feel that it would add too much complexity to the project, it isn&amp;rsquo;t a big project and it shouldn&amp;rsquo;t have a big code base; moreover I would have to spend more time to nail React and all the things around it so I would end up not making the things done.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve had a experience using RiotJS, for a freelancing project that I was working a few weeks ago, it was a project with very hard deadline and I had to build a mobile friendly site for one existing one, created by one big &amp;ldquo;consultancy&amp;rdquo; company which basically they ended up delivering a huge pile of crap; anyway, the only think that matters for this post is that it couldn&amp;rsquo;t be made responsive and in 3 weeks time I had to deep in that horrible code base, make the changes what I needed to serve the content for a &lt;a href=&#34;https://en.wikipedia.org/wiki/Single-page_application&#34; target=&#34;_blank&#34; &gt;SPA&lt;/a&gt;
+ which at the same time I had to create to be served for requests coming from mobile devices.&lt;/p&gt;
+
+&lt;p&gt;I had never used RiotJS before, and due its minimalism I was able to read and understand the docs, and just use it to do what I had to do.&lt;/p&gt;
+
+&lt;p&gt;For this side project, I could avoid to add Riot, because it makes sense to render the site in the server, however there are a few parts which I would like to render on the client (e.g. a dashboard), maybe not in the first version, but in one, close to the first one.&lt;/p&gt;
+
+&lt;p&gt;Choosing RiotJS, I think that I can take advantage of its &lt;a href=&#34;http://riotjs.com/guide/&#34; target=&#34;_blank&#34; &gt;custom tag&lt;/a&gt;
+ to create components which at the beginning I can render in the server into Nunjucks templates and at some point, start to render them in the client side in a few pages or parts of them.&lt;/p&gt;
+
+&lt;h2 id=&#34;rendering-riotjs-in-nunjucks-templates:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Rendering RiotJS in Nunjucks templates&lt;/h2&gt;
+
+&lt;p&gt;To do this, I didn&amp;rsquo;t need to create any plugin, I could follow the same approach which you can watch in &lt;a href=&#34;https://www.youtube.com/watch?v=6ww1UXGJzcs&amp;amp;feature=youtu.be&#34; target=&#34;_blank&#34; &gt;this video using swig&lt;/a&gt;
+, but I found that creating a Nunjucks plugin for this purpose was simple and easy and it will save me time to repeat over an over a few statements in any page that I&amp;rsquo;m going to drop RiotJS tags besides the implementation will be less error prone.&lt;/p&gt;
+
+&lt;p&gt;The implementation of &lt;a href=&#34;http://mozilla.github.io/nunjucks/api.html#custom-tags&#34; target=&#34;_blank&#34; &gt;Nunjucks extension&lt;/a&gt;
+ is as simple as:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; RiotExtension(basePath) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.tags &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;]
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.parse &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (parser, nodes) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; tok &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.nextToken()
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; args &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.parseSignature(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;)
+    parser.advanceAfterBlockEnd(tok.value)
+
+    parser.parseUntilBlocks(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;endriot&amp;#39;&lt;/span&gt;)
+    parser.advanceAfterBlockEnd()
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nodes.CallExtension(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;renderRiot&amp;#39;&lt;/span&gt;, args, [])
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.renderRiot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (ctx, view, opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-disable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; tag &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(path.join(basePath, view))
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-enable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nunjucks.runtime.SafeString(riot.render(tag, opts))
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On the server, I&amp;rsquo;m using &lt;a href=&#34;http://koajs.com/&#34; target=&#34;_blank&#34; &gt;KoaJS&lt;/a&gt;
+ v2, at that time it wasn&amp;rsquo;t support in &lt;a href=&#34;https://github.com/queckezz/koa-views&#34; target=&#34;_blank&#34; &gt;Koa-views&lt;/a&gt;
+ for Koa v2 without using &lt;a href=&#34;https://github.com/koajs/convert&#34; target=&#34;_blank&#34; &gt;koa-convert&lt;/a&gt;
+, maybe &lt;a href=&#34;https://github.com/queckezz/koa-views/pull/54&#34; target=&#34;_blank&#34; &gt;there will one soon&lt;/a&gt;
+, and because I prefer to render views without having side effects in Koa &lt;code&gt;ctx&lt;/code&gt; (context), I basically pass the render function where I need and use it to generate the HTML which I assign to &lt;code&gt;ctx.body&lt;/code&gt; where I need.&lt;/p&gt;
+
+&lt;p&gt;The function which returns a promised render function, looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; getRenderFn(viewsPath, opts) {
+  riot.settings.brackets &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;${ }&amp;#39;&lt;/span&gt;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; njr &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; nunjucks.configure(viewsPath, opts)
+  njr.addExtension(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;RiotExtension&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; RiotExtension(path.join(viewsPath, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)))
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (view, data) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Promise((resolve, reject) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+      njr.render(view, data, (err, html) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+          reject(err)
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt;
+        }
+
+        resolve(html)
+      })
+    })
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And then, whenever I need to render a Riot tag in a Nunjucks template I only have to do &lt;code&gt;{% riot &amp;quot;my-tag.html&amp;quot; %}{% endriot %}&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Nunjuks looks as powerful template engine, on the other hand, I love the minimalism of RiotJS; with the combination of both I can render views in the server including components (Riot tags) than later on, I could reuse in the client side.&lt;/p&gt;
+
+&lt;p&gt;Nunjucks and RiotJS isn&amp;rsquo;t the only two that you can combine together, there more famous combinations or just one which allow to create templates which can be rendered in the server and the client, but I&amp;rsquo;ve decided to choose those based on my project requirements (technical and non-technical too); my recommendation here, is, do the same, choose the one(s) which fit better to it.&lt;/p&gt;
+
+&lt;p&gt;Happy mixing!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>KoaJS v2, BabelJS &amp; npm scripts</title>
+      <link>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</link>
+      <pubDate>Thu, 25 Feb 2016 09:14:11 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</guid>
+      <description>
+
+&lt;p&gt;Koa v2 has changed completely the middleware function signature, used in v1.x, to use &lt;a href=&#34;http://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;ES2016 async/await functions&lt;/a&gt;
+ over &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*&#34; target=&#34;_blank&#34; &gt;generators&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s still in alpha even thought the Koa&amp;rsquo;s team says that it&amp;rsquo;s production ready, because it&amp;rsquo;s currently used in some systems which are in production, however &lt;a href=&#34;https://github.com/koajs/koa/issues/533&#34; target=&#34;_blank&#34; &gt;the issues is that NodeJS doesn&amp;#39;t still support async/await function natively&lt;/a&gt;
+, hence you need a transpiler to be able to use async/await functions.&lt;/p&gt;
+
+&lt;p&gt;One, and probably the most famous, ES2015 tranpilers which also supports some of the features proposed for ES2016, and between then Async/Await functions, is &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; &gt;BabelJS&lt;/a&gt;
+; it&amp;rsquo;s also the one, most mentioned, in the Koa&amp;rsquo;s issue linked above, but it doesn&amp;rsquo;t look fancy having to transpile server code because it can be very painful, however Koa v2 doesn&amp;rsquo;t only accept async/await functions as a middleware, it also accepts function which return Promises (&lt;a href=&#34;https://nodejs.org/en/docs/es6/#which-features-ship-with-node-js-by-default-no-runtime-flag-required&#34; target=&#34;_blank&#34; &gt;which are already supported natively by last productions releases (LTS and no LTS)&lt;/a&gt;
+) because at the end an async/await function returns a Promise to the caller.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-we-can-do-now:4aa0da6c353d68f2346342f02b552d25&#34;&gt;What we can do now&lt;/h2&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t want to use BabelJS to write server code because it may be a pain the ass having in your development pipeline, then &lt;a href=&#34;https://github.com/koajs/koa/tree/2.0.0-alpha.3#example&#34; target=&#34;_blank&#34; &gt;you can still use Koa v2 using functions which return Promises&lt;/a&gt;
+; you don&amp;rsquo;t have to worry in having to rewrite those middlewares again when async/await functions be natively supported by NodeJS, you could use those ones and the new ones that implemented with async/async function seamless.&lt;/p&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t mind to use BabelJS in your server code, because it&amp;rsquo;s a new development which isn&amp;rsquo;t going to be a very big codebase, or because the implementation progress is going to be slow for whatever reason or you have any other reason which isn&amp;rsquo;t relevant for the purpose of this post then go for it and when NodeJS support async/away function natively then kill BabelJS.&lt;/p&gt;
+
+&lt;h2 id=&#34;koa-v2-babeljs-with-nodemon-npm-scripts:4aa0da6c353d68f2346342f02b552d25&#34;&gt;Koa v2, BabelJS, with Nodemon &amp;amp; npm scripts&lt;/h2&gt;
+
+&lt;p&gt;In case that you want to use BabelJS, and you don&amp;rsquo;t have any prepared boilerplate to develop a server side with Babel with server restarting automatically on each change, then you can follow this steps to install it, configure it and run it with npm.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have ran &lt;code&gt;npm init&lt;/code&gt; in a folder and you&amp;rsquo;re in your terminal on it execute&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Install Koa v2 &lt;code&gt;npm install --save koa@next&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install Babel and the presets and plugins needed to transpile ES6/7 features not supported natively by NodeJS; I recommend only use the async/await functions to be able to run your code as soon as async/await function are supported by NodeJS and may not others as spread paramaters, etc.
+&lt;code&gt;npm install --save-dev babel-core babel-cli babel-preset-es2015-node5  babel-plugin-transform-async-to-generator&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install nodemon &lt;code&gt;npm install --save-dev nodemon&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then setup babel creating a &lt;code&gt;.babelrc&lt;/code&gt; file with this content:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;development&amp;quot;&lt;/span&gt;: {
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;es2015-node5&amp;quot;&lt;/span&gt;],
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;transform-async-to-generator&amp;quot;&lt;/span&gt;]
+    }
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then you can create, into the property name &lt;code&gt;scripts&lt;/code&gt; of &lt;code&gt;package.json&lt;/code&gt;, something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;scripts&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;dev&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --exec npm run -s serve&amp;quot;&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;serve&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;babel-node -- src/server.js&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In case that you use &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;eslint&lt;/a&gt;
+ to lint your code, to avoid linter issues with async/await functions you have to install it and babel plugin&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;npm install --save-dev eslint babel-eslint&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;then set in &lt;code&gt;.eslintrc&lt;/code&gt; file the property &lt;code&gt;&amp;quot;parser&amp;quot;: &amp;quot;babel-eslint&amp;quot;&lt;/code&gt;. Bear in mind that you will have to enable the &lt;code&gt;es6&lt;/code&gt; features too, enabling &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;`es6` environtment&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;and you can also setup a watch mode in package.json &lt;code&gt;scripts&lt;/code&gt; property&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;lint-w&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --watch src -e js --exec eslint .&amp;quot;&lt;/span&gt;
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;then you can run the &amp;ldquo;dev&amp;rdquo; script target in one terminal tab and in other this one and enjoy developing a Koa v2 app, with asyn/await function with live restart and live linting.&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t wait until Koa v2 to be announced as production version, use it now with Babel or without, just use it now.&lt;/p&gt;
+
+&lt;p&gt;Happy coding!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Walk through Golang Package Interfaces</title>
+      <link>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</link>
+      <pubDate>Wed, 06 Jan 2016 08:24:56 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</guid>
+      <description>
+
+&lt;p&gt;Golang interface is one of things that people love due its simplicity and how they make possible to create small things which can be composed to create more complex ones.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s well know that defining interfaces in the implementations make them more flexible and reusable; defining interfaces with just one or a couple of functions signatures is one of the good practices of writing Golang applications, because they make the implementations more modular due they can be composed to get new ones for more specific needs.&lt;/p&gt;
+
+&lt;p&gt;Having this big set of small interface give the opportunity to have a bigger set of generic functions because they only constrain the parameters to implement one of those; so they can be use for any user defined type which implements at least that specific interface.&lt;/p&gt;
+
+&lt;p&gt;Everything above is well know and there are lots of posts about this matter, hence my goal in this post isn&amp;rsquo;t to add a new one more or extend this topic even more; there already good literature about it that you can find easily.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;My goal is to provide the list of interfaces which I&amp;rsquo;ve found, and hopefully I haven&amp;rsquo;t missed any, in Golang 1.5 standard package and highlight few of them&lt;/strong&gt; which I think that we have to bear in mind when we are developing common applications or services.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-ones-useful-for-the-most-common-applications:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The ones useful for the most common applications&lt;/h2&gt;
+
+&lt;h3 id=&#34;sql-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sql package&lt;/h3&gt;
+
+&lt;p&gt;The sql package has two without including the ones defined in the driver subpackage which I&amp;rsquo;ve skipped due that in common applications development is unusual having to implement a new driver.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These ones gathered my attention due that it isn&amp;rsquo;t that rare to store types in a database which aren&amp;rsquo;t basic types defined in the used database system; while we can do the mapping each time that we read those values from the database, the Scanner interface is very convenient to be implemented and get the benefits to get the mapping automatically when the values are read from the database, by the Scan function.&lt;/p&gt;
+
+&lt;p&gt;One example of this case is &lt;a href=&#34;https://godoc.org/github.com/satori/go.uuid#UUID.Scan&#34; target=&#34;_blank&#34; &gt;go.uuid&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;encoding-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;encoding Package&lt;/h3&gt;
+
+&lt;p&gt;The encoding/decoding data is another common operation to perform in common application development. Golang encoding package defines two pairs, marshare/unmarsheler, of interfaces, one for binary and another for text:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryMarshaler&#34; target=&#34;_blank&#34; &gt;BinaryMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryUnmarshaler&#34; target=&#34;_blank&#34; &gt;BinaryUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextMarshaler&#34; target=&#34;_blank&#34; &gt;TextMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextUnmarshaler&#34; target=&#34;_blank&#34; &gt;TextUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It also defines the same pair for specific encodings which usage is very spread&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;gob&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobDecoder&#34; target=&#34;_blank&#34; &gt;GobDecoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobEncoder&#34; target=&#34;_blank&#34; &gt;GobEncoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;json&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;xml&lt;/strong&gt;: which has one pair to allow to encode/decode attributes
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#MarshalerAttr&#34; target=&#34;_blank&#34; &gt;MarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#UnmarshalerAttr&#34; target=&#34;_blank&#34; &gt;UnmarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And one more for binary encoding
+* &lt;a href=&#34;https://golang.org/pkg/encoding/binary/#ByteOrder&#34; target=&#34;_blank&#34; &gt;ByteOrder&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;flag-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;flag package&lt;/h3&gt;
+
+&lt;p&gt;Another common stuff is to pass argument to our application when it starts; &lt;em&gt;flag package&lt;/em&gt; contains two interface which allow to define types to map values passed through command line arguments.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Getter&#34; target=&#34;_blank&#34; &gt;Getter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;fmt-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;fmt package&lt;/h3&gt;
+
+&lt;p&gt;The fmt package defines a set of interfaces to format I/O, which is another functionality which can be needed in common applications development.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Formatter&#34; target=&#34;_blank&#34; &gt;Formatter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#GoStringer&#34; target=&#34;_blank&#34; &gt;GoStringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#ScanState&#34; target=&#34;_blank&#34; &gt;ScanState&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#State&#34; target=&#34;_blank&#34; &gt;State&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Stringer&#34; target=&#34;_blank&#34; &gt;Stringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;sort-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sort package&lt;/h3&gt;
+
+&lt;p&gt;Some applications also requires to sort element in slices, so the types which implement sort interface can use after the routines of sort package to be sorted.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sort/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-rest:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The rest&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Compress package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;flate&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Reader&#34; target=&#34;_blank&#34; &gt;falate/Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Resetter&#34; target=&#34;_blank&#34; &gt;falate/Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;zlib&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/zlib/#Resetter&#34; target=&#34;_blank&#34; &gt;Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Heap package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/container/heap/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Crypto package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Decrypter&#34; target=&#34;_blank&#34; &gt;Decrypter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Signer&#34; target=&#34;_blank&#34; &gt;Signer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#SignerOpts&#34; target=&#34;_blank&#34; &gt;SignerOpts&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cipher&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#AEAD&#34; target=&#34;_blank&#34; &gt;AEAD&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Block&#34; target=&#34;_blank&#34; &gt;Block&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#BlockMode&#34; target=&#34;_blank&#34; &gt;BlockMode&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Stream&#34; target=&#34;_blank&#34; &gt;Stream&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;elliptic&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/elliptic/#Curve&#34; target=&#34;_blank&#34; &gt;Curve&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/tls/#ClientSessionCache&#34; target=&#34;_blank&#34; &gt;ClientSessionCache&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sql/driver package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ColumnConverter&#34; target=&#34;_blank&#34; &gt;ColumnConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Driver&#34; target=&#34;_blank&#34; &gt;Driver&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Execer&#34; target=&#34;_blank&#34; &gt;Execer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Queryer&#34; target=&#34;_blank&#34; &gt;Queryer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Tx&#34; target=&#34;_blank&#34; &gt;Tx&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ValueConverter&#34; target=&#34;_blank&#34; &gt;ValueConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Valuer&#34; target=&#34;_blank&#34; &gt;Valuer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;debug package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;dwarf&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/dwarf/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;macho&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/macho/#Load&#34; target=&#34;_blank&#34; &gt;Load&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;expvar package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/expvar/#Var&#34; target=&#34;_blank&#34; &gt;Var&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;ast package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Decl&#34; target=&#34;_blank&#34; &gt;Decl&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Expr&#34; target=&#34;_blank&#34; &gt;Expr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Spec&#34; target=&#34;_blank&#34; &gt;Spec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Visitor&#34; target=&#34;_blank&#34; &gt;Visitor&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;constant package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/constant/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;types package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Importer&#34; target=&#34;_blank&#34; &gt;Importer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Object&#34; target=&#34;_blank&#34; &gt;Object&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Sizes&#34; target=&#34;_blank&#34; &gt;Sizes&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;hash package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash64&#34; target=&#34;_blank&#34; &gt;Hash64&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;image package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#PalettedImage&#34; target=&#34;_blank&#34; &gt;PalettedImage&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;color&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Color&#34; target=&#34;_blank&#34; &gt;Color&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Model&#34; target=&#34;_blank&#34; &gt;Model&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;draw&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Drawer&#34; target=&#34;_blank&#34; &gt;Drawer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Quantizer&#34; target=&#34;_blank&#34; &gt;Quantizer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;jpeg&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/jpeg/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;io package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteReader&#34; target=&#34;_blank&#34; &gt;ByteReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteScanner&#34; target=&#34;_blank&#34; &gt;ByteScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteWriter&#34; target=&#34;_blank&#34; &gt;ByteWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Closer&#34; target=&#34;_blank&#34; &gt;Closer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadCloser&#34; target=&#34;_blank&#34; &gt;ReadCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadSeeker&#34; target=&#34;_blank&#34; &gt;ReadSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteCloser&#34; target=&#34;_blank&#34; &gt;ReadWriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteSeeker&#34; target=&#34;_blank&#34; &gt;ReadWriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriter&#34; target=&#34;_blank&#34; &gt;ReadWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderAt&#34; target=&#34;_blank&#34; &gt;ReaderAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderFrom&#34; target=&#34;_blank&#34; &gt;ReaderFrom&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneReader&#34; target=&#34;_blank&#34; &gt;RuneReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneScanner&#34; target=&#34;_blank&#34; &gt;RuneScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Seeker&#34; target=&#34;_blank&#34; &gt;Seeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteCloser&#34; target=&#34;_blank&#34; &gt;WriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteSeeker&#34; target=&#34;_blank&#34; &gt;WriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Writer&#34; target=&#34;_blank&#34; &gt;Writer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterAt&#34; target=&#34;_blank&#34; &gt;WriterAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterTo&#34; target=&#34;_blank&#34; &gt;WriterTo&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;math/rand package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/math/rand/#Source&#34; target=&#34;_blank&#34; &gt;Source&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;mine/multipart package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/mime/multipart/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;net package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Addr&#34; target=&#34;_blank&#34; &gt;Addr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Listener&#34; target=&#34;_blank&#34; &gt;Listener&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#PacketConn&#34; target=&#34;_blank&#34; &gt;PacketConn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;http&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CloseNotifier&#34; target=&#34;_blank&#34; &gt;CloseNotifier&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CookieJar&#34; target=&#34;_blank&#34; &gt;CookieJar&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#FileSystem&#34; target=&#34;_blank&#34; &gt;FileSystem&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Flusher&#34; target=&#34;_blank&#34; &gt;Flusher&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Handler&#34; target=&#34;_blank&#34; &gt;Handler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Hijacker&#34; target=&#34;_blank&#34; &gt;Hijacker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#ResponseWriter&#34; target=&#34;_blank&#34; &gt;ResponseWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#RoundTripper&#34; target=&#34;_blank&#34; &gt;RoundTripper&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cookiejar&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/cookiejar/#PublicSuffixList&#34; target=&#34;_blank&#34; &gt;PublicSuffixList&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;rpc&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ClientCodec&#34; target=&#34;_blank&#34; &gt;ClientCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ServerCodec&#34; target=&#34;_blank&#34; &gt;ServerCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;smtp&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/smtp/#Auth&#34; target=&#34;_blank&#34; &gt;Auth&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;os&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#FileInfo&#34; target=&#34;_blank&#34; &gt;FileInfo&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#Signal&#34; target=&#34;_blank&#34; &gt;Signal&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;reflect package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/reflect/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;runtime package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/runtime/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sync package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sync/#Locker&#34; target=&#34;_blank&#34; &gt;Locker&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;syscall package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/syscall/#Sockaddr&#34; target=&#34;_blank&#34; &gt;Sockaddr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;tesing package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/#TB&#34; target=&#34;_blank&#34; &gt;TB&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;quick&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/quick/#Generator&#34; target=&#34;_blank&#34; &gt;Generator&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;text/template/parse&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/text/template/parse/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;conclusion:8299f908315f8a7f26ec77fc52719a89&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Golang interfaces are the most powerful and simple feature that the language expose to create modular and reusable implementations.&lt;/p&gt;
+
+&lt;p&gt;Golang standard library contains a bunch of already defined interfaces which can be implemented by our applications or services without having to think in new ones for the same purpose besides to ease and speed up to any Golang developer to understand our implementations.&lt;/p&gt;
+
+&lt;p&gt;Collecting all of them in in this post allowed me to discover some of them which I haven&amp;rsquo;t seen before even though I&amp;rsquo;ve been developing in Golang for one year and a half. Some of them I had never seen because I haven&amp;rsquo;t had to use them, others I had seen when I was reading a specific package documentation and other I saw at some point but I didn&amp;rsquo;t assimilate at the first glance, so this post has been a good exercise.&lt;/p&gt;
+
+&lt;p&gt;If I&amp;rsquo;ve missed any and you know which ones, please let me know with an innocent comment.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Generating OpenSSL certificates to run a NodeJS HTTPS Server</title>
+      <link>http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server</link>
+      <pubDate>Wed, 22 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server</guid>
+      <description>
+
+&lt;p&gt;The last few days I&amp;rsquo;ve had to implement a simple HTTP/HTTPS client wrapper for NodeJS, which returns a &lt;a href=&#34;https://promisesaplus.com/&#34; target=&#34;_blank&#34;&gt;Promise&lt;/a&gt;) for each request call and do some basic management for the common body structure that the APIs, which we&amp;rsquo;re building, respond.&lt;/p&gt;
+
+&lt;p&gt;Nonetheless, I&amp;rsquo;m not writing this post for the itself implementation because the purpose doesn&amp;rsquo;t matter to tell about the process to generate the SSL certificates to use for a iojs/NodeJS HTTPS server which you may need, as I needed, to test a HTTPS client.&lt;/p&gt;
+
+&lt;p&gt;As you may know and/or think, &lt;a href=&#34;https://www.openssl.org&#34; target=&#34;_blank&#34;&gt;OpenSSL&lt;/a&gt; isn&amp;rsquo;t the most friendly library, or in this case command line tool, that you&amp;rsquo;ve ever been used, however I&amp;rsquo;m not complaining about it, it provides a useful functionality which, you may think the same than me, is not the most funny thing that you would like to implement, for that reason and because it&amp;rsquo;s Open Source, I much appreciate the people how contribute to it, &lt;a href=&#34;http://en.wikipedia.org/wiki/OpenSSL&#34; target=&#34;_blank&#34;&gt;as many others may do&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;After the introduction, let&amp;rsquo;s go for the interesting part of the post.&lt;/p&gt;
+
+&lt;h2 id=&#34;generating-the-openssl-certificates:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Generating the OpenSSL certificates&lt;/h2&gt;
+
+&lt;p&gt;To create a certificate which it&amp;rsquo;s not self signed, to be able to emulate more how the real world works and avoid that the client report &lt;code&gt;self signed certificate&lt;/code&gt; SSL/TLS error, first of all we have to have a &lt;a href=&#34;http://en.wikipedia.org/wiki/Certificate_authority&#34; target=&#34;_blank&#34;&gt;CA (Certificate Authority)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The CAs&amp;rsquo; role is to emit certificates providing the trust (as a trusted third party) of the certificates that the serves use to proof that they&amp;rsquo;re who they really are.&lt;/p&gt;
+
+&lt;p&gt;In the real world, the trusted CAs are regulated, in someway which guarantee that the world (a.k.a us) can trust on them due the security requirements that they fulfill; obviously for our test environment we don&amp;rsquo;t need to know about all the bureaucracy.&lt;/p&gt;
+
+&lt;p&gt;Hence, first we have to &lt;strong&gt;create the CA certificate&lt;/strong&gt;, in this case with one, the root, will be enough, so it must be self signed, because it&amp;rsquo;s the root. In the real world the root CAs don&amp;rsquo;t usually sign end certificates, they sign certificates for other CAs creating an hierarchy chain where the CAs from some certain bottom level sign the end certificates, the ones used by server/clients to prove their authenticity.&lt;/p&gt;
+
+&lt;p&gt;To generate it with OpenSSL, we just use &lt;a href=&#34;https://www.openssl.org/docs/apps/req.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;req&lt;/code&gt; utility&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl req -batch -newkey rsa:2048 -nodes -keyout \
+  root-ca.key -days 3650 -x509 -out root-ca.crt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s clarify some of the used options:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;batch&lt;/code&gt;: We avoid the interactive mode, so we execute and get.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;nodes&lt;/code&gt;: Specify not to encrypt the private key, so server can read it without any passphrase or key agent.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;x509&lt;/code&gt;: Generate a self signed certificate rather than a certificate request (we&amp;rsquo;ll see this in a moment).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now, we have our CA, then let&amp;rsquo;s create the certificate that we need for our server; first we have to create a &lt;strong&gt;certificate request&lt;/strong&gt; with our private key; I&amp;rsquo;d just like to remind you that your private keys are generate by yourself and &lt;strong&gt;never are sent anywhere&lt;/strong&gt;, which is the basis of a PKI (Public Key Infrastructure), share your public key and non-disclose never your private key.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl req -newkey rsa:2048 -batch -nodes \
+  -config openssl.cnf -out localhost.csr -keyout localhost.key
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s clarify some of the used options for this, as well&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;newkey&lt;/code&gt;: Generate a new private key besides the certificate request; if we&amp;rsquo;d already had one, we&amp;rsquo;d remove this option and will provide another one to specify the file which contains the key, but with this, we save the call to another command.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;config&lt;/code&gt;: It provides a OpenSSL configuration file where we can specify what values and default values; it&amp;rsquo;s important here because I want to specify &lt;code&gt;localhost&lt;/code&gt; as domain name (in an Open SSL certificate is the &amp;ldquo;common name&amp;rdquo;) to match with the host used in the test&amp;rsquo;s requests but at the same time I want to assign in automatically without having to reply interactive questions (&lt;code&gt;-batch&lt;/code&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The configuration file, in this case &lt;code&gt;openssl.cnf&lt;/code&gt;, for the purpose that I want, only needs two fields, in the format that OpenSSL expect (if I&amp;rsquo;m not wrong it accepts other ones, but I know exactly this); it looks like this&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[ req ]
+distinguished_name     = req_distinguished_name
+
+[ req_distinguished_name ]
+ commonName                      = Common Name (eg, your name or your server&#39;s hostname)
+ commonName_default              = localhost
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And finally, let&amp;rsquo;s give the certificate request to the CA to generate the certificate for our server through &lt;a href=&#34;https://www.openssl.org/docs/apps/x509.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;x509&lt;/code&gt; utility&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;openssl x509 -req -CAkey root-ca.key -CA root-ca.crt \
+  -CAcreateserial -in localhost.csr -days 3650 -out localhost.crt
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And the options clarification&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;req&lt;/code&gt;: Specify that the input is a certificate request than a certificate&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;CAcreateserial&lt;/code&gt;: Generate a serial number file if doesn&amp;rsquo;t exist, so if we run this for first time, it will, otherwise will read from it the serial number and increment it for the next time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And we&amp;rsquo;re done with OpenSSL; in my case I add this in a &lt;code&gt;makefile target&lt;/code&gt; not to have to remember all of this each time that I have to generate them.&lt;/p&gt;
+
+&lt;h2 id=&#34;running-a-nodejs-https-server:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Running a NodeJS HTTPS server&lt;/h2&gt;
+
+&lt;p&gt;Running a HTTPS server with &lt;a href=&#34;https://iojs.org/api/https.html#https_https_createserver_options_requestlistener&#34; taget=&#34;_blank&#34;&gt;iojs&lt;/a&gt; / &lt;a href=&#34;https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener&#34; target=&#34;_blank&#34;&gt;NodeJS&lt;/a&gt; is pretty straightforward as a HTTP one.&lt;/p&gt;
+
+&lt;p&gt;I could save this section however, because the API documentation example is quite clear however, I thought that it doesn&amp;rsquo;t hurt to add here to provide a better understanding to the post.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; https &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;https&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; fs &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fs&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; options &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  key&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; fs.readFileSync(path.join(__dirname, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;localhost.key&amp;#39;&lt;/span&gt;)),
+  cert&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; fs.readFileSync(path(__dirname, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;localhost.crt&amp;#39;&lt;/span&gt;))
+};
+
+https.createServer(options, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res) {
+  res.writeHead(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;200&lt;/span&gt;);
+  res.end(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;hello world\n&amp;quot;&lt;/span&gt;);
+}).listen(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;8000&lt;/span&gt;);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2 id=&#34;requesting-the-server-from-nodejs-https-client:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Requesting the server from NodeJS HTTPS client&lt;/h2&gt;
+
+&lt;p&gt;Requesting the server from HTTPS &lt;a href=&#34;https://iojs.org/api/https.html#https_https_request_options_callback&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt; / &lt;a href=&#34;https://nodejs.org/api/https.html#https_https_request_options_callback&#34; target=&#34;_blank&#34;&gt;NodeJS&lt;/a&gt; client is pretty straightforward as well, however I have to provide the CA which signed the certificate used by the server, otherwise client will report an error saying that the certificate is wrong, basically because it cannot trust in a certificate which has been emitted for an unknown CA.&lt;/p&gt;
+
+&lt;p&gt;Therefore, on each request we must specify the &lt;code&gt;ca&lt;/code&gt; property in the options object with the CA&amp;rsquo;s certificate, maybe it&amp;rsquo;s annoying, but better than adding the certificate to the OS keychain, due that the &lt;a href=&#34;https://nodejs.org/api/https.html#https_https_globalagent&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;globalAgen&lt;/code&gt;&lt;/a&gt; ignores the &lt;a href=&#34;https://nodejs.org/api/tls.html#tls_tls_connect_options_callback&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;tls.connect&lt;/code&gt;&lt;/a&gt; options.&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; https &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;https&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; fs &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fs&amp;#39;&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; options &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  hostname&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;localhost&amp;#39;&lt;/span&gt;,
+  port&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;8000&lt;/span&gt;,
+  path&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;,
+  method&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;GET&amp;#39;&lt;/span&gt;,
+  ca&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; fs.readFileSync(path(__dirname, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;root-ca.crt&amp;#39;&lt;/span&gt;))
+};
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; req &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; https.request(options, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(res) {
+  console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;statusCode: &amp;quot;&lt;/span&gt;, res.statusCode);
+  console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;headers: &amp;quot;&lt;/span&gt;, res.headers);
+
+  res.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;data&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(d) {
+    process.stdout.write(d);
+  });
+});
+req.end();
+
+req.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;error&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(e) {
+  console.error(e);
+});
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And done!&lt;/p&gt;
+
+&lt;p&gt;Another solution to avoid to pass the CA certificate to the client is to use the &lt;code&gt;rejectUnauthorized&lt;/code&gt; options property to false, but in that case you are authorising everything, so I prefer to add the used CA and limit the authorisation for non-official CAs to only the create one.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:c33229e92ddb13d55167dfc4871f68b0&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Generating our certificate for our development/test environment with OpenSSL is a little bit tedious if you have to figure out how, however when you have how, it can be added to your &amp;ldquo;task runner&amp;rdquo; of your project and forget about the process.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, running a HTTPS server and making HTTPS request with iojs/NodeJS are pretty straightforward, knowing a bit about the server and client requirements, because when you don&amp;rsquo;t, finding out what happens with the error messages that OpenSSL sometimes gives, isn&amp;rsquo;t a nice task.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve hope that you&amp;rsquo;ve found this useful.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

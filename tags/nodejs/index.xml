@@ -1,0 +1,894 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Nodejs on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/nodejs/</link>
+    <description>Recent content in Nodejs on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Wed, 02 Mar 2016 16:05:37 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/nodejs/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A Nunjucks extension to compile RiotJS tags</title>
+      <link>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</link>
+      <pubDate>Wed, 02 Mar 2016 16:05:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</guid>
+      <description>
+
+&lt;p&gt;On the way to London, meanwhile I was flying, I wanted to take advantage of the dead time without internet to write this short blog post about a &lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+, &lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ and a Nunjucks extension that I&amp;rsquo;ve implemented, for a side project that I&amp;rsquo;m working on, to render RiotJS tags on the server.&lt;/p&gt;
+
+&lt;h2 id=&#34;nunjucks:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Nunjucks&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+ is a template engine (yes, another one!) for NodeJS and the browser which is heavily inspired by &lt;a href=&#34;http://jinja.pocoo.org/&#34; target=&#34;_blank&#34; &gt;jinja2&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;d never used before and probably I had heard about it, but I couldn&amp;rsquo;t remember, world is moving fast and almost any time you start a project you can discover lots of new stuff which may be better or a good fit it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used &lt;a href=&#34;http://jade-lang.com/&#34; target=&#34;_blank&#34; &gt;Jade&lt;/a&gt;
+ and &lt;a href=&#34;http://paularmstrong.github.io/swig/&#34; target=&#34;_blank&#34; &gt;Swig&lt;/a&gt;
+ (a bit less) several times and for this project I was thinking in using &lt;a href=&#34;http://markojs.com/&#34; target=&#34;_blank&#34; &gt;Marko&lt;/a&gt;
+, it has a few nice features as be able to send the content through a stream and a widget system which helps to create reusable components; however I found a bit confusing to start because there are several examples and &lt;a href=&#34;https://www.youtube.com/playlist?list=PLZUgs-F38XXQJBxA58UqnwTVMZS_uza_C&#34; target=&#34;_blank&#34; &gt;screen casts&lt;/a&gt;
+ but &lt;a href=&#34;http://markojs.com/docs/marko/javascript-api/#rendertemplatepath-templatedata-streamwritable&#34; target=&#34;_blank&#34; &gt;quite few functions have been deprecated in the new version&lt;/a&gt;
+ and I don&amp;rsquo;t have the need of streaming the content to enhance performance for this project.&lt;/p&gt;
+
+&lt;p&gt;At the same time, I didn&amp;rsquo;t want to spend lots of time in choosing and having to solve quite a few issues in how to use it and use it well to get the advantages, so I found Nunjucks was a good choice between taking something that I know and something that it&amp;rsquo;s new for me.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, in the time being I don&amp;rsquo;t expect to use that many advanced features that Nunjucks has, and probably I won&amp;rsquo;t take advantage of its power, but it&amp;rsquo;s OK, as it provides me all the things that I need.&lt;/p&gt;
+
+&lt;h2 id=&#34;riotjs:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;RiotJS&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ seems probably out of the context of this post and it could be if I wouldn&amp;rsquo;t have decided to also incorporate since the first few commits.&lt;/p&gt;
+
+&lt;p&gt;It also could be React, but I feel that it would add too much complexity to the project, it isn&amp;rsquo;t a big project and it shouldn&amp;rsquo;t have a big code base; moreover I would have to spend more time to nail React and all the things around it so I would end up not making the things done.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve had a experience using RiotJS, for a freelancing project that I was working a few weeks ago, it was a project with very hard deadline and I had to build a mobile friendly site for one existing one, created by one big &amp;ldquo;consultancy&amp;rdquo; company which basically they ended up delivering a huge pile of crap; anyway, the only think that matters for this post is that it couldn&amp;rsquo;t be made responsive and in 3 weeks time I had to deep in that horrible code base, make the changes what I needed to serve the content for a &lt;a href=&#34;https://en.wikipedia.org/wiki/Single-page_application&#34; target=&#34;_blank&#34; &gt;SPA&lt;/a&gt;
+ which at the same time I had to create to be served for requests coming from mobile devices.&lt;/p&gt;
+
+&lt;p&gt;I had never used RiotJS before, and due its minimalism I was able to read and understand the docs, and just use it to do what I had to do.&lt;/p&gt;
+
+&lt;p&gt;For this side project, I could avoid to add Riot, because it makes sense to render the site in the server, however there are a few parts which I would like to render on the client (e.g. a dashboard), maybe not in the first version, but in one, close to the first one.&lt;/p&gt;
+
+&lt;p&gt;Choosing RiotJS, I think that I can take advantage of its &lt;a href=&#34;http://riotjs.com/guide/&#34; target=&#34;_blank&#34; &gt;custom tag&lt;/a&gt;
+ to create components which at the beginning I can render in the server into Nunjucks templates and at some point, start to render them in the client side in a few pages or parts of them.&lt;/p&gt;
+
+&lt;h2 id=&#34;rendering-riotjs-in-nunjucks-templates:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Rendering RiotJS in Nunjucks templates&lt;/h2&gt;
+
+&lt;p&gt;To do this, I didn&amp;rsquo;t need to create any plugin, I could follow the same approach which you can watch in &lt;a href=&#34;https://www.youtube.com/watch?v=6ww1UXGJzcs&amp;amp;feature=youtu.be&#34; target=&#34;_blank&#34; &gt;this video using swig&lt;/a&gt;
+, but I found that creating a Nunjucks plugin for this purpose was simple and easy and it will save me time to repeat over an over a few statements in any page that I&amp;rsquo;m going to drop RiotJS tags besides the implementation will be less error prone.&lt;/p&gt;
+
+&lt;p&gt;The implementation of &lt;a href=&#34;http://mozilla.github.io/nunjucks/api.html#custom-tags&#34; target=&#34;_blank&#34; &gt;Nunjucks extension&lt;/a&gt;
+ is as simple as:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; RiotExtension(basePath) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.tags &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;]
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.parse &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (parser, nodes) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; tok &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.nextToken()
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; args &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.parseSignature(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;)
+    parser.advanceAfterBlockEnd(tok.value)
+
+    parser.parseUntilBlocks(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;endriot&amp;#39;&lt;/span&gt;)
+    parser.advanceAfterBlockEnd()
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nodes.CallExtension(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;renderRiot&amp;#39;&lt;/span&gt;, args, [])
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.renderRiot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (ctx, view, opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-disable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; tag &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(path.join(basePath, view))
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-enable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nunjucks.runtime.SafeString(riot.render(tag, opts))
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On the server, I&amp;rsquo;m using &lt;a href=&#34;http://koajs.com/&#34; target=&#34;_blank&#34; &gt;KoaJS&lt;/a&gt;
+ v2, at that time it wasn&amp;rsquo;t support in &lt;a href=&#34;https://github.com/queckezz/koa-views&#34; target=&#34;_blank&#34; &gt;Koa-views&lt;/a&gt;
+ for Koa v2 without using &lt;a href=&#34;https://github.com/koajs/convert&#34; target=&#34;_blank&#34; &gt;koa-convert&lt;/a&gt;
+, maybe &lt;a href=&#34;https://github.com/queckezz/koa-views/pull/54&#34; target=&#34;_blank&#34; &gt;there will one soon&lt;/a&gt;
+, and because I prefer to render views without having side effects in Koa &lt;code&gt;ctx&lt;/code&gt; (context), I basically pass the render function where I need and use it to generate the HTML which I assign to &lt;code&gt;ctx.body&lt;/code&gt; where I need.&lt;/p&gt;
+
+&lt;p&gt;The function which returns a promised render function, looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; getRenderFn(viewsPath, opts) {
+  riot.settings.brackets &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;${ }&amp;#39;&lt;/span&gt;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; njr &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; nunjucks.configure(viewsPath, opts)
+  njr.addExtension(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;RiotExtension&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; RiotExtension(path.join(viewsPath, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)))
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (view, data) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Promise((resolve, reject) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+      njr.render(view, data, (err, html) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+          reject(err)
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt;
+        }
+
+        resolve(html)
+      })
+    })
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And then, whenever I need to render a Riot tag in a Nunjucks template I only have to do &lt;code&gt;{% riot &amp;quot;my-tag.html&amp;quot; %}{% endriot %}&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Nunjuks looks as powerful template engine, on the other hand, I love the minimalism of RiotJS; with the combination of both I can render views in the server including components (Riot tags) than later on, I could reuse in the client side.&lt;/p&gt;
+
+&lt;p&gt;Nunjucks and RiotJS isn&amp;rsquo;t the only two that you can combine together, there more famous combinations or just one which allow to create templates which can be rendered in the server and the client, but I&amp;rsquo;ve decided to choose those based on my project requirements (technical and non-technical too); my recommendation here, is, do the same, choose the one(s) which fit better to it.&lt;/p&gt;
+
+&lt;p&gt;Happy mixing!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>KoaJS v2, BabelJS &amp; npm scripts</title>
+      <link>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</link>
+      <pubDate>Thu, 25 Feb 2016 09:14:11 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</guid>
+      <description>
+
+&lt;p&gt;Koa v2 has changed completely the middleware function signature, used in v1.x, to use &lt;a href=&#34;http://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;ES2016 async/await functions&lt;/a&gt;
+ over &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*&#34; target=&#34;_blank&#34; &gt;generators&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s still in alpha even thought the Koa&amp;rsquo;s team says that it&amp;rsquo;s production ready, because it&amp;rsquo;s currently used in some systems which are in production, however &lt;a href=&#34;https://github.com/koajs/koa/issues/533&#34; target=&#34;_blank&#34; &gt;the issues is that NodeJS doesn&amp;#39;t still support async/await function natively&lt;/a&gt;
+, hence you need a transpiler to be able to use async/await functions.&lt;/p&gt;
+
+&lt;p&gt;One, and probably the most famous, ES2015 tranpilers which also supports some of the features proposed for ES2016, and between then Async/Await functions, is &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; &gt;BabelJS&lt;/a&gt;
+; it&amp;rsquo;s also the one, most mentioned, in the Koa&amp;rsquo;s issue linked above, but it doesn&amp;rsquo;t look fancy having to transpile server code because it can be very painful, however Koa v2 doesn&amp;rsquo;t only accept async/await functions as a middleware, it also accepts function which return Promises (&lt;a href=&#34;https://nodejs.org/en/docs/es6/#which-features-ship-with-node-js-by-default-no-runtime-flag-required&#34; target=&#34;_blank&#34; &gt;which are already supported natively by last productions releases (LTS and no LTS)&lt;/a&gt;
+) because at the end an async/await function returns a Promise to the caller.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-we-can-do-now:4aa0da6c353d68f2346342f02b552d25&#34;&gt;What we can do now&lt;/h2&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t want to use BabelJS to write server code because it may be a pain the ass having in your development pipeline, then &lt;a href=&#34;https://github.com/koajs/koa/tree/2.0.0-alpha.3#example&#34; target=&#34;_blank&#34; &gt;you can still use Koa v2 using functions which return Promises&lt;/a&gt;
+; you don&amp;rsquo;t have to worry in having to rewrite those middlewares again when async/await functions be natively supported by NodeJS, you could use those ones and the new ones that implemented with async/async function seamless.&lt;/p&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t mind to use BabelJS in your server code, because it&amp;rsquo;s a new development which isn&amp;rsquo;t going to be a very big codebase, or because the implementation progress is going to be slow for whatever reason or you have any other reason which isn&amp;rsquo;t relevant for the purpose of this post then go for it and when NodeJS support async/away function natively then kill BabelJS.&lt;/p&gt;
+
+&lt;h2 id=&#34;koa-v2-babeljs-with-nodemon-npm-scripts:4aa0da6c353d68f2346342f02b552d25&#34;&gt;Koa v2, BabelJS, with Nodemon &amp;amp; npm scripts&lt;/h2&gt;
+
+&lt;p&gt;In case that you want to use BabelJS, and you don&amp;rsquo;t have any prepared boilerplate to develop a server side with Babel with server restarting automatically on each change, then you can follow this steps to install it, configure it and run it with npm.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have ran &lt;code&gt;npm init&lt;/code&gt; in a folder and you&amp;rsquo;re in your terminal on it execute&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Install Koa v2 &lt;code&gt;npm install --save koa@next&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install Babel and the presets and plugins needed to transpile ES6/7 features not supported natively by NodeJS; I recommend only use the async/await functions to be able to run your code as soon as async/await function are supported by NodeJS and may not others as spread paramaters, etc.
+&lt;code&gt;npm install --save-dev babel-core babel-cli babel-preset-es2015-node5  babel-plugin-transform-async-to-generator&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install nodemon &lt;code&gt;npm install --save-dev nodemon&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then setup babel creating a &lt;code&gt;.babelrc&lt;/code&gt; file with this content:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;development&amp;quot;&lt;/span&gt;: {
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;es2015-node5&amp;quot;&lt;/span&gt;],
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;transform-async-to-generator&amp;quot;&lt;/span&gt;]
+    }
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then you can create, into the property name &lt;code&gt;scripts&lt;/code&gt; of &lt;code&gt;package.json&lt;/code&gt;, something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;scripts&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;dev&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --exec npm run -s serve&amp;quot;&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;serve&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;babel-node -- src/server.js&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In case that you use &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;eslint&lt;/a&gt;
+ to lint your code, to avoid linter issues with async/await functions you have to install it and babel plugin&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;npm install --save-dev eslint babel-eslint&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;then set in &lt;code&gt;.eslintrc&lt;/code&gt; file the property &lt;code&gt;&amp;quot;parser&amp;quot;: &amp;quot;babel-eslint&amp;quot;&lt;/code&gt;. Bear in mind that you will have to enable the &lt;code&gt;es6&lt;/code&gt; features too, enabling &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;`es6` environtment&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;and you can also setup a watch mode in package.json &lt;code&gt;scripts&lt;/code&gt; property&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;lint-w&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --watch src -e js --exec eslint .&amp;quot;&lt;/span&gt;
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;then you can run the &amp;ldquo;dev&amp;rdquo; script target in one terminal tab and in other this one and enjoy developing a Koa v2 app, with asyn/await function with live restart and live linting.&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t wait until Koa v2 to be announced as production version, use it now with Babel or without, just use it now.&lt;/p&gt;
+
+&lt;p&gt;Happy coding!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How Arrow Functions Perform on Node?</title>
+      <link>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</link>
+      <pubDate>Thu, 18 Feb 2016 19:18:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</guid>
+      <description>
+
+&lt;p&gt;ES2015 Arrow functions are offered natively on NodeJS since while ago; they look as &lt;strong&gt;a convenient way to write anonymous functions than using function expressions&lt;/strong&gt;, because they have a &lt;a href=&#34;https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions&#34; target=&#34;_blank&#34; &gt;shorter syntax, but they also bind `this` value lexically&lt;/a&gt;
+, which is the thing that got my attention to do this short performance test to know if they run slower, faster or equally than function expressions.&lt;/p&gt;
+
+&lt;p&gt;As I mentioned in several posts, performance may be very important, but the most of the times, it&amp;rsquo;s quite less important than other things, as having a clean, simple and easy to understand and maintain code base which may performs not that fast as another one without those properties, or other reasons as using implementations (a.k.a frameworks) which are more generic so they allow to build fast, with less resources and many people can start to work quick because are well know by a certain amount of them.&lt;/p&gt;
+
+&lt;p&gt;I always consider the things mentioned above, however I&amp;rsquo;m not lazy if I have to type a bit more to get better performance without compromising any other important property, so in this case I would say that if arrow functions perform slower than function expressions, I would follow using function expressions because I don&amp;rsquo;t really mind to type the word &lt;code&gt;function&lt;/code&gt;, moreover that I think that in some situations the line of code is more clear having the keyword &lt;code&gt;function&lt;/code&gt; than the shorter syntax of the arrow functions, nonetheless that&amp;rsquo;s out of the scope of this post.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance-test:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Performance test&lt;/h2&gt;
+
+&lt;p&gt;Note, my purpose here is only &lt;strong&gt;to analyze those situations where the anonymous functions used don&amp;rsquo;t access to &lt;code&gt;this&lt;/code&gt; pointer&lt;/strong&gt;, because the most of the times that I&amp;rsquo;ve seen replacing functions expressions by arrow functions are on those situations and my worries are if arrow functions perform slower due the fact that they lexically bind &lt;code&gt;this&lt;/code&gt; pointer.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not analyzing those ones which the functions access to the lexical scope where functions expression should do through &lt;code&gt;bind&lt;/code&gt; or assigning lexical &lt;code&gt;this&lt;/code&gt; to a variable defined in the lexical scope, which at least, &lt;a href=&#34;http://stackoverflow.com/questions/17638305/why-is-bind-slower-than-a-closure&#34; target=&#34;_blank&#34; &gt;a few years ago, `bind` didn&amp;#39;t look as a good options from the performance point of view and we should see what happen now with the arrow functions&lt;/a&gt;
+, however that&amp;rsquo;s out of the main goal of this post.&lt;/p&gt;
+
+&lt;p&gt;To know the different running times between then I wrote a small script using &lt;a href=&#34;https://benchmarkjs.com/&#34; target=&#34;_blank&#34; &gt;Benchmark.js&lt;/a&gt;
+ with &lt;a href=&#34;https://github.com/wadey/node-microtime&#34; target=&#34;_blank&#34; &gt;Microtime&lt;/a&gt;
+ which looks like&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;use strict&amp;#39;&lt;/span&gt;;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; benchmark &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;benchmark&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; obj &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  execFe&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (a, b, c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c;
+    }(a, b, c));
+  },
+  execAf&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; ((a, b, c) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c)(a, b, c);
+  }
+};
+
+module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; obj;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; suite &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; benchmark.Suite;
+
+suite.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;arrow function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execAf(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;normal function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execFe(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;complete&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.forEach(b &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} &lt;span style=&#34;color: #333333&#34;&gt;-&amp;gt;&lt;/span&gt; mean&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${b.stats.mean}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  });
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; b &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; m &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; diff &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; b.stats.mean &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt; m.stats.mean;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} is ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;faster&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;slower&amp;#39;&lt;/span&gt;} than ${m.name} by ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt;diff &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; diff} seconds&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;Fastest is&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.filter(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fastest&amp;#39;&lt;/span&gt;).map(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;)}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+})
+.run({ async&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;false&lt;/span&gt; });
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also find it on the &lt;a href=&#34;https://gist.github.com/ifraixedes/e697740cd43bec83cd37&#34; target=&#34;_blank&#34; &gt;gist which I&amp;#39;ve created for its purpose&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;results:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Results&lt;/h2&gt;
+
+&lt;p&gt;I ran it several times (with NodeJS v5.6.0) and I didn&amp;rsquo;t find any performance run time difference between the arrow functions and the functions expressions. Each time that I executed the test I got different result, some of them the arrow function was faster and in others the function expressions, besides that the time difference between them was so tiny, so that&amp;rsquo;s more the usual differences that you can find in benchmark libraries than a real fact.&lt;/p&gt;
+
+&lt;p&gt;Below you can see the result of two of the executions that I did&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.1797950413531386e-8
+normal function -&amp;gt; mean: 3.236298102991821e-8
+arrow function is faster than normal function by 5.650306163868237e-10 seconds
+Fastest is: arrow function,normal function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.478900530420292e-8
+normal function -&amp;gt; mean: 3.4248199017909106e-8
+arrow function is slower than normal function by 5.408062862938166e-10 seconds
+Fastest is: normal function,arrow function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, the difference is negligible.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;Arrow functions and function expressions have the same performance execution, at least in Node.&lt;/p&gt;
+
+&lt;p&gt;Best!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;I&amp;rsquo;ve updated this post on 23/03/2016 to clarify what I wanted to analyze related arrow functions&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #11</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150501/</link>
+      <pubDate>Fri, 01 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150501/</guid>
+      <description>&lt;p&gt;This week I’m coming back with a 5 tech tweets, moreover I’ve realised that &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; got my heart.&lt;/p&gt;
+
+&lt;p&gt;Amazing blog post about how &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; makes the communication with C easy besides leveraging with its ownership system with zero-cost abstraction. It’s worthwhile to read it to see how it can also helps to create C bindings for other languages as &lt;a href=&#34;https://www.python.org/&#34;&gt;Python&lt;/a&gt;, &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt; and &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/About_JavaScript&#34;&gt;Javascript&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-cards=&#34;hidden&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Rust once, run anywhere: &lt;a href=&#34;http://t.co/AXF2uIFNav&#34;&gt;http://t.co/AXF2uIFNav&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/591653556219809794&#34;&gt;April 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Through this tweet, I found this awesome &lt;a href=&#34;https://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt; module, &lt;a href=&#34;https://github.com/robconery/massive-js&#34;&gt;massive-js&lt;/a&gt;, which allows to deal with &lt;a href=&#34;http://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; in a nice way&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Massive 2.0: A Postgres-Centric Data Access Tool for Node.js - &lt;a href=&#34;https://t.co/6TEBVxhBxS&#34;&gt;https://t.co/6TEBVxhBxS&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/591714326962118657&#34;&gt;April 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice video to watch another opinion about functional programming&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Deconstructing Functional Programming &lt;a href=&#34;http://t.co/nO9ITGfQat&#34;&gt;http://t.co/nO9ITGfQat&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dave Cheney (@davecheney) &lt;a href=&#34;https://twitter.com/davecheney/status/592673793581129733&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice post about writing some code in &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt; using the tooling.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&amp;quot;Rust is improving on many traditional systems languages by encouraging a good package ecosystem from the beginning&amp;quot; &lt;a href=&#34;http://t.co/8S1OEsw7YQ&#34;&gt;http://t.co/8S1OEsw7YQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/592706762861580288&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one is this awesome research paper which tells the implementation of a Unix Kernel with &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt;; they haven’t got the same performance than C, but they are overall happy with the work.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Reenix: Implementing a Unix-Like Operating System in Rust &lt;a href=&#34;http://t.co/ypLvs5aveq&#34;&gt;http://t.co/ypLvs5aveq&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/592743898692321280&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a good weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>3 Little Things in NodeJS which Help When You Have to Refactor</title>
+      <link>http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor</link>
+      <pubDate>Mon, 02 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor</guid>
+      <description>
+
+&lt;p&gt;We can say that in software development the concept of &lt;a href=&#34;http://martinfowler.com/books/refactoring.html&#34; target=&#34;_blank&#34;&gt;refactoring&lt;/a&gt; is present all the time; it seems that is in its nature.&lt;/p&gt;
+
+&lt;p&gt;We refactor code for several purposes, having a list with all of them, can be tricky, however here there are some:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We are building a prototype and we iterate over it to add, remove or change features.&lt;/li&gt;
+&lt;li&gt;We must clean code which was created in some point in a rush or it was created in the prototype cycle.&lt;/li&gt;
+&lt;li&gt;We must fix a bug.&lt;/li&gt;
+&lt;li&gt;We must upgrade dependencies which have changed the exposed API.&lt;/li&gt;
+&lt;li&gt;We must fix a performance issue.&lt;/li&gt;
+&lt;li&gt;We&amp;rsquo;ve come up with a new way/idea to get a cleaner or optimised implementation.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In my case, we are doing code refactoring almost everyday, even though, in my case, when I&amp;rsquo;m working in a new feature over a existent code base, sometimes I find some existent part which may have a little refactoring, and then I do, or if I&amp;rsquo;m working in a totally new implementation, I usually start from a roughly idea, which I &lt;a href=&#34;http://www.extremeprogramming.org/rules/spike.html&#34; target=&#34;_blank&#34;&gt;create a spike&lt;/a&gt; and then I refactor iteratively.&lt;/p&gt;
+
+&lt;p&gt;In this post, I&amp;rsquo;m going to mention 3 little things that I&amp;rsquo;ve learnt of refactoring NodeJS code bases, personal and professional ones, therefore I&amp;rsquo;ve learnt some of them from my own mistakes.&lt;/p&gt;
+
+&lt;h2 id=&#34;extracting-options-object-parameter-at-the-beginning-of-the-function:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Extracting &lt;code&gt;options&lt;/code&gt; object parameter at the beginning of the function&lt;/h2&gt;
+
+&lt;p&gt;One of the common implementation pattern that I use a lot in NodeJS is creating scripts that expose a function which receives only one parameter, an options object, e.g.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #888888&#34;&gt;// @param {Object} opts&lt;/span&gt;
+  module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;// Do whatever&lt;/span&gt;
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+      tell&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; tell
+    };
+  };
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; tell(somebody, message) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Hey &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; somebody &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;, Ivan wants to tell you: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; message;
+  }
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This pattern help me to prototype implementations because I can add more functionalities which require some options without changing the expose signature of the function, nonetheless don&amp;rsquo;t take me how it has to be used everywhere or keep it as the pattern to use to expose any API.&lt;/p&gt;
+
+&lt;p&gt;Ok, the pattern is great and if the function only has a few lines it is easy to take it to use in another prototype which may reuse it, however if the implementation is larger in number of lines or complex, for example it performs asynchronous operations (if you use callbacks then I would add, to the function of the example, a second parameter to pass the callback) then, knowing what options the function requires is painful, if they are accessed any where in the function.&lt;/p&gt;
+
+&lt;p&gt;One solution for that is to add a block comment on top of the function declaration with all the options parameters required and optional, nonetheless it isn&amp;rsquo;t in my likes, because if you&amp;rsquo;re prototyping, it&amp;rsquo;ll require to keep update when one parameter is added, removed or swapped from required to optional or vice versa, therefore it is prone to be outdated, hence useless.&lt;/p&gt;
+
+&lt;p&gt;A second solution, which is in my preferences, is extracting the options parameters just at the beginning of the function, just after you make all the validations of the required options or having a function with that purpose, which returns an opts object with the required values if opts pass the needed validations; you may already know what I mean, nonetheless let&amp;rsquo;s see an example:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// @param {Object} opts&lt;/span&gt;
+module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (opts) {
+  &lt;span style=&#34;color: #888888&#34;&gt;// Having a helper function for the validations is&lt;/span&gt;
+  &lt;span style=&#34;color: #888888&#34;&gt;// worthwhile when there are several options to check&lt;/span&gt;
+  &lt;span style=&#34;color: #888888&#34;&gt;// values and/or types&lt;/span&gt;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #333333&#34;&gt;!&lt;/span&gt;opts) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;opts is required&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; greeting &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; opts.greeting &lt;span style=&#34;color: #333333&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Hey&amp;#39;&lt;/span&gt;;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; teller &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; opts.teller &lt;span style=&#34;color: #333333&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+    tell&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; tell.bind(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, greeting, teller)
+  };
+};
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; tell(greeting, teller, somebody, message) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; greeting &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; somebody &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;, &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; teller &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; wants to tell you: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; message;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If the function is used internally and the options values are set by our implementation, validations are very basic, then extracting is clearer; hence as a rule of thumb keep the extraction in only one place because, with a quick glance, you can figure out in the future what option parameters the function needs.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, the good news is that ECMAScript 6 (ES6) will bring a destructuring feature, which allow to do something like this but compacted in the function signature, besides other cool stuff. You can read about it in the awesome Alex Rauschmayer blog post called &lt;a href=&#34;http://www.2ality.com/2015/01/es6-destructuring.html&#34; target=&#34;_blank&#34;&gt;Destructuring and parameter handling in ECMAScript 6&lt;/a&gt; to know deeply about ES6 destructuring and &lt;a href=&#34;http://www.2ality.com/2015/01/es6-destructuring.html#simulating_named_parameters_in_javascript&#34; href=&#34;_blank&#34;&gt;Simulating Named Parameters in JavaScript&lt;/a&gt; section to see the exposed case.&lt;/p&gt;
+
+&lt;h2 id=&#34;environment-variables-can-be-evil:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Environment variables can be evil&lt;/h2&gt;
+
+&lt;p&gt;Environment variables can be very useful to parametrise your applications and change the application behaviour however using too many or not to add them into documentation easy to find, can be a nightmare if they are accessed across all the code base.&lt;/p&gt;
+
+&lt;p&gt;However if they are used with awareness, only using a few and very identified then, they avoid to have a burden configuration file which has to be versioned for different environments.&lt;/p&gt;
+
+&lt;p&gt;In NodeJS, there is the famous NODE_ENV environment variable and it&amp;rsquo;s fine to define change the behaviour of your application or library (if it is justified), however I&amp;rsquo;ve found that not always is good to rely on it due that some npm packages use it to operate differently in production than development or testing environments.&lt;/p&gt;
+
+&lt;p&gt;The cases that I&amp;rsquo;ve found they are better to use other variable than NODE_ENV to specify the environment is when you have something that only has to run exclusively in production, for example, you  would like to set NODE_ENV to production to do load testing of your application, but you don&amp;rsquo;t want to send errors message to a central service that you use to collect them, because obviously you&amp;rsquo;re testing it in a controlled environment and don&amp;rsquo;t want to pollute your productions logs.&lt;/p&gt;
+
+&lt;p&gt;Anyway if your implementations need environment variables, I would pull all of them out in one place and would spread them as a property of an options object parameter, similar what I exposed in the previous section; unifying to one place where the application take them, eases to see in quick view what environment variables your application needs and what default values are assigned if they could be not specified, then know easily what values to set in other environments when the default values aren&amp;rsquo;t appropriated.&lt;/p&gt;
+
+&lt;h2 id=&#34;use-absolute-url-computed-into-variables:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Use absolute URL computed into variables&lt;/h2&gt;
+
+&lt;p&gt;This is a recommendation bound to &lt;a href=&#34;http://expressjs.com/4x/api.html&#34; target=&#34;_blank&#34;&gt;express 4.x&lt;/a&gt;, specifically to &lt;a href=&#34;http://expressjs.com/4x/api.html#router&#34; target=&#34;_blank&#34;&gt;Router&lt;/a&gt; feature which is available since version 4, nonetheless it may apply for others Web frameworks in a similar way.&lt;/p&gt;
+
+&lt;p&gt;Router is one of the awesome features that express 4 has brought, it allows to create mini-applications which specify their routes, middlewares included; they offer the possibility to reuse your implemented routes in different applications, obviously if they are quite generic and you developed them bearing in mind that autonomy.&lt;/p&gt;
+
+&lt;p&gt;However, I created some of them bearing in mind that, but I missed one thing. My routes render views rather than to send JSON, however it could apply to JSON if you have to send URLs to follow, and they need to link one to another and vice versa.&lt;/p&gt;
+
+&lt;p&gt;Because route can be mounted by other &lt;a href=&#34;http://expressjs.com/4x/api.html#app.use&#34; target=&#34;_blank&#34;&gt;Routers and a App&lt;/a&gt; you cannot hardcode an absolute URL, then I thought use relative URLs.&lt;/p&gt;
+
+&lt;p&gt;For example, having this two routes in a router:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  router.get(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/user/:id&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res, next) { ... });
+  router.get(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/group/:id&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res, next) { ... })
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Then each route view has a link to each other, e.g.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;user view&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;a&lt;/span&gt; &lt;span style=&#34;color: #0000CC&#34;&gt;href=&lt;/span&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;group/10&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #007700&#34;&gt;&amp;gt;&lt;/span&gt;NodeJS developers&lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;group view&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;a&lt;/span&gt; &lt;span style=&#34;color: #0000CC&#34;&gt;href=&lt;/span&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;user/0&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #007700&#34;&gt;&amp;gt;&lt;/span&gt;Group Administrator&lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Then I got in troubles because the links don&amp;rsquo;t work, because if you are, for example, in a users view, your browser url could be something &lt;code&gt;http://communi.ty/user/10&lt;/code&gt;, then when you press the link to the group &amp;ldquo;NodeJS developers&amp;rdquo; your browser will request &lt;code&gt;http://communi.ty/user/group/10&lt;/code&gt;, then the URL does not match with the &amp;ldquo;group&amp;rdquo; route of the Router.&lt;/p&gt;
+
+&lt;p&gt;In front of it, you can think to use absolute URLs, however if you use that Router in another application or your mount it in another path, then they won&amp;rsquo;t work. Perhaps, you decide that the views are not portable and they have to be implemented on each application, well&amp;hellip; that make sense, views are very bound to the application and they cannot probably be reused but you still have the issue that if you mount the Router under another path in the same application, because you are prototyping then you could realise that a new path fits better, then you would have to update your views without haven&amp;rsquo;t ported your router to another application; even worse, in the JSON case that I mentioned above, using relative URLs will require to update the Router, then it wouldn&amp;rsquo;t be reusable.&lt;/p&gt;
+
+&lt;p&gt;The solutions is easy, always compute the links with their absolute URL in the route and pass them to the render as variables, and likewise when you send JSON.&lt;/p&gt;
+
+&lt;p&gt;You can get the absolute URL even though you are in a Router&amp;rsquo;s route with &lt;a href=&#34;http://expressjs.com/4x/api.html#req.originalUrl&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;req.originalUrl&lt;/code&gt;&lt;/a&gt; and then you can compute the URLs to the other routes; in this example, stripping &amp;ldquo;/group/&lt;em&gt;&amp;rdquo; and &amp;ldquo;/user/&lt;/em&gt;&amp;rdquo; and after appending whatever is needed in each case would be enough to get the expected result.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;As software developers, we are refactoring all the time, software always can be better or it has to change for any reason; sometimes we have to prototype and move the prototypes to a product as soon as possible hence we don&amp;rsquo;t have time enough to spend thinking all the cases that our applications will face, even we&amp;rsquo;d have it, we&amp;rsquo;d probably fail, for that reason I guess that agile methodologies appeared; then in front of of this situation, we can craft software as better as we can and apply tiny things that we learn throughout our experience to make those refactoring less painful.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Performance Execution on JS Objects Created in Different Ways</title>
+      <link>http://blog.fraixed.es/post/performance-js-objects-created-different-ways</link>
+      <pubDate>Mon, 26 Jan 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/performance-js-objects-created-different-ways</guid>
+      <description>
+
+&lt;p&gt;In JS (javascript) there are different approaches to create objects which differ in somehow not only syntax but in small things that you can achieve.&lt;/p&gt;
+
+&lt;p&gt;My aim in this post is not to talk of those different approaches in the sense how they differ in terms of &lt;a href=&#34;http://en.wikipedia.org/wiki/Information_hiding&#34; target=&#34;_blank&#34;&gt;encapsulation&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code&#34; target=&#34;_blank&#34;&gt;code readability&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Programming_paradigm&#34; target=&#34;_blank&#34;&gt;programming paradigm&lt;/a&gt; approach, best practices, likes and preferences; I think that there are enough posts, articles, resources, etc, with full details, well explained and good quality about this topic on Internet.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m going to show some &lt;strong&gt;basic performance tests&lt;/strong&gt; that I&amp;rsquo;ve done with an object created with those different approaches; just to have fund and because I was curious about it.&lt;/p&gt;
+
+&lt;h2 id=&#34;test-implementations:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Test implementations&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve implemented a silly example of those different approaches and after I executed a performance test in different platforms (Browsers, &lt;a href=&#34;http://nodejs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Node&lt;/a&gt; and &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;iojs&lt;/a&gt;); let&amp;rsquo;s see first the used object creation approaches implementations:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Usual Constructor Function&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPrototype() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+}
+
+ContentPrototype.prototype.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; text;
+};
+
+ContentPrototype.prototype.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text;
+};
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Usual Constructor Function &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPrototypeNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+}
+
+ContentPrototypeNull.prototype.__proto__ &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+ContentPrototypeNull.prototype.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; text;
+};
+
+ContentPrototypeNull.prototype.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text;
+};
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Constructor Function which uses &lt;code&gt;Object.defineProperty&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentProperty() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.defineProperty(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;content&amp;#39;&lt;/span&gt;, {
+    set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+      }
+
+      text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+    },
+    get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Constructor Function which uses &lt;code&gt;Object.defineProperty&lt;/code&gt; &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPropertyNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.defineProperty(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;content&amp;#39;&lt;/span&gt;, {
+    set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+      }
+
+      text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+    },
+    get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+    }
+  });
+}
+
+ContentPropertyNull.prototype.__proto__ &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Usual Object Literal&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunction() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+            &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+  };
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object Literal &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; obj &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;);
+
+  obj.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+    }
+
+    text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+  };
+
+  obj.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+  };
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; obj;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object created by &lt;code&gt;Object.create&lt;/code&gt; defining properties&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionObjCreate() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;, {
+    content&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object created by &lt;code&gt;Object.create&lt;/code&gt; defining properties &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionObjCreateNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, {
+    content&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;After I wrote those examples, I also wrote little test for each one to check that they have the same behaviour in both operations (read and write), however I haven&amp;rsquo;t added here to avoid noise.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance-execution-tests:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Performance Execution Tests&lt;/h2&gt;
+
+&lt;p&gt;Thereafter I&amp;rsquo;ve created two performance test scripts to run in Node and iojs in my laptop (8 cores):&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;My own simple implementation which basically execute each operation a bunch of times in a loop, stores the individual values and calculates the time execution average; you can find it in this &lt;a href=&#34;https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-simple-average-time-metrics-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Another one which uses &lt;a href=&#34;http://benchmarkjs.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;benchmark.js&lt;/a&gt; with &lt;a href=&#34;https://github.com/wadey/node-microtime&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;microtime&lt;/a&gt; whose script you can find in this &lt;a href=&#34;https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-benchmark-metics-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In the case of the browsers, I&amp;rsquo;ve used &lt;a href=&#34;http://jsperf.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;jsperf&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then I&amp;rsquo;ve executed the performance execution test in the mentioned platforms to see how the objects, created with each different approach, perform in terms of writing and reading an object&amp;rsquo;s property value.&lt;/p&gt;
+
+&lt;h3 id=&#34;iojs:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;iojs&lt;/h3&gt;
+
+&lt;p&gt;I used the last iojs version available so far, which is 1.1.0.&lt;/p&gt;
+
+&lt;p&gt;My own script returned these results&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;iojs v1.1.0 simple average time&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/65/d6/66/65d666c5bf4aa1063ba2b42e299ceba8.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Benchmarjs script returned these ones&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;iojs v1.1.0 benchmark&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/9a/76/18/9a7618386ca59477e6069f1b086f1be5.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;node:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Node&lt;/h3&gt;
+
+&lt;p&gt;I used the last production Node version available so far, which is 0.12.0, YES v0.12 has been finally released.&lt;/p&gt;
+
+&lt;p&gt;My own script returned these results&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;node v0.12.0 simple average time&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/f1/b1/9a/f1b19a2b89f0daf73ee83ebbcc3c5165.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Benchmarjs script returned these ones&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;node v0.12.0 benchmark&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/de/36/a1/de36a16e9216edaf3f6e4afaaafa0b81.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;browser:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Browser&lt;/h3&gt;
+
+&lt;p&gt;In the browser you can find two tests, which are the same than the iojs and Node ones, but I had to split them in two, one to run the writing property operation and another for the reading one, to offer better results readability.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve run each one in three browsers, Chrome, Firefox and Safari and two different versions in the case of Chrome, one of them the current Chrome Canary; however &lt;strong&gt;I encourage you to run with your browsers&lt;/strong&gt; to have more samples of the same borwser/version and/or new ones from different browsers/versions.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://jsperf.com/proto-defineprop-obj-set/2&#34; target=&#34;_blank&#34;&gt;writing property value test&lt;/a&gt; showed me the next chart which I took an screenshot&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;browsers writing property jsperf chart&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/84/97/7e/84977e5a4415963462f7aa98c72f9e54.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://jsperf.com/prototype-vs-defineproperty-vs-object-get/3&#34; target=&#34;_blank&#34;&gt;reading property value test&lt;/a&gt; and its screenshot that I took&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;browsers reading property jsperf chart&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/d6/21/d2/d621d29ce5176a6a119d4b65abca3e84.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;my-analysis:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;My Analysis&lt;/h2&gt;
+
+&lt;p&gt;Due that Node and iojs benchmark don&amp;rsquo;t make more difference between running the benchmark test asynchronous and synchronous, I&amp;rsquo;ve just needed to take one of them in both cases to compare.&lt;/p&gt;
+
+&lt;p&gt;Having the comparison of writing and reading an object property value between them using benchmark script is not quite clear about the differences, more or less they perform similar and one is a little bit faster than other in some cases and vice versa.&lt;/p&gt;
+
+&lt;p&gt;If I have to asses them using &lt;strong&gt;my own script&lt;/strong&gt;, I can see that overall, &lt;strong&gt;Node performs around 5% faster than iojs&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;However both are consistent in what create object approaches perform faster in terms of writing and reading values.&lt;/p&gt;
+
+&lt;p&gt;We can see that Node and iojs, writes and reads perform better with objects whose properties have been defined using &lt;code&gt;Object.defineProperty&lt;/code&gt; or defining them through &lt;code&gt;Object.create&lt;/code&gt;; the approach that performs worse is any kind of constructors and in the middle we have the object literals; we cannot see much difference between inherit from Object prototype than without.&lt;/p&gt;
+
+&lt;p&gt;Having the &lt;strong&gt;difference between the best approach and the worst one&lt;/strong&gt; we can get gains around &lt;strong&gt;40% in writing&lt;/strong&gt; and &lt;strong&gt;200% in reading&lt;/strong&gt;, so not bad to have thought.&lt;/p&gt;
+
+&lt;p&gt;In the case of the browsers, we&amp;rsquo;ve got that the performance between the different approaches is the same for writing and reading.&lt;/p&gt;
+
+&lt;p&gt;Between them, &lt;strong&gt;Firefox and Safari perform very good with object literals&lt;/strong&gt;; Firefox does, in second place with constructors and so bad with objects created with &lt;code&gt;Object.create&lt;/code&gt; and/or having the properties set by &lt;code&gt;Object.defineProperty&lt;/code&gt; and Safari the opposite.&lt;/p&gt;
+
+&lt;p&gt;Surprisingly &lt;strong&gt;Chrome performs equally with all of them less object literals&lt;/strong&gt;, and &lt;strong&gt;Chrome Canary&lt;/strong&gt; increases those with constructors, maintains the same with object literals and &lt;strong&gt;decrease so much with objects created by &lt;code&gt;Object.create&lt;/code&gt;&lt;/strong&gt; which define their properties with it.&lt;/p&gt;
+
+&lt;p&gt;In the browser, you can see easily, thanks to the charts showed by &lt;a href=&#34;http://jsperf.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;jsperf&lt;/a&gt;, the roughly percentage of gain between approaches and browsers.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Having these result you can decide what approach to use in your implementations to boost the performance, however you may only get a benefit of it if you are writing and reading values on objects properties that you&amp;rsquo;ve created their implementation; nonetheless I only assessed CPU so, profiling the amount of memory spend with the different approaches when you have to create a lot of them, would also be important to keep the best balance.&lt;/p&gt;
+
+&lt;p&gt;Moreover in the time being the results are those, but mostly, browsers are updated fast and these results may change in the near future.&lt;/p&gt;
+
+&lt;p&gt;From my point of view, &lt;strong&gt;it isn&amp;rsquo;t worthwhile to focus in performance&lt;/strong&gt; and &lt;strong&gt;forget &lt;a href=&#34;http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code&#34; target=&#34;_blank&#34;&gt;code readability&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Programming_paradigm&#34; target=&#34;_blank&#34;&gt;programming paradigm&lt;/a&gt; and best practices&lt;/strong&gt; to keep the implementation simple and clear to ease the maintainability; hence after I&amp;rsquo;ve written it, I suggest to read these two rules of the Unix philosophy:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.faqs.org/docs/artu/ch01s06.html#id2877610&#34; target=&#34;_blank&#34;&gt;Rule of Clarity: Clarity is better than cleverness&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.faqs.org/docs/artu/ch01s06.html#rule_of_optimization&#34; target=&#34;_blank&#34;&gt;Rule of Optimization: Prototype before polishing. Get it working before you optimize it&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;ve enjoyed.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>GitEvents a New Community Open Source Project</title>
+      <link>http://blog.fraixed.es/post/gitevents-new-community-open-source-project</link>
+      <pubDate>Mon, 26 Jan 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/gitevents-new-community-open-source-project</guid>
+      <description>
+
+&lt;p&gt;Saturday of a couple weeks ago I spent my time in a hackday which ran simultaneously in two places &lt;a href=&#34;http://www.meetup.com/NodeBCN/events/219664616/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Barcelona&lt;/a&gt; hosted by &lt;a href=&#34;http://www.meetup.com/NodeBCN/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;NodeBCN&lt;/a&gt; and &lt;a href=&#34;https://ti.to/opensauce/github-api-hackday&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;London&lt;/a&gt; hosted by &lt;a href=&#34;http://lnug.org/&#34; target=&#34;_blank&#34;&gt;LNUG&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Hackathon had the aim to kickstart a new community Open Source project initially called &lt;em&gt;gitup&lt;/em&gt; owned by &lt;a href=&#34;https://github.com/barcelona-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;BarcelonaJS Github organisation&lt;/a&gt; however due the incredible collaboration that it got by the attendees it&amp;rsquo;s become an itself organisation called &lt;a href=&#34;https://github.com/GitEvents/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;GitEvents&lt;/a&gt; hosting the &lt;a href=&#34;https://github.com/GitEvents/gitevents&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;project&lt;/a&gt; and a bunch of dependant projects which must end up with the first known requirements of the project.&lt;/p&gt;
+
+&lt;p&gt;I had a very good experience seeing how it was born and how it is growing up.&lt;/p&gt;
+
+&lt;p&gt;Here I&amp;rsquo;m going to tell you its first steps:&lt;/p&gt;
+
+&lt;h2 id=&#34;the-idea:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;The idea&lt;/h2&gt;
+
+&lt;p&gt;The idea of the project is backed by &lt;a href=&#34;https://twitter.com/PatrickHeneise&#34;&gt;@PatrickHeneise&lt;/a&gt; with the main aim to automatise and drop down the costs as much as possible the administration of managing Tech meetups using &lt;a href=&#34;https://guides.github.com/features/issues/&#34;&gt;GitHub Issues&lt;/a&gt; as an interface and  &lt;a href=&#34;https://developer.github.com/v3/&#34;&gt;GitHub API&lt;/a&gt; to fire automatic actions which can be without any specific order &lt;em&gt;update the group website&lt;/em&gt;, &lt;em&gt;send a tweet&lt;/em&gt;, &lt;em&gt;send an email&lt;/em&gt;, etc.&lt;/p&gt;
+
+&lt;h2 id=&#34;how-the-idea-spread:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;How the Idea spread&lt;/h2&gt;
+
+&lt;p&gt;I had briefly heard &lt;a href=&#34;https://twitter.com/PatrickHeneise&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;@PatrickHeneise&lt;/a&gt;&amp;rsquo;s idea when I attended to &lt;a href=&#34;http://www.meetup.com/BarcelonaJS/events/219097453/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;BarcelonaJS Meetup&lt;/a&gt; when I was visiting my family for Christmas time, however it was just that, I knew that he was interested in developing it and other NodeJS groups as &lt;a href=&#34;http://berlinjs.org/&#34; target=&#34;_blank&#34;&gt;BerlingJS&lt;/a&gt; were interested as well.&lt;/p&gt;
+
+&lt;p&gt;Without knowing anything more about it, on 6th of January I saw a Patrick&amp;rsquo;s tweet, with less 140 characters ;D, announcing the project and asking for help.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; lang=&#34;en-gb&#34;&gt;&lt;p&gt;Working with the GitHub API to create/update a JSON file for github-meetup integration. &lt;a href=&#34;https://twitter.com/hashtag/helpwanted?src=hash&#34;&gt;#helpwanted&lt;/a&gt; &lt;a href=&#34;https://t.co/6sdvTdtz75&#34;&gt;https://t.co/6sdvTdtz75&lt;/a&gt;&lt;/p&gt;&amp;mdash; Patrick Heneise (@PatrickHeneise) &lt;a href=&#34;https://twitter.com/PatrickHeneise/status/552568103805390848&#34;&gt;January 6, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice, I decided to retweet it and the magic started; @iancrowther expressed his interest in the project and I added sugar on it.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; lang=&#34;en&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/iancrowther&#34;&gt;@iancrowther&lt;/a&gt;, Yes, it is, &lt;a href=&#34;https://twitter.com/PatrickHeneise&#34;&gt;@PatrickHeneise&lt;/a&gt; is the BCN Javascript and &lt;a href=&#34;https://twitter.com/nodejs&#34;&gt;@nodejs&lt;/a&gt; Meetup group organiser, I&amp;#39;ve been in touch in person on Xmas&lt;/p&gt;&amp;mdash; Ivan Fraixedes (@ifraixedes) &lt;a href=&#34;https://twitter.com/ifraixedes/status/552753464544333824&#34;&gt;January 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;and after the introductions, the conversation followed in &lt;a href=&#34;https://gitter.im&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Gitter&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; lang=&#34;en&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/PatrickHeneise&#34;&gt;@PatrickHeneise&lt;/a&gt; &lt;a href=&#34;https://twitter.com/ifraixedes&#34;&gt;@ifraixedes&lt;/a&gt; lets move this to gitter: &lt;a href=&#34;https://t.co/WwmHgUzkhT&#34;&gt;https://t.co/WwmHgUzkhT&lt;/a&gt;&lt;/p&gt;&amp;mdash; ツ Ian Crowther (@iancrowther) &lt;a href=&#34;https://twitter.com/iancrowther/status/552774886566146048&#34;&gt;January 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;That conversation brought the idea, by Ian, to organise a hackathon which became a hackathon running in both cities &lt;a href=&#34;http://www.meetup.com/NodeBCN/events/219664616/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Barcelona&lt;/a&gt; and &lt;a href=&#34;https://ti.to/opensauce/github-api-hackday&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;London&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;the-hackathon:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;The Hackathon&lt;/h2&gt;
+
+&lt;p&gt;The hackathon was announced and some people joined in both places, there wasn&amp;rsquo;t a massive number of attendees however people who attended was quite exited about the project and wanted to work in, or at least getting start with &lt;a href=&#34;http://nodejs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;NodeJS&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then the project started to have a community contribution; people followed some documentation and opened issues, with tasks to do, which Patrick and Ian created on the previous days.&lt;/p&gt;
+
+&lt;p&gt;Patrick and Ian were doing some skype calls during the day to know in realtime how the things were going and keeping the two different places in communication, hence transmitting the spirit of the hackathon, +1 guys.&lt;/p&gt;
+
+&lt;p&gt;At the end it was a day of community; some contributors were working in one of the plugins, others in the core and the outcomes were some pull requests sent and merged, more issues opened, some specifications and decisions and so on, pretty amazing to have seen.&lt;/p&gt;
+
+&lt;h2 id=&#34;post-hackathon:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;Post Hackathon&lt;/h2&gt;
+
+&lt;p&gt;After the day of the hackathon, some of the initial contributors are working on; some of them have been working since the following Sunday and so far the project has:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;9 repositories which are in development, 1 is the core and 8 are plugins.&lt;/li&gt;
+&lt;li&gt;8 people, 2 owners and 6 contributors.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;There are several issues opened and people discussing in them the most of the tagged as &lt;em&gt;&amp;ldquo;inprogress&amp;rdquo;&lt;/em&gt; and &lt;em&gt;&amp;ldquo;enhancement&amp;rdquo;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;GitEvent issues after two weeks that project started&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/fb/d2/d5/fbd2d51d5b15f49be2ff7b8882e98e36.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;The biggest challenge starts now, keeping the engagement and the interests of the current contributors, encourage new ones, create interest for the project and create a bigger community.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-wrap-up:4df1d446555dc1d7b8d9dd49c35987a1&#34;&gt;The Wrap Up&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m really happy to see how an Open Source community starts, even though it is in very early stage Patrick and Ian are very keen to move the project forward and grow a passionate community.&lt;/p&gt;
+
+&lt;p&gt;Being a collaborator, I&amp;rsquo;ve learnt how a community Open Source project is being organised, not just the good things but also all the pains, because organise a distributed team where everybody have opinion is not easy, however very rewarding.&lt;/p&gt;
+
+&lt;p&gt;Hopefully I will keep myself involved on it and make some new contributions as well.&lt;/p&gt;
+
+&lt;p&gt;And you, are you &lt;strong&gt;interested in getting involved?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;don&amp;rsquo;t hesitate to visit &lt;a href=&#34;https://github.com/GitEvents&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;GitEvents&lt;/a&gt; and take a look to the current &lt;a href=&#34;https://github.com/GitEvents/gitevents/issues&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;issues&lt;/a&gt;, see if you can help in any, or just make suggestions, improvements and report bugs whenever the first usable release appear.&lt;/p&gt;
+
+&lt;p&gt;See you in the next post.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

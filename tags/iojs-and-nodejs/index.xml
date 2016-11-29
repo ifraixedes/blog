@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Iojs And Nodejs on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/iojs-and-nodejs/</link>
+    <description>Recent content in Iojs And Nodejs on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Mon, 06 Apr 2015 11:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/iojs-and-nodejs/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>JS Test with Mocha, Chai &amp; Sinon Driven by Example</title>
+      <link>http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example</link>
+      <pubDate>Mon, 06 Apr 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example</guid>
+      <description>
+
+&lt;p&gt;I&amp;rsquo;ve decided to write this post after I&amp;rsquo;ve helped a friend of mine, &lt;a href=&#34;https://twitter.com/hyprstack&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;@hyprstack&lt;/a&gt;, to write a 100% coverage test in one of his implementations using &amp;ldquo;spies&amp;rdquo; and &amp;ldquo;stubs&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;As you probably well know &lt;strong&gt;&amp;ldquo;testing&amp;rdquo;&lt;/strong&gt; is one of the general software development &lt;strong&gt;best practices&lt;/strong&gt;, they&amp;rsquo;re highly recommended for any piece of code that has been create beyond a hack and whenever you&amp;rsquo;re a little bit worry the consequences that your code can produce if it doesn&amp;rsquo;t do what you expect.&lt;/p&gt;
+
+&lt;p&gt;Anyway, my friend was doing an implementation of AWS handler for &lt;a href=&#34;http://aws.amazon.com/lambda/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;AWS Lambda&lt;/a&gt; which basically is triggered when a file it&amp;rsquo;s uploaded to S3. The handler (function) has to download the file (if it has a supported file image extension), resize the image file in several defined sizes and upload those new files to S3.&lt;/p&gt;
+
+&lt;p&gt;It may not seem quite complicated, however the most of the operations are performed by third party libraries (&lt;a href=&#34;https://npmjs.org&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;npm modules&lt;/a&gt;), hence its test must be to &amp;ldquo;stub&amp;rdquo; no to rely on S3 as external service and avoid to mess around image files to simulate the resizing, therefore &lt;a href=&#34;https://github.com/aheckmann/gm&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gm (GraphicsMagick &amp;amp; ImageMagick) node module&lt;/a&gt; must be stubbed as well.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;You can refer to this &lt;a href=&#34;http://stackoverflow.com/questions/28881483/nodejs-testing-aws-with-mocha/28915395#28915395&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Stack Overflow question&lt;/a&gt; for more details&lt;/strong&gt; about my friends&amp;rsquo; doubt.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-execution-environment:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;The execution environment&lt;/h2&gt;
+
+&lt;p&gt;AWS Lambda is &lt;strong&gt;naturally iojs/NodeJS asynchronous pattern&lt;/strong&gt;, basically everything here run in iojs/NodeJS.&lt;/p&gt;
+
+&lt;p&gt;As you may know the asynchronous pattern isn&amp;rsquo;t easy to fully understand when you&amp;rsquo;re starting with it, or at least, reaching the point where combining asynchronous callbacks to make it works together are not something that you beat in one fell swoop in the first days, and if you add an extra bit of abstraction by a workflow library, the things can be easily messed up, as you can see as example in that Stack Overflow question; however nothing to worry, I made similar mistakes when I was starting.&lt;/p&gt;
+
+&lt;p&gt;This is one point in favour to be more interested in testing your code as my friend is.&lt;/p&gt;
+
+&lt;h2 id=&#34;testing-with-mocha-chai-and-sinon:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;Testing with Mocha, Chai and Sinon&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mochajs.org/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;Mocha&lt;/strong&gt;&lt;/a&gt; as test framework running, &lt;a href=&#34;http://chaijs.com/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;Chai&lt;/strong&gt; as assertion library and &lt;a href=&#34;http://sinonjs.org/&#34; target=&#34;_blank&#34;&gt;Sinon&lt;/a&gt; as test &amp;ldquo;spies&amp;rdquo;, &amp;ldquo;stubs&amp;rdquo; and &amp;ldquo;mocks&amp;rdquo; are a &lt;strong&gt;good combination to mix together&lt;/strong&gt; if you need all those things.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used a lot Mocha and Chai, but Sinon, just a bit, due the most of things that I&amp;rsquo;ve been developing haven&amp;rsquo;t need to stub a third party dependency to bypass them for similar reasons that I mentioned in the introduction of this post.&lt;/p&gt;
+
+&lt;p&gt;Stubs are useful, but they&amp;rsquo;re not the easiest thing to assimilate at the first time that you use or read the documentation; again they can be easy to understand, but as the most the things, more the difficult when you have to use properly in a real scenario.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-implementation:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;The implementation&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m not going to mention what the implementation does, I think that it&amp;rsquo;s easier to take a look to a right implementation that I&amp;rsquo;ve created in this &lt;a href=&#34;https://gist.github.com/ifraixedes/3330ce0edf9286234b04&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt; in case that you&amp;rsquo;re more interested and have better understanding about the following part of the post, hence I just leave here, the pice of code that it can be some more difficult because the issue was still there with the first Stack Overflow reply&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;async.waterfall([
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; download(next) {
+      s3.getObject({
+        Bucket&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; s3Bucket,
+        Key&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; s3Key
+      }, next);
+    },
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; transform(response, next) {
+      async.map(sizesConfigs, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (sizeConfig, mapNext) {
+        gm(response.Body, s3Key)
+        .resize(sizeConfig.width)
+        .toBuffer(imageType, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (err, buffer) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+            mapNext(err);
+            &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt;;
+          }
+
+          s3.putObject({
+            Bucket&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; s3Bucket,
+            Key&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;dst/&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; sizeConfig.destinationPath &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; s3Key,
+            Body&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; buffer,
+            ContentType&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;image/&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; imageType
+          }, mapNext)
+        });
+      }, next);
+    }
+  ], &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (err) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+      console.error(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Error processing image, details %s&amp;#39;&lt;/span&gt;, err.message);
+      context.done(err);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      context.done(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Successfully resized images bucket: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; s3Bucket &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; / key: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; s3Key);
+    }
+  });
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first implementation and the second one provided in the first Stack Overflow reply, messed up with the &lt;a href=&#34;https://github.com/caolan/async#waterfall&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;async.waterfall&lt;/a&gt;; and this uses, as you can see, inside one of the waterfall functions &lt;a href=&#34;https://github.com/caolan/async#map&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;async.map&lt;/a&gt;; for a year an half ago, I&amp;rsquo;m not using async that much, I use &lt;a href=&#34;http://en.wikipedia.org/wiki/Futures_and_promises&#34;&gt;promises&lt;/a&gt;, however I&amp;rsquo;ve tried to introduce the less changes as possible to make it works and clean up a little bit to make the implementation simpler to ease its readability.&lt;/p&gt;
+
+&lt;p&gt;By the way, my friend did another implementation in my first feed back and it solved the issue, however he was confused due the back and forth feedback, and he did another implementation without using async and using in his own, which I think that it&amp;rsquo;s good to learn and understand how async works internally, but the implementation looks neater with &lt;code&gt;async&lt;/code&gt; beyond to be closer to the original one.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-test:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;The test&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve decided to implement the test from scratch, it was not ideal for me to take the test that he and the Stack Overflow responser did and refactor to aim the 100% coverage.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not going to expose here the test, you can see it, in the &lt;a href=&#34;https://gist.github.com/ifraixedes/3330ce0edf9286234b04&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;; I&amp;rsquo;m going to mention what I&amp;rsquo;ve learn about Sinon when you have to use for several third party dependencies, together with &lt;a href=&#34;https://github.com/thlorenz/proxyquire&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;proxyquire&lt;/a&gt; which I had never used before and it&amp;rsquo;s good not to have to expose or inject third party modules in your modules and having the chance of still using them as usual when you want to stub them.&lt;/p&gt;
+
+&lt;p&gt;Whenever you are using this &amp;ldquo;testing stack&amp;rdquo; (Mocha, Chai and Sinon), &lt;strong&gt;&lt;a href=&#34;https://github.com/domenic/sinon-chai&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;sinon-chai&lt;/a&gt; is king&lt;/strong&gt;, it simplifies and make the test assertions more readable when obviously you use both; my friend was already using it, so I haven&amp;rsquo;t introduced it to the new test, but I&amp;rsquo;ve though that it&amp;rsquo;s a good thing to mention.&lt;/p&gt;
+
+&lt;p&gt;If you read the test, you&amp;rsquo;ll see that there&amp;rsquo;re several stubs (and/or spies) that you must use to be able to test the handler. The tests cases which involve to test all the execution workflow require to test the calls (passsed parameters) and define at callback call for each; they drove me mad at the beginning and in some point I decided to extract the &lt;code&gt;transform&lt;/code&gt; function in the &lt;code&gt;asyn.waterfall&lt;/code&gt; chain to an individual script (a.k.a node module) to be able to create just only one &amp;ldquo;stub&amp;rdquo; for the part with the &lt;code&gt;proxyquire&lt;/code&gt; help and write a second test to test only the &lt;code&gt;transform&lt;/code&gt; module; however I&amp;rsquo;ve failed, I couldn&amp;rsquo;t make &lt;code&gt;proxyquire&lt;/code&gt; work with it, it was still executing the original function than the &lt;code&gt;stub&lt;/code&gt; and at the end, I returned back to the current solution (all in one script/node module), however I&amp;rsquo;ve also thought the easy second solution, to add the &lt;code&gt;transform&lt;/code&gt; function to AWS handler module, however I didn&amp;rsquo;t like to have to export both in the same module and as you can see, I returned back to the first and current approach.&lt;/p&gt;
+
+&lt;p&gt;With the current approach, I&amp;rsquo;ve started to create all the &amp;ldquo;stubs&amp;rdquo; and as I thought at the beginning, it was going to be hard to add every stub with the parameters that each one should receive to test all the calls to &lt;code&gt;gm&lt;/code&gt; module, moreover that a simple mistake (typo, etc.) was not going not to call the chain, making difficult to discover from where the error comes (implementation or test stub and which one), moreover to have to put a lot of expectations in the wrong place &lt;code&gt;begin&lt;/code&gt; Mocha function.&lt;/p&gt;
+
+&lt;p&gt;Thinking for a moment, I&amp;rsquo;ve realised that using Sinon with Chai, it&amp;rsquo;s not needed, to have to define parameters, just defining the position of the callback parameters and the values pass in the &amp;ldquo;stubs&amp;rdquo; are enough and move to chai the assertions checking in the right place, &lt;code&gt;it&lt;/code&gt; Mocha function, so it&amp;rsquo;s more right, simpler and readable, hence better.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Test your code is king, sometime is harder than writing the implementation, in this case I&amp;rsquo;ve spent more time in the test than in the implementation, moreover if you want to have 100% coverage; having the coverage is good to know which parts of your implementations are tested and which ones not, so added whenever you can, as my friend did.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re starting with iojs/NodeJS, I think that the best way is to understand well the asynchronous programming pattern, is through the callback node convention, they&amp;rsquo;re the basis of node and even though the promise approach are increasing fast, I think that it&amp;rsquo;s worth to learn the basis first.&lt;/p&gt;
+
+&lt;p&gt;Testing your code when you&amp;rsquo;re learning it&amp;rsquo;s as good complement for your implementations, you&amp;rsquo;ll learn a lot, and moving forward with spies, stubs and mock it&amp;rsquo;s good to struggle, learn and when you beat them, you&amp;rsquo;ll be ready to use whenever you need then, furthermore to be more experienced.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re learning node, don&amp;rsquo;t miss to check &lt;a href=&#34;http://nodeschool.io/&#34; target=&#34;_blank&#34;&gt;Node School&lt;/a&gt; in case that you haven&amp;rsquo;t heard about it.&lt;/p&gt;
+
+&lt;p&gt;I hope that this read has been useful for you.
+Best!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

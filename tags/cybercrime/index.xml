@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cybercrime on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/cybercrime/</link>
+    <description>Recent content in Cybercrime on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Mon, 23 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/cybercrime/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Behind the scene of a Gumtree Spoofed email</title>
+      <link>http://blog.fraixed.es/post/behind-scene-gumtree-spoofed-email</link>
+      <pubDate>Mon, 23 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/behind-scene-gumtree-spoofed-email</guid>
+      <description>
+
+&lt;p&gt;In my previous post, I wrote about &lt;a href=&#34;http://blog.fraixed.es/post/basic-hints-indentify-gumtree-spoofed-email&#34; target=&#34;_blank&#34;&gt;Basic Hints to Identify a Gumtree Spoofed email&lt;/a&gt;, which is an introduction and the context of this post.&lt;/p&gt;
+
+&lt;p&gt;In this post I&amp;rsquo;m writing about what I found in the URL linked by that spoofed email.&lt;/p&gt;
+
+&lt;p&gt;This post, as the previous one related with this topic, doesn&amp;rsquo;t bring any hacking technique, again, I&amp;rsquo;m not a hacker, I&amp;rsquo;m another common geek guy, hence don&amp;rsquo;t expect to read a new kind of attack or hacking trend, just a little bit more technical stuff of what I just did for fun when I received that email.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-raw-content-of-the-email:8e0c4f2e9445ffcb49b9e62648e9c29a&#34;&gt;The raw content of the email&lt;/h2&gt;
+
+&lt;p&gt;The first thing that I did, was taking a look to the raw format of the email, however as I already expected, nothing important was there, &lt;a href=&#34;http://en.wikipedia.org/wiki/Sender_Policy_Framework&#34; target=&#34;_blank&#34;&gt;SPF&lt;/a&gt; passed how it was expected because the email sender address is a gmail one, hence Google isn&amp;rsquo;t going to ban itself if the email has been sent through their servers and nobody is going to use a gmail email address to send through other servers than the official ones because nobody gets any value of it; if somebody wants to do that, is because they want to send you an email with the domain address that they try to fake the original sender, in this case would be &lt;a href=&#34;http://gumtree.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Gumtree&lt;/a&gt; not gmail.&lt;/p&gt;
+
+&lt;p&gt;Moreover in this case the content of the email was encoded in base64, so it was easy to see the domain name where the link is pointing, just hovering with the mouse and taking a look to the bottom of the browser window than decode the base64. Anyway, the content was the next&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/bc/ef/1c/bcef1c808165c0b85b7a0682c434b9d7.jpg&#34; alt=&#34;phishing email raw format&#34; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;following-the-links-via-curl:8e0c4f2e9445ffcb49b9e62648e9c29a&#34;&gt;Following the links via &lt;code&gt;curl&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;I got the link, nonetheless, I don&amp;rsquo;t trust too much to visit the link straightaway without taking a look a little bit what behind it without a usual browser, just in case that they could take advantage of some security hole; although I&amp;rsquo;d probably browser it at the end, I prefer to have a roughly idea what scripts and URLs includes.&lt;/p&gt;
+
+&lt;p&gt;Then &lt;code&gt;curl&lt;/code&gt; the URL&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;curl the URL&#34; src=&#34;http://zippy.gfycat.com/FeistyFrequentAndeancockoftherock.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;After that I realised that they used a URL in the middle to redirect to the proper site, &lt;a href=&#34;http://curl.haxx.se/docs/manpage.html&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;curl&lt;/code&gt;&lt;/a&gt; doesn&amp;rsquo;t manage redirections by default, then I followed the redirection with &lt;code&gt;curl -L&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;curl the URL with redirection&#34; src=&#34;http://zippy.gfycat.com/ShamelessQuaintAntipodesgreenparakeet.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;As we can see, it&amp;rsquo;s not only one redirection, they added a second one, this time a javascript one.&lt;/p&gt;
+
+&lt;p&gt;Why did they do all of these? I don&amp;rsquo;t know the right answer, I haven&amp;rsquo;t built it ;P, however I guess that they did for these reasons:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;The link&amp;rsquo;s URL is to avoid to be marked as spam in gmail, having a URL that the path (last part of the URL) is &lt;code&gt;images&lt;/code&gt; helps to sidetrack the spam filters.&lt;/li&gt;
+&lt;li&gt;That URL response with a &lt;a href=&#34;http://en.wikipedia.org/wiki/HTTP_301&#34; target=&#34;_blank&#34;&gt;301 HTTP status code (Moved Permanently)&lt;/a&gt; adds another barrier for &lt;a href=&#34;http://en.wikipedia.org/wiki/Web_crawler&#34; target=&#34;_blank&#34;&gt;crawler&lt;/a&gt; which may follow the link, some of them don&amp;rsquo;t follow those redirections then, more difficult to get there and find out that it&amp;rsquo;s faking Gumtree.&lt;/li&gt;
+&lt;li&gt;Following the 301 redirection, the content of the page is just a simple chunk of javascript which redirect the browser when it gets execute; they added this new one to be harder to follow by crawlers, the most of them don&amp;rsquo;t execute javascript, therefore the probability to detect the scam automatically drops down a lot.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then, I followed the javascript redirection, expecting that would be the last one, because the URL revealed the Gumtree domain name on it, hence what is the point to another one when there isn&amp;rsquo;t anything to hide behind it?&lt;/p&gt;
+
+&lt;p&gt;Due that, I decided to &lt;code&gt;curl&lt;/code&gt; the URL and filter the content (with &lt;a href=&#34;http://en.wikipedia.org/wiki/Grep&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;grep&lt;/code&gt;&lt;/a&gt;) that could harm, however it&amp;rsquo;s not the only one, but finding out &lt;code&gt;css&lt;/code&gt;, &lt;code&gt;js&lt;/code&gt; links, &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; tags and &lt;code&gt;src&lt;/code&gt; attributes will show what in the page may be dangerous with no much effort.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;curl and filter the content&#34; src=&#34;http://zippy.gfycat.com/FinishedWebbedAdouri.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, just only some css and one image, moreover they are linked to Gumtree domain (sa.gumtree.com), then if we trust in Gumtree, we know that they shouldn&amp;rsquo;t contain any malicious stuff.&lt;/p&gt;
+
+&lt;h4 id=&#34;visit-the-web-site-with-a-browser:8e0c4f2e9445ffcb49b9e62648e9c29a&#34;&gt;Visit the web site with a browser&lt;/h4&gt;
+
+&lt;p&gt;After all of those steps, I was ready to browse the URL with my browser (last official &lt;a href=&#34;http://www.google.com/chrome/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Chrome&lt;/a&gt; version), however, I always prefer to do in &lt;a href=&#34;https://support.google.com/chrome/answer/95464?hl=en-GB&#34;  target=&#34;_blank&#34;&gt;incognito mode&lt;/a&gt; and disable javascript execution (just in case) and cache to avoid to leave sh** in my computer.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;disabling javascript and cache and browsing the URL&#34; src=&#34;http://zippy.gfycat.com/FirmYearlyKitten.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;As we can see the web site try to simulate Gumtree login form; have you got the point of the URL? they added Gumtree domain name into it to mislead the visitor and try to get him/her to believe that he/she is in a Gumtree web page, but clearly it&amp;rsquo;s at the end in the &lt;a href=&#34;http://en.wikipedia.org/wiki/Query_string&#34; target=&#34;_blank&#34;&gt;query string part of the URL&lt;/a&gt; so it doesn&amp;rsquo;t apply to the domain name.&lt;/p&gt;
+
+&lt;p&gt;Obviously, I wasn&amp;rsquo;t going to introduce my login details there as you must not too; I took a look to the HTML code to see what is the URL that collects the form data and take a simple look to see if there was something weird there, however, remember that we haven&amp;rsquo;t seen any javascript in page so probably the form shouldn&amp;rsquo;t have any javascript validation.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;taking a look to the HTML code of the form&#34; src=&#34;http://media.giphy.com/media/ytwDCK1o9L7KmGqefm/giphy.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;I could press the button to go to that URL, however I preferred to load the URL straightaway and see how good they built it.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;loading the URL from straightaway than submitting it&#34; src=&#34;http://media.giphy.com/media/5yLgocc3WHwbwoTn7Us/giphy.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Clearly, no quality at all, they didn&amp;rsquo;t implement any check, the URL could be loaded by &lt;a href=&#34;http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods&#34; target=&#34;_blank&#34;&gt;GET than POST&lt;/a&gt; and the Gumtree domain in the URL is just a visual misleading.&lt;/p&gt;
+
+&lt;p&gt;We see that the page after that it&amp;rsquo;s the interesting one for them, they want to collect our credit/debit card details, basically from where they make money after all their effort; I applied the same technique than previously and I loaded the URL straightaway, I&amp;rsquo;m feeling a little bit safe with it, but I don&amp;rsquo;t have any strong technical argument to do it.&lt;/p&gt;
+
+&lt;p&gt;And that&amp;rsquo;s it, they should get that they want, then they show you the expected message and redirect you to Gumtree home page to avoid that the victim realises of their domain, just in case that he/she hasn&amp;rsquo;t before, and lose the income.&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;loading credit/debit card details URL form straightaway&#34; src=&#34;http://media.giphy.com/media/5yLgociQbt93scFPyPC/giphy.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;the redirection to Gumtree home page&#34; src=&#34;http://media.giphy.com/media/5yLgocjcqYJrKdSpGqk/giphy.gif&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:8e0c4f2e9445ffcb49b9e62648e9c29a&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Phishing emails are something that still existing; nowadays, I guess that less people get haunted with those however they probably get some, even though the rate should be low, to build a fake Gumtree one is easy and cheap in terms of look &amp;amp; feel and the place to store the data collected for those forms.&lt;/p&gt;
+
+&lt;p&gt;As an advise, check always the &lt;strong&gt;entire URL&lt;/strong&gt; of the browser and don&amp;rsquo;t get distracted by a part of the URL and ask yourself to check thoroughly to see if you can see any strange thing before sending any credit/debit card information.&lt;/p&gt;
+
+&lt;p&gt;Be safe.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Basic Hints to Identify a Gumtree Spoofed email</title>
+      <link>http://blog.fraixed.es/post/basic-hints-indentify-gumtree-spoofed-email</link>
+      <pubDate>Mon, 16 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/basic-hints-indentify-gumtree-spoofed-email</guid>
+      <description>
+
+&lt;p&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Email_spoofing&#34; target=&#34;_blank&#34;&gt;Email spoofing&lt;/a&gt; is a kind of attacks which have been used by cybercriminals for long time; even though the number of people who are aware about them has increased for last years, therefore the number of victims is lower, they&amp;rsquo;re still using it, because I guess that it&amp;rsquo;s cheap to execute and they&amp;rsquo;re still generating profit with them.&lt;/p&gt;
+
+&lt;p&gt;This post is not for hackers, I&amp;rsquo;m not a hacker, I&amp;rsquo;m another common geek guy, hence not to expect to learn the next crazy hacking trending technique; Ive written it based in one of my experiences and I thought that it could be useful for people with no technical skills to know how these attacks happen and be aware about them.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-scenario:58f4a77cc5d5524f87a6606c5e579251&#34;&gt;The Scenario&lt;/h3&gt;
+
+&lt;p&gt;The most of the free classified ads websites are constantly suffering of email spoofing attacks, because they have substantial web traffic of a lot of people making &amp;ldquo;business&amp;rdquo; deals in a non-regulated way, it means that nobody takes care of those deals which the most of them involve money exchange, so they are a good source of potential &amp;ldquo;clients&amp;rdquo; for cybercriminals.&lt;/p&gt;
+
+&lt;p&gt;I also use them for those purposes, however taking the same care that I take in the real life that basically is driven by one principle &lt;strong&gt;&amp;ldquo;don&amp;rsquo;t trust with anybody, except your mum!&amp;rdquo;&lt;/strong&gt; (there is some sarcasm in that sentence).&lt;/p&gt;
+
+&lt;p&gt;Then, henceforth I will show you how I got a &lt;a href=&#34;http://gumtree.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Gumtree&lt;/a&gt; spoofed email and the steps that I took to find out that it was spoofed email and hopefully you will get the execution pattern that they use to try to have a good business deal with you.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-story:58f4a77cc5d5524f87a6606c5e579251&#34;&gt;The Story&lt;/h3&gt;
+
+&lt;p&gt;I had an ad published in Gumtree and I got an email which was trying to emulate an official Gumtree one.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/736x/5e/a6/c0/5ea6c0641149cb9d578b07b012f24e05.jpg&#34; alt=&#34;received spoofed gumtree email&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;The main point here is that we cannot see anything strange with a simple look; however the operational was not expected, Gumtree has never sent me an email with a link to see any request, and if you use it quite a bit, then you may start to suspect of it for that reason; nonetheless the operational could change through the time so it&amp;rsquo;s not a hint which could show us that it&amp;rsquo;s a spoofed email.&lt;/p&gt;
+
+&lt;p&gt;In my case, &lt;strong&gt;I could detect straightaway something very strange&lt;/strong&gt; because the fake customer sent me a usual message through the ad&amp;rsquo;s contact form and when I just replied, 5 seconds later I received that email, hence too fast to write an email with that response even though Gumtree had forwarded me and email with a link to read the request. In this case it should be enough to discard this email and consider that somebody wants to cheat us, but if you hadn&amp;rsquo;t had the chance to realise that the email got into your inbox in that moment, you had probably realised that the email came just after your replied.&lt;/p&gt;
+
+&lt;p&gt;Anyway I was further with it and I checked the email sender, because as you can see some email providers, in this case &lt;a href=&#34;https://www.gmail.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gmail&lt;/a&gt;, only show the name that user wants to show than the specific email address.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/8f/70/0f/8f700fb44fbcec0dad6ba29394fde54b.jpg&#34; alt=&#34;checking sender email address&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;And thereafter, I checked the URL of the link, just only positioning my mouse pointer on top of the text link and looking the bottom of the browser window, where browser should usually show the full URL where the link points. The link wasn&amp;rsquo;t pointing any URL under gumtre.com domain name, therefore with this hint we should be enough  &lt;strong&gt;suspect evidences&lt;/strong&gt; to discard this email as potential customer request.&lt;/p&gt;
+
+&lt;p&gt;However, let&amp;rsquo;s give a small nudge to the world and report it as &lt;a href=&#34;http://en.wikipedia.org/wiki/Phishing&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;phishing&lt;/a&gt; therefore, don&amp;rsquo;t forget to report to  &lt;a href=&#34;http://help.gumtree.com/knowledgeProduct?c=Report_replies&amp;k=Example:%20%27email%20alerts%27&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Gumtree&lt;/a&gt; in the case it is related with, and if your email provider offers you any chance to do it, as it is the case of gmail, then do it as well.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://zippy.gfycat.com/ClosedPitifulHornet.gif&#34; alt=&#34;reporting phishing in gmail&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:58f4a77cc5d5524f87a6606c5e579251&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;In the Internet world, there are at least the same tricks to cheat you than in the physical world; &lt;strong&gt;using the common sense&lt;/strong&gt; and &lt;strong&gt;being always aware&lt;/strong&gt; is a must as probably you already do in the physical world, hence remain always vigilant and in front of a bad feeling, don&amp;rsquo;t do any step if you are not sure that it is secure and ask for advise if you think that you need help.&lt;/p&gt;
+
+&lt;p&gt;In the other hand, we need to put more emphasis to claim more security in the email systems, not only for confidentiality, but authenticity and non-repudiability too, which nowadays are already technically solved, however they aren&amp;rsquo;t commonly used, perhaps because nobody has found the way to spread them in an user friendly way, besides not to find a real business plan which can encourage investors to invest enough money to spread them.&lt;/p&gt;
+
+&lt;p&gt;In the time being, we could claim to the current email provider some easy built-in features which allow us to see&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;What is the real address of the sender&lt;/li&gt;
+&lt;li&gt;What URLs are pointing the text links&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;which, I think, they can be solved with simple text analysis and a little bit of design and user experience.&lt;/p&gt;
+
+&lt;p&gt;If you would like to read what there are behind the scene of the URL address linked by the email, don&amp;rsquo;t miss my next future post.&lt;/p&gt;
+
+&lt;p&gt;Take care.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

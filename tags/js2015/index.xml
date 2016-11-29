@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Js2015 on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/js2015/</link>
+    <description>Recent content in Js2015 on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Thu, 18 Feb 2016 19:18:37 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/js2015/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>How Arrow Functions Perform on Node?</title>
+      <link>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</link>
+      <pubDate>Thu, 18 Feb 2016 19:18:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</guid>
+      <description>
+
+&lt;p&gt;ES2015 Arrow functions are offered natively on NodeJS since while ago; they look as &lt;strong&gt;a convenient way to write anonymous functions than using function expressions&lt;/strong&gt;, because they have a &lt;a href=&#34;https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions&#34; target=&#34;_blank&#34; &gt;shorter syntax, but they also bind `this` value lexically&lt;/a&gt;
+, which is the thing that got my attention to do this short performance test to know if they run slower, faster or equally than function expressions.&lt;/p&gt;
+
+&lt;p&gt;As I mentioned in several posts, performance may be very important, but the most of the times, it&amp;rsquo;s quite less important than other things, as having a clean, simple and easy to understand and maintain code base which may performs not that fast as another one without those properties, or other reasons as using implementations (a.k.a frameworks) which are more generic so they allow to build fast, with less resources and many people can start to work quick because are well know by a certain amount of them.&lt;/p&gt;
+
+&lt;p&gt;I always consider the things mentioned above, however I&amp;rsquo;m not lazy if I have to type a bit more to get better performance without compromising any other important property, so in this case I would say that if arrow functions perform slower than function expressions, I would follow using function expressions because I don&amp;rsquo;t really mind to type the word &lt;code&gt;function&lt;/code&gt;, moreover that I think that in some situations the line of code is more clear having the keyword &lt;code&gt;function&lt;/code&gt; than the shorter syntax of the arrow functions, nonetheless that&amp;rsquo;s out of the scope of this post.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance-test:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Performance test&lt;/h2&gt;
+
+&lt;p&gt;Note, my purpose here is only &lt;strong&gt;to analyze those situations where the anonymous functions used don&amp;rsquo;t access to &lt;code&gt;this&lt;/code&gt; pointer&lt;/strong&gt;, because the most of the times that I&amp;rsquo;ve seen replacing functions expressions by arrow functions are on those situations and my worries are if arrow functions perform slower due the fact that they lexically bind &lt;code&gt;this&lt;/code&gt; pointer.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not analyzing those ones which the functions access to the lexical scope where functions expression should do through &lt;code&gt;bind&lt;/code&gt; or assigning lexical &lt;code&gt;this&lt;/code&gt; to a variable defined in the lexical scope, which at least, &lt;a href=&#34;http://stackoverflow.com/questions/17638305/why-is-bind-slower-than-a-closure&#34; target=&#34;_blank&#34; &gt;a few years ago, `bind` didn&amp;#39;t look as a good options from the performance point of view and we should see what happen now with the arrow functions&lt;/a&gt;
+, however that&amp;rsquo;s out of the main goal of this post.&lt;/p&gt;
+
+&lt;p&gt;To know the different running times between then I wrote a small script using &lt;a href=&#34;https://benchmarkjs.com/&#34; target=&#34;_blank&#34; &gt;Benchmark.js&lt;/a&gt;
+ with &lt;a href=&#34;https://github.com/wadey/node-microtime&#34; target=&#34;_blank&#34; &gt;Microtime&lt;/a&gt;
+ which looks like&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;use strict&amp;#39;&lt;/span&gt;;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; benchmark &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;benchmark&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; obj &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  execFe&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (a, b, c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c;
+    }(a, b, c));
+  },
+  execAf&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; ((a, b, c) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c)(a, b, c);
+  }
+};
+
+module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; obj;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; suite &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; benchmark.Suite;
+
+suite.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;arrow function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execAf(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;normal function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execFe(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;complete&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.forEach(b &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} &lt;span style=&#34;color: #333333&#34;&gt;-&amp;gt;&lt;/span&gt; mean&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${b.stats.mean}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  });
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; b &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; m &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; diff &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; b.stats.mean &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt; m.stats.mean;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} is ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;faster&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;slower&amp;#39;&lt;/span&gt;} than ${m.name} by ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt;diff &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; diff} seconds&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;Fastest is&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.filter(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fastest&amp;#39;&lt;/span&gt;).map(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;)}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+})
+.run({ async&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;false&lt;/span&gt; });
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also find it on the &lt;a href=&#34;https://gist.github.com/ifraixedes/e697740cd43bec83cd37&#34; target=&#34;_blank&#34; &gt;gist which I&amp;#39;ve created for its purpose&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;results:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Results&lt;/h2&gt;
+
+&lt;p&gt;I ran it several times (with NodeJS v5.6.0) and I didn&amp;rsquo;t find any performance run time difference between the arrow functions and the functions expressions. Each time that I executed the test I got different result, some of them the arrow function was faster and in others the function expressions, besides that the time difference between them was so tiny, so that&amp;rsquo;s more the usual differences that you can find in benchmark libraries than a real fact.&lt;/p&gt;
+
+&lt;p&gt;Below you can see the result of two of the executions that I did&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.1797950413531386e-8
+normal function -&amp;gt; mean: 3.236298102991821e-8
+arrow function is faster than normal function by 5.650306163868237e-10 seconds
+Fastest is: arrow function,normal function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.478900530420292e-8
+normal function -&amp;gt; mean: 3.4248199017909106e-8
+arrow function is slower than normal function by 5.408062862938166e-10 seconds
+Fastest is: normal function,arrow function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, the difference is negligible.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;Arrow functions and function expressions have the same performance execution, at least in Node.&lt;/p&gt;
+
+&lt;p&gt;Best!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;I&amp;rsquo;ve updated this post on 23/03/2016 to clarify what I wanted to analyze related arrow functions&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

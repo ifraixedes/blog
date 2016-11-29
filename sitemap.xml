@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://blog.fraixed.es/</loc>
+    <lastmod>2016-09-18T22:29:45+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/setting-up-gpg-gitwith-keybaseio</loc>
+    <lastmod>2016-09-18T22:29:45+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/linting-javascript-with-eslint</loc>
+    <lastmod>2016-06-11T23:12:07+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/3-weeks-backpacking-india-6</loc>
+    <lastmod>2016-03-28T20:00:49+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs</loc>
+    <lastmod>2016-03-15T19:30:46+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</loc>
+    <lastmod>2016-03-02T16:05:37+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</loc>
+    <lastmod>2016-02-25T09:14:11+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</loc>
+    <lastmod>2016-02-18T19:18:37+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/3-weeks-backpacking-india-5</loc>
+    <lastmod>2016-02-01T08:23:45+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/speaking-bcnjs-generators-and-async-functions</loc>
+    <lastmod>2016-01-12T18:00:58+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/3-weeks-backpacking-india-4</loc>
+    <lastmod>2016-01-10T17:18:44+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/slides/bcnjs-201601/</loc>
+    <lastmod>2016-01-09T16:03:58+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</loc>
+    <lastmod>2016-01-06T08:24:56+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/3-weeks-backpacking-india-3</loc>
+    <lastmod>2016-01-03T10:03:01+05:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/thoughts-about-software-engineering-2015</loc>
+    <lastmod>2015-12-31T18:03:32+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/3-weeks-backpacking-india-2</loc>
+    <lastmod>2015-12-25T10:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/my-last-2is-years-have-ended-up-today</loc>
+    <lastmod>2015-12-21T20:57:48+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/3-weeks-backpacking-india-1</loc>
+    <lastmod>2015-12-20T10:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/different-angle-about-story-new-wordpress</loc>
+    <lastmod>2015-11-28T09:02:14+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/slides/bcnjs-201510/</loc>
+    <lastmod>2015-10-09T10:01:52+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/speaking-bcnjs-intro-to-lovefield</loc>
+    <lastmod>2015-10-05T01:18:10+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/mercury-and-its-marvelous-modularity</loc>
+    <lastmod>2015-06-30T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/rack-style-golang-http-handlers</loc>
+    <lastmod>2015-06-03T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/thoughts-about-golang-action-responses</loc>
+    <lastmod>2015-05-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150515/</loc>
+    <lastmod>2015-05-15T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</loc>
+    <lastmod>2015-05-08T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/private-members-es6-classes-with-proxies</loc>
+    <lastmod>2015-05-06T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150501/</loc>
+    <lastmod>2015-05-01T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150424/</loc>
+    <lastmod>2015-04-24T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/generating-openssl-certificates-run-node-https-server</loc>
+    <lastmod>2015-04-22T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</loc>
+    <lastmod>2015-04-17T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/clarifying-my-mistake-get-requests-with-body</loc>
+    <lastmod>2015-04-13T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150410/</loc>
+    <lastmod>2015-04-10T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example</loc>
+    <lastmod>2015-04-06T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150403/</loc>
+    <lastmod>2015-04-03T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/thoughts-about-current-apis-implementations</loc>
+    <lastmod>2015-03-30T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150327/</loc>
+    <lastmod>2015-03-27T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics</loc>
+    <lastmod>2015-03-23T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150320/</loc>
+    <lastmod>2015-03-20T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics</loc>
+    <lastmod>2015-03-16T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</loc>
+    <lastmod>2015-03-13T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/golang-slices-structs-or-pointers-to-structs-dilemma</loc>
+    <lastmod>2015-03-09T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150306/</loc>
+    <lastmod>2015-03-06T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/hanging-around-red-black-trees-implementations</loc>
+    <lastmod>2015-03-02T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150227/</loc>
+    <lastmod>2015-02-28T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/behind-scene-gumtree-spoofed-email</loc>
+    <lastmod>2015-02-23T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150220/</loc>
+    <lastmod>2015-02-20T13:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/basic-hints-indentify-gumtree-spoofed-email</loc>
+    <lastmod>2015-02-16T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor</loc>
+    <lastmod>2015-02-02T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/performance-js-objects-created-different-ways</loc>
+    <lastmod>2015-01-26T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/gitevents-new-community-open-source-project</loc>
+    <lastmod>2015-01-26T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/post/what-about-this</loc>
+    <lastmod>2015-01-19T11:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://blog.fraixed.es/rss/</loc>
+  </url>
+  
+</urlset>

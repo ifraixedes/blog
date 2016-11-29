@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A brief script, the materials and related links of my talk about Profiling Golang Programs on March of 2016 at Golang BCN group">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Talk at Golang BCN about Profiling Go Programs">
+  <meta property="og:url" content="http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs">
+  <meta property="og:description" content="A brief script, the materials and related links of my talk about Profiling Golang Programs on March of 2016 at Golang BCN group">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://s-media-cache-ak0.pinimg.com/originals/f9/b7/a8/f9b7a8695ca571e8ec7b97dd2cfa72a9.png">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="golang">
+      
+        <meta property="og:tag" content="performance">
+      
+        <meta property="og:tag" content="profiling">
+      
+        <meta property="og:tag" content="analysis">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Talk at Golang BCN about Profiling Go Programs</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/golangbcn-201603-profiling-golang-programs"><h1 class="l-title title">Talk at Golang BCN about Profiling Go Programs</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">15-03-2016</span>
+    <br>
+    
+
+<p>This post has two main purposes:</p>
+
+<ul>
+<li>Have a kind of script for my talk, at <a href="http://golangbcn.org/" target="_blank" >Golang BCN</a>
+, for the topic mentioned in the title of this post</li>
+<li>The place where the attendees and followers of Golang BCN can access to the material used in my talk</li>
+</ul>
+
+<p>My talk doesn&rsquo;t have any slide, I think that&rsquo;s better to spend my time mentioning the code to run and what I do to use the profiler with the basic implementation which I&rsquo;ve created for this purpose.</p>
+
+<h2 id="get-ready:7487b8ebfaae1eb63a113e65a5c6e2a6">Get Ready</h2>
+
+<p>To follow me you have first to make sure that you have installed in your machine:</p>
+
+<ul>
+<li>Golang 1.6; probably an early close version would work too, however I used that one because it was the last stable release at the time that I prepared the talk.</li>
+<li><a href="http://www.graphviz.org/" target="_blank" >Graphviz</a>
+ which is required to be able to generate <code>svg</code> with <code>pprof</code> (The tool offered by Golang out of the box to profile your programs)</li>
+</ul>
+
+<p>NOTE that I used a linux machine to run it; I haven&rsquo;t done anything which doesn&rsquo;t look cross platform, but bear in mind that you may have issues run it on other operative system</p>
+
+<p>Get the code, cloning this <a href="https://gist.github.com/ifraixedes/fd8b585c3da6dacb6385" target="_blank" >gist</a>
+ in your <code>GOPATH</code></p>
+
+<h2 id="basic-implementation-examples:7487b8ebfaae1eb63a113e65a5c6e2a6">Basic implementation examples</h2>
+
+<p>To give this introductory talk to Golan profiler, I&rsquo;ve implemented 4 flavors of a <a href="https://en.wikipedia.org/wiki/Power_of_two" target="_blank" >Power of 2 function</a>
+ and 4 flavors of function which returns <a href="https://en.wikipedia.org/wiki/Fibonacci_number" target="_blank" >Fibonacci numbers</a>
+</p>
+
+<p>The implementation have a test for each function, to make sure that they work as expected, some benchmarks which will use to profile the 8 mentioned functions and a basic server with 2 endpoints to show how <code>net/http/pprof</code> package expose profile information on an http server just only importing it.</p>
+
+<p>I&rsquo;ve also added a <code>Makefile</code> as helper to run the most of the commands which I need to profile the benchmarks and the basic http server.</p>
+
+<h2 id="profiling-benchmarks:7487b8ebfaae1eb63a113e65a5c6e2a6">Profiling benchmarks</h2>
+
+<p>To profile benchmarks, we need to run the benchmarks with some flags to get profile metrics data files; we also have to get the compiled binary, because, thereafter, we can match the profile metrics with the function names and the lines of the source code where those metrics refer.</p>
+
+<p>So we do something like <code>go test -bench . -benchmem -memprofile mem.out -cpuprofile cpu.out</code></p>
+
+<p>With the previous command, run the benchmarks and output a memory and cpu profile data; the binary is also generated with an auto-generated name, pass <code>-o mybin</code> to give it the name that you would like.</p>
+
+<p>With the output generated in our terminal, we already know which flavor function (on each functions set) is the fastest. However, having the profiling data we can know from each function, which are the cost of their internal operations; for this simple functions isn&rsquo;t worth as they only have a few instructions, however in large programs where there are quite a few nested function calls, we can see which are the cost of each call and deepen in those ones which are the most costly and know where the bottlenecks are to see if we can change the implementation for more optimized ones.</p>
+
+<p>The profiling data can be analyzed using <code>pprof</code> tool, executing something like <code>go tool pprof mybin cpu.out</code>.</p>
+
+<p>When we run pprof in that way, we get into a &ldquo;repl&rdquo; where we can execute commands to read the the different information which profile data file contains and see some of them next to the line of the implementation which they refer</p>
+
+<p>Another way, which probably is the most practical, is to generate a flow graph of the function calls with the cost of each (or the most costly if there are too many) function call; we can get that executing something like <code>go tool pprof -svg -output cpu.svg mybin cpu.out</code></p>
+
+<p>And we are ready to open <code>cpu.svg</code> and see where are our bottlenecks.</p>
+
+<h2 id="profiling-a-service:7487b8ebfaae1eb63a113e65a5c6e2a6">Profiling a service</h2>
+
+<p>A service is an application that, ideally, will run forever, exposing an interface which other applications (clients) can request to perform the exposed operations. Due they behavior, they have to offer an interface to get the profile data or they have to export it on a defined intervals of time.</p>
+
+<p>Golang has the package <code><a href="https://golang.org/pkg/net/http/pprof/" target="_blank" >net/http/pprof</a>
+</code> which allows to expose, automatically, a few HTTP endpoints to collect the profile data, if the service has an http server, otherwise we can create one HTTP only for that purpose.</p>
+
+<p>The exposed endpoints are listed under <code>/debug/pprof/</code> path and to collect the profile data we execute <code>pprof</code> pointing to the specific path, for example</p>
+
+<ul>
+<li>cpu: <code>go tool pprof http://localhost:8000/debug/pprof/profile</code></li>
+<li>heap: <code>go tool pprof http://localhost:8000/debug/pprof/heap</code></li>
+<li>goroutine block: <code>go tool pprof http://localhost:8000/debug/pprof/block</code></li>
+</ul>
+
+<p>Each of those calls generate an output profile data file as we has got from the benchmark and with those you can use <code>pprof</code> in the same way to analyze the data.</p>
+
+<p>This is all for now!</p>
+
+<p>Thanks for reading it</p>
+
+<hr />
+
+<p>Related links</p>
+
+<ul>
+<li>The main reference about profiling Go programs posted in the Golang official Blog: <a href="http://blog.golang.org/profiling-go-programs" target="_blank" >Profiling Go Programs</a>
+</li>
+<li>I wrote a couple of post in my early days in Golang; I used the profiler to drop my curiosity about the performance of values and pointers passed as a parameter, so you can read other place how to use the profiler, <a href="http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics/" target="_blank" >gathering the metrics</a>
+ and <a href="http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics/" target="_blank" >analyzing them</a>
+</li>
+</ul>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Engineering on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/engineering/</link>
+    <description>Recent content in Engineering on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 13 Mar 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/engineering/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #4</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</link>
+      <pubDate>Fri, 13 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</guid>
+      <description>&lt;p&gt;Another 7 days almost gone, hence there it goes the 5 tweets that I&amp;rsquo;ve selected from my Twitter timeline.&lt;/p&gt;
+
+&lt;p&gt;Thanks to &lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt; I&amp;rsquo;ve discovered &lt;a href=&#34;http://en.wikipedia.org/wiki/SSHFS&#34;&gt;SSHFS&lt;/a&gt;, a network file system on top of &lt;a href=&#34;http://en.wikipedia.org/wiki/Secure_Shell&#34;&gt;SSH&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;How To Mount Remote Directory With SSHFS on a Linux &lt;a href=&#34;http://t.co/O0G8MUsXoC&#34;&gt;http://t.co/O0G8MUsXoC&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenBSD?src=hash&#34;&gt;#OpenBSD&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenSSH?src=hash&#34;&gt;#OpenSSH&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/CentOS?src=hash&#34;&gt;#CentOS&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Ubuntu?src=hash&#34;&gt;#Ubuntu&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Debian?src=hash&#34;&gt;#Debian&lt;/a&gt; &lt;a href=&#34;http://t.co/t3YYVa5W5w&#34;&gt;pic.twitter.com/t3YYVa5W5w&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/574355319184359425&#34;&gt;March 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Congratulations to &lt;a href=&#34;https://iojs.org/&#34;&gt;io.js&lt;/a&gt; community to release another version v1.5.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js bugfix release v1.5.1 out now @ &lt;a href=&#34;https://t.co/MKaxWFC8Bn&#34;&gt;https://t.co/MKaxWFC8Bn&lt;/a&gt; CHANGELOG @ &lt;a href=&#34;https://t.co/JwuzQ2hV3B&#34;&gt;https://t.co/JwuzQ2hV3B&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/575000532336668673&#34;&gt;March 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Mozilla released another post related with performance, this time related with SIMD.js (&lt;a href=&#34;http://en.wikipedia.org/wiki/SIMD&#34;&gt;Single Instruction Multiple Data&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;The State of SIMD.js Performance in Firefox: &lt;a href=&#34;https://t.co/I4aHZ9SSTv&#34;&gt;https://t.co/I4aHZ9SSTv&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/575352064122970112&#34;&gt;March 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice Open Source (MIT license) &lt;a href=&#34;http://golang.org/&#34;&gt;Golang&lt;/a&gt; library about arbritrary-precision fixed-point decimal library, which has been implemented and used in production for 6 months by &lt;a href=&#34;https://www.shopspring.com/&#34;&gt;Spring&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Decimal: An Arbitrary-Precision Fixed-point Decimal Library - &lt;a href=&#34;http://t.co/Cx3Dm8kPKa&#34;&gt;http://t.co/Cx3Dm8kPKa&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/576050308616425472&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice post of a great engineering work by &lt;a href=&#34;https://engineering.linkedin.com/&#34;&gt;LinkedIn&lt;/a&gt; to reduce the traffic of their websites over HTTP 1.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;great writeup from LinkedIn on SDCH.. &amp;quot;average additional compression across our static content was about 24%&amp;quot; @ &lt;a href=&#34;http://t.co/Vm2XRPfWLc&#34;&gt;http://t.co/Vm2XRPfWLc&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/576078282384228352&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Enjoy your weekend hacking around!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

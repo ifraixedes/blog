@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Implementation on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/implementation/</link>
+    <description>Recent content in Implementation on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Wed, 03 Jun 2015 11:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/implementation/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Rack Style Golang HTTP Handlers</title>
+      <link>http://blog.fraixed.es/post/rack-style-golang-http-handlers</link>
+      <pubDate>Wed, 03 Jun 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/rack-style-golang-http-handlers</guid>
+      <description>
+
+&lt;p&gt;A couple of weeks ago &lt;a href=&#34;http://blog.fraixed.es/post/thoughts-about-golang-action-responses&#34; target=&#34;_blank&#34;&gt;I published a blog post with some thoughts&lt;/a&gt; about  &lt;strong&gt;&lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;actions&amp;rdquo; HTTP Handlers in Golang&lt;/a&gt;&lt;/strong&gt;, which specifies an opinionated way to have a handler function signature to define common responses for HTTP applications.&lt;/p&gt;
+
+&lt;p&gt;In my blog post, I also showed the results of a tiny benchmark test about how the approach performs over a &lt;a href=&#34;http://golang.org/pkg/net/http/#Handler&#34; target=&#34;_blank&#34;&gt;Standard HTTP Handlers&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;After that and getting the firsts steps of a web service implementation with the approach, with a few changes that we had to do to afford several needs, I&amp;rsquo;ve been thinking how to get another approach which keeps the befits of the original one, besides to have a central point for error management, to be able to perform global tasks as Logging, common responses for those errors avoiding to leak system information, and so on.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-i-m-talking-about:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;What I&amp;rsquo;m Talking About&lt;/h2&gt;
+
+&lt;p&gt;After the title and the introduction probably the most of you are wondering &amp;ldquo;what exactly I&amp;rsquo;m talking about&amp;rdquo;, &amp;ldquo;a new revolutionary way?&amp;rdquo;&amp;ldquo;, actually no, this isn&amp;rsquo;t the heaven ;D&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s first start with the firs sentence that we can read in &lt;strong&gt;&lt;a href=&#34;http://rack.github.io/&#34; target=&#34;_blank&#34;&gt;Ruby Rack&amp;rsquo;s web site&lt;/a&gt;&lt;/strong&gt;: &lt;strong&gt;&lt;em&gt;To use Rack, provide an &amp;lsquo;app&amp;rsquo;: an object that responds to the call method, taking the environment hash as a parameter, and returning an Array with three elements&amp;rdquo;&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;The interesting words, for the purpose of the approach which I&amp;rsquo;m talking about are: &lt;strong&gt;returning and Array with three elements&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, that sucks in Golang, do you know?; Golang is type checking, so you cannot mix &amp;amp; match different types in an &lt;a href=&#34;https://blog.golang.org/slices&#34; target=&#34;_blank&#34;&gt;Array or Slice&lt;/a&gt;, sure nonetheless it has a very nice feature which I really love, &amp;ldquo;&lt;strong&gt;&lt;a href=&#34;https://golang.org/doc/effective_go.html#multiple-returns&#34; blank=&#34;_blank&#34;&gt;Functions can return Multiple Values&lt;/a&gt;&lt;/strong&gt;&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;Bearing in mind that we can have the same concept than Rack, even better we get the type checking guarantee, so great to get some programming errors at compiling time.&lt;/p&gt;
+
+&lt;p&gt;That was great to me to go through, however I&amp;rsquo;ve had a thought later on, which I feel as it&amp;rsquo;s more in the Go&amp;rsquo;s way, so I&amp;rsquo;ve come up with the idea to add a fourth value to return, which is an &lt;strong&gt;&lt;a href=&#34;http://golang.org/pkg/builtin/#error&#34; target=&#34;_blank&#34;&gt;Error type&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;some-code-doesn-t-hurt:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;Some Code doesn&amp;rsquo;t Hurt&lt;/h2&gt;
+
+&lt;p&gt;Probably, I could skip to write any code in this post, so it may not needed; every one who&amp;rsquo;s read the previous section, has understood the concept, at least if they have read &lt;a href=&#34;http://blog.fraixed.es/post/thoughts-about-golang-action-responses&#34; target=&#34;_blank&#34;&gt;my previous blog post&lt;/a&gt; and &lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Go Actions&amp;rdquo; blog post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;However I think that adding a few line of code doesn&amp;rsquo;t hurt and I guess that it helps to digest the concept moreover if you&amp;rsquo;ve landed into it with no clue about the mentioned posts; therefore there it goes&lt;sup&gt;1&lt;sup&gt;&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;type&lt;/span&gt; RackHandler &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt;(&lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;http.Request) (status &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;int&lt;/span&gt;, headers [][&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;, body []&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;byte&lt;/span&gt;, err &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;error&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; Wrap(action RackHandler) http.Handler {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; http.HandlerFunc(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt;(w http.ResponseWriter, r &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;http.Request) {
+		s, hs, b, err &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; action(r)
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; err &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			&lt;span style=&#34;color: #888888&#34;&gt;// Do something with the error. e.g. logging&lt;/span&gt;
+			&lt;span style=&#34;color: #888888&#34;&gt;// Using a switch statement to perform different actions depending status code&lt;/span&gt;
+			&lt;span style=&#34;color: #888888&#34;&gt;// If error happens, body should contain only user friendly information which&lt;/span&gt;
+			&lt;span style=&#34;color: #888888&#34;&gt;// doesn&amp;#39;t leak any system information&lt;/span&gt;
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;switch&lt;/span&gt; s {
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; http.StatusInternalServerError:
+				&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;fallthrough&lt;/span&gt;
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;default&lt;/span&gt;:
+				hs = &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+				s = http.StatusInternalServerError
+				b = &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+			}
+		}
+
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; hs &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			header &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; w.Header()
+			&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;for&lt;/span&gt; _, h &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;range&lt;/span&gt; hs {
+				header.Add(h[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;], h[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;])
+			}
+		}
+
+		w.WriteHeader(s)
+
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; b &lt;span style=&#34;color: #333333&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt; {
+			w.Write(b)
+		}
+	})
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Pretty much the concept is that simple; of course you&amp;rsquo;ll probably have to add more stuff to afford all the functionalities that a serious HTTP application needs, as the previous snippet is only a bare implementation.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see, as well, how an &amp;ldquo;actions&amp;rdquo; looks&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; responseCounter = &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;func&lt;/span&gt; HelloBuddy(req &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt;http.Request) (&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;int&lt;/span&gt;, [][&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;, []&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;byte&lt;/span&gt;, &lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;error&lt;/span&gt;) {
+	responseCounter&lt;span style=&#34;color: #333333&#34;&gt;++&lt;/span&gt;
+	op &lt;span style=&#34;color: #333333&#34;&gt;:=&lt;/span&gt; responseCounter &lt;span style=&#34;color: #333333&#34;&gt;%&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;switch&lt;/span&gt; op {
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;case&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;:
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;200&lt;/span&gt;,
+			[][&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;]&lt;span style=&#34;color: #333399; font-weight: bold&#34;&gt;string&lt;/span&gt;{{&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;Content-Type&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;text/html&amp;quot;&lt;/span&gt;}},
+			[]&lt;span style=&#34;color: #007020&#34;&gt;byte&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;`&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;			&amp;lt;html&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;				&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Hello&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;				&amp;lt;body&amp;gt;&amp;lt;h1&amp;gt;Hello Buddy!&amp;lt;/h1&amp;gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;			&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;background-color: #fff0f0&#34;&gt;		`&lt;/span&gt;), &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;
+
+	&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;default&lt;/span&gt;:
+		&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; http.StatusInternalServerError, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;nil&lt;/span&gt;, errors.New(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;Odd request&amp;quot;&lt;/span&gt;)
+	}
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Sorry, for the silly functionality of the &amp;ldquo;action&amp;rdquo;, I hope that you understand that it is not about what it does, is how it looks besides that it matches with the &lt;a href=&#34;https://gist.github.com/ifraixedes/056175e0cf312db88f0e#file-response-go-L71&#34; target=&#34;_blank&#34;&gt;same one implemented for the benchmark test of my previous post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;a-few-comments-about-the-approach:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;A Few Comments about The Approach&lt;/h2&gt;
+
+&lt;p&gt;The implementation, from my point of view, it looks a little bit simpler, because it doesn&amp;rsquo;t need a struct to wrap the response, nonetheless it&amp;rsquo;s my personal opinion.&lt;/p&gt;
+
+&lt;p&gt;The place where I see a benefit is the &lt;code&gt;Wrap&lt;/code&gt; function, because it can check if the &amp;ldquo;action&amp;rdquo; returns an error and do general tasks, as I&amp;rsquo;ve already mentioned, &amp;ldquo;logging&amp;rdquo;, returning defined errors which don&amp;rsquo;t have any important information of the infrastructure behind the HTTP application, and so on.&lt;/p&gt;
+
+&lt;p&gt;Having a returned error value we can use &lt;strong&gt;&lt;a href=&#34;http://blog.golang.org/errors-are-values&#34; target=&#34;_blank&#34;&gt;defined values&lt;/a&gt;&lt;/strong&gt; and/or &lt;strong&gt;&lt;a href=&#34;http://blog.golang.org/error-handling-and-go&#34; target=&#34;_blank&#34;&gt;specific types&lt;/a&gt;&lt;/strong&gt; to execute different actions and having homogeneous error responses for defined issues.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, an inconvenient, for somebody, can be, in the return statement of the &amp;ldquo;actions&amp;rdquo;, they may look rare and/or verbose, but you know, there is always some tradeoffs.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:2ac1c4bd5eb2e89935b0429e2e36e24e&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Go Actions&amp;rdquo;&lt;/a&gt; looks as a nice approach, however I&amp;rsquo;ve felt a little bit uncomfourtable&lt;sup&gt;2&lt;/sup&gt; having a struct which wraps the response to send back to the client.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, I&amp;rsquo;ve prefer error values and types to be able to have a central point to manage the errors and send back the response to the client than having to create different functions to return different error responses, nonetheless that can be achieved in &amp;ldquo;Go Actions&amp;rdquo; just adding an second error type return value to the &amp;ldquo;action&amp;rdquo; function signature.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;Go Action&amp;rdquo; approach is used, with some tweaks, in the implementation of a real HTTP Application which we&amp;rsquo;re building, however I&amp;rsquo;m feeling that we&amp;rsquo;re getting some pains that the &amp;ldquo;Rack&amp;rdquo; approach could solve or a least making those less painful, however it hasn&amp;rsquo;t been used under the same scenario, so far, hence I&amp;rsquo;m not really sure if it can be better or worse.&lt;/p&gt;
+
+&lt;p&gt;Do you have any thought about these approaches or a new ones that aren&amp;rsquo;t popular? I&amp;rsquo;ll appreciate if you have some, you share them though the comments.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;1&lt;/sup&gt; code of this post is released under &lt;a href=&#34;http://www.wtfpl.net/txt/copying/&#34; target=&#34;_blank&#34;&gt;WTFPL&lt;/a&gt;&lt;/p&gt;
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;2&lt;/sup&gt; It&#39;s my own personal opinion&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Thoughts about Golang Action Responses</title>
+      <link>http://blog.fraixed.es/post/thoughts-about-golang-action-responses</link>
+      <pubDate>Wed, 20 May 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/thoughts-about-golang-action-responses</guid>
+      <description>
+
+&lt;p&gt;A few weeks ago one of my colleagues found a blog post about &lt;strong&gt;&lt;a href=&#34;http://openmymind.net/Go-action-responses/&#34; target=&#34;_blank&#34;&gt;a different approach to implement &amp;ldquo;actions&amp;rdquo; HTTP Handlers in Golang&lt;/a&gt;&lt;/strong&gt;, which differs in how the most of the current Golang Web frameworks do which are heavily inspired in the interface offered by &lt;a href=&#34;http://golang.org/pkg/net/http/#HandlerFunc&#34; target=&#34;_blank&#34;&gt;Golang HTTP official package&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/karlseguin&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Karl Seguin&lt;/a&gt; (the author of the post) commented that the approach gives a natural way to implement HTTP handlers returning response than passing them as an argument, something that works when the consumer not to need to have a full access control over the response, which are in most of the cases.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve read this post and I&amp;rsquo;ve spend some time analysing it, because my colleagues asked to the rest of team to have a view and share our thoughts; at that moment I just replied him &amp;ldquo;&lt;a href=&#34;#my-first-thoughts:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;my first thoughts&lt;/a&gt;&amp;rdquo; and &amp;ldquo;&lt;a href=&#34;#what-i-don-t-like:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;what I don&amp;rsquo;t like&lt;/a&gt;&amp;rdquo; but I didn&amp;rsquo;t have any substantial argument around my thoughts, so I&amp;rsquo;ve take part of my spare time to consolidate them and add some tangible metrics and write this post about it.&lt;/p&gt;
+
+&lt;h2 id=&#34;my-first-thoughts:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;My First Thoughts&lt;/h2&gt;
+
+&lt;p&gt;My first impression was good, it &lt;strong&gt;provides a way to have a less verbose, hence easy to read, implementations&lt;/strong&gt; for the Handlers which deals with the logic of the request (called &amp;ldquo;actions&amp;rdquo;), it means that commong/global Handlers, usually called &amp;ldquo;middlewares&amp;rdquo;, aren&amp;rsquo;t contemplated.&lt;/p&gt;
+
+&lt;p&gt;The approach focus in &amp;ldquo;actions&amp;rdquo;, making emphasis on increasing the readability of their implementations and common operations across them; it makes sense as a big web application has a lot of more &amp;ldquo;actions&amp;rdquo; than &amp;ldquo;middlewares&amp;rdquo; then developers spend the most of their time dealing with them, hence readability matters.&lt;/p&gt;
+
+&lt;p&gt;Here it&amp;rsquo;s nothing new, basically I agree with Karl.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-i-don-t-like:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;What I don&amp;rsquo;t like&lt;/h2&gt;
+
+&lt;p&gt;To clarify before to comment what I don&amp;rsquo;t like from the approach, I want to say that &amp;ldquo;I don&amp;rsquo;t like&amp;rdquo; doesn&amp;rsquo;t mean &amp;ldquo;I hate&amp;rdquo; or &amp;ldquo;the approach is discarded for those reasons&amp;rdquo;, as usual there are tradeoffs on each approach and depending of the situation some tradeoffs ares less important than others and those define what approach to use for it.&lt;/p&gt;
+
+&lt;p&gt;The approach defines a struct &amp;ldquo;NormalResponse&amp;rdquo; which holds the content of a HTTP response, status code, headers and body; it helps to avoid any write on HTTP ResponseWriter until the &amp;ldquo;action&amp;rdquo; ends therefore it&amp;rsquo;s possible to deal with errors without moving the responsibility to the developers who implement the &amp;ldquo;actions&amp;rdquo; which may drive to have inconsistent response, e.g. Send 200 status code when error happened.&lt;/p&gt;
+
+&lt;p&gt;&amp;ldquo;NormalResponse&amp;rdquo; struct is great for that, however &lt;strong&gt;it introduces some overhead&lt;/strong&gt;; each action &lt;strong&gt;create a new instance of a struct which is used to hold the values to send throw the wire&lt;/strong&gt;, hence those values must copied from &amp;ldquo;NormalResponse&amp;rdquo; instance to ResponseWriter; it means that for each request we introduce a new instance which must be garbage collected, therefore we introduce a performance penalty on our web application.&lt;/p&gt;
+
+&lt;h2 id=&#34;how-performance-matters:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;How Performance Matters&lt;/h2&gt;
+
+&lt;p&gt;As you may know, garbage collector isn&amp;rsquo;t the best part of Golang and giving to it too much work could drive your application to screw up or at least not to get that response time that you desire; actually I&amp;rsquo;ve seen this possible tradeoff straightaway, due quite a few posts and library implementations which I&amp;rsquo;ve read where the authors are proud about zero or at least low number of allocations, so it nailed in my brain to be always aware.&lt;/p&gt;
+
+&lt;p&gt;Golang team is improving the garbage collector and they&amp;rsquo;re going to release a &lt;a href=&#34;http://llvm.cc/t/go-1-4-garbage-collection-plan-and-roadmap-golang-org/33&#34; target=&#34;_blank&#34;&gt;new improved version with the next release 1.5&lt;/a&gt;, however it&amp;rsquo;s outside of the topic of this post, the present is 1.4 release and a garbage-collected language doesn&amp;rsquo;t mean you can ignore memory allocation issues.&lt;/p&gt;
+
+&lt;p&gt;As I&amp;rsquo;ve commented in other posts, like &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics#conclusions:674e6dc579e95f2506494215d826638f&#34; target=&#34;_blank&#34;&gt;this&lt;/a&gt; and &lt;a href=&#34;http://blog.fraixed.es/post/performance-js-objects-created-different-ways#conclusions:6714155ea9f1aa8bfca3db0c3355ca1c&#34; target=&#34;_blank&#34;&gt;this&lt;/a&gt;, performance is important but &lt;strong&gt;there are many other things which can be more important than performance&lt;/strong&gt; in a lot of situations besides to be more important to find where are the bottle necks before removing the dust; hence this argument, as I&amp;rsquo;ve already commented above, doesn&amp;rsquo;t discard the approach at all, but it&amp;rsquo;s worth bearing in mind.&lt;/p&gt;
+
+&lt;h2 id=&#34;let-s-see-some-numbers:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;Let&amp;rsquo;s See some Numbers&lt;/h2&gt;
+
+&lt;p&gt;Because Golang offers a bunch of good tools to benchmark and profile your implementations (I used them in these two post series &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-gathering-metrics&#34; target=&#34;_blank&#34;&gt;1&lt;/a&gt; and &lt;a href=&#34;http://blog.fraixed.es/post/golang-performance-slices-structs-and-struct-pointers-analysing-metrics&#34; target=&#34;_blank&#34;&gt;2&lt;/a&gt;), I&amp;rsquo;ve made a simple &amp;ldquo;action&amp;rdquo; implementation, one using the &amp;ldquo;NormalResponse&amp;rdquo; approach and another with a standard handler to see if my thoughts were right or wrong.&lt;/p&gt;
+
+&lt;p&gt;The results that I&amp;rsquo;ve got are&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;spike ➜  go test -v -bench . -benchtime 10s -benchmem
+testing: warning: no tests to run
+PASS
+BenchmarkResponse       10000000              1908 ns/op             728 B/op          6 allocs/op
+BenchmarkStd            10000000              1357 ns/op             504 B/op          5 allocs/op
+ok      spike   36.009s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As we can see, &amp;ldquo;NormalResponse&amp;rdquo; needs, roughly, 40% more nanoseconds per operation than a standard handler.&lt;/p&gt;
+
+&lt;p&gt;To compare the pprof graphs, cpu usage and memory consumption, I&amp;rsquo;ve executed the benchmark individually to have separated graphs; so I&amp;rsquo;ve executed those as previously but changing &lt;code&gt;-bench .&lt;/code&gt; by &lt;code&gt;-bench Response&lt;/code&gt; and &lt;code&gt;-bench Std&lt;/code&gt;, for &amp;ldquo;NormalResponse&amp;rdquo; and &amp;ldquo;Standard Handler&amp;rdquo;, respectively; both benchmarks run the same amount of times, as before &amp;ldquo;10000000&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;for &amp;ldquo;NormalResponse&amp;rdquo;, I&amp;rsquo;ve got (CPU first and memory second)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/71/40/d1/7140d1c8694e9a2ec1780f232327a96c.png&#34; alt=&#34;NormalResponse CPU profile graph&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/68/11/d7/6811d7cbe2d7fe949cad4621ba72183b.png&#34; alt=&#34;NormalResponse Memory Allocation Space&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And for &amp;ldquo;Standard Handler&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/01/7f/4d/017f4dc3ab76f4c189e8bda8cbfc6705.png&#34; alt=&#34;Standard Handler CPU profile graph&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://s-media-cache-ak0.pinimg.com/originals/92/4d/13/924d13cb99fb7fdb6c6d54f7f3fe660a.png&#34; alt=&#34;Standard Handler Memory Allocation Space&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Taking a look to the CPU graphs, we can see that the &amp;ldquo;External Code&amp;rdquo; triggered by GC and System are the heavy load part of both executions so &amp;ldquo;ResponseNormal&amp;rdquo; doesn&amp;rsquo;t introduce overhead in the garbage collection job, then my thoughts were wrong; however the &lt;strong&gt;two phases response, &amp;ldquo;action&amp;rdquo; and &lt;code&gt;WriteTo&lt;/code&gt; call makes the difference with a standard Handler and the bottle neck is the Map operations&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;In case of the memory consumption, we can see in the graphs how &amp;ldquo;NormalResponse&amp;rdquo; needs more memory, mostly, that difference is due &lt;code&gt;WriteTo&lt;/code&gt; function and specifically the memory consumption are the operations on the Header type which is a Golang Map, again.&lt;/p&gt;
+
+&lt;p&gt;My first thoughts about the performance penalty that &amp;ldquo;NomralResponse&amp;rdquo; approach may haven&amp;rsquo;t been right; it has a performance penalty, however it isn&amp;rsquo;t due GC operations, it&amp;rsquo;s about Map operations. Knowing where the bottle neck is we may introduce improvement, for example changing the type used by &amp;ldquo;NormalResponse&amp;rdquo; to store the headers to send and revaluate to see the gain.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:ad2a40f84a32829eab1cb16b6efdee73&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Performance matters however it isn&amp;rsquo;t the only important thing to take care for all the implementation. Depending what you&amp;rsquo;re implementing, the situation and requirements, performance may have less relevance than other stuff as readability, maintainability, etc.&lt;/p&gt;
+
+&lt;p&gt;Benchmarks are king to know how your implementations perform in front of others, nonetheless you should always &lt;strong&gt;profile your code to see if you implementations can be improve without removing a big part of their advantages or at least you&amp;rsquo;ll consolidate or refute your thoughts&lt;/strong&gt; (it&amp;rsquo;s my case here) why your implementation performs different.&lt;/p&gt;
+
+&lt;p&gt;By the way you can find the implementation of this benchmark in this &lt;a href=&#34;https://gist.github.com/ifraixedes/056175e0cf312db88f0e&#34; target=&#34;_blank&#34;&gt;gist&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;ve got something from here.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Clarifying My Mistake about GET Requests with Body</title>
+      <link>http://blog.fraixed.es/post/clarifying-my-mistake-get-requests-with-body</link>
+      <pubDate>Mon, 13 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/clarifying-my-mistake-get-requests-with-body</guid>
+      <description>
+
+&lt;p&gt;Just the same week after I wrote the post &lt;a href=&#34;http://blog.fraixed.es/post/thoughts-about-current-apis-implementations&#34; target=&#34;_blank&#34;&gt;Thoughts about current APIs implementations&lt;/a&gt;, I had a discussion, with one of my colleagues, about if sending a body in a &lt;strong&gt;GET Request&lt;/strong&gt; fulfills with the current &lt;a href=&#34;https://tools.ietf.org/html/rfc7231&#34;&gt;HTTP/1.1 Standard&lt;/a&gt;, which it&amp;rsquo;s something that I commented on that post and I mentioned that it was the way to make requests with quite few parameters rather than use POST and not having a very large and ugly URL.&lt;/p&gt;
+
+&lt;p&gt;After that conversation, he made me see my mistake showing me that doing that it&amp;rsquo;s no appropriated; here you can read why not and the possible solutions which fulfill the standard.&lt;/p&gt;
+
+&lt;h3 id=&#34;clarifying-the-current-http-1-1-standard:aed8bbde438906019947db64f4a59505&#34;&gt;Clarifying the Current HTTP/1.1 Standard&lt;/h3&gt;
+
+&lt;p&gt;My colleague brought on the table a response sent by &lt;a href=&#34;http://en.wikipedia.org/wiki/Roy_Fielding&#34; target=&#34;_blank&#34;&gt;Roy T. Fielding&lt;/a&gt;, one of the principal authors of HTTP specification &lt;a href=&#34;http://www.w3.org/Protocols/rfc2616/rfc2616.html&#34; target=&#34;_blank&#34;&gt;RFC2616 appeared in June 1999&lt;/a&gt; which has been superseded by multiples RFCs &lt;a href=&#34;https://tools.ietf.org/html/rfc7230&#34; target=&#34;_blank&#34;&gt;7230&lt;/a&gt;, &lt;a href=&#34;https://tools.ietf.org/html/rfc7231&#34; target=&#34;_blank&#34;&gt;7231&lt;/a&gt;, &lt;a href=&#34;https://tools.ietf.org/html/rfc7232&#34; target=&#34;_blank&#34;&gt;7232&lt;/a&gt;, &lt;a href=&#34;https://tools.ietf.org/html/rfc7233&#34; target=&#34;_blank&#34;&gt;7233&lt;/a&gt;, &lt;a href=&#34;https://tools.ietf.org/html/rfc7234&#34; target=&#34;_blank&#34;&gt;7234&lt;/a&gt;, &lt;a href=&#34;https://tools.ietf.org/html/rfc7235&#34; target=&#34;_blank&#34;&gt;7235&lt;/a&gt;, &lt;a href=&#34;https://tools.ietf.org/html/rfc7236&#34; target=&#34;_blank&#34;&gt;7236&lt;/a&gt; and &lt;a href=&#34;https://tools.ietf.org/html/rfc7237&#34; target=&#34;_blank&#34;&gt;7237&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;https://groups.yahoo.com/neo/groups/rest-discuss/conversations/messages/9962&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;response&lt;/a&gt; says&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Yes. In other words, any HTTP request message is allowed to contain
+a message body, and thus must parse messages with that in mind.
+Server semantics for GET, however, are restricted such that a body,
+if any, has no semantic meaning to the request. The requirements
+on parsing are separate from the requirements on method semantics.&lt;/p&gt;
+
+&lt;p&gt;So, yes, you can send a body with GET, and no, it is never useful
+to do so.&lt;/p&gt;
+
+&lt;p&gt;This is part of the layered design of HTTP/1.1 that will become
+clear again once the spec is partitioned (work in progress).&lt;/p&gt;
+
+&lt;p&gt;&amp;hellip;.Roy&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Then my interpretations about &lt;strong&gt;&amp;ldquo;GET request message has no defined semantics&amp;rdquo;&lt;/strong&gt; which I extracted from the paragraph&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A payload within a GET request message has no defined semantics;
+  sending a payload body on a GET request might cause some existing
+  implementations to reject the request.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;which you can find in &lt;a href=&#34;https://tools.ietf.org/html/rfc7231#section-4.3.1&#34; target=&#34;_blank&#34;&gt;7231#4.3.1&lt;/a&gt; &lt;strong&gt;was wrong&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;As I mentioned, it&amp;rsquo;s not wrong to send a payload (a.k.a body) in a GET request, however because it doesn&amp;rsquo;t have semantics, means that the doing &lt;strong&gt;two or more requests with the same URI with different payload should return the same response&lt;/strong&gt;, due that it&amp;rsquo;ll be ignored, hence body will never change what is requested.&lt;/p&gt;
+
+&lt;h3 id=&#34;what-are-the-possibilities:aed8bbde438906019947db64f4a59505&#34;&gt;What are the possibilities&lt;/h3&gt;
+
+&lt;p&gt;If we stick to the standard there are basically two solutions&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;All the parameters are in the URL, considering part of the path and query parameters.&lt;/li&gt;
+&lt;li&gt;Use a POST request with the parameters, then the server must create a response which store in somehow a response back with a URI to access to it, allowing the client to make a GET request with that URI to retrieve the generated response, refer to &lt;a href=&#34;http://stackoverflow.com/questions/4203686/how-can-i-deal-with-http-get-query-string-length-limitations-and-still-want-to-b&#34; target=&#34;_blank&#34;&gt;this Stack Overflow response for more details&lt;/a&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;As I also mentioned in my &lt;a href=&#34;http://blog.fraixed.es/post/thoughts-about-current-apis-implementations&#34; target=&#34;_blank&#34;&gt;previous post&lt;/a&gt;, if we add all the parameters in the URI then we get ugly URLs and perhaps, they aren&amp;rsquo;t ideal, but in the case of REST APIs is something that doesn&amp;rsquo;t matter due machines deal with them besides, obviously, we don&amp;rsquo;t need to consider &lt;a href=&#34;http://en.wikipedia.org/wiki/Web_crawler&#34; target=&#34;_blank&#34;&gt;web crawlers&lt;/a&gt;, so they may only annoy us in our logs.&lt;/p&gt;
+
+&lt;p&gt;The second solutions, from my point of view, it&amp;rsquo;s awkward and I&amp;rsquo;d only use as exception, when the amount of parameters generate a large URI which may be rejected, even though the current &lt;a href=&#34;https://tools.ietf.org/html/rfc3986&#34; target=&#34;_blank&#34;&gt;URI standard, RFC 3986&lt;/a&gt; and the &lt;a href=&#34;https://tools.ietf.org/html/rfc7230#section-3.1.1&#34; target=&#34;_blank&#34;&gt;URI standard, RFC 3986&lt;/a&gt; don&amp;rsquo;t have any length limitation, they&amp;rsquo;ve found, in the real world, some limitations and the recommendations for senders and recipients is to support at least 8000 bytes which are quite a few to generate a large URI.&lt;/p&gt;
+
+&lt;p&gt;To see a very good clarification of it, considering real world URI&amp;rsquo;s length limitations, read &lt;a href=&#34;http://stackoverflow.com/questions/417142/what-is-the-maximum-length-of-a-url-in-different-browsers&#34; target=&#34;_blank&#34;&gt;this another Stack Overflow response&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:aed8bbde438906019947db64f4a59505&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;The standard isn&amp;rsquo;t quite clear and doesn&amp;rsquo;t ban to send payload even though it means nothing.&lt;/p&gt;
+
+&lt;p&gt;The URIs are not that short that we can think and the web browsers have, so using GET with a long URLs should almost solve all the use cases, for those that fall outside the solution is the awkward two step request POST and GET, but if you want to stick to the standard don&amp;rsquo;t use POST as single GET.&lt;/p&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;ve got to be clearer about this topic when you decide/have/must design an REST API, as I&amp;rsquo;ve got.&lt;/p&gt;
+
+&lt;p&gt;Have a nice week!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Thoughts about current APIs implementations</title>
+      <link>http://blog.fraixed.es/post/thoughts-about-current-apis-implementations</link>
+      <pubDate>Mon, 30 Mar 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/thoughts-about-current-apis-implementations</guid>
+      <description>
+
+&lt;p&gt;Nowadays there is a &lt;strong&gt;big amount of Internet services which operate over a &lt;a href=&#34;http://en.wikipedia.org/wiki/Representational_state_transfer&#34; target=&#34;_blank&#34;&gt;REST&lt;/a&gt; &lt;a href=&#34;http://en.wikipedia.org/wiki/Application_programming_interface&#34; target=&#34;_blank&#34;&gt;API&lt;/a&gt;&lt;/strong&gt;, and a big part of these services are businesses whose product/service is 100% offered/delivered/exposed over it, and moreover most of these business can be classified under the &amp;ldquo;start-up&amp;rdquo; fuzzy term (&lt;a href=&#34;http://en.wikipedia.org/wiki/Startup_company&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;1&lt;/a&gt;, &lt;a href=&#34;http://www.urbandictionary.com/define.php?term=startup&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;2&lt;/a&gt;, etc).&lt;/p&gt;
+
+&lt;p&gt;This trending has been very good adopted last years for developer communities, &lt;strong&gt;&lt;a href=&#34;http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol&#34; target=&#34;_blank&#34;&gt;HTTP&lt;/a&gt; has become the standard communication (application layer) protocol&lt;/strong&gt; (you can blame Internet about it), until reach the point that if a service doesn&amp;rsquo;t have a REST API then it may be discarded over another one whose quality is worse but offer a REST API.&lt;/p&gt;
+
+&lt;p&gt;REST is not the only way to expose a service over HTTP, for example &lt;strong&gt;SOAP is another one and it&amp;rsquo;s standard unlike REST which is a software architecture style&lt;/strong&gt;, however I guess that the adoption for REST instead of others has been the simplicity (&lt;a href=&#34;http://json.org/&#34; target=&#34;_blank&#34;&gt;JSON&lt;/a&gt; data format helped a lot); the tradeoff is, that now, developers, as consumers, face with a variety of ways to define the same, versioning, error handling, etc., and as producers (REST API&amp;rsquo;s owner), what ways to choose to expose those.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been consuming quite a bit HTTP APIs, the most of them in hackathons, others for professional purpose and never produced one for professional purpose nonetheless we&amp;rsquo;re producing one in the company where I&amp;rsquo;m currently working and facing the challenge to make decisions as the &lt;a href=&#34;https://news.ycombinator.com/item?id=1523664&#34; target=&#34;_blank&#34;&gt;versioning one (URL vs headers)&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Here, I&amp;rsquo;m not going to fire the next hot discussion about API best practices, I&amp;rsquo;m not currently the right person for that, as I&amp;rsquo;ve said, I&amp;rsquo;ve never built one for the real world, so I believe that there are better people in the world who can write post or speak about it, for example, people who are talking in &lt;a href=&#34;http://www.meetup.com/London-API-Group/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;London API&lt;/a&gt;, which is co-organised by a friend of mine (&lt;a href=&#34;https://twitter.com/orliesaurus&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;@orliesaurus&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;Therefore I&amp;rsquo;m going to write about three aspects which annoys me but at the same time I consider that they are quite objective.&lt;/p&gt;
+
+&lt;h2 id=&#34;why-not-use-the-standard-when-the-standard-exist:9d9586e37c51496f007cdb035378cc03&#34;&gt;Why not use the standard when the standard exist&lt;/h2&gt;
+
+&lt;p&gt;Last Saturday, as quite usual, I was attending to a Hackathon; the hackathon was focused in using one REST API service.&lt;/p&gt;
+
+&lt;p&gt;The required API to use was related with &lt;strong&gt;getting information&lt;/strong&gt; about transportation; I used one of the resources which returns the route to go from a specified origin (coordinates point) to a specified destination, however it requires a bunch of parameters more as start time, type of transport, and so on. Clearly, the end point is to get information, then the request should be a GET request, however the API required a POST, why?&lt;/p&gt;
+
+&lt;p&gt;For my understanding the right HTTP verb is GET &lt;strong&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/strong&gt;, because the &lt;a href=&#34;https://tools.ietf.org/html/rfc7231#section-4.3.1&#34; target=&#34;_blank&#34;&gt;HTTP standard says&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The GET method requests transfer of a current selected representation
+  for the target resource.  GET is the primary mechanism of information
+  retrieval and the focus of almost all performance optimizations.
+  Hence, when people speak of retrieving some identifiable information
+  via HTTP, they are generally referring to making a GET request.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Then, I guess that the decision of using POST is because the parameters are sent in the request body due that they aren&amp;rsquo;t nice values to use as URL path moreover they are too many to send them in URLs&amp;rsquo; query and I agree to send them in the body to keep a clean URL, nevertheless I disagree to send them by POST, mainly because &lt;a href=&#34;https://tools.ietf.org/html/rfc7231#section-4.3.3&#34; target=&#34;_blank&#34;&gt;the HTTP standard says&lt;/a&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;The POST method requests that the target resource process the
+  representation enclosed in the request according to the resource&amp;rsquo;s
+  own specific semantics.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;hence, I&amp;rsquo;ve made the assumption that the decision to use POST was, because they believed that GET cannot contains body &lt;strong&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/strong&gt;, however the standard doesn&amp;rsquo;t say that it cannot contain body, it says&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;A payload within a GET request message has no defined semantics;
+  sending a payload body on a GET request might cause some existing
+  implementations to reject the request.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;This is not the only place that, we can find examples which drive us to make the assumption that GET cannot hold body, other example is the well known and useful REST client tool called &lt;a href=&#34;https://www.getpostman.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Postman&lt;/a&gt; where if you cannot make a GET request with body as you can see in the next picture how GET doesn&amp;rsquo;t offer you the input box to put the body content&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;Postman screenshot to make a GET request&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/7a/1b/73/7a1b73e3356abd0931fbdfad47c41afd.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;instead of POST&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;Postman screenshot to make a POST request&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/0f/7d/f5/0f7df545b03812b36a8c6ec80f501084.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Perhaps the owner of the mentioned API was thinking in this kind of conflict and preferred to expose the resource by POST.&lt;/p&gt;
+
+&lt;p&gt;I have to recognise that the examples of the real world confused me on it as well, so I&amp;rsquo;ve learnt the lesson, try always to read the standard or at least do it when I&amp;rsquo;m slightly in doubt.&lt;/p&gt;
+
+&lt;p&gt;By they way, there is an &lt;a href=&#34;https://github.com/a85/POSTMan-Chrome-Extension/issues/919&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;issue in Postman Github repository about this&lt;/a&gt;, however it seems that the problem is the platform where Postman runs.&lt;/p&gt;
+
+&lt;h2 id=&#34;use-different-urls-for-different-resources:9d9586e37c51496f007cdb035378cc03&#34;&gt;Use different URLs for different resources&lt;/h2&gt;
+
+&lt;p&gt;How the API make available the resources is something that matters therefore &lt;strong&gt;creating URLs which make sense with the exposed resource, help a lot to understand the resource, the returned data, moreover that it&amp;rsquo;ll make the life easier to write the documentation&lt;/strong&gt; to explain what the resource return and what parameters require and support.&lt;/p&gt;
+
+&lt;p&gt;Take a look to this API resource&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;screenshot of documentation page of /items resource of visit Britain REST API&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/5a/c9/68/5ac968db19e80a86f62f9c4996d2b6f9.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Basically you get a lit of categories which are entities to catalogue locations with the same resource that you get locations using the query parameter &amp;ldquo;type&amp;rdquo;, therefore the data structure of the response body, obviously is different for each type and in the resource documentation isn&amp;rsquo;t clear at all to know that parameters aren&amp;rsquo;t ignored on each type.&lt;/p&gt;
+
+&lt;p&gt;Maybe I miss something, but why haven&amp;rsquo;t they created a different resource for each type, or at leas for type &amp;ldquo;category&amp;rdquo; and &amp;ldquo;locations&amp;rdquo;?&lt;/p&gt;
+
+&lt;h2 id=&#34;use-a-standardised-data-format:9d9586e37c51496f007cdb035378cc03&#34;&gt;Use a standardised data format&lt;/h2&gt;
+
+&lt;p&gt;Another important thing to appreciate is the returned data format. Ideally, the &lt;strong&gt;API should return two, JSON and XML&lt;/strong&gt; (yes XML it&amp;rsquo;s not dead) and if it only returns one, I&amp;rsquo;d suggest JSON, at least today, maybe not some years ago.&lt;/p&gt;
+
+&lt;p&gt;If an API returns raw text, then the developer will have a lot of work parsing the raw data besides just struggling of making the transformations of the returned data structure to the structure which fulfill their requirements.&lt;/p&gt;
+
+&lt;p&gt;This may seems that it doesn&amp;rsquo;t happen, and today any api return JSON or XML or both, well, then you can take a look to &lt;a href=&#34;http://www.clickatell.com/apis-scripts/apis/http-s/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Clickatell HTTP API&lt;/a&gt; &lt;a href=&#34;http://www.clickatell.com/downloads/http/Clickatell_HTTP.pdf&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;documentation&lt;/a&gt; &lt;sup&gt;pdf doc&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;or just forget to open the PDF document and waste your time searching where about you can see it and just take a quick look to the example that I copied from it&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ID: xxxxx
+or
+ERR: Error number, error description
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Nice, no?&lt;/p&gt;
+
+&lt;h2 id=&#34;wrapping-up:9d9586e37c51496f007cdb035378cc03&#34;&gt;Wrapping up&lt;/h2&gt;
+
+&lt;p&gt;Nowadays the works is full of REST APIs, they are not standardised, so several things are implemented/exposed in different ways, versioning, parameters to send, etc.&lt;/p&gt;
+
+&lt;p&gt;Event though they are implemented differently, if they keep the resources under more or less meaning URLs (paths with words which match with the returned content) and send the data in at least one of the spread formats (JSON or XML), then the pains to use them are reduced quite a bit.&lt;/p&gt;
+
+&lt;p&gt;I haven&amp;rsquo;t mentioned anything about API documentations, I think that it&amp;rsquo;s quite evident that the API needs a decent documentation otherwise developer will have to waste their time doing reverse engineering the exposed API; appreciated things to appear in the documentation are how to authenticate (in case that it&amp;rsquo;s needed), the exposed resources with, how to be requested (verb, params, the headers), what is the response data structure when succeed and when fails, response headers to consider and maybe some other that doesn&amp;rsquo;t come up now to my brain. A clear document format oriented to browse the resources and a play ground are also very helpful.&lt;/p&gt;
+
+&lt;p&gt;In my case I appreciate that the API use the HTTP standard as much as possible, when it cannot fulfill the requirements, then it&amp;rsquo;s OK, but using the standard inappropriately or just using an alternative non-standard way to do something when the standard offer one is bad.&lt;/p&gt;
+
+&lt;p&gt;What do you think about the APIs that you use? have you always found clear APIs?&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;I&amp;rsquo;ve update this post&lt;/strong&gt; on 14/04/2015 adding the next two footnotes after I&amp;rsquo;ve realised that I wrote something that it&amp;rsquo;s not totally right; I&amp;rsquo;ve also written &lt;a href=&#34;http://blog.fraixed.es/post/clarifying-my-mistake-get-requests-with-body&#34; target=&#34;_blank&#34;&gt;a second blog post about my mistake&lt;/a&gt; which gives a better clarification than this two footnotes.&lt;/p&gt;
+
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;1&lt;/sup&gt; The right verb is still being GET, if POST is used as the mentioned API does, however if GET is used it must be without BODY and all the parameters must be in the URI through query parameters or in some part of the path it make sense create different resources.&lt;/p&gt;
+&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;2&lt;/sup&gt; The current HTTP/1.1 standard doesn&#39;t disallow to use BODY in GET, however it mustn&#39;t considered, so it&#39;s pointless.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

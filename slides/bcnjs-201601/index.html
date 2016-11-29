@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="My slides of an introductory presentation to Generators (ES2015) &amp; Async Functions (ES2016)">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Introduction to Generators (ES2015) &amp; Async Functions (ES2016)">
+  <meta property="og:url" content="http://blog.fraixed.es/slides/bcnjs-201601/">
+  <meta property="og:description" content="My slides of an introductory presentation to Generators (ES2015) &amp; Async Functions (ES2016)">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://s-media-cache-ak0.pinimg.com/736x/d1/28/48/d12848b860d8a8607e635044c0066da1.jpg">
+  
+  
+    
+      <meta property="og:type" content="website">
+      <meta name="twitter:card" content="summary">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/slides/bcnjs-201601/">
+  <title>Introduction to Generators (ES2015) &amp; Async Functions (ES2016)</title>
+  <style>
+    @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+    @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+    @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+    body { font-family: 'Droid Serif'; }
+    h1, h2, h3 {
+      font-family: 'Yanone Kaffeesatz';
+      font-weight: normal;
+    }
+    .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    #loader {
+      background: white;
+      width: 100vw;
+      height: 100vh;
+    }
+    #loader div {
+      position: absolute;
+      top: 30%;
+      left: 45%
+    }
+    #loader.hide {
+      display: none;
+    }
+    #source {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="loader"><div><img src="/img/loading.gif"></div></div>
+  <textarea id="source">class: center, middle
+
+# Generators &amp; Async Functions
+
+by Ivan Fraixedes
+
+Twitter/Github: @ifraixedes
+
+[ivan.fraixed.es](http://ivan.fraixed.es)
+
+---
+
+class: middle
+
+# Agenda
+
+#### 1. Introduction to Generators Functions
+#### 2. Introduction to Async Functions
+#### 3. Using Generators as Async functions
+
+
+---
+
+# Generators Functions
+
+Generators has been standardized in EcmaScript 2015
+Function generators can be created in two manners
+
+* with the `function *` declaration (syntax);
+  ```js
+    function* myGenerator(...) {...}
+  ```
+* using GeneratorFucntions constructor. The performance is worse because they are parsed a the execution time than with the reset of the code; they are a similar thing as `eval()`
+  ```js
+  // GeneratorFunction is NOT a global object
+  var GeneratorFunction = Object.getPrototypeOf(function*(){}).constructor
+  var g = new GeneratorFunction(&#34;a&#34;, &#34;yield a * 2&#34;);
+  ```
+
+???
+
+We can think in generators as __functions witch can be exited at specified points of the execution and continue from the last exited point__ when they are called again keeping the context between them as a normal function does during its execution.
+
+Generators return values before they finish using the statement __`yield`__; iterators execution finish when they reach the end of the &#34;function&#34; or execute &#34;return&#34; as an usual function does.
+
+There is also the statement __`yield*`__ to subrogate the execution to other generator; hence when that happens the caller generator give the flow to the callee generator and when it finishes the caller follows from that point.
+
+Generators can be used to create iterables and get the same result in easy way than complex iterators; however this is out the context of this talk.
+
+---
+
+class: center, middle
+
+# Generators Function Demo
+
+---
+
+# Async Functions
+
+Async functions is a proposal for EcmaScript 2016, which is in draft.
+
+Async functions are normal functions which can be suspended to await for promises.
+
+The syntax looks as
+  ```js
+  async function myAsyncFunc(...) {
+    // do whatever
+    let result = await iReturnAPromise();
+    // more things todo after the promise is resolved
+  }
+  ```
+
+---
+class: center, middle
+
+# Async Functions Demo
+
+---
+class: center, middle
+
+# Generators as Async functions
+
+We can use __Function Generators__ as __Async Functions__, so we can think __Async Functions__ as syntax sugar
+
+__Let&#39;s see how__
+
+???
+http://www.ecma-international.org/ecma-262/6.0/#sec-generator.prototype.next
+
+---
+
+class: center, middle
+
+
+# Credits
+
+[Mozilla Developers Network](https://developer.mozilla.org/)
+
+[Async functions proposal](http://tc39.github.io/ecmascript-asyncawait/)
+
+---
+
+# Resources
+
+Presentation: [goo.gl/ZKSkTV](http://blog.fraixed.es/slides/bcnjs-201601)
+
+Source code (gist): [goo.gl/4ZqC6z](https://gist.github.com/ifraixedes/62a7155b87e7e7d0c71d)
+
+--
+count: false
+# Feedback
+
+I&#39;d love __to hear from you__, say hi! on
+
+Twitter: @ifraixedes
+
+email: ivan@fraixed.es
+
+Or any other way that you know that you can reach me!
+--
+count: false
+&lt;p style=&#34;color:red;font-weight:bold;font-size:1.3em;text-align:center&#34;&gt;I&#39;m currently accepting projects&lt;p&gt;
+</textarea>
+  <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
+  <script>
+    var slideshow = remark.create();
+    document.getElementById('loader').classList.toggle('hide')
+  </script>
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

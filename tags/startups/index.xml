@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Startups on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/startups/</link>
+    <description>Recent content in Startups on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Mon, 21 Dec 2015 20:57:48 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/startups/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My Last 2is Years Have Ended Up Today</title>
+      <link>http://blog.fraixed.es/post/my-last-2is-years-have-ended-up-today</link>
+      <pubDate>Mon, 21 Dec 2015 20:57:48 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/my-last-2is-years-have-ended-up-today</guid>
+      <description>&lt;p&gt;This is short post to announce the end of my last 2 years something professional path.&lt;/p&gt;
+
+&lt;p&gt;Company had to make the hard decision to make redundant myself and a few colleagues to reduce the workforce at the minimum to keep the company running and have, at least, a bit of chances to be able to show how the image discovery technology offered can help to increase the conversions of online businesses.&lt;/p&gt;
+
+&lt;p&gt;It has been awesome 2 year and a few months which I&amp;rsquo;ve worked with &lt;strong&gt;an amazing team&lt;/strong&gt;, composed by several engineers whose I&amp;rsquo;ve been able to learn a lot about &lt;strong&gt;best software and system engineering practices, scalability, infrastructure, team collaboration&lt;/strong&gt;, etc. We&amp;rsquo;ve also faced &lt;strong&gt;hard problems&lt;/strong&gt; which we&amp;rsquo;ve solved and other which are still there. This tech experience and culture has been awesome and I am also glad to have taken a lot of advantage to enrich it more through all the spare time that I&amp;rsquo;ve invested on top following the things learnt like rails&lt;/p&gt;
+
+&lt;p&gt;Unfortunately startups are hard and in this case the business decisions haven&amp;rsquo;t been able to keep going further than the investments received, but I don&amp;rsquo;t know about business at all, so I don&amp;rsquo;t judge them.&lt;/p&gt;
+
+&lt;p&gt;I hope the best for their last run and in my case I will be drawing my near future during the next days.&lt;/p&gt;
+
+&lt;p&gt;Stay tuned.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #10</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150424/</link>
+      <pubDate>Fri, 24 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150424/</guid>
+      <description>&lt;p&gt;This week, my first favourite tweet is not about tech, rare? where I have a few other interests as well, however don&amp;rsquo;t worry, the next four are tech, so go ahead&lt;/p&gt;
+
+&lt;p&gt;Starting a business from scratch isn&amp;rsquo;t probably the easiest thing to do, probably the opposite, so knowing from the experience of others is very valuable&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Starting a business from Scratch - hints and tips from &lt;a href=&#34;https://twitter.com/dan_jenkins&#34;&gt;@dan_jenkins&lt;/a&gt; after he founded &lt;a href=&#34;https://twitter.com/nimbleapeltd&#34;&gt;@nimbleapeltd&lt;/a&gt; &lt;a href=&#34;http://t.co/Uz9JG1Zhom&#34;&gt;http://t.co/Uz9JG1Zhom&lt;/a&gt;&lt;/p&gt;&amp;mdash; Nimble Ape Ltd (@nimbleapeltd) &lt;a href=&#34;https://twitter.com/nimbleapeltd/status/589087461864779778&#34;&gt;April 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; is getting my attention, so learning language features through blog post is quite passive to get into it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Mixing, matching, mutation and moves &lt;a href=&#34;http://t.co/YFE1702wiD&#34;&gt;http://t.co/YFE1702wiD&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/589119747293220864&#34;&gt;April 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I love Internet, so I love the Web, reading about the new browser features is always in my todo list&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Chrome Stable (42) now with Push Notifications and Add to Home screen for all users.&amp;#10;&amp;#10;&lt;a href=&#34;http://t.co/tw2A9dt7uJ&#34;&gt;http://t.co/tw2A9dt7uJ&lt;/a&gt; &lt;a href=&#34;http://t.co/prEOJmC0uQ&#34;&gt;pic.twitter.com/prEOJmC0uQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Chrome Developers (@ChromiumDev) &lt;a href=&#34;https://twitter.com/ChromiumDev/status/590169593110335488&#34;&gt;April 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been very happy of the new features that &lt;a href=&#34;https://www.npmjs.com/&#34;&gt;npm&lt;/a&gt; release, with the amount of package that it hosts, it was something that so many people were expecting, and happy they&amp;rsquo;ve got solve a hard problem&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;solving npm’s hard problem: naming packages &lt;a href=&#34;http://t.co/126RkmZaef&#34;&gt;http://t.co/126RkmZaef&lt;/a&gt; &lt;a href=&#34;http://t.co/voENvgIiA7&#34;&gt;pic.twitter.com/voENvgIiA7&lt;/a&gt;&lt;/p&gt;&amp;mdash; npmbot (@npmjs) &lt;a href=&#34;https://twitter.com/npmjs/status/590307732042973184&#34;&gt;April 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I think that this series of blog posts about &lt;a href=&#34;http://adampresley.com/2015/04/12/writing-a-lexer-and-parser-in-go-part-1.html&#34;&gt;&amp;ldquo;Writing a Lexer and Parser in Go&amp;rdquo;&lt;/a&gt; will very good, because they teach &lt;a href=&#34;http://golang.org&#34;&gt;golang&lt;/a&gt; based in a very familiar topic about computer science besides that the example is simple, so easy to step into, and based in a Rob Pike presentation.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Writing a Lexer and Parser in Go - Part 1: &lt;a href=&#34;http://t.co/EvhFBi6L2X&#34;&gt;http://t.co/EvhFBi6L2X&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/590183203736068097&#34;&gt;April 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a crazy weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

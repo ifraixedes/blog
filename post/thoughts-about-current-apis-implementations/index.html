@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="After I&#39;ve been consuming several REST APIs for a while I&#39;ve found that some of them fails in small things which aren&#39;t just consumer preferences">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Thoughts about current APIs implementations">
+  <meta property="og:url" content="http://blog.fraixed.es/post/thoughts-about-current-apis-implementations">
+  <meta property="og:description" content="After I&#39;ve been consuming several REST APIs for a while I&#39;ve found that some of them fails in small things which aren&#39;t just consumer preferences">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="API">
+      
+        <meta property="og:tag" content="Software Engineering">
+      
+        <meta property="og:tag" content="REST">
+      
+        <meta property="og:tag" content="Implementation">
+      
+        <meta property="og:tag" content="HTTP">
+      
+        <meta property="og:tag" content="Communication Protocol">
+      
+        <meta property="og:tag" content="Service">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/thoughts-about-current-apis-implementations">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Thoughts about current APIs implementations</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/thoughts-about-current-apis-implementations"><h1 class="l-title title">Thoughts about current APIs implementations</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">30-03-2015</span>
+    <br>
+    
+
+<p>Nowadays there is a <strong>big amount of Internet services which operate over a <a href="http://en.wikipedia.org/wiki/Representational_state_transfer" target="_blank">REST</a> <a href="http://en.wikipedia.org/wiki/Application_programming_interface" target="_blank">API</a></strong>, and a big part of these services are businesses whose product/service is 100% offered/delivered/exposed over it, and moreover most of these business can be classified under the &ldquo;start-up&rdquo; fuzzy term (<a href="http://en.wikipedia.org/wiki/Startup_company" target="_blank" rel="nofollow">1</a>, <a href="http://www.urbandictionary.com/define.php?term=startup" target="_blank" rel="nofollow">2</a>, etc).</p>
+
+<p>This trending has been very good adopted last years for developer communities, <strong><a href="http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol" target="_blank">HTTP</a> has become the standard communication (application layer) protocol</strong> (you can blame Internet about it), until reach the point that if a service doesn&rsquo;t have a REST API then it may be discarded over another one whose quality is worse but offer a REST API.</p>
+
+<p>REST is not the only way to expose a service over HTTP, for example <strong>SOAP is another one and it&rsquo;s standard unlike REST which is a software architecture style</strong>, however I guess that the adoption for REST instead of others has been the simplicity (<a href="http://json.org/" target="_blank">JSON</a> data format helped a lot); the tradeoff is, that now, developers, as consumers, face with a variety of ways to define the same, versioning, error handling, etc., and as producers (REST API&rsquo;s owner), what ways to choose to expose those.</p>
+
+<p>I&rsquo;ve been consuming quite a bit HTTP APIs, the most of them in hackathons, others for professional purpose and never produced one for professional purpose nonetheless we&rsquo;re producing one in the company where I&rsquo;m currently working and facing the challenge to make decisions as the <a href="https://news.ycombinator.com/item?id=1523664" target="_blank">versioning one (URL vs headers)</a>.</p>
+
+<p>Here, I&rsquo;m not going to fire the next hot discussion about API best practices, I&rsquo;m not currently the right person for that, as I&rsquo;ve said, I&rsquo;ve never built one for the real world, so I believe that there are better people in the world who can write post or speak about it, for example, people who are talking in <a href="http://www.meetup.com/London-API-Group/" target="_blank" rel="nofollow">London API</a>, which is co-organised by a friend of mine (<a href="https://twitter.com/orliesaurus" target="_blank" rel="nofollow">@orliesaurus</a>).</p>
+
+<p>Therefore I&rsquo;m going to write about three aspects which annoys me but at the same time I consider that they are quite objective.</p>
+
+<h2 id="why-not-use-the-standard-when-the-standard-exist:9d9586e37c51496f007cdb035378cc03">Why not use the standard when the standard exist</h2>
+
+<p>Last Saturday, as quite usual, I was attending to a Hackathon; the hackathon was focused in using one REST API service.</p>
+
+<p>The required API to use was related with <strong>getting information</strong> about transportation; I used one of the resources which returns the route to go from a specified origin (coordinates point) to a specified destination, however it requires a bunch of parameters more as start time, type of transport, and so on. Clearly, the end point is to get information, then the request should be a GET request, however the API required a POST, why?</p>
+
+<p>For my understanding the right HTTP verb is GET <strong><sup>1</sup></strong>, because the <a href="https://tools.ietf.org/html/rfc7231#section-4.3.1" target="_blank">HTTP standard says</a></p>
+
+<blockquote>
+<p>The GET method requests transfer of a current selected representation
+  for the target resource.  GET is the primary mechanism of information
+  retrieval and the focus of almost all performance optimizations.
+  Hence, when people speak of retrieving some identifiable information
+  via HTTP, they are generally referring to making a GET request.</p>
+</blockquote>
+
+<p>Then, I guess that the decision of using POST is because the parameters are sent in the request body due that they aren&rsquo;t nice values to use as URL path moreover they are too many to send them in URLs&rsquo; query and I agree to send them in the body to keep a clean URL, nevertheless I disagree to send them by POST, mainly because <a href="https://tools.ietf.org/html/rfc7231#section-4.3.3" target="_blank">the HTTP standard says</a></p>
+
+<blockquote>
+<p>The POST method requests that the target resource process the
+  representation enclosed in the request according to the resource&rsquo;s
+  own specific semantics.</p>
+</blockquote>
+
+<p>hence, I&rsquo;ve made the assumption that the decision to use POST was, because they believed that GET cannot contains body <strong><sup>2</sup></strong>, however the standard doesn&rsquo;t say that it cannot contain body, it says</p>
+
+<blockquote>
+<p>A payload within a GET request message has no defined semantics;
+  sending a payload body on a GET request might cause some existing
+  implementations to reject the request.</p>
+</blockquote>
+
+<p>This is not the only place that, we can find examples which drive us to make the assumption that GET cannot hold body, other example is the well known and useful REST client tool called <a href="https://www.getpostman.com/" target="_blank" rel="nofollow">Postman</a> where if you cannot make a GET request with body as you can see in the next picture how GET doesn&rsquo;t offer you the input box to put the body content</p>
+
+<p><img alt="Postman screenshot to make a GET request" src="https://s-media-cache-ak0.pinimg.com/originals/7a/1b/73/7a1b73e3356abd0931fbdfad47c41afd.jpg" class="graphic-medium graphic-medium-centre"></p>
+
+<p>instead of POST</p>
+
+<p><img alt="Postman screenshot to make a POST request" src="https://s-media-cache-ak0.pinimg.com/originals/0f/7d/f5/0f7df545b03812b36a8c6ec80f501084.jpg" class="graphic-medium graphic-medium-centre"></p>
+
+<p>Perhaps the owner of the mentioned API was thinking in this kind of conflict and preferred to expose the resource by POST.</p>
+
+<p>I have to recognise that the examples of the real world confused me on it as well, so I&rsquo;ve learnt the lesson, try always to read the standard or at least do it when I&rsquo;m slightly in doubt.</p>
+
+<p>By they way, there is an <a href="https://github.com/a85/POSTMan-Chrome-Extension/issues/919" target="_blank" rel="nofollow">issue in Postman Github repository about this</a>, however it seems that the problem is the platform where Postman runs.</p>
+
+<h2 id="use-different-urls-for-different-resources:9d9586e37c51496f007cdb035378cc03">Use different URLs for different resources</h2>
+
+<p>How the API make available the resources is something that matters therefore <strong>creating URLs which make sense with the exposed resource, help a lot to understand the resource, the returned data, moreover that it&rsquo;ll make the life easier to write the documentation</strong> to explain what the resource return and what parameters require and support.</p>
+
+<p>Take a look to this API resource</p>
+
+<p><img alt="screenshot of documentation page of /items resource of visit Britain REST API" src="https://s-media-cache-ak0.pinimg.com/originals/5a/c9/68/5ac968db19e80a86f62f9c4996d2b6f9.jpg" class="graphic-medium graphic-medium-centre"></p>
+
+<p>Basically you get a lit of categories which are entities to catalogue locations with the same resource that you get locations using the query parameter &ldquo;type&rdquo;, therefore the data structure of the response body, obviously is different for each type and in the resource documentation isn&rsquo;t clear at all to know that parameters aren&rsquo;t ignored on each type.</p>
+
+<p>Maybe I miss something, but why haven&rsquo;t they created a different resource for each type, or at leas for type &ldquo;category&rdquo; and &ldquo;locations&rdquo;?</p>
+
+<h2 id="use-a-standardised-data-format:9d9586e37c51496f007cdb035378cc03">Use a standardised data format</h2>
+
+<p>Another important thing to appreciate is the returned data format. Ideally, the <strong>API should return two, JSON and XML</strong> (yes XML it&rsquo;s not dead) and if it only returns one, I&rsquo;d suggest JSON, at least today, maybe not some years ago.</p>
+
+<p>If an API returns raw text, then the developer will have a lot of work parsing the raw data besides just struggling of making the transformations of the returned data structure to the structure which fulfill their requirements.</p>
+
+<p>This may seems that it doesn&rsquo;t happen, and today any api return JSON or XML or both, well, then you can take a look to <a href="http://www.clickatell.com/apis-scripts/apis/http-s/" target="_blank" rel="nofollow">Clickatell HTTP API</a> <a href="http://www.clickatell.com/downloads/http/Clickatell_HTTP.pdf" target="_blank" rel="nofollow">documentation</a> <sup>pdf doc</sup></p>
+
+<p>or just forget to open the PDF document and waste your time searching where about you can see it and just take a quick look to the example that I copied from it</p>
+
+<pre><code>ID: xxxxx
+or
+ERR: Error number, error description
+</code></pre>
+
+<p>Nice, no?</p>
+
+<h2 id="wrapping-up:9d9586e37c51496f007cdb035378cc03">Wrapping up</h2>
+
+<p>Nowadays the works is full of REST APIs, they are not standardised, so several things are implemented/exposed in different ways, versioning, parameters to send, etc.</p>
+
+<p>Event though they are implemented differently, if they keep the resources under more or less meaning URLs (paths with words which match with the returned content) and send the data in at least one of the spread formats (JSON or XML), then the pains to use them are reduced quite a bit.</p>
+
+<p>I haven&rsquo;t mentioned anything about API documentations, I think that it&rsquo;s quite evident that the API needs a decent documentation otherwise developer will have to waste their time doing reverse engineering the exposed API; appreciated things to appear in the documentation are how to authenticate (in case that it&rsquo;s needed), the exposed resources with, how to be requested (verb, params, the headers), what is the response data structure when succeed and when fails, response headers to consider and maybe some other that doesn&rsquo;t come up now to my brain. A clear document format oriented to browse the resources and a play ground are also very helpful.</p>
+
+<p>In my case I appreciate that the API use the HTTP standard as much as possible, when it cannot fulfill the requirements, then it&rsquo;s OK, but using the standard inappropriately or just using an alternative non-standard way to do something when the standard offer one is bad.</p>
+
+<p>What do you think about the APIs that you use? have you always found clear APIs?</p>
+
+<hr />
+
+<p><strong>I&rsquo;ve update this post</strong> on 14/04/2015 adding the next two footnotes after I&rsquo;ve realised that I wrote something that it&rsquo;s not totally right; I&rsquo;ve also written <a href="http://blog.fraixed.es/post/clarifying-my-mistake-get-requests-with-body" target="_blank">a second blog post about my mistake</a> which gives a better clarification than this two footnotes.</p>
+
+<p class="definition"><sup>1</sup> The right verb is still being GET, if POST is used as the mentioned API does, however if GET is used it must be without BODY and all the parameters must be in the URI through query parameters or in some part of the path it make sense create different resources.</p>
+<p class="definition"><sup>2</sup> The current HTTP/1.1 standard doesn't disallow to use BODY in GET, however it mustn't considered, so it's pointless.</p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

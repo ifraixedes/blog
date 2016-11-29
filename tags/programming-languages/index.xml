@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Programming Languages on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/programming-languages/</link>
+    <description>Recent content in Programming Languages on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Wed, 06 Jan 2016 08:24:56 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/programming-languages/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A Walk through Golang Package Interfaces</title>
+      <link>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</link>
+      <pubDate>Wed, 06 Jan 2016 08:24:56 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/a-walk-through-golang-package-interfaces</guid>
+      <description>
+
+&lt;p&gt;Golang interface is one of things that people love due its simplicity and how they make possible to create small things which can be composed to create more complex ones.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s well know that defining interfaces in the implementations make them more flexible and reusable; defining interfaces with just one or a couple of functions signatures is one of the good practices of writing Golang applications, because they make the implementations more modular due they can be composed to get new ones for more specific needs.&lt;/p&gt;
+
+&lt;p&gt;Having this big set of small interface give the opportunity to have a bigger set of generic functions because they only constrain the parameters to implement one of those; so they can be use for any user defined type which implements at least that specific interface.&lt;/p&gt;
+
+&lt;p&gt;Everything above is well know and there are lots of posts about this matter, hence my goal in this post isn&amp;rsquo;t to add a new one more or extend this topic even more; there already good literature about it that you can find easily.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;My goal is to provide the list of interfaces which I&amp;rsquo;ve found, and hopefully I haven&amp;rsquo;t missed any, in Golang 1.5 standard package and highlight few of them&lt;/strong&gt; which I think that we have to bear in mind when we are developing common applications or services.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-ones-useful-for-the-most-common-applications:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The ones useful for the most common applications&lt;/h2&gt;
+
+&lt;h3 id=&#34;sql-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sql package&lt;/h3&gt;
+
+&lt;p&gt;The sql package has two without including the ones defined in the driver subpackage which I&amp;rsquo;ve skipped due that in common applications development is unusual having to implement a new driver.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;These ones gathered my attention due that it isn&amp;rsquo;t that rare to store types in a database which aren&amp;rsquo;t basic types defined in the used database system; while we can do the mapping each time that we read those values from the database, the Scanner interface is very convenient to be implemented and get the benefits to get the mapping automatically when the values are read from the database, by the Scan function.&lt;/p&gt;
+
+&lt;p&gt;One example of this case is &lt;a href=&#34;https://godoc.org/github.com/satori/go.uuid#UUID.Scan&#34; target=&#34;_blank&#34; &gt;go.uuid&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;encoding-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;encoding Package&lt;/h3&gt;
+
+&lt;p&gt;The encoding/decoding data is another common operation to perform in common application development. Golang encoding package defines two pairs, marshare/unmarsheler, of interfaces, one for binary and another for text:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryMarshaler&#34; target=&#34;_blank&#34; &gt;BinaryMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#BinaryUnmarshaler&#34; target=&#34;_blank&#34; &gt;BinaryUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextMarshaler&#34; target=&#34;_blank&#34; &gt;TextMarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/#TextUnmarshaler&#34; target=&#34;_blank&#34; &gt;TextUnmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It also defines the same pair for specific encodings which usage is very spread&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;gob&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobDecoder&#34; target=&#34;_blank&#34; &gt;GobDecoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/gob/#GobEncoder&#34; target=&#34;_blank&#34; &gt;GobEncoder&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;json&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/json/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;xml&lt;/strong&gt;: which has one pair to allow to encode/decode attributes
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Marshaler&#34; target=&#34;_blank&#34; &gt;Marshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#Unmarshaler&#34; target=&#34;_blank&#34; &gt;Unmarshaler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#MarshalerAttr&#34; target=&#34;_blank&#34; &gt;MarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/encoding/xml/#UnmarshalerAttr&#34; target=&#34;_blank&#34; &gt;UnmarshalerAttr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;And one more for binary encoding
+* &lt;a href=&#34;https://golang.org/pkg/encoding/binary/#ByteOrder&#34; target=&#34;_blank&#34; &gt;ByteOrder&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h3 id=&#34;flag-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;flag package&lt;/h3&gt;
+
+&lt;p&gt;Another common stuff is to pass argument to our application when it starts; &lt;em&gt;flag package&lt;/em&gt; contains two interface which allow to define types to map values passed through command line arguments.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Getter&#34; target=&#34;_blank&#34; &gt;Getter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/flag/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;fmt-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;fmt package&lt;/h3&gt;
+
+&lt;p&gt;The fmt package defines a set of interfaces to format I/O, which is another functionality which can be needed in common applications development.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Formatter&#34; target=&#34;_blank&#34; &gt;Formatter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#GoStringer&#34; target=&#34;_blank&#34; &gt;GoStringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#ScanState&#34; target=&#34;_blank&#34; &gt;ScanState&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Scanner&#34; target=&#34;_blank&#34; &gt;Scanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#State&#34; target=&#34;_blank&#34; &gt;State&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/fmt/#Stringer&#34; target=&#34;_blank&#34; &gt;Stringer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;sort-package:8299f908315f8a7f26ec77fc52719a89&#34;&gt;sort package&lt;/h3&gt;
+
+&lt;p&gt;Some applications also requires to sort element in slices, so the types which implement sort interface can use after the routines of sort package to be sorted.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sort/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;the-rest:8299f908315f8a7f26ec77fc52719a89&#34;&gt;The rest&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Compress package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;flate&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Reader&#34; target=&#34;_blank&#34; &gt;falate/Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/flate/#Resetter&#34; target=&#34;_blank&#34; &gt;falate/Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;zlib&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/compress/zlib/#Resetter&#34; target=&#34;_blank&#34; &gt;Resetter&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Heap package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/container/heap/#Interface&#34; target=&#34;_blank&#34; &gt;Interface&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;Crypto package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Decrypter&#34; target=&#34;_blank&#34; &gt;Decrypter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#Signer&#34; target=&#34;_blank&#34; &gt;Signer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/#SignerOpts&#34; target=&#34;_blank&#34; &gt;SignerOpts&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cipher&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#AEAD&#34; target=&#34;_blank&#34; &gt;AEAD&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Block&#34; target=&#34;_blank&#34; &gt;Block&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#BlockMode&#34; target=&#34;_blank&#34; &gt;BlockMode&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/cipher/#Stream&#34; target=&#34;_blank&#34; &gt;Stream&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;elliptic&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/elliptic/#Curve&#34; target=&#34;_blank&#34; &gt;Curve&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/crypto/tls/#ClientSessionCache&#34; target=&#34;_blank&#34; &gt;ClientSessionCache&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sql/driver package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ColumnConverter&#34; target=&#34;_blank&#34; &gt;ColumnConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Driver&#34; target=&#34;_blank&#34; &gt;Driver&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Execer&#34; target=&#34;_blank&#34; &gt;Execer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Queryer&#34; target=&#34;_blank&#34; &gt;Queryer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Result&#34; target=&#34;_blank&#34; &gt;Result&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Tx&#34; target=&#34;_blank&#34; &gt;Tx&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#ValueConverter&#34; target=&#34;_blank&#34; &gt;ValueConverter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/database/sql/driver/#Valuer&#34; target=&#34;_blank&#34; &gt;Valuer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;debug package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;dwarf&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/dwarf/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;macho&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/debug/macho/#Load&#34; target=&#34;_blank&#34; &gt;Load&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;expvar package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/expvar/#Var&#34; target=&#34;_blank&#34; &gt;Var&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;ast package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Decl&#34; target=&#34;_blank&#34; &gt;Decl&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Expr&#34; target=&#34;_blank&#34; &gt;Expr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Spec&#34; target=&#34;_blank&#34; &gt;Spec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Stmt&#34; target=&#34;_blank&#34; &gt;Stmt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/ast/#Visitor&#34; target=&#34;_blank&#34; &gt;Visitor&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;constant package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/constant/#Value&#34; target=&#34;_blank&#34; &gt;Value&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;types package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Importer&#34; target=&#34;_blank&#34; &gt;Importer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Object&#34; target=&#34;_blank&#34; &gt;Object&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Sizes&#34; target=&#34;_blank&#34; &gt;Sizes&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/go/types/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;hash package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash&#34; target=&#34;_blank&#34; &gt;Hash&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/hash/#Hash64&#34; target=&#34;_blank&#34; &gt;Hash64&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;image package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/#PalettedImage&#34; target=&#34;_blank&#34; &gt;PalettedImage&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;color&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Color&#34; target=&#34;_blank&#34; &gt;Color&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/color/#Model&#34; target=&#34;_blank&#34; &gt;Model&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;draw&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Drawer&#34; target=&#34;_blank&#34; &gt;Drawer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Image&#34; target=&#34;_blank&#34; &gt;Image&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/draw/#Quantizer&#34; target=&#34;_blank&#34; &gt;Quantizer&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;jpeg&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/image/jpeg/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;io package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteReader&#34; target=&#34;_blank&#34; &gt;ByteReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteScanner&#34; target=&#34;_blank&#34; &gt;ByteScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ByteWriter&#34; target=&#34;_blank&#34; &gt;ByteWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Closer&#34; target=&#34;_blank&#34; &gt;Closer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadCloser&#34; target=&#34;_blank&#34; &gt;ReadCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadSeeker&#34; target=&#34;_blank&#34; &gt;ReadSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteCloser&#34; target=&#34;_blank&#34; &gt;ReadWriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriteSeeker&#34; target=&#34;_blank&#34; &gt;ReadWriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReadWriter&#34; target=&#34;_blank&#34; &gt;ReadWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Reader&#34; target=&#34;_blank&#34; &gt;Reader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderAt&#34; target=&#34;_blank&#34; &gt;ReaderAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#ReaderFrom&#34; target=&#34;_blank&#34; &gt;ReaderFrom&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneReader&#34; target=&#34;_blank&#34; &gt;RuneReader&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#RuneScanner&#34; target=&#34;_blank&#34; &gt;RuneScanner&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Seeker&#34; target=&#34;_blank&#34; &gt;Seeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteCloser&#34; target=&#34;_blank&#34; &gt;WriteCloser&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriteSeeker&#34; target=&#34;_blank&#34; &gt;WriteSeeker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#Writer&#34; target=&#34;_blank&#34; &gt;Writer&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterAt&#34; target=&#34;_blank&#34; &gt;WriterAt&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/io/#WriterTo&#34; target=&#34;_blank&#34; &gt;WriterTo&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;math/rand package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/math/rand/#Source&#34; target=&#34;_blank&#34; &gt;Source&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;mine/multipart package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/mime/multipart/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;net package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Addr&#34; target=&#34;_blank&#34; &gt;Addr&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Conn&#34; target=&#34;_blank&#34; &gt;Conn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#Listener&#34; target=&#34;_blank&#34; &gt;Listener&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/#PacketConn&#34; target=&#34;_blank&#34; &gt;PacketConn&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;http&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CloseNotifier&#34; target=&#34;_blank&#34; &gt;CloseNotifier&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#CookieJar&#34; target=&#34;_blank&#34; &gt;CookieJar&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#File&#34; target=&#34;_blank&#34; &gt;File&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#FileSystem&#34; target=&#34;_blank&#34; &gt;FileSystem&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Flusher&#34; target=&#34;_blank&#34; &gt;Flusher&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Handler&#34; target=&#34;_blank&#34; &gt;Handler&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#Hijacker&#34; target=&#34;_blank&#34; &gt;Hijacker&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#ResponseWriter&#34; target=&#34;_blank&#34; &gt;ResponseWriter&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/#RoundTripper&#34; target=&#34;_blank&#34; &gt;RoundTripper&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cookiejar&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/http/cookiejar/#PublicSuffixList&#34; target=&#34;_blank&#34; &gt;PublicSuffixList&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;rpc&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ClientCodec&#34; target=&#34;_blank&#34; &gt;ClientCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/rpc/#ServerCodec&#34; target=&#34;_blank&#34; &gt;ServerCodec&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;smtp&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/net/smtp/#Auth&#34; target=&#34;_blank&#34; &gt;Auth&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;os&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#FileInfo&#34; target=&#34;_blank&#34; &gt;FileInfo&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/os/#Signal&#34; target=&#34;_blank&#34; &gt;Signal&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;reflect package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/reflect/#Type&#34; target=&#34;_blank&#34; &gt;Type&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;runtime package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/runtime/#Error&#34; target=&#34;_blank&#34; &gt;Error&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;sync package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/sync/#Locker&#34; target=&#34;_blank&#34; &gt;Locker&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;syscall package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/syscall/#Sockaddr&#34; target=&#34;_blank&#34; &gt;Sockaddr&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;tesing package&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/#TB&#34; target=&#34;_blank&#34; &gt;TB&lt;/a&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;quick&lt;/strong&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/testing/quick/#Generator&#34; target=&#34;_blank&#34; &gt;Generator&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;text/template/parse&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://golang.org/pkg/text/template/parse/#Node&#34; target=&#34;_blank&#34; &gt;Node&lt;/a&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;conclusion:8299f908315f8a7f26ec77fc52719a89&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Golang interfaces are the most powerful and simple feature that the language expose to create modular and reusable implementations.&lt;/p&gt;
+
+&lt;p&gt;Golang standard library contains a bunch of already defined interfaces which can be implemented by our applications or services without having to think in new ones for the same purpose besides to ease and speed up to any Golang developer to understand our implementations.&lt;/p&gt;
+
+&lt;p&gt;Collecting all of them in in this post allowed me to discover some of them which I haven&amp;rsquo;t seen before even though I&amp;rsquo;ve been developing in Golang for one year and a half. Some of them I had never seen because I haven&amp;rsquo;t had to use them, others I had seen when I was reading a specific package documentation and other I saw at some point but I didn&amp;rsquo;t assimilate at the first glance, so this post has been a good exercise.&lt;/p&gt;
+
+&lt;p&gt;If I&amp;rsquo;ve missed any and you know which ones, please let me know with an innocent comment.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #9</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</link>
+      <pubDate>Fri, 17 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</guid>
+      <description>&lt;p&gt;This week security, programming languages and Linux, go ahead to see what tweets I&amp;rsquo;ve chosen.&lt;/p&gt;
+
+&lt;p&gt;New security issue on Apple OS X 10.10.2, so if you use OSX 10.10 and yo haven&amp;rsquo;t updated, you should do ASAP because you&amp;rsquo;re already late.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/hashtag/rootpipe?src=hash&#34;&gt;#rootpipe&lt;/a&gt; Full disclosure of a privilege escalation to root in Apple OS X 10.10.2 (and earlier): &lt;a href=&#34;https://t.co/mT6EvSYqWh&#34;&gt;https://t.co/mT6EvSYqWh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Emil Kvarnhammar (@emilkvarnhammar) &lt;a href=&#34;https://twitter.com/emilkvarnhammar/status/586147583552266240&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A blog post about &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; and concurrency has been released, after it&amp;rsquo;s in beta and it&amp;rsquo;ll be for production soon, it&amp;rsquo;s worth to read what feature the language has to implement some interesting patterns&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Fearless Concurrency with Rust &lt;a href=&#34;http://t.co/RzmGXuPAcD&#34;&gt;http://t.co/RzmGXuPAcD&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/586566688109367297&#34;&gt;April 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I wasn&amp;rsquo;t aware of the &lt;a href=&#34;https://elementary.io/&#34;&gt;Elementary Linux distribution&lt;/a&gt;, I don&amp;rsquo;t have any plan to use but I&amp;rsquo;ve like the concept of it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Elementary Linux released:&amp;#10;32bit &lt;a href=&#34;http://t.co/6I07CZ6IIe&#34;&gt;http://t.co/6I07CZ6IIe&lt;/a&gt;&amp;#10;&amp;#10;64bit &lt;a href=&#34;http://t.co/pewrEkzjWE&#34;&gt;http://t.co/pewrEkzjWE&lt;/a&gt;&amp;#10;&amp;#10;More &lt;a href=&#34;https://t.co/lV7wdkrXlZ&#34;&gt;https://t.co/lV7wdkrXlZ&lt;/a&gt; &lt;a href=&#34;http://t.co/5dwrDqIC6Q&#34;&gt;pic.twitter.com/5dwrDqIC6Q&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586946813573201920&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Indoctrinate people to Linux is always good, and making it free remove all the barriers, so I support this cause and I&amp;rsquo;ve decided to share it here; furthermore the author is the creator of one of the distributions that I used quite a bit in the past, &lt;a href=&#34;https://www.gentoo.org/&#34;&gt;Gentoo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Please RT. The best &amp;quot;Linux Fundamentals&amp;quot; course, by Daniel Robbins the creator of Gentoo Linux &lt;a href=&#34;http://t.co/uQMmw2w7yQ&#34;&gt;http://t.co/uQMmw2w7yQ&lt;/a&gt; No registration needed&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586935862635528194&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve really found very interesting about a blog post written by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;, because lastly I&amp;rsquo;ve got in the same thoughts about having too many features which some of them are redundant in programming languages, frameworks, etc., rather than help in long term, they annoy.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Less is more: removing language features to leave nowhere for bugs to hide. &lt;a href=&#34;http://t.co/6q3MHSkAe9&#34;&gt;http://t.co/6q3MHSkAe9&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Tim Ruffles (@timruffles) &lt;a href=&#34;https://twitter.com/timruffles/status/587893747385556992&#34;&gt;April 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a wonderful weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

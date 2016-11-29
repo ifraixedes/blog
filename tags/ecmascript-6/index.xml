@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ecmascript 6 on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/ecmascript-6/</link>
+    <description>Recent content in Ecmascript 6 on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 10 Apr 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/ecmascript-6/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #8</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150410/</link>
+      <pubDate>Fri, 10 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150410/</guid>
+      <description>&lt;p&gt;Another short week is almost done and here my 5 favourite tweets of the last 7 days which appeared in my timeline.&lt;/p&gt;
+
+&lt;p&gt;The moment arrived, after several years under development, &lt;strong&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; beta&lt;/strong&gt; has been released and the first stable release has been scheduled for 15th of May, so AWESOME&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Rust 1.0-beta is here!! &lt;a href=&#34;http://t.co/8HTh1jrL69&#34;&gt;http://t.co/8HTh1jrL69&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/584040427508072449&#34;&gt;April 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Very nice web resource to see what ES6 brings and how these new features differ from its predecessor ES5&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;nice hands-on resource for learning ES6: &lt;a href=&#34;http://t.co/VB5WcTT4LR&#34;&gt;http://t.co/VB5WcTT4LR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/584403090259906560&#34;&gt;April 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve go quite old great blog post about &lt;strong&gt;Open Source&lt;/strong&gt; and how delaying to make it open affects, at least when it&amp;rsquo;s created by a governmental organisation&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;another great post by &lt;a href=&#34;https://twitter.com/kfogel&#34;&gt;@kfogel&lt;/a&gt;: Be Open [Source] From Day One &lt;a href=&#34;http://t.co/8hTihlTZNo&#34;&gt;http://t.co/8hTihlTZNo&lt;/a&gt;&lt;/p&gt;&amp;mdash; Aidan Feldman (@aidanfeldman) &lt;a href=&#34;https://twitter.com/aidanfeldman/status/585831168643170304&#34;&gt;April 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A friend of mine tweeted about &lt;strong&gt;[Ghost]&lt;/strong&gt;(&lt;a href=&#34;https://ghost.org/&#34;&gt;https://ghost.org/&lt;/a&gt;) blog post where they&amp;rsquo;ve made public all their revenues metrics, I&amp;rsquo;m very thrilled how some companies, as &lt;strong&gt;Buffer&lt;/strong&gt; &lt;a href=&#34;https://open.bufferapp.com/transparent-pricing-buffer/&#34;&gt;&lt;sup&gt;1&lt;sup&gt;&lt;/a&gt; &lt;a href=&#34;https://open.bufferapp.com/introducing-open-salaries-at-buffer-including-our-transparent-formula-and-all-individual-salaries/&#34;&gt;&lt;sup&gt;2&lt;sup&gt;&lt;/a&gt;, and &lt;strong&gt;Baremetrics&lt;/strong&gt; &lt;a href=&#34;https://baremetrics.com/blog/why-we-spent-250000&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;https://baremetrics.com/blog/bootstrapped-to-funded&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;https://baremetrics.com/blog/stripe-500000-baremetrics&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;, are moving toward the transparency&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;$411,000 in ARR and &lt;a href=&#34;https://twitter.com/TryGhost&#34;&gt;@TryGhost&lt;/a&gt; just made all of their revenue metrics completely public: &lt;a href=&#34;http://t.co/SGH5CFmeQE&#34;&gt;http://t.co/SGH5CFmeQE&lt;/a&gt;&lt;/p&gt;&amp;mdash; BROLΛПDO (@orliesaurus) &lt;a href=&#34;https://twitter.com/orliesaurus/status/586157961346678784&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Javascript is moving to take over the stablished Java and .NET enterprise stacks, we&amp;rsquo;ll see what will happen&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;JavaScript will lead a massive shift in enterprise development &lt;a href=&#34;http://t.co/07XVzu9LgK&#34;&gt;http://t.co/07XVzu9LgK&lt;/a&gt;&lt;/p&gt;&amp;mdash; Paul Krill (@pjkrill) &lt;a href=&#34;https://twitter.com/pjkrill/status/586194173121794050&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a great weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

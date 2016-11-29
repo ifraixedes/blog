@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rustlang on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/rustlang/</link>
+    <description>Recent content in Rustlang on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 15 May 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/rustlang/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #13</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150515/</link>
+      <pubDate>Fri, 15 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150515/</guid>
+      <description>&lt;p&gt;This week I&amp;rsquo;ve been half away, however I&amp;rsquo;ve collected several tweets and my choice has driven to centre the topic in &lt;strong&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;Rust&lt;/a&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;a href=&#34;https://iojs.org/en/index.html&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;As usual in my last post about &amp;ldquo;my 5 favourite weekly tweets&amp;rdquo;, I&amp;rsquo;ve got a blog post about Rust which help me to learn more about it in a passive way, in this case &lt;strong&gt;&lt;a href=&#34;http://huonw.github.io/blog/2015/05/finding-closure-in-rust/&#34; target=&#34;_blank&#34;&gt;about Closures in Rust&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Finding Closure in Rust  &lt;a href=&#34;http://t.co/M4m21WgY2i&#34;&gt;http://t.co/M4m21WgY2i&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/596781802204884992&#34;&gt;May 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Now that I&amp;rsquo;m using go professionally a lot of doubts have bubble up with my colleagues in how to approach the implementation of several general parts of the system/application/serive, so I&amp;rsquo;ve seen this post &lt;strong&gt;&lt;a href=&#34;https://joeshaw.org/net-context-and-http-handler/&#34; target=&#34;_blank&#34;&gt;which compares several approaches about net/context and http.Handler&lt;/a&gt; very interesting&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Go&amp;#39;s net/context and http.Handler: &lt;a href=&#34;https://t.co/vxKnSbsQLZ&#34;&gt;https://t.co/vxKnSbsQLZ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/597017175086518272&#34;&gt;May 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Another post about Go got into my favourites ones, this time about something that I&amp;rsquo;d already known from a conference that &lt;a href=&#34;https://www.cloudflare.com/&#34; target=&#34;_blank&#34;&gt;CloudFlare&lt;/a&gt;&amp;rsquo;s team has been working on, a &lt;strong&gt;&lt;a href=&#34;https://blog.cloudflare.com/go-crypto-bridging-the-performance-gap/&#34; target=&#34;_blank&#34;&gt;cryptography library to boost performance&lt;/a&gt;&lt;/strong&gt; due the Go crypto package isn&amp;rsquo;t fast enough as existing solutions in other techs.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Go Crypto: Bridging The Performance Gap - &lt;a href=&#34;https://t.co/jNEJjz6MQm&#34;&gt;https://t.co/jNEJjz6MQm&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/597431194054189056&#34;&gt;May 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Another Rust blog post, in this case from its &lt;a href=&#34;http://blog.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;official blog&lt;/a&gt;, which teaches about &lt;strong&gt;&lt;a href=&#34;http://blog.rust-lang.org/2015/05/11/traits.html&#34; target=&#34;_blank&#34;&gt;traits and how they allows to abstract without an important overhead&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Abstraction without overhead: traits in &lt;a href=&#34;https://twitter.com/hashtag/rustlang?src=hash&#34;&gt;#rustlang&lt;/a&gt; &lt;a href=&#34;http://t.co/yzDfHNCQaW&#34;&gt;http://t.co/yzDfHNCQaW&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/597818818224750592&#34;&gt;May 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one it&amp;rsquo;s about the &lt;strong&gt;agreement between iojs and Node Foundation to unify forces&lt;/strong&gt; to empower Node&amp;rsquo;s ecosystem and community&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;The &lt;a href=&#34;https://twitter.com/official_iojs&#34;&gt;@official_iojs&lt;/a&gt; just agreed to move into the Node Foundation and rename the &amp;quot;iojs&amp;quot; org on GitHub to &amp;quot;nodejs&amp;quot; &lt;a href=&#34;http://t.co/W1cCakBgLy&#34;&gt;http://t.co/W1cCakBgLy&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/598605393636429825&#34;&gt;May 13, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a nice spring weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #12</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</link>
+      <pubDate>Fri, 08 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150508/</guid>
+      <description>&lt;p&gt;Another &amp;ldquo;working&amp;rdquo; week is gone and as usual you can take a look here to my 5 favourite tweets of the week&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve got a nice post about &lt;a href=&#34;http://www.rust-lang.org/&#34; target=&#34;_blank&#34;&gt;Rust&lt;/a&gt; Iterators, don&amp;rsquo;t missed if you&amp;rsquo;ve started to be curious about this language that will be for production use in a few days after this post&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;A Journey into Iterators &lt;a href=&#34;http://t.co/tuR0cIIG12&#34;&gt;http://t.co/tuR0cIIG12&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/594624260599058434&#34;&gt;May 2, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Hacking is not my topic, however I&amp;rsquo;m always interested in news about it, so this tweet about Javascript-Based DDoS got my attention&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;An Introduction to JavaScript-Based DDoS: &lt;a href=&#34;https://t.co/V6VU7agXOC&#34;&gt;https://t.co/V6VU7agXOC&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/594925681714143232&#34;&gt;May 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The amazing community behind &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34;&gt;iojs&lt;/a&gt; has made a big step to move forward releasing 2.0 version, they deserved to add this tweet here&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;io.js 2.0 Released: &lt;a href=&#34;https://t.co/hcF5CxV1yV&#34;&gt;https://t.co/hcF5CxV1yV&lt;/a&gt; (V8 upgraded to 4.8, npm to 2.9.0 &amp;amp; more, see &lt;a href=&#34;https://t.co/flwmTNnJvP&#34;&gt;https://t.co/flwmTNnJvP&lt;/a&gt; )&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/595575488371937281&#34;&gt;May 5, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The Linux distribution called &lt;a href=&#34;https://www.kali.org/&#34; target=&#34;_blank&#34;&gt;Kali&lt;/a&gt;, has updated 3 packages related with Wireless Penetration Testing, so good news if you love to play around with wireless connections&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Pixiewps, Reaver &amp;amp; Aircrack-ng - wireless penetration testing tool updates in Kali and what they mean for you  - &lt;a href=&#34;https://t.co/jgXn4t9nE1&#34;&gt;https://t.co/jgXn4t9nE1&lt;/a&gt;&lt;/p&gt;&amp;mdash; muts (@kalilinux) &lt;a href=&#34;https://twitter.com/kalilinux/status/595217837792178176&#34;&gt;May 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://dave.cheney.net/&#34; target=&#34;_blank&#34;&gt;Dave Cheney&lt;/a&gt; has created a new build tool for &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt;, called &lt;a href=&#34;http://getgb.io/&#34; target=&#34;_blank&#34;&gt;gd&lt;/a&gt; which should solve the problem of a reproducible builds; one of thing that me and many other people miss in &lt;a href=&#34;http://golang.org/&#34; target=&#34;_blank&#34;&gt;Go&lt;/a&gt; is an appropriated tool to manage dependencies so I&amp;rsquo;ll take a look to this totally different approach of others I&amp;rsquo;ve seen and tested, hence this tweet provided me this amazing discovery&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Building Go projects with &amp;#39;gb&amp;#39;: &lt;a href=&#34;https://t.co/f9igUiQOQP&#34;&gt;https://t.co/f9igUiQOQP&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/596654809404538880&#34;&gt;May 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a lovely weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #11</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150501/</link>
+      <pubDate>Fri, 01 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150501/</guid>
+      <description>&lt;p&gt;This week I’m coming back with a 5 tech tweets, moreover I’ve realised that &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; got my heart.&lt;/p&gt;
+
+&lt;p&gt;Amazing blog post about how &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; makes the communication with C easy besides leveraging with its ownership system with zero-cost abstraction. It’s worthwhile to read it to see how it can also helps to create C bindings for other languages as &lt;a href=&#34;https://www.python.org/&#34;&gt;Python&lt;/a&gt;, &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt; and &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/About_JavaScript&#34;&gt;Javascript&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-cards=&#34;hidden&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Rust once, run anywhere: &lt;a href=&#34;http://t.co/AXF2uIFNav&#34;&gt;http://t.co/AXF2uIFNav&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/591653556219809794&#34;&gt;April 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Through this tweet, I found this awesome &lt;a href=&#34;https://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt; module, &lt;a href=&#34;https://github.com/robconery/massive-js&#34;&gt;massive-js&lt;/a&gt;, which allows to deal with &lt;a href=&#34;http://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; in a nice way&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Massive 2.0: A Postgres-Centric Data Access Tool for Node.js - &lt;a href=&#34;https://t.co/6TEBVxhBxS&#34;&gt;https://t.co/6TEBVxhBxS&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/591714326962118657&#34;&gt;April 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice video to watch another opinion about functional programming&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Deconstructing Functional Programming &lt;a href=&#34;http://t.co/nO9ITGfQat&#34;&gt;http://t.co/nO9ITGfQat&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dave Cheney (@davecheney) &lt;a href=&#34;https://twitter.com/davecheney/status/592673793581129733&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice post about writing some code in &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt; using the tooling.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&amp;quot;Rust is improving on many traditional systems languages by encouraging a good package ecosystem from the beginning&amp;quot; &lt;a href=&#34;http://t.co/8S1OEsw7YQ&#34;&gt;http://t.co/8S1OEsw7YQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/592706762861580288&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one is this awesome research paper which tells the implementation of a Unix Kernel with &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt;; they haven’t got the same performance than C, but they are overall happy with the work.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Reenix: Implementing a Unix-Like Operating System in Rust &lt;a href=&#34;http://t.co/ypLvs5aveq&#34;&gt;http://t.co/ypLvs5aveq&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/592743898692321280&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a good weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #10</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150424/</link>
+      <pubDate>Fri, 24 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150424/</guid>
+      <description>&lt;p&gt;This week, my first favourite tweet is not about tech, rare? where I have a few other interests as well, however don&amp;rsquo;t worry, the next four are tech, so go ahead&lt;/p&gt;
+
+&lt;p&gt;Starting a business from scratch isn&amp;rsquo;t probably the easiest thing to do, probably the opposite, so knowing from the experience of others is very valuable&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Starting a business from Scratch - hints and tips from &lt;a href=&#34;https://twitter.com/dan_jenkins&#34;&gt;@dan_jenkins&lt;/a&gt; after he founded &lt;a href=&#34;https://twitter.com/nimbleapeltd&#34;&gt;@nimbleapeltd&lt;/a&gt; &lt;a href=&#34;http://t.co/Uz9JG1Zhom&#34;&gt;http://t.co/Uz9JG1Zhom&lt;/a&gt;&lt;/p&gt;&amp;mdash; Nimble Ape Ltd (@nimbleapeltd) &lt;a href=&#34;https://twitter.com/nimbleapeltd/status/589087461864779778&#34;&gt;April 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; is getting my attention, so learning language features through blog post is quite passive to get into it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Mixing, matching, mutation and moves &lt;a href=&#34;http://t.co/YFE1702wiD&#34;&gt;http://t.co/YFE1702wiD&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/589119747293220864&#34;&gt;April 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I love Internet, so I love the Web, reading about the new browser features is always in my todo list&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Chrome Stable (42) now with Push Notifications and Add to Home screen for all users.&amp;#10;&amp;#10;&lt;a href=&#34;http://t.co/tw2A9dt7uJ&#34;&gt;http://t.co/tw2A9dt7uJ&lt;/a&gt; &lt;a href=&#34;http://t.co/prEOJmC0uQ&#34;&gt;pic.twitter.com/prEOJmC0uQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Chrome Developers (@ChromiumDev) &lt;a href=&#34;https://twitter.com/ChromiumDev/status/590169593110335488&#34;&gt;April 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve been very happy of the new features that &lt;a href=&#34;https://www.npmjs.com/&#34;&gt;npm&lt;/a&gt; release, with the amount of package that it hosts, it was something that so many people were expecting, and happy they&amp;rsquo;ve got solve a hard problem&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;solving npm’s hard problem: naming packages &lt;a href=&#34;http://t.co/126RkmZaef&#34;&gt;http://t.co/126RkmZaef&lt;/a&gt; &lt;a href=&#34;http://t.co/voENvgIiA7&#34;&gt;pic.twitter.com/voENvgIiA7&lt;/a&gt;&lt;/p&gt;&amp;mdash; npmbot (@npmjs) &lt;a href=&#34;https://twitter.com/npmjs/status/590307732042973184&#34;&gt;April 21, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I think that this series of blog posts about &lt;a href=&#34;http://adampresley.com/2015/04/12/writing-a-lexer-and-parser-in-go-part-1.html&#34;&gt;&amp;ldquo;Writing a Lexer and Parser in Go&amp;rdquo;&lt;/a&gt; will very good, because they teach &lt;a href=&#34;http://golang.org&#34;&gt;golang&lt;/a&gt; based in a very familiar topic about computer science besides that the example is simple, so easy to step into, and based in a Rob Pike presentation.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Writing a Lexer and Parser in Go - Part 1: &lt;a href=&#34;http://t.co/EvhFBi6L2X&#34;&gt;http://t.co/EvhFBi6L2X&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/590183203736068097&#34;&gt;April 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a crazy weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #9</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</link>
+      <pubDate>Fri, 17 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150417/</guid>
+      <description>&lt;p&gt;This week security, programming languages and Linux, go ahead to see what tweets I&amp;rsquo;ve chosen.&lt;/p&gt;
+
+&lt;p&gt;New security issue on Apple OS X 10.10.2, so if you use OSX 10.10 and yo haven&amp;rsquo;t updated, you should do ASAP because you&amp;rsquo;re already late.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;&lt;a href=&#34;https://twitter.com/hashtag/rootpipe?src=hash&#34;&gt;#rootpipe&lt;/a&gt; Full disclosure of a privilege escalation to root in Apple OS X 10.10.2 (and earlier): &lt;a href=&#34;https://t.co/mT6EvSYqWh&#34;&gt;https://t.co/mT6EvSYqWh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Emil Kvarnhammar (@emilkvarnhammar) &lt;a href=&#34;https://twitter.com/emilkvarnhammar/status/586147583552266240&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A blog post about &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; and concurrency has been released, after it&amp;rsquo;s in beta and it&amp;rsquo;ll be for production soon, it&amp;rsquo;s worth to read what feature the language has to implement some interesting patterns&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Fearless Concurrency with Rust &lt;a href=&#34;http://t.co/RzmGXuPAcD&#34;&gt;http://t.co/RzmGXuPAcD&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/586566688109367297&#34;&gt;April 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I wasn&amp;rsquo;t aware of the &lt;a href=&#34;https://elementary.io/&#34;&gt;Elementary Linux distribution&lt;/a&gt;, I don&amp;rsquo;t have any plan to use but I&amp;rsquo;ve like the concept of it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Elementary Linux released:&amp;#10;32bit &lt;a href=&#34;http://t.co/6I07CZ6IIe&#34;&gt;http://t.co/6I07CZ6IIe&lt;/a&gt;&amp;#10;&amp;#10;64bit &lt;a href=&#34;http://t.co/pewrEkzjWE&#34;&gt;http://t.co/pewrEkzjWE&lt;/a&gt;&amp;#10;&amp;#10;More &lt;a href=&#34;https://t.co/lV7wdkrXlZ&#34;&gt;https://t.co/lV7wdkrXlZ&lt;/a&gt; &lt;a href=&#34;http://t.co/5dwrDqIC6Q&#34;&gt;pic.twitter.com/5dwrDqIC6Q&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586946813573201920&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Indoctrinate people to Linux is always good, and making it free remove all the barriers, so I support this cause and I&amp;rsquo;ve decided to share it here; furthermore the author is the creator of one of the distributions that I used quite a bit in the past, &lt;a href=&#34;https://www.gentoo.org/&#34;&gt;Gentoo&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Please RT. The best &amp;quot;Linux Fundamentals&amp;quot; course, by Daniel Robbins the creator of Gentoo Linux &lt;a href=&#34;http://t.co/uQMmw2w7yQ&#34;&gt;http://t.co/uQMmw2w7yQ&lt;/a&gt; No registration needed&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/586935862635528194&#34;&gt;April 11, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve really found very interesting about a blog post written by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;, because lastly I&amp;rsquo;ve got in the same thoughts about having too many features which some of them are redundant in programming languages, frameworks, etc., rather than help in long term, they annoy.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Less is more: removing language features to leave nowhere for bugs to hide. &lt;a href=&#34;http://t.co/6q3MHSkAe9&#34;&gt;http://t.co/6q3MHSkAe9&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/ploeh&#34;&gt;@ploeh&lt;/a&gt;&lt;/p&gt;&amp;mdash; Tim Ruffles (@timruffles) &lt;a href=&#34;https://twitter.com/timruffles/status/587893747385556992&#34;&gt;April 14, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a wonderful weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #8</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150410/</link>
+      <pubDate>Fri, 10 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150410/</guid>
+      <description>&lt;p&gt;Another short week is almost done and here my 5 favourite tweets of the last 7 days which appeared in my timeline.&lt;/p&gt;
+
+&lt;p&gt;The moment arrived, after several years under development, &lt;strong&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; beta&lt;/strong&gt; has been released and the first stable release has been scheduled for 15th of May, so AWESOME&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Rust 1.0-beta is here!! &lt;a href=&#34;http://t.co/8HTh1jrL69&#34;&gt;http://t.co/8HTh1jrL69&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/584040427508072449&#34;&gt;April 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Very nice web resource to see what ES6 brings and how these new features differ from its predecessor ES5&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;nice hands-on resource for learning ES6: &lt;a href=&#34;http://t.co/VB5WcTT4LR&#34;&gt;http://t.co/VB5WcTT4LR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/584403090259906560&#34;&gt;April 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve go quite old great blog post about &lt;strong&gt;Open Source&lt;/strong&gt; and how delaying to make it open affects, at least when it&amp;rsquo;s created by a governmental organisation&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;another great post by &lt;a href=&#34;https://twitter.com/kfogel&#34;&gt;@kfogel&lt;/a&gt;: Be Open [Source] From Day One &lt;a href=&#34;http://t.co/8hTihlTZNo&#34;&gt;http://t.co/8hTihlTZNo&lt;/a&gt;&lt;/p&gt;&amp;mdash; Aidan Feldman (@aidanfeldman) &lt;a href=&#34;https://twitter.com/aidanfeldman/status/585831168643170304&#34;&gt;April 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A friend of mine tweeted about &lt;strong&gt;[Ghost]&lt;/strong&gt;(&lt;a href=&#34;https://ghost.org/&#34;&gt;https://ghost.org/&lt;/a&gt;) blog post where they&amp;rsquo;ve made public all their revenues metrics, I&amp;rsquo;m very thrilled how some companies, as &lt;strong&gt;Buffer&lt;/strong&gt; &lt;a href=&#34;https://open.bufferapp.com/transparent-pricing-buffer/&#34;&gt;&lt;sup&gt;1&lt;sup&gt;&lt;/a&gt; &lt;a href=&#34;https://open.bufferapp.com/introducing-open-salaries-at-buffer-including-our-transparent-formula-and-all-individual-salaries/&#34;&gt;&lt;sup&gt;2&lt;sup&gt;&lt;/a&gt;, and &lt;strong&gt;Baremetrics&lt;/strong&gt; &lt;a href=&#34;https://baremetrics.com/blog/why-we-spent-250000&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;https://baremetrics.com/blog/bootstrapped-to-funded&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;https://baremetrics.com/blog/stripe-500000-baremetrics&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;, are moving toward the transparency&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;$411,000 in ARR and &lt;a href=&#34;https://twitter.com/TryGhost&#34;&gt;@TryGhost&lt;/a&gt; just made all of their revenue metrics completely public: &lt;a href=&#34;http://t.co/SGH5CFmeQE&#34;&gt;http://t.co/SGH5CFmeQE&lt;/a&gt;&lt;/p&gt;&amp;mdash; BROLΛПDO (@orliesaurus) &lt;a href=&#34;https://twitter.com/orliesaurus/status/586157961346678784&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Javascript is moving to take over the stablished Java and .NET enterprise stacks, we&amp;rsquo;ll see what will happen&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;JavaScript will lead a massive shift in enterprise development &lt;a href=&#34;http://t.co/07XVzu9LgK&#34;&gt;http://t.co/07XVzu9LgK&lt;/a&gt;&lt;/p&gt;&amp;mdash; Paul Krill (@pjkrill) &lt;a href=&#34;https://twitter.com/pjkrill/status/586194173121794050&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a great weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #2</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150227/</link>
+      <pubDate>Sat, 28 Feb 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150227/</guid>
+      <description>&lt;p&gt;This week I&amp;rsquo;ve been delighted of&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust lang&lt;/a&gt; released a new version 1.0.0-alpha.2, it&amp;rsquo;s the language that I want to take to write some lines of code, however until that moment, I&amp;rsquo;m following the evolution and reading some tips that I collect from the community&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Rust 1.0.0.alpha.2 &lt;a href=&#34;http://t.co/S72HcYo6t3&#34;&gt;http://t.co/S72HcYo6t3&lt;/a&gt; SO FREAKING EXCITING! &lt;a href=&#34;https://twitter.com/hashtag/rustlang?src=hash&#34;&gt;#rustlang&lt;/a&gt;&lt;/p&gt;&amp;mdash; Community Opener (@flaper87) &lt;a href=&#34;https://twitter.com/flaper87/status/568874641923698690&#34;&gt;February 20, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve got the chance to have a read to an amazing technical blog post about &lt;a href=&#34;https://methane.github.io/2015/02/reduce-allocation-in-go-code/&#34;&gt;how to reduce Go allocations&lt;/a&gt; which drove me to read other two posts in &lt;a href=&#34;blog.golang.org&#34;&gt;golang blog&lt;/a&gt; which allowed me to learn more about the internals&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Reducing Allocations in Go Code: &lt;a href=&#34;http://t.co/ODHknUsNU3&#34;&gt;http://t.co/ODHknUsNU3&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/569594226041872385&#34;&gt;February 22, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve discovered a nice so nice open source service implemented in Go, &lt;a href=&#34;http://gogs.io/&#34;&gt;Gogs, a self-hosted Git service&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Gogs: A Self-Hosted Git Service Written in Go - &lt;a href=&#34;http://t.co/juisUGaCPN&#34;&gt;http://t.co/juisUGaCPN&lt;/a&gt; (Think GitHub-lite.)&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/569853209671565314&#34;&gt;February 23, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I could know the tradeoffs of why a big corporate, as Walmart, &lt;a href=&#34;http://todogroup.org/blog/why-we-run-an-open-source-program-walmart-labs/&#34;&gt;decide to run open source software&lt;/a&gt;, reading the first post of a new series&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Why we run an open source program - Walmart Labs &amp;#10;&lt;a href=&#34;http://t.co/Ihy9dN2YLs&#34;&gt;http://t.co/Ihy9dN2YLs&lt;/a&gt; via HN&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/570478864859840512&#34;&gt;February 25, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://iojs.org/en/index.html&#34;&gt;iojs&lt;/a&gt; released a new version 1.4.1 with delightful promise/process, streams with TLS, new event for &lt;code&gt;http&lt;/code&gt;, &lt;a href=&#34;https://code.google.com/p/v8/&#34;&gt;v8&lt;/a&gt;, &lt;a href=&#34;https://github.com/libuv/libuv&#34;&gt;libuv&lt;/a&gt; &amp;amp; &lt;a href=&#34;https://npmjs.org&#34;&gt;npmjs&lt;/a&gt; update; the community behind this &lt;a href=&#34;http://nodejs.org&#34;&gt;NodeJS&lt;/a&gt; fork never ceases to amaze us with their &lt;a href=&#34;https://github.com/iojs/io.js/blob/v1.x/GOVERNANCE.md#readme&#34;&gt;open governance model&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js v1.4.1 is out @ &lt;a href=&#34;https://t.co/MKaxWFkxcN&#34;&gt;https://t.co/MKaxWFkxcN&lt;/a&gt; incl new &amp;quot;unhandledRejection&amp;quot; &amp;amp; &amp;quot;rejectionHandled&amp;quot; events and more: &lt;a href=&#34;https://t.co/9LPbP6VQxu&#34;&gt;https://t.co/9LPbP6VQxu&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/571078034670772224&#34;&gt;February 26, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope that you could enjoy with some of them as I did.&lt;/p&gt;
+
+&lt;p&gt;Have a lovely geeky weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

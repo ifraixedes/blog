@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="My slides of an introductory presentation to Lovefiled: a cross-browser SQL-Like relational query engine">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Introduction to Lovefield, a cross-browser SQL-Like Query Engine">
+  <meta property="og:url" content="http://blog.fraixed.es/slides/bcnjs-201510/">
+  <meta property="og:description" content="My slides of an introductory presentation to Lovefiled: a cross-browser SQL-Like relational query engine">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://s-media-cache-ak0.pinimg.com/736x/8e/b0/8b/8eb08b3d1482bc3d36434a60700e4d20.jpg">
+  
+  
+    
+      <meta property="og:type" content="website">
+      <meta name="twitter:card" content="summary">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/slides/bcnjs-201510/">
+  <title>Introduction to Lovefield, a cross-browser SQL-Like Query Engine</title>
+  <style>
+    @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+    @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+    @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+    body { font-family: 'Droid Serif'; }
+    h1, h2, h3 {
+      font-family: 'Yanone Kaffeesatz';
+      font-weight: normal;
+    }
+    .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    #loader {
+      background: white;
+      width: 100vw;
+      height: 100vh;
+    }
+    #loader div {
+      position: absolute;
+      top: 30%;
+      left: 45%
+    }
+    #loader.hide {
+      display: none;
+    }
+    #source {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="loader"><div><img src="/img/loading.gif"></div></div>
+  <textarea id="source">class: center, middle
+
+# An introduction to Lovefield
+## cross-browser SQL-Like relational query engine
+
+
+by Ivan Fraixedes
+
+@ifraixedes
+
+http://ivan.fraixed.es
+
+---
+
+# Agenda
+
+#### 1. Introduction
+#### 2. Data Store
+#### 3. Schema
+#### 4. Query
+#### 5. Transactions
+#### 5. Architecture &amp; Implementation
+#### 6. sql.js
+#### 7. Demo
+#### 8. Credits
+
+---
+class: center, middle
+
+# Introduction
+
+???
+
+The main goal is to provide a **relational query engine for web apps** after WebSQL was deprecated (end of 2010) and apps need to work online &amp; offline and the __current standard (IndexedDB)__ achieve that goal however it is a key-value store.
+
+IndexedDB is a perfect solution for use cases where a key-value store fits very well however there are use cases which requires to select and sort data by multiple columns or make relations between different data entities, which can be also achieved by a key-value store but make the implementation more complex and larger, hence less maintainable and increasing the development time not just for the itself implementation but testing as well.
+
+Those mentioned use cases fit very well to relational database (a.k.a SQL databases) and for this reason Lovefield has been created.
+
+Lovefield provides structural data queries besides transactions making more attractive to be used for these kind of web apps.
+
+
+Assumptions:
+ * At most 2GB.
+ * Limited subset of SQL-2003.
+ * It doesn&#39;t provide storage technology, uses existing ones.
+
+Mentioned goodness:
+ * SQL-Lie relational db query engine which covers most uses cases supported by WebSQL.
+ * Chrome Apps v2 compliant.
+ * Drop-in library.
+ * Can be used as a component.
+ * Can be used in several JS frameworks: Closure, jQuery, Polymer, AngularJS, etc.
+ * cross-browser.
+ * Low-end device support.
+ * It can be used with different storages.
+
+---
+
+ # Data Store
+
+ No data store is provided, it uses existing data stores
+ Currently supported:
+- IndexedDB
+- Memory (not persistent)
+- Firebase (cloud hosted, non-local)
+- WebSQL&lt;sup&gt;*&lt;/sup&gt; (For Safari compatibility)
+- LocalStore&lt;sup&gt;*&lt;/sup&gt; (PoC)
+
+&lt;sup&gt;*&lt;/sup&gt; Experimental
+
+???
+
+Lovefield doesn&#39;t provide a data store, it uses existing data stores; it abstracts data persistence into classes to make it adaptive to different storage media and technologies besides to help to decouple storage from the query engine.
+
+Internally it uses rows as data unit but the `select` queries return plain JS objects. For `insert` statements the JS plain object must be converted in row data units; Lovefield provide helper `createRow` function to do that.
+
+Data is organised to optimise the performance of the data store, so it cannot guarantee the raw data readability; moreover specific data store requirements as authentication (e.g. Firebase), allocated size aren&#39;t managed by Lovefield.
+
+---
+
+# Schema
+--
+
+* A schema is created with a schema builder which is instantiated through a __schema builder__ with `lf.schema.create()` static function.
+
+--
+
+* A schema builder instance has two functions `createTable()` and `connect()`
+
+???
+As a usual SQL database the schema is the the definition of the tables, their columns which and constraints.
+Database name must abide a specific naming rule and a version must be specified as an integer greater than 0; any schema update requires to increase this number otherwise won&#39;t be update or if is smaller it will thrown an error;
+
+`lf.schema.create()` static function provides a single point of truth and prevents the document from being outdated.
+__Schema builder__ instances is stateful: &#34;building&#34; and &#34;finalised&#34;; schema can only be modified in building state.
+
+Columns can be nullable by they aren&#39;t by default, so there are default values for each type except `ARRAY_BUFFER` and `OBJECT` whose default value is null. Indexes key can only be set on &#34;STRING&#34; and &#34;NUMBER&#34; the reset of them are converted to those with the exception of `ARRAY_BUFFER` and `OBJECT` cannot put as index or have any constraint nor they aren&#39;t searchable (use on `WHERE` clauses).
+
+--
+
+* As SQL columns are specified with a name, type and optional constraints
+
+???
+Constraints available are: primary key, foreign key, unique (multiple column accepted), Null &amp; Not-nullable.
+
+--
+
+
+```js
+// Begin schema creation.
+var schemaBuilder = lf.schema.create(&#39;crdb&#39;, 1);
+
+schemaBuilder.createTable(&#39;Asset&#39;).
+    addColumn(&#39;id&#39;, lf.Type.STRING).
+    addColumn(&#39;asset&#39;, lf.Type.STRING).
+    addColumn(&#39;timestamp&#39;, lf.Type.INTEGER).
+    addPrimaryKey([&#39;id&#39;]);
+
+// Schema is defined, now connect to the database instance.
+schemaBuilder.connect().then(
+    function(db) {
+      // Schema is not mutable once the connection to DB has established.
+    }, console.error);
+```
+
+???
+Lovefield implements its own indexes, it __doesn not use__ any index system provided by the store; it uses by default a B&#43; Tree structure and only index non-null and indexable types. By default indexes aren&#39;t persisted to the store and they&#39;re build in memory during loading; they can be persisted with `persistentIndex()`
+
+---
+
+# Query
+--
+
+* Lovefiled offers 4 types of queries as we expect to find in a persitent storage; the famous CRUD acronym
+
+--
+
+* Queries __ARE NOT__ created with raw SQL statements; they are created though a __query builder__
+
+--
+
+* The queries are composed with a &#34;chainable pattern&#34;
+???
+
+All the operations are performed as a chain; we execute a function which define the operation (select, create, etc.) to perform and we get a query builder instance which has available a set of functions to specify the query that we desire; each function specify define a different part of the operations (for example the tables, conditions, etc.) and returns the same query builder instance to be chainable.
+
+--
+
+* Only a few functions (depending of the operation) can be called more than once
+
+--
+
+* `exec` function executes the query and returns a __promise__ which resolve with the results or reject in case of error
+???
+
+When the query is specified as we want, we must call `exec` to execute it;
+
+---
+
+# Query: Insert/Create (C)
+
+Insert depends of another function `createRow` which transform a plain JS object in a Lovefield Row object
+
+```js
+var infoCard = db.getSchema().table(&#39;InfoCard&#39;);
+
+var row = infoCard.createRow({
+  &#39;id&#39;: &#39;something&#39;,
+  &#39;lang&#39;: 140
+});
+
+db.insertOrReplace().
+  into(infoCard).
+  values([row]).
+  exec().
+  catch(console.error);
+```
+
+---
+
+# Query: Select (R)
+--
+
+* Select function receive the COLUMNS which we want to retrieve
+
+--
+
+* Only supports  ___inner joins___ and __left outer joins__
+
+???
+There are 2 functions to perform them however INNER JOIN can be done with WHERE clause as SQL
+--
+
+* `from` function to specify the TABLE(s)
+
+--
+
+* `where` function to specify CONDITION(s)
+
+--
+
+* `limit` &amp; `skip` functions for PAGINATION
+
+--
+
+* `orderBy` function to SORT (it can be called more than once)
+
+--
+
+* `groupBy` function for aggregation (HAVING operation is __not supported__)
+
+---
+# Query: Select (R) // EXAMPLE
+
+```js
+var infoCard = db.getSchema().table(&#39;InfoCard&#39;);
+var asset = db.getSchema().table(&#39;Asset&#39;);
+var q = db.select(infoCard.id, infoCard.itag, asset.timestamp).
+    from(infoCard.as(card))
+    innerJoin(asset, asset.id.eq(infoCard.id)).
+    where(asset.id.eq(&#39;1&#39;)).
+    exec().then(function(rows) {
+      // Prefixed columns, context involves two tables
+      console.log(
+	rows[0][&#39;card&#39;][&#39;id&#39;],
+	rows[0][&#39;card&#39;][&#39;tag&#39;],
+	rows[0][&#39;Asset&#39;][&#39;timestamp&#39;]);
+    }).
+    catch(console.error);
+```
+
+???
+Mention ALIAS and how the results format.
+
+---
+# Query: Update (U)
+
+```js
+// UPDATE order SET amount = 51, currency = &#39;EUR&#39;
+//   WHERE currency = &#39;DEM&#39; AND amount = 100;
+
+var order = db.getSchema().table(&#39;order&#39;);
+db.update(order).
+    set(order.amount, 51).
+    set(order.currency, &#39;EUR&#39;).
+    where(lf.op.and(
+	order.currency.eq(&#39;DEM&#39;), order.amount.eq(100))).
+    exec().
+    catch(console.error);
+```
+???
+
+Mention that `set` can be called more than once.
+
+---
+# Query: Delete (D)
+
+```js
+// DELETE FROM infoCard WHERE lang = &#39;es&#39;;
+db.delete().
+  from(infoCard).
+  where(infoCard.lang.eq(&#39;es&#39;)).
+  exec().
+  catch(console.error);
+
+db.delete().
+  from(infoCard).
+  exec().
+  catch(console.error); // Delete everything in infoCard
+```
+
+---
+
+# Query: Extras // Parametrised Queries
+
+--
+
+```js
+var p = db.getSchema().table(&#39;Photo&#39;);
+// UPDATE Photo SET timestamp = ?1, local = ?2 WHERE id = ?0;
+var q2 = db.
+    update(p).
+    set(p.timestamp, lf.bind(1)).
+    set(p.local, lf.bind(2)).
+    where(p.id.eq(lf.bind(0)));
+
+q2.bind([&#39;id3&#39;, 345, false]).
+  exec().
+  catch(console.error);  // update without reconstructing query
+
+q2.bind([&#39;id4&#39;, 2222, true]).
+  exec().
+  catch(console.error);
+```
+???
+LIMIT and SKIP can also be parametrized
+
+---
+
+# Query: Extras // Observers
+
+--
+
+```js
+var p = db.getSchema().table(&#39;Photo&#39;);
+var query = db.select().from(p).where(p.id.eq(&#39;1&#39;));
+
+// Handler shares exactly same syntax as the handler for Array.observe.
+var handler = function(changes) {
+  // Will be called every time there is a change until db.unobserve is called.
+};
+db.observe(query, handler);
+
+// The call below will trigger changes to the observed select. Internally
+// Lovefield will run the query again if the scope overlaps, therefore please
+// be aware of performance consequences of complex SELECT.
+db.update(p).set(p.title, &#39;New Title&#39;).where(p.id.eq(&#39;1&#39;)).exec();
+
+// Remember to release observer to avoid leaking.
+db.unobserve(query, handler);
+
+```
+
+???
+Lovefield supports data observation for select queries, and the syntax is very similar to ES7 Array.observe()
+Combining parametrized query with Observers can be used to handle a common scenario of updating data in MVC environment
+
+---
+
+# Transactions
+
+It also has transactions; 2 types:
+ 1. Implicit: Created automatically when `exec` is called.
+
+ 2. Explicit: similar to SQL `BEGIN` =&gt; `COMMIT` or `ROLLBACK` and they are executed through a transaction object which is created with `db.createTransaction`
+
+ 3. Lovefield can execute, in a transaction, queries which are referencing data from results of previous queries using `tx.attach()`
+
+???
+
+All queries are executed inside of a transaction, its cycle is:
+ 1. Creation
+ 2. Binding (optional) in case of paremetrised values
+ 3. Execution within a transaction context
+ 4. Finalise, commit or rollback
+
+When a transaction (either implicit or explicit) is resolved, no further queries can be made with it.
+
+---
+
+# Architecture &amp; Implementation
+--
+
+1. Its architecture has been very affected by IndexedDB specification
+
+???
+Lovefield specification has been affected by some caveats in IndexedDB specification:
+ * Auto commit when a transaction has gone outside of its message loop. e.g XHR call in IndexedDB event callback.
+ * Upgrade schema can only be upgraded on `onupgradeneeded` event so it can be only on initialisation time and it isn&#39;t possible to rename tables and the only workaround it&#39;s recreate the table with the exact content and delete the old one which cannot be done safely so user must be do it manually outside of the onUpgrade function.
+ * Close the conneciton is not guaranteed because the IndexedDB doesn&#39;t guarantee that if there&#39;re connections open, so Lovefield doens&#39;t offer a reliable way to close and reopen to upgrade the schema.
+ * First writer win due IndexedDB allows multiple connections from different processes/tabs but it doesn&#39;t offer a general blocking; hence the first writer to reach the DB wins and the others, with conflict scope, will be aborted. Moreover it doesn&#39;t offer observer/events cross sessions/processes/tabs.
+
+--
+
+2. Tables are mapped to IndexedDB stores and rows to objects.
+
+???
+The storage format is on the left Lovefield and on the right the IndexedDB equivalent
+ * Database - Database
+ * Table - Object store
+ * Row - Object in object store
+
+ Lovefield&#39;s rows are two fields: an ID (unique row accross DB) and value which is an object where each field represents a column.
+
+--
+
+3. Efforts are focused on IndexedDB as store due it&#39;s been declared standard
+
+???
+There is an __experimental Bundled__ mode where the difference is that an object in IndexedDB&#39;s object store contains up to 512 Lovefield&#39;s rows. The test done suggest that it&#39;s better for 10k&#43; rows; it&#39;s always slow on write/update but it&#39;s faster on read operations however for smaller databases than 10&#43;rows this mode may experience slower performance. Data is harder to inspect via web developer tools and to convert from one format to another, requires to export, delete all, connect and import back.
+
+Other stores are structured different and they have different caveats.
+
+--
+
+4. Assumption that there is only one connection at given time.
+
+???
+
+All of these things has specified that for now Lovefield assume to have only one connection to database instance at a given time; having several can produce data inconsistency; Lovefield&#39;s team is working on this issue evaluating several proposals, right now the best practices is to use a background process (background page, WebWorker or ServiceWorker) to connect to db and the clients use postMessage to that component to perform the operations.
+
+--
+
+4. Results are references to the object in the cache, NO COPIES.
+
+???
+
+All the objects returned in the results are references, __no copies__ of the objects stored in the Lovefield internal cache, so __NOT TO MODIFY__ those objects is __a RULE__ that developer must follow.
+
+---
+# sql.js
+
+### sql.js is a port of SQLite to JavaScript, by compiling the SQLite C code with Emscripten. no C bindings or node-gyp compilation here.
+
+```js
+//Create the database
+var db = new SQL.Database();
+// Run a query without reading the results
+db.run(&#34;CREATE TABLE test (col1, col2);&#34;);
+// Insert two rows: (1,111) and (2,222)
+db.run(&#34;INSERT INTO test VALUES (?,?), (?,?)&#34;, [1,111,2,222]);
+
+// Prepare a statement
+var stmt = db.prepare(&#34;SELECT * FROM test WHERE col1 BETWEEN $start AND $end&#34;);
+stmt.getAsObject({$start:1, $end:1}); // {col1:1, col2:111}
+
+// Bind new values
+stmt.bind({$start:1, $end:2});
+while(stmt.step()) { //
+    var row = stmt.getAsObject();
+    // [...] do something with the row of result
+}
+```
+
+
+???
+
+The API is quite small and all the queries are done using &#34;standard&#34; SQL (SQLite compatbile) so we don&#39;t have to learn a new API as in Lovefield, even though its API is similar to SQL.
+
+The tradeoff is that I&#39;m not really sure how it performs and if it&#39;s exactly possible to store the database in an IndexedDB field for example and retrieve the SQLite DB each time that user access to manage it and how efficient it can be because I to avoid to lose data each write should persist the SQLite DB to IndexedDB so it would require to store the whole data for any small modification.
+
+---
+
+# Credits
+
+#### Lovefield project (https://google.github.io/lovefield/) where I&#39;ve stolen all of this information related with it :P
+#### sql.js project (https://github.com/kripken/sql.js/) for part of this material related with it.
+
+
+This material is heavily taken form the resources listed above, in case of any modification or addition the same LICENSE than the original work is applied. Lovelfield documentation and code snippets have been taken from Lovefield project which is under ___Apache License___ and sql.js documentation and code snippets have been taken from sql.js project which is under __MIT License__
+</textarea>
+  <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
+  <script>
+    var slideshow = remark.create();
+    document.getElementById('loader').classList.toggle('hide')
+  </script>
+  
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

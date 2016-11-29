@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Open Governance on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/open-governance/</link>
+    <description>Recent content in Open Governance on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 06 Mar 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/open-governance/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #3</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150306/</link>
+      <pubDate>Fri, 06 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150306/</guid>
+      <description>&lt;p&gt;This week I got my 5 favourite tweets of my twitter timeline almost the last two days; I&amp;rsquo;ve also been very busy this week, however I walked through in my timeline at the end of the each day and I&amp;rsquo;ve selected:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://iojs.org/en/index.html&#34;&gt;io.js&lt;/a&gt; team is working very hard, the open governance applied to the project, one of the main reason they forked &lt;a href=&#34;http://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt;, seems that works quite well and they&amp;rsquo;re moving forward pretty fast; this tweet talks itself about it&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js v2.x is probably closer than you think &lt;a href=&#34;https://t.co/mXYpmyRQW0&#34;&gt;https://t.co/mXYpmyRQW0&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/573260340856795136&#34;&gt;March 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Quite amazing &lt;a href=&#34;http://opensource.org/licenses/MIT&#34;&gt;MIT&lt;/a&gt; open source project witch brings the ability to compile and execute c code in one go&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;C – Compile and execute C “scripts” in one go &lt;a href=&#34;https://t.co/Q7pzgO5Ku9&#34;&gt;https://t.co/Q7pzgO5Ku9&lt;/a&gt;&lt;/p&gt;&amp;mdash; Hacker News (@newsycombinator) &lt;a href=&#34;https://twitter.com/newsycombinator/status/573151372432031744&#34;&gt;March 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve discovered &lt;a href=&#34;http://inikulin.github.io/parse5/&#34;&gt;parse5&lt;/a&gt;, an npm module released under &lt;a href=&#34;http://opensource.org/licenses/MIT&#34;&gt;MIT&lt;/a&gt; as well, which I considered that it looks interesting&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Parse5: WHATWG HTML5-Compliant HTML Parsing/Serialization Toolset for Node - &lt;a href=&#34;http://t.co/atODyW5Y0m&#34;&gt;http://t.co/atODyW5Y0m&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/573126517422727168&#34;&gt;March 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;One disclosed bug in OpenSSL always is quite interesting due the number of apps, systems, libraries, etc, which use it, however the versions with this issues are older than the version used by &lt;a href=&#34;https://iojs.org/en/index.html&#34;&gt;io.js&lt;/a&gt; and &lt;a href=&#34;http://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt; production releases (0.12.0 and 0.10.36)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Are &lt;a href=&#34;https://twitter.com/hashtag/nodejs?src=hash&#34;&gt;#nodejs&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/hashtag/iojs?src=hash&#34;&gt;#iojs&lt;/a&gt; affected by the “FREAK Attack” OpenSSL vulnerability? &lt;a href=&#34;http://t.co/DQi5sgDUev&#34;&gt;http://t.co/DQi5sgDUev&lt;/a&gt;&lt;/p&gt;&amp;mdash; StrongLoop (@StrongLoop) &lt;a href=&#34;https://twitter.com/StrongLoop/status/572900126890467328&#34;&gt;March 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And lastly I&amp;rsquo;ve selected a tweet which brought me to read a research experiment done by &lt;a href=&#34;https://www.mozilla.org/e&#34;&gt;Mozilla&lt;/a&gt;; definitely, it deserves to have a read&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;The Emterpreter: Running Code Before It Can Be Parsed - &lt;a href=&#34;https://t.co/MYU8VuElOn&#34;&gt;https://t.co/MYU8VuElOn&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/572885177527107585&#34;&gt;March 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And that&amp;rsquo;s it of my part, have you got any interesting tweet that you&amp;rsquo;d like to share? drop it in a comment, I would like to read it.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

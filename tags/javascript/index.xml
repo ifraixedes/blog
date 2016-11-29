@@ -1,0 +1,1526 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Javascript on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/javascript/</link>
+    <description>Recent content in Javascript on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Sat, 11 Jun 2016 23:12:07 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/javascript/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Linting Javascript with ESLint</title>
+      <link>http://blog.fraixed.es/post/linting-javascript-with-eslint</link>
+      <pubDate>Sat, 11 Jun 2016 23:12:07 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/linting-javascript-with-eslint</guid>
+      <description>
+
+&lt;h2 id=&#34;linting-javascript:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;Linting Javascript&lt;/h2&gt;
+
+&lt;p&gt;Javascript as you well known, is a dynamic and untyped language; characteristics that have their advantages but which also have a few drawbacks which lead to easily introduce trivial bugs in the implementations.&lt;/p&gt;
+
+&lt;p&gt;For the good or the bad of the Javascript language, nowadays is quite difficult to escape from it because any website with a good UX requires quite certain amount of Javascript code, moreover, if we&amp;rsquo;re talking about of Single Page Application the numbers of lines of code of Javascript increase drastically.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, the big popularity of NodeJS has made Javascript a server side programming language, however if you aren&amp;rsquo;t supporter of it, you can scape of it because on server side there are many options, without having the drawbacks that in Web frontend code you can face when choosing one of the transpilers to escape of it.&lt;/p&gt;
+
+&lt;p&gt;If you are supporter of Javascript or you may not, but you don&amp;rsquo;t have the chance to replace it with anything else, then you must use a linter. Linters aren&amp;rsquo;t new in Javascript, they haven&amp;rsquo;t been for awhile, from the first famous one &lt;a href=&#34;https://github.com/douglascrockford/JSLint&#34; target=&#34;_blank&#34; &gt;JSLint&lt;/a&gt;
+ created by Douglas Crockford, its fork &lt;a href=&#34;https://github.com/jshint/jshint&#34; target=&#34;_blank&#34; &gt;JSHint&lt;/a&gt;
+ and &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;ESLint&lt;/a&gt;
+, between some others.&lt;/p&gt;
+
+&lt;p&gt;A Javascript linter make our codebase more maintainable, because it does a static analysis of the codebase to enforces syntax rules for formatting, which is quite important to keep the code base consistent across the team members, and, even more important, to detect potential errors, without executing the code.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-eslint-benefits:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;The ESLint benefits&lt;/h2&gt;
+
+&lt;p&gt;ESlint marked a difference between the previous linters, reason why it looks the best option today, if you are not looking for the fastest one.&lt;/p&gt;
+
+&lt;p&gt;The main difference between ESLint and its predecessors are:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;It uses an AST to evaluate patterns in code.&lt;/li&gt;
+&lt;li&gt;It is completely pluggable, every single rule is a plugin and you can add more at runtime.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Let&amp;rsquo;s go one by one to see how they benefit to us.&lt;/p&gt;
+
+&lt;p&gt;ESLint uses Espree to construct an AST of the codebase which is used to evaluate all the rules; this is a big difference in how others linters operates (for example JSHint), which they only do a lexical analysis, being faster but at the same time they are limited to check only a set of rules, because some of them are not possible to do it without constructing the AST, for example, &amp;ldquo;Require Consistent This&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;The drawback of doing so it&amp;rsquo;s that the the linter is slower, but if the number of rules used aren&amp;rsquo;t huge, it&amp;rsquo;s totally acceptable and the benefits are worth.&lt;/p&gt;
+
+&lt;p&gt;Being pluggable allow us to enable and disable any rule, so we can configure to fit our team needs or just set in place in current implementations where some rules are constrained to it than the option that we would desire. There are several plugins available, some of them allows to uses lint code for some frameworks, for example, &lt;a href=&#34;https://github.com/babel/babel-eslint&#34; target=&#34;_blank&#34; &gt;ES7 features&lt;/a&gt;
+, &lt;a href=&#34;https://github.com/Gillespie59/eslint-plugin-angular&#34; target=&#34;_blank&#34; &gt;AngularJS&lt;/a&gt;
+, &lt;a href=&#34;https://github.com/zertosh/eslint-plugin-flow-vars&#34; target=&#34;_blank&#34; &gt;flow type annotations&lt;/a&gt;
+, etc.&lt;/p&gt;
+
+&lt;p&gt;ESLint also allows to extend configuration files, so we can extend set of rules a defined file and add or override certain rules to fit in our configuration file using the ones listed in the &lt;a href=&#34;http://eslint.org/docs/rules/&#34; target=&#34;_blank&#34; &gt;its long list&lt;/a&gt;
+, using new ones which has been created  by the community or implement our ones if there isn&amp;rsquo;t any which fits what we need.&lt;/p&gt;
+
+&lt;h2 id=&#34;eslint-setup:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;ESLint Setup&lt;/h2&gt;
+
+&lt;p&gt;Setting up ESLint in your Javascript project is pretty straightforward, as it&amp;rsquo;s available as an &lt;a href=&#34;https://www.npmjs.com&#34; target=&#34;_blank&#34; &gt;NPM&lt;/a&gt;
+ package.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have installed, an add to your PATH, &lt;a href=&#34;https://nodejs.org&#34; target=&#34;_blank&#34; &gt;NodeJS&lt;/a&gt;
+ which brings NPM, let&amp;rsquo;s see how to proceed to setup ESLint and configure it.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go to the folder where you have your JS project;&lt;/li&gt;
+&lt;li&gt;For simplicity, we install ESLint globally in the machine with &lt;code&gt;npm install -g eslint&lt;/code&gt;; however it&amp;rsquo;s advisable to install it locally to the project to have more control of the version to use, which is very helpful if you have other projects than use an old version of ESLint or you start now with this but in future project you end up using a newer version, to do so, make sure that you have a &lt;code&gt;package.json&lt;/code&gt; in the project or create one with &lt;code&gt;npm init&lt;/code&gt; and after execute &lt;code&gt;npm install --save-dev eslint&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Create a minimal ESLint configuration file executing &lt;code&gt;eslint --init&lt;/code&gt;; reply the question that ESLint asks in order to set the minimum rules which fit to your code style, if you use ES6 or JSX, define the environment where JS executes, the Browser or NodeJS and choose the format that you want between JS, JSON or YAML to store the configuration; you also have the option to set this configuration in &lt;code&gt;package.json&lt;/code&gt; file with the property &lt;code&gt;eslintConfig&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Right now you should see that you have a file in your folder named &lt;code&gt;.eslintrc.*&lt;/code&gt; where &lt;code&gt;*&lt;/code&gt; is the extension used for the format that you have chosen. It&amp;rsquo;s worth to mention that JSON &amp;amp; YAML formats support JS commends to make them more human-friendly, however they aren&amp;rsquo;t supported in &lt;code&gt;package.json&lt;/code&gt; file.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The basic file which has been generated probably contains only a few properties which ESLint support; probably you&amp;rsquo;ll have the &lt;code&gt;env&lt;/code&gt; which define the environment where code is executed, which module system is used and ES6 version is used. To see all the options that you can set in this property check &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;Specifying Environments in the documentation&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;This basic file extends the rules from the &lt;code&gt;eslint:recommended&lt;/code&gt; configuration as you can see in the value of &lt;code&gt;extends&lt;/code&gt; property, but just leaved it this for now and see the &lt;code&gt;rules&lt;/code&gt; property.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;rules&lt;/code&gt; property contains the rules that we want to use to lint our code base; as commented above, if we extend them from another then we can set ones that the base version doesn&amp;rsquo;t set to cover parts that the base configuration doesn&amp;rsquo;t and set the same one than base configuration has in order to override the rule configuration.&lt;/p&gt;
+
+&lt;p&gt;If you never seen how the &lt;code&gt;rules&lt;/code&gt; are specified in ESLint, you may thing that the format it&amp;rsquo;s odd; they use the name of the rule as a property name, which is very usual, and the value can be an array; they value is the part that it can looks odd because, you can see sometimes an string, an integer or an array, but nothing is weird when you know what they define.&lt;/p&gt;
+
+&lt;p&gt;The rule values can have the next string values:
+* &amp;ldquo;off&amp;rdquo;: The rules doesn&amp;rsquo;t apply. By default ESLint doesn&amp;rsquo;t apply any rule so all they are off, however it&amp;rsquo;s useful to set a rule to off when you extends from a base configuration and you want to disable some of the rules.
+* &amp;ldquo;warn&amp;rdquo;: The rules applies with a warning; when ESLint finds parts of the code base where a rule set as a warning, it shows the output message as warning and it ignores them in terms of the exit code, hence ESLint exits with 0 if only rules set as a warning aren&amp;rsquo;t respected in the code base.
+* &amp;ldquo;error&amp;rdquo;: The rules set as error, are show in the output message an an error and if any of them are found during the linting process, then ESLint exit with 1.&lt;/p&gt;
+
+&lt;p&gt;Ok, but what an integer means as value then? they can only be 0, 1, 2 and they have the same meaning than above, 0 = &amp;ldquo;off&amp;rdquo;, 1 =&amp;ldquo;warn&amp;rdquo; and 2 =&amp;ldquo;error&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;The last form of value for a rule is an array. Arrays are used when the rule accepts options, the first value of the array is a string or integer as defined above and the rest depends of the rule, for example the &lt;a href=&#34;http://eslint.org/docs/rules/quote-props&#34; target=&#34;_blank&#34; &gt;rule &amp;#34;quote-props&amp;#34;&lt;/a&gt;
+ allows to define if we allow to surround the object properties by quotes, the first option (second position in the array) is to set how ESLint should interpret the rules and depending of which value is selected as a first option, it is possible to define the behavior, which is set as a sub-option (third position in the array).&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see the next simple snipped which shows an example of a basic &lt;code&gt;.eslintrc.json&lt;/code&gt; file, using the different value formats commented&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;browser&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;commonjs&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;es6&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;
+  },
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;extends&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;eslint:recommended&amp;quot;&lt;/span&gt;,
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;rules&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;indent&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;error&amp;quot;&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;linebreak-style&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;unix&amp;quot;&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;quotes&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;2&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;semi&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;never&amp;quot;&lt;/span&gt;],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;quote-props&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;warn&amp;quot;&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;consistent-as-needed&amp;quot;&lt;/span&gt;, { &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;keywords&amp;quot;&lt;/span&gt;: &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt; }],
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;brace-style&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;off&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;ESLint has other setting for more advanced tweaking, for example, options to set to the parser, parser to use and so on; &lt;a href=&#34;http://eslint.org/docs/developer-guide/working-with-plugins&#34; target=&#34;_blank&#34; &gt;it also has plugins which allow to define, not just rules and environments but how to process non pure JS files&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, ESLint also allows &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#ignoring-files-and-directories&#34; target=&#34;_blank&#34; &gt;to ignore files and directories as git does, through a `.eslintignore` file&lt;/a&gt;
+ and &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#disabling-rules-with-inline-comments&#34; target=&#34;_blank&#34; &gt;to define settings to apply only in parts of the source code using comments&lt;/a&gt;
+, for example &lt;code&gt;/* eslint-disable semi */&lt;/code&gt; will disable the rule from the line of this comment until the end of the file.&lt;/p&gt;
+
+&lt;h2 id=&#34;running-eslint:3f19ef4d03d4a9ec65f88b35f2e2c128&#34;&gt;Running ESLint&lt;/h2&gt;
+
+&lt;p&gt;Once you setup ESLint in you project you have to execute it.&lt;/p&gt;
+
+&lt;p&gt;The command line interface of ESLint is as usual as any other command line; you can see the help information with &lt;code&gt;-h&lt;/code&gt; option an see all the options that you can pass it.&lt;/p&gt;
+
+&lt;p&gt;If you have set the configuration in any of the files which ESLint detect, then you can can run the command an pass the path to sources files or folder where the source files are; the paths are defined with globs so you can set a root folder and it recursively will check all the sources files contained in the folder and the children folders, for example &lt;code&gt;eslint src/**/*&lt;/code&gt; will check all the source files in src and all the folder subtree inside of it.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#using-configuration-files&#34; target=&#34;_blank&#34; &gt;With `-c` option you can specify a specific configuration file&lt;/a&gt;
+; this option is quite useful when you want different configurations for different parts of a project;  however if you are using the configurations files or &lt;code&gt;package.json&lt;/code&gt; property mentioned in the previous version, it will use them automatically and moreover you can have several of them in different subfolders of the root filesystem to walk specifying different configurations for the sources contained in the subtree and it will use the closest one found to the analyzed source file, see an example of this case in the &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy&#34; target=&#34;_blank&#34; &gt;documentation&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Another important option to use to speed up the linting process is &lt;code&gt;--cache&lt;/code&gt;; enabling it ESLint store information about the processed files in order to only check the ones that have been modified in the following runs. The cache file is store in the root directory with the name &lt;code&gt;.eslintcache&lt;/code&gt; but you can configure the location with the &lt;code&gt;--cache-location&lt;/code&gt; option.&lt;/p&gt;
+
+&lt;p&gt;ESLint documentation has a dedicated page for &lt;a href=&#34;http://eslint.org/docs/user-guide/command-line-interface&#34; target=&#34;_blank&#34; &gt;its command line interface&lt;/a&gt;
+, check it if you want to know all the other options which accepts.&lt;/p&gt;
+
+&lt;p&gt;That&amp;rsquo;s all for today folks&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>A Nunjucks extension to compile RiotJS tags</title>
+      <link>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</link>
+      <pubDate>Wed, 02 Mar 2016 16:05:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/nunjucks-extension-to-compile-riotjs-tags</guid>
+      <description>
+
+&lt;p&gt;On the way to London, meanwhile I was flying, I wanted to take advantage of the dead time without internet to write this short blog post about a &lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+, &lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ and a Nunjucks extension that I&amp;rsquo;ve implemented, for a side project that I&amp;rsquo;m working on, to render RiotJS tags on the server.&lt;/p&gt;
+
+&lt;h2 id=&#34;nunjucks:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Nunjucks&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mozilla.github.io/nunjucks/&#34; target=&#34;_blank&#34; &gt;Nunjucks&lt;/a&gt;
+ is a template engine (yes, another one!) for NodeJS and the browser which is heavily inspired by &lt;a href=&#34;http://jinja.pocoo.org/&#34; target=&#34;_blank&#34; &gt;jinja2&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;d never used before and probably I had heard about it, but I couldn&amp;rsquo;t remember, world is moving fast and almost any time you start a project you can discover lots of new stuff which may be better or a good fit it.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used &lt;a href=&#34;http://jade-lang.com/&#34; target=&#34;_blank&#34; &gt;Jade&lt;/a&gt;
+ and &lt;a href=&#34;http://paularmstrong.github.io/swig/&#34; target=&#34;_blank&#34; &gt;Swig&lt;/a&gt;
+ (a bit less) several times and for this project I was thinking in using &lt;a href=&#34;http://markojs.com/&#34; target=&#34;_blank&#34; &gt;Marko&lt;/a&gt;
+, it has a few nice features as be able to send the content through a stream and a widget system which helps to create reusable components; however I found a bit confusing to start because there are several examples and &lt;a href=&#34;https://www.youtube.com/playlist?list=PLZUgs-F38XXQJBxA58UqnwTVMZS_uza_C&#34; target=&#34;_blank&#34; &gt;screen casts&lt;/a&gt;
+ but &lt;a href=&#34;http://markojs.com/docs/marko/javascript-api/#rendertemplatepath-templatedata-streamwritable&#34; target=&#34;_blank&#34; &gt;quite few functions have been deprecated in the new version&lt;/a&gt;
+ and I don&amp;rsquo;t have the need of streaming the content to enhance performance for this project.&lt;/p&gt;
+
+&lt;p&gt;At the same time, I didn&amp;rsquo;t want to spend lots of time in choosing and having to solve quite a few issues in how to use it and use it well to get the advantages, so I found Nunjucks was a good choice between taking something that I know and something that it&amp;rsquo;s new for me.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, in the time being I don&amp;rsquo;t expect to use that many advanced features that Nunjucks has, and probably I won&amp;rsquo;t take advantage of its power, but it&amp;rsquo;s OK, as it provides me all the things that I need.&lt;/p&gt;
+
+&lt;h2 id=&#34;riotjs:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;RiotJS&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://riotjs.com/&#34; target=&#34;_blank&#34; &gt;RiotJS&lt;/a&gt;
+ seems probably out of the context of this post and it could be if I wouldn&amp;rsquo;t have decided to also incorporate since the first few commits.&lt;/p&gt;
+
+&lt;p&gt;It also could be React, but I feel that it would add too much complexity to the project, it isn&amp;rsquo;t a big project and it shouldn&amp;rsquo;t have a big code base; moreover I would have to spend more time to nail React and all the things around it so I would end up not making the things done.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve had a experience using RiotJS, for a freelancing project that I was working a few weeks ago, it was a project with very hard deadline and I had to build a mobile friendly site for one existing one, created by one big &amp;ldquo;consultancy&amp;rdquo; company which basically they ended up delivering a huge pile of crap; anyway, the only think that matters for this post is that it couldn&amp;rsquo;t be made responsive and in 3 weeks time I had to deep in that horrible code base, make the changes what I needed to serve the content for a &lt;a href=&#34;https://en.wikipedia.org/wiki/Single-page_application&#34; target=&#34;_blank&#34; &gt;SPA&lt;/a&gt;
+ which at the same time I had to create to be served for requests coming from mobile devices.&lt;/p&gt;
+
+&lt;p&gt;I had never used RiotJS before, and due its minimalism I was able to read and understand the docs, and just use it to do what I had to do.&lt;/p&gt;
+
+&lt;p&gt;For this side project, I could avoid to add Riot, because it makes sense to render the site in the server, however there are a few parts which I would like to render on the client (e.g. a dashboard), maybe not in the first version, but in one, close to the first one.&lt;/p&gt;
+
+&lt;p&gt;Choosing RiotJS, I think that I can take advantage of its &lt;a href=&#34;http://riotjs.com/guide/&#34; target=&#34;_blank&#34; &gt;custom tag&lt;/a&gt;
+ to create components which at the beginning I can render in the server into Nunjucks templates and at some point, start to render them in the client side in a few pages or parts of them.&lt;/p&gt;
+
+&lt;h2 id=&#34;rendering-riotjs-in-nunjucks-templates:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Rendering RiotJS in Nunjucks templates&lt;/h2&gt;
+
+&lt;p&gt;To do this, I didn&amp;rsquo;t need to create any plugin, I could follow the same approach which you can watch in &lt;a href=&#34;https://www.youtube.com/watch?v=6ww1UXGJzcs&amp;amp;feature=youtu.be&#34; target=&#34;_blank&#34; &gt;this video using swig&lt;/a&gt;
+, but I found that creating a Nunjucks plugin for this purpose was simple and easy and it will save me time to repeat over an over a few statements in any page that I&amp;rsquo;m going to drop RiotJS tags besides the implementation will be less error prone.&lt;/p&gt;
+
+&lt;p&gt;The implementation of &lt;a href=&#34;http://mozilla.github.io/nunjucks/api.html#custom-tags&#34; target=&#34;_blank&#34; &gt;Nunjucks extension&lt;/a&gt;
+ is as simple as:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; RiotExtension(basePath) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.tags &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;]
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.parse &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (parser, nodes) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; tok &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.nextToken()
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; args &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; parser.parseSignature(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;true&lt;/span&gt;)
+    parser.advanceAfterBlockEnd(tok.value)
+
+    parser.parseUntilBlocks(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;endriot&amp;#39;&lt;/span&gt;)
+    parser.advanceAfterBlockEnd()
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nodes.CallExtension(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;renderRiot&amp;#39;&lt;/span&gt;, args, [])
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.renderRiot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (ctx, view, opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-disable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; tag &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(path.join(basePath, view))
+    &lt;span style=&#34;color: #888888&#34;&gt;/* eslint-enable global-require */&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; nunjucks.runtime.SafeString(riot.render(tag, opts))
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;On the server, I&amp;rsquo;m using &lt;a href=&#34;http://koajs.com/&#34; target=&#34;_blank&#34; &gt;KoaJS&lt;/a&gt;
+ v2, at that time it wasn&amp;rsquo;t support in &lt;a href=&#34;https://github.com/queckezz/koa-views&#34; target=&#34;_blank&#34; &gt;Koa-views&lt;/a&gt;
+ for Koa v2 without using &lt;a href=&#34;https://github.com/koajs/convert&#34; target=&#34;_blank&#34; &gt;koa-convert&lt;/a&gt;
+, maybe &lt;a href=&#34;https://github.com/queckezz/koa-views/pull/54&#34; target=&#34;_blank&#34; &gt;there will one soon&lt;/a&gt;
+, and because I prefer to render views without having side effects in Koa &lt;code&gt;ctx&lt;/code&gt; (context), I basically pass the render function where I need and use it to generate the HTML which I assign to &lt;code&gt;ctx.body&lt;/code&gt; where I need.&lt;/p&gt;
+
+&lt;p&gt;The function which returns a promised render function, looks like&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; path &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; nunjucks &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;nunjucks&amp;#39;&lt;/span&gt;)
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; riot &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; getRenderFn(viewsPath, opts) {
+  riot.settings.brackets &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;${ }&amp;#39;&lt;/span&gt;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;const&lt;/span&gt; njr &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; nunjucks.configure(viewsPath, opts)
+  njr.addExtension(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;RiotExtension&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; RiotExtension(path.join(viewsPath, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;riot&amp;#39;&lt;/span&gt;)))
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (view, data) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Promise((resolve, reject) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+      njr.render(view, data, (err, html) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+          reject(err)
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt;
+        }
+
+        resolve(html)
+      })
+    })
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;And then, whenever I need to render a Riot tag in a Nunjucks template I only have to do &lt;code&gt;{% riot &amp;quot;my-tag.html&amp;quot; %}{% endriot %}&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:8ac3bd955171a9b7779df05ea1abc4d7&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Nunjuks looks as powerful template engine, on the other hand, I love the minimalism of RiotJS; with the combination of both I can render views in the server including components (Riot tags) than later on, I could reuse in the client side.&lt;/p&gt;
+
+&lt;p&gt;Nunjucks and RiotJS isn&amp;rsquo;t the only two that you can combine together, there more famous combinations or just one which allow to create templates which can be rendered in the server and the client, but I&amp;rsquo;ve decided to choose those based on my project requirements (technical and non-technical too); my recommendation here, is, do the same, choose the one(s) which fit better to it.&lt;/p&gt;
+
+&lt;p&gt;Happy mixing!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>KoaJS v2, BabelJS &amp; npm scripts</title>
+      <link>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</link>
+      <pubDate>Thu, 25 Feb 2016 09:14:11 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/koav2-babel-and-npm-scripts</guid>
+      <description>
+
+&lt;p&gt;Koa v2 has changed completely the middleware function signature, used in v1.x, to use &lt;a href=&#34;http://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;ES2016 async/await functions&lt;/a&gt;
+ over &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*&#34; target=&#34;_blank&#34; &gt;generators&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s still in alpha even thought the Koa&amp;rsquo;s team says that it&amp;rsquo;s production ready, because it&amp;rsquo;s currently used in some systems which are in production, however &lt;a href=&#34;https://github.com/koajs/koa/issues/533&#34; target=&#34;_blank&#34; &gt;the issues is that NodeJS doesn&amp;#39;t still support async/await function natively&lt;/a&gt;
+, hence you need a transpiler to be able to use async/await functions.&lt;/p&gt;
+
+&lt;p&gt;One, and probably the most famous, ES2015 tranpilers which also supports some of the features proposed for ES2016, and between then Async/Await functions, is &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; &gt;BabelJS&lt;/a&gt;
+; it&amp;rsquo;s also the one, most mentioned, in the Koa&amp;rsquo;s issue linked above, but it doesn&amp;rsquo;t look fancy having to transpile server code because it can be very painful, however Koa v2 doesn&amp;rsquo;t only accept async/await functions as a middleware, it also accepts function which return Promises (&lt;a href=&#34;https://nodejs.org/en/docs/es6/#which-features-ship-with-node-js-by-default-no-runtime-flag-required&#34; target=&#34;_blank&#34; &gt;which are already supported natively by last productions releases (LTS and no LTS)&lt;/a&gt;
+) because at the end an async/await function returns a Promise to the caller.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-we-can-do-now:4aa0da6c353d68f2346342f02b552d25&#34;&gt;What we can do now&lt;/h2&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t want to use BabelJS to write server code because it may be a pain the ass having in your development pipeline, then &lt;a href=&#34;https://github.com/koajs/koa/tree/2.0.0-alpha.3#example&#34; target=&#34;_blank&#34; &gt;you can still use Koa v2 using functions which return Promises&lt;/a&gt;
+; you don&amp;rsquo;t have to worry in having to rewrite those middlewares again when async/await functions be natively supported by NodeJS, you could use those ones and the new ones that implemented with async/async function seamless.&lt;/p&gt;
+
+&lt;p&gt;If you don&amp;rsquo;t mind to use BabelJS in your server code, because it&amp;rsquo;s a new development which isn&amp;rsquo;t going to be a very big codebase, or because the implementation progress is going to be slow for whatever reason or you have any other reason which isn&amp;rsquo;t relevant for the purpose of this post then go for it and when NodeJS support async/away function natively then kill BabelJS.&lt;/p&gt;
+
+&lt;h2 id=&#34;koa-v2-babeljs-with-nodemon-npm-scripts:4aa0da6c353d68f2346342f02b552d25&#34;&gt;Koa v2, BabelJS, with Nodemon &amp;amp; npm scripts&lt;/h2&gt;
+
+&lt;p&gt;In case that you want to use BabelJS, and you don&amp;rsquo;t have any prepared boilerplate to develop a server side with Babel with server restarting automatically on each change, then you can follow this steps to install it, configure it and run it with npm.&lt;/p&gt;
+
+&lt;p&gt;Assuming that you have ran &lt;code&gt;npm init&lt;/code&gt; in a folder and you&amp;rsquo;re in your terminal on it execute&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Install Koa v2 &lt;code&gt;npm install --save koa@next&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install Babel and the presets and plugins needed to transpile ES6/7 features not supported natively by NodeJS; I recommend only use the async/await functions to be able to run your code as soon as async/await function are supported by NodeJS and may not others as spread paramaters, etc.
+&lt;code&gt;npm install --save-dev babel-core babel-cli babel-preset-es2015-node5  babel-plugin-transform-async-to-generator&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install nodemon &lt;code&gt;npm install --save-dev nodemon&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then setup babel creating a &lt;code&gt;.babelrc&lt;/code&gt; file with this content:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;env&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;development&amp;quot;&lt;/span&gt;: {
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;presets&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;es2015-node5&amp;quot;&lt;/span&gt;],
+      &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;plugins&amp;quot;&lt;/span&gt;: [&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;transform-async-to-generator&amp;quot;&lt;/span&gt;]
+    }
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then you can create, into the property name &lt;code&gt;scripts&lt;/code&gt; of &lt;code&gt;package.json&lt;/code&gt;, something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;scripts&amp;quot;&lt;/span&gt;: {
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;dev&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --exec npm run -s serve&amp;quot;&lt;/span&gt;,
+    &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;serve&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;babel-node -- src/server.js&amp;quot;&lt;/span&gt;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;In case that you use &lt;a href=&#34;http://eslint.org/&#34; target=&#34;_blank&#34; &gt;eslint&lt;/a&gt;
+ to lint your code, to avoid linter issues with async/await functions you have to install it and babel plugin&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;npm install --save-dev eslint babel-eslint&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;then set in &lt;code&gt;.eslintrc&lt;/code&gt; file the property &lt;code&gt;&amp;quot;parser&amp;quot;: &amp;quot;babel-eslint&amp;quot;&lt;/code&gt;. Bear in mind that you will have to enable the &lt;code&gt;es6&lt;/code&gt; features too, enabling &lt;a href=&#34;http://eslint.org/docs/user-guide/configuring#specifying-environments&#34; target=&#34;_blank&#34; &gt;`es6` environtment&lt;/a&gt;
+.&lt;/p&gt;
+
+&lt;p&gt;and you can also setup a watch mode in package.json &lt;code&gt;scripts&lt;/code&gt; property&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;{
+  &lt;span style=&#34;color: #007700&#34;&gt;&amp;quot;lint-w&amp;quot;&lt;/span&gt;: &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;nodemon --watch src -e js --exec eslint .&amp;quot;&lt;/span&gt;
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;then you can run the &amp;ldquo;dev&amp;rdquo; script target in one terminal tab and in other this one and enjoy developing a Koa v2 app, with asyn/await function with live restart and live linting.&lt;/p&gt;
+
+&lt;p&gt;Don&amp;rsquo;t wait until Koa v2 to be announced as production version, use it now with Babel or without, just use it now.&lt;/p&gt;
+
+&lt;p&gt;Happy coding!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>How Arrow Functions Perform on Node?</title>
+      <link>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</link>
+      <pubDate>Thu, 18 Feb 2016 19:18:37 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/how-arrow-functions-performs-on-node</guid>
+      <description>
+
+&lt;p&gt;ES2015 Arrow functions are offered natively on NodeJS since while ago; they look as &lt;strong&gt;a convenient way to write anonymous functions than using function expressions&lt;/strong&gt;, because they have a &lt;a href=&#34;https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions&#34; target=&#34;_blank&#34; &gt;shorter syntax, but they also bind `this` value lexically&lt;/a&gt;
+, which is the thing that got my attention to do this short performance test to know if they run slower, faster or equally than function expressions.&lt;/p&gt;
+
+&lt;p&gt;As I mentioned in several posts, performance may be very important, but the most of the times, it&amp;rsquo;s quite less important than other things, as having a clean, simple and easy to understand and maintain code base which may performs not that fast as another one without those properties, or other reasons as using implementations (a.k.a frameworks) which are more generic so they allow to build fast, with less resources and many people can start to work quick because are well know by a certain amount of them.&lt;/p&gt;
+
+&lt;p&gt;I always consider the things mentioned above, however I&amp;rsquo;m not lazy if I have to type a bit more to get better performance without compromising any other important property, so in this case I would say that if arrow functions perform slower than function expressions, I would follow using function expressions because I don&amp;rsquo;t really mind to type the word &lt;code&gt;function&lt;/code&gt;, moreover that I think that in some situations the line of code is more clear having the keyword &lt;code&gt;function&lt;/code&gt; than the shorter syntax of the arrow functions, nonetheless that&amp;rsquo;s out of the scope of this post.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance-test:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Performance test&lt;/h2&gt;
+
+&lt;p&gt;Note, my purpose here is only &lt;strong&gt;to analyze those situations where the anonymous functions used don&amp;rsquo;t access to &lt;code&gt;this&lt;/code&gt; pointer&lt;/strong&gt;, because the most of the times that I&amp;rsquo;ve seen replacing functions expressions by arrow functions are on those situations and my worries are if arrow functions perform slower due the fact that they lexically bind &lt;code&gt;this&lt;/code&gt; pointer.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not analyzing those ones which the functions access to the lexical scope where functions expression should do through &lt;code&gt;bind&lt;/code&gt; or assigning lexical &lt;code&gt;this&lt;/code&gt; to a variable defined in the lexical scope, which at least, &lt;a href=&#34;http://stackoverflow.com/questions/17638305/why-is-bind-slower-than-a-closure&#34; target=&#34;_blank&#34; &gt;a few years ago, `bind` didn&amp;#39;t look as a good options from the performance point of view and we should see what happen now with the arrow functions&lt;/a&gt;
+, however that&amp;rsquo;s out of the main goal of this post.&lt;/p&gt;
+
+&lt;p&gt;To know the different running times between then I wrote a small script using &lt;a href=&#34;https://benchmarkjs.com/&#34; target=&#34;_blank&#34; &gt;Benchmark.js&lt;/a&gt;
+ with &lt;a href=&#34;https://github.com/wadey/node-microtime&#34; target=&#34;_blank&#34; &gt;Microtime&lt;/a&gt;
+ which looks like&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;use strict&amp;#39;&lt;/span&gt;;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; benchmark &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;benchmark&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; obj &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; {
+  execFe&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (a, b, c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c;
+    }(a, b, c));
+  },
+  execAf&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt;(a, b, c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; ((a, b, c) &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; (a &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; b) &lt;span style=&#34;color: #333333&#34;&gt;*&lt;/span&gt; c)(a, b, c);
+  }
+};
+
+module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; obj;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; suite &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; benchmark.Suite;
+
+suite.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;arrow function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execAf(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.add(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;normal function&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  obj.execFe(&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;5&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;10&lt;/span&gt;, &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;60&lt;/span&gt;);
+})
+.on(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;complete&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.forEach(b &lt;span style=&#34;color: #333333&#34;&gt;=&amp;gt;&lt;/span&gt; {
+    console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} &lt;span style=&#34;color: #333333&#34;&gt;-&amp;gt;&lt;/span&gt; mean&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${b.stats.mean}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  });
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; b &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; m &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;[&lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;1&lt;/span&gt;];
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; diff &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; b.stats.mean &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt; m.stats.mean;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;${b.name} is ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;faster&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;slower&amp;#39;&lt;/span&gt;} than ${m.name} by ${(diff &lt;span style=&#34;color: #333333&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span style=&#34;color: #0000DD; font-weight: bold&#34;&gt;0&lt;/span&gt;) &lt;span style=&#34;color: #333333&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;-&lt;/span&gt;diff &lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; diff} seconds&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;Fastest is&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.filter(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;fastest&amp;#39;&lt;/span&gt;).map(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;name&amp;#39;&lt;/span&gt;)}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+})
+.run({ async&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;false&lt;/span&gt; });
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also find it on the &lt;a href=&#34;https://gist.github.com/ifraixedes/e697740cd43bec83cd37&#34; target=&#34;_blank&#34; &gt;gist which I&amp;#39;ve created for its purpose&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;h2 id=&#34;results:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Results&lt;/h2&gt;
+
+&lt;p&gt;I ran it several times (with NodeJS v5.6.0) and I didn&amp;rsquo;t find any performance run time difference between the arrow functions and the functions expressions. Each time that I executed the test I got different result, some of them the arrow function was faster and in others the function expressions, besides that the time difference between them was so tiny, so that&amp;rsquo;s more the usual differences that you can find in benchmark libraries than a real fact.&lt;/p&gt;
+
+&lt;p&gt;Below you can see the result of two of the executions that I did&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.1797950413531386e-8
+normal function -&amp;gt; mean: 3.236298102991821e-8
+arrow function is faster than normal function by 5.650306163868237e-10 seconds
+Fastest is: arrow function,normal function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;arrow function -&amp;gt; mean: 3.478900530420292e-8
+normal function -&amp;gt; mean: 3.4248199017909106e-8
+arrow function is slower than normal function by 5.408062862938166e-10 seconds
+Fastest is: normal function,arrow function
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see, the difference is negligible.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusions:70af964c5a2c332c63ba8015a0ae6bb2&#34;&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;Arrow functions and function expressions have the same performance execution, at least in Node.&lt;/p&gt;
+
+&lt;p&gt;Best!&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;I&amp;rsquo;ve updated this post on 23/03/2016 to clarify what I wanted to analyze related arrow functions&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Speaking at BarcelonaJS: Generators &amp; Async Functions</title>
+      <link>http://blog.fraixed.es/post/speaking-bcnjs-generators-and-async-functions</link>
+      <pubDate>Tue, 12 Jan 2016 18:00:58 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/speaking-bcnjs-generators-and-async-functions</guid>
+      <description>&lt;p&gt;Tuesday (12th of January of 2016), at &lt;strong&gt;&lt;a href=&#34;http://barcelonajs.org/&#34; target=&#34;_blank&#34; &gt;BarcelonaJS Organisation&lt;/a&gt;
+&lt;/strong&gt;, I gave an introductory talk about &lt;strong&gt;&lt;a href=&#34;http://www.ecma-international.org/ecma-262/6.0/#sec-generatorfunction-objects&#34; target=&#34;_blank&#34; &gt;Generators Functions which are available in EcmaScript 2015&lt;/a&gt;
+&lt;/strong&gt; and &lt;strong&gt;&lt;a href=&#34;https://tc39.github.io/ecmascript-asyncawait/&#34; target=&#34;_blank&#34; &gt;Async Functions which are defined in the draft proposal for EcmaScript 2016&lt;/a&gt;
+&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;I wrote just these few slides&lt;/p&gt;
+
+&lt;p&gt;&lt;div style=&#34;margin: auto; text-align: center;&#34;&gt;
+  &lt;iframe width=&#34;750&#34; height=&#34;563&#34; frameborder=&#34;0&#34; scrolling=&#34;no&#34; marginheight=&#34;0&#34; marginwidth=&#34;0&#34; src=&#34;http://blog.fraixed.es/slides/bcnjs-201601/&#34;
+    &lt;p&gt;Your browser doesn&amp;rsquo;t support iframes&lt;/p&gt;
+  &lt;/iframe&gt;
+  &lt;br&gt;
+  &lt;a href=http://blog.fraixed.es/slides/bcnjs-201601/ target=&#34;_blank&#34;&gt;See these slides in a single page &amp;amp; don&amp;rsquo;t forget to press &amp;ldquo;p&amp;rdquo; to see a few notes which I&amp;rsquo;ve written&lt;/a&gt;
+&lt;/div&gt;
+&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;and mostly I spent my time talking about them through examples which you can find &lt;a href=&#34;https://gist.github.com/ifraixedes/62a7155b87e7e7d0c71d&#34; target=&#34;_blank&#34; &gt;in a public gist on my Github&lt;/a&gt;
+&lt;/p&gt;
+
+&lt;p&gt;If you were there, I hope that you enjoyed or at least got something good from my talk and please don&amp;rsquo;t forget &lt;strong&gt;to drop a few comments with your feedback&lt;/strong&gt;; it will be very valuable for me to keep improving.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Speaking at BarcelonaJS: Introduction to Lovefield</title>
+      <link>http://blog.fraixed.es/post/speaking-bcnjs-intro-to-lovefield</link>
+      <pubDate>Mon, 05 Oct 2015 01:18:10 +0100</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/speaking-bcnjs-intro-to-lovefield</guid>
+      <description>&lt;p&gt;Last Thursday (1st of October of 2015), I gave a talk at &lt;a href=&#34;http://barcelonajs.org/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;BarcelonaJS group&lt;/strong&gt;&lt;/a&gt; about &lt;a href=&#34;https://google.github.io/lovefield/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;Lovefield&lt;/strong&gt;, a cross-browser SQL-Like relation query engine; here I left the slides that I created for that purpose.&lt;/p&gt;
+
+&lt;p&gt;&lt;div style=&#34;margin: auto; text-align: center;&#34;&gt;
+  &lt;iframe width=&#34;750&#34; height=&#34;563&#34; frameborder=&#34;0&#34; scrolling=&#34;no&#34; marginheight=&#34;0&#34; marginwidth=&#34;0&#34; src=&#34;http://blog.fraixed.es/slides/bcnjs-201510/&#34;
+    &lt;p&gt;Your browser doesn&amp;rsquo;t support iframes&lt;/p&gt;
+  &lt;/iframe&gt;
+  &lt;br&gt;
+  &lt;a href=http://blog.fraixed.es/slides/bcnjs-201510/ target=&#34;_blank&#34;&gt;See these slides in a single page &amp;amp; don&amp;rsquo;t forget to press &amp;ldquo;p&amp;rdquo; to see the notes which I&amp;rsquo;ve written&lt;/a&gt;
+&lt;/div&gt;
+&lt;br&gt;&lt;/p&gt;
+
+&lt;p&gt;You can see &lt;a href=&#34;https://gist.github.com/ifraixedes/485329b7d46531e50e23&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;the &lt;strong&gt;source code of my demo&lt;/strong&gt; on a public gist under my GitHub account&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Thanks to the organisers, &lt;a href=&#34;https://twitter.com/patrickheneise&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34; title=&#34;Patrick Heneise&#34;&gt;@patrickheneise&lt;/a&gt;, &lt;a href=&#34;https://twitter.com/eth0lo&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34; title=&#34;Jean Carlos Meninno&#34;&gt;eth0lo&lt;/a&gt; and &lt;a href=&#34;https://twitter.com/isabelcabezasm&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34; title=&#34;Isabel Cabezas&#34;&gt;@isabelcabezasm&lt;/a&gt; for all the efforts to run this Javascript amazing community in Barcelona.&lt;/p&gt;
+
+&lt;p&gt;If you were there, I hope that you enjoyed or at least got something good from my talk; please feel free to provide an &lt;strong&gt;honest&lt;/strong&gt; feedback in the comments.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Mercury &amp; its marvelous modularity</title>
+      <link>http://blog.fraixed.es/post/mercury-and-its-marvelous-modularity</link>
+      <pubDate>Tue, 30 Jun 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/mercury-and-its-marvelous-modularity</guid>
+      <description>
+
+&lt;p&gt;Long time ago, I&amp;rsquo;ve discovered &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt;; at that moment, Virtual-DOM started to be hot due the increasing popularity of React, highly influenced by the world wide known Facebook, and I got curious to search if there was anything else which also take advantage of the Virtual-DOM mechanism.&lt;/p&gt;
+
+&lt;p&gt;As it isn&amp;rsquo;t surprisingly, there were at that moment &lt;a target=&#34;_blank&#34; href=&#34;http://facebook.github.io/react/&#34;&gt;React&lt;/a&gt; and &lt;a target=&#34;__blank_&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; and also a bunch of others&lt;sup&gt;1&lt;/sup&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Disclaimer&lt;/strong&gt;: I&amp;rsquo;m not experienced in React, I&amp;rsquo;ve just read several post of it and things related with it and watched some videos, on the other hand, this post isn&amp;rsquo;t about XXX is better than YYY, there&amp;rsquo;re always some subjective aspects of choosing frameworks, tools, etc, as other important non-technical stuff, as the aim to achieve, which strongly influence on what to choose/use to do that what actually really matters, to achieve the goal.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-context:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;The Context&lt;/h2&gt;
+
+&lt;p&gt;My first step into Mercury has only been to implement a &lt;strong&gt;very tiny&lt;/strong&gt; &lt;a target=&#34;_blank&#34; href=&#34;https://en.wikipedia.org/wiki/Single-page_application&#34;&gt; SPA (single web application)&lt;/a&gt; for the  topic of the hackathon which I participated; &lt;strong&gt;tiny&lt;/strong&gt; because 24 hours it isn&amp;rsquo;t much time and moreover when we were a two people team, with all the development load for one of them, in this case my self.&lt;/p&gt;
+
+&lt;p&gt;Anyway, the hackathon isn&amp;rsquo;t important for the purpose of this post, it&amp;rsquo;s only to put you in context about the first time which I stepped into &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;modularity-matters:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;Modularity Matters&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m into modularity, it&amp;rsquo;s my choice and it doesn&amp;rsquo;t to be the best choice, as every approach, philosophy or whatever else has its tradeoffs, so depending of the situation, personality, relations, influence and so on, you prefer one over another because you feel that you get less painful situations, solve better your problems, fulfill your requirements or basically you&amp;rsquo;re more comfortable, but again, I&amp;rsquo;m as well into &amp;ldquo;the right tool for each case&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;In &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; modularity is something that &lt;strong&gt;nobody can say that it&amp;rsquo;s bullshit marketing&lt;/strong&gt;, just take a look to &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury/blob/649410edca7236c5b99ec45f5b139c01528022d8/index.js#L13L66&#34; rel=&#34;nofollow&#34;&gt;the main module file&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Basically, Mercury, at the time of this blog, is &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury/blob/649410edca7236c5b99ec45f5b139c01528022d8/index.js&#34; rel=&#34;nofollow&#34;&gt;just a javascript file of 126 LOC&lt;/a&gt; which basically export a bunch of other tiny modules (each one exactly does one thing).&lt;/p&gt;
+
+&lt;p&gt;Its modularity has been one of the main points to actually want to spend my &lt;strong&gt;spare time&lt;/strong&gt; hacking with it in front of any other one which isn&amp;rsquo;t pure modular.&lt;/p&gt;
+
+&lt;h2 id=&#34;how-to-start:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;How to Start&lt;/h2&gt;
+
+&lt;p&gt;&lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; doesn&amp;rsquo;t have a shiny website, a thorough documentation or bunch of people messing around with it, so you have to start in the &lt;strong&gt;&lt;em&gt;hard way&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;There&amp;rsquo;re &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury/tree/master/examples/&#34; rel=&#34;nofollow&#34;&gt;several examples in the same repository&lt;/a&gt;, however no tons of documentation, so you basically must read the code.&lt;/p&gt;
+
+&lt;p&gt;I think that the best way to start, it&amp;rsquo;s reading the simple easiest implemented examples, which are only a few lines of code, so they&amp;rsquo;re not that hard to having a overall understanding how it works.&lt;/p&gt;
+
+&lt;p&gt;After that or at the same time, you can check some of the &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury/tree/master/docs&#34; rel=&#34;nofollow&#34;&gt;docs&lt;/a&gt;, not all of them, because there&amp;rsquo;re some which are advance topics that you shouldn&amp;rsquo;t use for your first step into; however if you have time, having a quick read doesn&amp;rsquo;t hurt; in my case so far I skipped the docs in &amp;ldquo;modules&amp;rdquo; subdirectory.&lt;/p&gt;
+
+&lt;p&gt;After that, you should start to implement a tiny application, probably bigger that a &amp;ldquo;Hello World&amp;rdquo;, integrating some functionality as pull some data from a server and displaying in a table or a structured HTML than inside of a DOM element as &lt;code&gt;p&lt;/code&gt;, to get the chance to taste the Virtual-DOM and probably &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Matt-Esch/virtual-dom#example---creating-a-vtree-using-virtual-hyperscript&#34; rel=&#34;nofollow&#34;&gt;Virtual-Hyperscript&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;During your implementation, you&amp;rsquo;ll probably check the code of the examples and the docs several times; you may also try some changes that you may feel that it&amp;rsquo;d be nice if they work because they allow to organise and structure better your code, however if something stop to work, you&amp;rsquo;ll have to spend time finding what is wrong and why actually it doesn&amp;rsquo;t work, nonetheless I believe that it&amp;rsquo;s the best way to learn because you&amp;rsquo;ll discover things that they don&amp;rsquo;t work and if you&amp;rsquo;re curious, as I&amp;rsquo;m, you&amp;rsquo;ll try to understand why they don&amp;rsquo;t work than solving it with no clue why it&amp;rsquo;s started to work again.&lt;/p&gt;
+
+&lt;h2 id=&#34;advantages-of-its-modularity:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;Advantages of its Modularity&lt;/h2&gt;
+
+&lt;p&gt;As I&amp;rsquo;ve mentioned above, Mercury isn&amp;rsquo;t a popular framework as many other are, you probably think to skipped due the lack of tons of documentation, shiny website and all this kind of stuff.&lt;/p&gt;
+
+&lt;p&gt;I think that even though all those stuff are important, I feel that I haven&amp;rsquo;t needed them, I could jump into it and used only with the examples and docs and checking its code and submodules, which are exactly where the meat is, to have an overall understanding in how to use it and its internals.&lt;/p&gt;
+
+&lt;p&gt;Being at that level of modularity allows to browser the code and find very easily each module which does actually one thing, so you can dig more on each modules when you feel that you want to know more about the internals, without getting lost as I&amp;rsquo;ve felt several times with big code bases, which are not composed by several modules and in case that they&amp;rsquo;re, the most of the times, they don&amp;rsquo;t reach this level due that the modules have been build for the purpose of the code base hence they lose the concept of module when they aren&amp;rsquo;t thought to be used out of the main code base.&lt;/p&gt;
+
+&lt;h2 id=&#34;my-footprint:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;My Footprint&lt;/h2&gt;
+
+&lt;p&gt;As I&amp;rsquo;ve mentioned before, the implementation that I&amp;rsquo;ve done with &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34;&gt;Mercury&lt;/a&gt; was for a topic of a hackathon, because I always want to have some reward of my time, in this case at the end, only, has been the learning one.&lt;/p&gt;
+
+&lt;p&gt;The application isn&amp;rsquo;t fancy at all, in terms of any thing, I had to do all the implementation, server, a little bit the styling and the frontend in Mercury, so I had to learn it as well.&lt;/p&gt;
+
+&lt;p&gt;I got the first issues that everybody may have which are how you organise your code and make it more modular to avoid a massive large scripts, I did some splitting and no a lot of more for two reasons:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;We had to rush up to to be able to present.&lt;/li&gt;
+&lt;li&gt;At that moment, I didn&amp;rsquo;t know how to split more, however after the hackathon has finished, I had a second read to the docs and I had a better understanding of some parts which in my first read I couldn&amp;rsquo;t get them, hence now I&amp;rsquo;ve got them and I&amp;rsquo;ve known how to do it ;D&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;If you&amp;rsquo;re interested you can see the code in this &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/ifraixedes/hack-destination-london-2015&#34; rel=&#34;nofollow&#34;&gt;repository&lt;/a&gt;, however, bear in mind that the examples in &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; repository may be more useful.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:a771e8a24eee240aa67739db0ed27f5c&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Modularity is something very important for me at the moment to choose a framework, because it allow me to understand the internals in less time. I believe that knowing the internals is king to solve future problems, do crazy stuff or increase the performance when you need it.&lt;/p&gt;
+
+&lt;p&gt;Now, I totally agree with the sentence which appear in the README, &lt;strong&gt;&lt;em&gt;&amp;ldquo;A truly modular frontend framework&amp;rdquo;&lt;/em&gt;&lt;/strong&gt;, &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt; is about that, it isn&amp;rsquo;t bullshit marketing.&lt;/p&gt;
+
+&lt;p&gt;Getting into it, allowed me to achieve my aim, which was having a better understanding about Virtual-DOM strategy and how it works than using a framework to build something and just only learn the public interface of the framework, because I don&amp;rsquo;t see that much value on it if I&amp;rsquo;m not going to use for several projects, which isn&amp;rsquo;t too bad if they have another aim, as making money, fulfill a business requirement and so on.&lt;/p&gt;
+
+&lt;p&gt;Hope that you find this post more interesting than another massive post about something related with one of the currently famous framework, being good or bad.&lt;/p&gt;
+
+&lt;p&gt;Have you tinkered with &lt;a target=&#34;_blank&#34; href=&#34;https://github.com/Raynos/mercury&#34; rel=&#34;nofollow&#34;&gt;Mercury&lt;/a&gt;? please share you comments if you have.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;p class=&#34;definition&#34;&gt;&lt;sup&gt;1&lt;/sup&gt; I may have realised very late of React, it may have been there for a while, but at least people surrounding myself in the virtual/physical world weren&amp;rsquo;t talking about it as they&amp;rsquo;re talking at this time.&lt;p&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Private Members on ES6 Classes with Proxies</title>
+      <link>http://blog.fraixed.es/post/private-members-es6-classes-with-proxies</link>
+      <pubDate>Wed, 06 May 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/private-members-es6-classes-with-proxies</guid>
+      <description>
+
+&lt;p&gt;ES6 is getting close to its official release, the &lt;a href=&#34;http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts&#34; target=&#34;_blank&#34;&gt;last Revision, no. 38, is the last Final Draft&lt;/a&gt;, however &lt;a href=&#34;https://kangax.github.io/compat-table/es6/&#34; target=&#34;_blank&#34;&gt;Browsers, Runtimes and Compilers/Polyfills&lt;/a&gt; haven&amp;rsquo;t implemented all the features that the specification defines.&lt;/p&gt;
+
+&lt;p&gt;In this post I&amp;rsquo;m going to go through over a hacky idea about to create objects with &lt;strong&gt;ES6 Classes with private members without using closures as in ES5&lt;/strong&gt;, which is possible as you probably know, nonetheless that topic is very well explained in articles, blog posts, etc., so no point to write another blog post to talk about it, again.&lt;/p&gt;
+
+&lt;h2 id=&#34;es6-classes:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;ES6 Classes&lt;/h2&gt;
+
+&lt;p&gt;As you may already know, ES6 brings the concept of Object Oriented Programming Classes to Javascript.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;ES6 Classes&lt;/strong&gt; allows to create classes without having to specify functions and its prototype property; the syntax and everything that you need to know can be found in a very thorough post named &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html&#34; target=&#34;_blank&#34;&gt;&amp;ldquo;Classes in ECMAScript 6 (final semantics)&amp;rdquo;&lt;/a&gt; that &lt;a href=&#34;http://rauschma.de/&#34; target=&#34;_blank&#34;&gt;Dr. Axel Rauschmayer&lt;/a&gt; has written and where he also concluded &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html#does_javascript_need_classes%3F&#34; target=&#34;_blank&#34;&gt;a few clear benefits about ES6 Classes&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;ve already read his blog post or you&amp;rsquo;ve also known from any other source, ES6 classes doesn&amp;rsquo;t have property scope as many, if not all, &lt;a href=&#34;http://en.wikipedia.org/wiki/Object-oriented_programming&#34; target=&#34;_blank&#34;&gt;Object Oriented Programming&lt;/a&gt; languages have, then you still need the &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures#Emulating_private_methods_with_closures&#34; target=&#34;_blank&#34;&gt;closures workaround to define private properties in objects&lt;/a&gt;, at least if you don&amp;rsquo;t use any of the working approaches that I show bellow.&lt;/p&gt;
+
+&lt;h2 id=&#34;es6-proxies:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;ES6 Proxies&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;Proxies is a ES6 mechanism that allows to register traps over an object&lt;/strong&gt;, so they allows to specify custom behavior for fundamental object operations (assignment, iteration, property lookup, etc).&lt;/p&gt;
+
+&lt;p&gt;Proxies is a less mature ES6 feature than classes, at least for the environment that I&amp;rsquo;ve used in this post which you&amp;rsquo;ll read below.&lt;/p&gt;
+
+&lt;p&gt;Because you can find several resources to figure out what ES6 proxies allow to do, I&amp;rsquo;m not going to tell their details here; if you&amp;rsquo;re lazy to look for them, &lt;a href=&#34;http://rauschma.de/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Axel&lt;/a&gt; has also written a &lt;a href=&#34;http://www.2ality.com/2014/12/es6-proxies.html&#34; target=&#34;_blank&#34;&gt;very thorough post about them&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-hack:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The hack&lt;/h2&gt;
+
+&lt;p&gt;After the brief introduction about the two ES6 features that I&amp;rsquo;ve used to create a hacky idea to define private members in objects, I&amp;rsquo;m going to walk through what I&amp;rsquo;ve used to get it works and the different approaches that I&amp;rsquo;ve tried until I found the one that I felt quite satisfied.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-used-environment:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The used environment&lt;/h3&gt;
+
+&lt;p&gt;My first thought was to use &lt;a href=&#34;http://babeljs.io/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Babel&lt;/a&gt; to be able to transpile ES6 to ES5 and be able to use this hack everywhere, however it couldn&amp;rsquo;t be because, according to Babel, &lt;a href=&#34;http://babeljs.io/docs/learn-es6/#proxies&#34; target=&#34;_blank&#34;&gt;no way to transpile ES6 proxies to ES5&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;So my alternative has been to use &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;iojs&lt;/a&gt; with &lt;a href=&#34;https://www.npmjs.com/package/harmony-reflect&#34; target=&#34;_blank&#34;&gt;harmony-reflect&lt;/a&gt; module.&lt;/p&gt;
+
+&lt;p&gt;Therefore if you want to run any piece of code of this post, then install &lt;code&gt;iojs-1.8.1&lt;/code&gt; (version which I&amp;rsquo;ve used so I really know for sure that it works), install harmony-reflect &lt;a href=&#34;https://www.npmjs.com&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;npm&lt;/a&gt; module and execute iojs with &lt;code&gt;--harmony&lt;/code&gt; and &lt;code&gt;--harmony_proxies&lt;/code&gt; flags (&lt;code&gt;iojs --harmony --harmony_proxies the-script.js&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h3 id=&#34;class-declaration:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Class declaration&lt;/h3&gt;
+
+&lt;p&gt;I&amp;rsquo;ve created a very simple class to show the proof of concept of this hack, nothing clever here, however it&amp;rsquo;s useful to get a better understanding wha I&amp;rsquo;ll show you below.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;use strict&amp;#39;&lt;/span&gt;;
+
+require(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;harmony-reflect&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Usual class&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;class&lt;/span&gt; Person {
+  constructor(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  get name() {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name;
+  }
+  set name(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  greeting(person) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;hi ${person.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;;
+  }
+}
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Create an object from an usual class&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Person(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a Person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPerson.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #888888&#34;&gt;// _name property is accessible because JS classes doesn&amp;#39;t have access scope&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a Person instance ${ivanPerson._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+ 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Very clear what I&amp;rsquo;ve coded, moreover with the comments I don&amp;rsquo;t think that it needs any clarification; note the &lt;code&gt;require(&#39;harmony-reflect&#39;)&lt;/code&gt; import, otherwise the following lines of code won&amp;rsquo;t work.&lt;/p&gt;
+
+&lt;h3 id=&#34;the-possible-approaches:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;The possible approaches&lt;/h3&gt;
+
+&lt;p&gt;Before going to see some of the approaches that I&amp;rsquo;ve come up, you must know that I&amp;rsquo;ve chosen as a convention that any property (values or method) whose name starts with &lt;code&gt;_&lt;/code&gt; is private, even though my proof of concept only show the access to a property value with a defined getter, it also works for properties values without getters and property methods.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-the-base-class-not-working-solution:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify the Base Class (not working solution)&lt;/h4&gt;
+
+&lt;p&gt;I already knew that it wasn&amp;rsquo;t probably going to work, because if you know a little bit how Classes works or you inspect a very slightly them, you&amp;rsquo;ll see that &lt;strong&gt;a ES6 Class it&amp;rsquo;s an object with Function prototype&lt;/strong&gt;, besides, Proxies only trap the calls to the target object, so wrapping a Class with a Proxy will protect the Class, no the instances created from them; however I gave a try because never hurt and you make sure that your thoughts are right.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// Let&amp;#39;s try to protect class object&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ProtectedPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(Person, {
+  get(target, name) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;calling getter in Person wrapped by a proxy&amp;#39;&lt;/span&gt;);
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+    }
+  }
+});
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Let&amp;#39;s create an instance of the class that we wrapped with a proxy&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanProtectedPerson &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; ProtectedPerson(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt; person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanProtectedPerson.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #888888&#34;&gt;// _name still accessible due proxy wrapped class Person;&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// a class is a Function with prototype object, proxy trap calls to the&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// class itself hence the target is the class, not its instances&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt; person instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanProtectedPerson._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Thoughts confirmed, &lt;code&gt;_name&lt;/code&gt; on any instance of &lt;code&gt;Person&lt;/code&gt; still accessible; what the Proxy traps, are the properties of &lt;code&gt;Person&lt;/code&gt; class which is a instance of &lt;code&gt;Function&lt;/code&gt;; you can test it yourself if you don&amp;rsquo;t believe me.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-the-class-instances:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify the Class instances&lt;/h4&gt;
+
+&lt;p&gt;The obvious solution is to define a proxy for each &lt;code&gt;Person&lt;/code&gt; instance, and it works as a charm, let&amp;rsquo;s see the example:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// let&amp;#39;s protect a base class instance&lt;/span&gt;
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPersonProtected &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(ivanPerson, {
+  get(target, name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+    }
+  }
+})
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a person instance which has been &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtected.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;try&lt;/span&gt; {
+  &lt;span style=&#34;color: #888888&#34;&gt;// _name property call gets trapped by the proxy&lt;/span&gt;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a person instance which has been &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;protected&lt;/span&gt;&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtected._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+} &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;catch&lt;/span&gt; (e) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (e.message &lt;span style=&#34;color: #333333&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Proxy did its job!!&amp;#39;&lt;/span&gt;);
+  } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; e;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;The solution works and it&amp;rsquo;s great, however it&amp;rsquo;s repetitive having to create a proxy each time that an instance of &lt;code&gt;Person&lt;/code&gt; is created; it&amp;rsquo;s true that we can create a function which wrap the two operations and it&amp;rsquo;ll solve the problem, however I would like to use Classes to create instances as expected, so using &lt;code&gt;new&lt;/code&gt; operator, for that reason I squashed my brain a little bit more and I&amp;rsquo;ve found the next solution which works and I guess that it&amp;rsquo;s the most interesting part of this post.&lt;/p&gt;
+
+&lt;h4 id=&#34;proxify-this-instances:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Proxify &lt;code&gt;this&lt;/code&gt; instances&lt;/h4&gt;
+
+&lt;p&gt;The idea has been based in the concept of how Javascript&amp;rsquo;s constructors (i.e. Functions) behave.&lt;/p&gt;
+
+&lt;p&gt;Javascript&amp;rsquo;s constructors  return &lt;code&gt;this&lt;/code&gt; object if they don&amp;rsquo;t have a return statement in its body (usual and expected the most of the times) otherwise they return the value of the &lt;code&gt;return&lt;/code&gt; statement.&lt;/p&gt;
+
+&lt;p&gt;In ES6, Classes are Functions and constructors are allowed to have return statements and their behaviour, is totally the same than in ES5, according Axel, they have the same behaviour for &lt;a href=&#34;http://www.2ality.com/2015/02/es6-classes-final.html#safety_checks&#34;&gt;backwards compatibility&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Bearing in mind that concept, we can do the following:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// However it&amp;#39;s painful, having to wrap in a proxy every single instance of a class&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// is a repeatable tiring task, so let&amp;#39;s try to creata a class that protect its&lt;/span&gt;
+&lt;span style=&#34;color: #888888&#34;&gt;// object instances&lt;/span&gt;
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;class&lt;/span&gt; PersonProtected {
+  constructor(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+    &lt;span style=&#34;color: #888888&#34;&gt;// In es6 it also works as in es5: remember es6 class is nothing more than a Function&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// and `new` call the function defined by `constructor`;&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// in es5 works because when you call a `new` on a function the value retuned is the&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// value returned inside the function if it&amp;#39;s an object otherwise returns `this`;&lt;/span&gt;
+    &lt;span style=&#34;color: #888888&#34;&gt;// in es6 remains the same for backward compatibility&lt;/span&gt;
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; Proxy(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, {
+      get(target, name) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (name.startsWith(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;_&amp;#39;&lt;/span&gt;)) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;);
+        } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; target[name];
+        }
+      }
+    });
+  }
+  get name() {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name;
+  }
+  set name(name) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;._name &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; name;
+  }
+  greeting(person) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;hi ${person.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;;
+  }
+}
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;let&lt;/span&gt; ivanPersonProtectedInstance &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; PersonProtected(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;);
+
+&lt;span style=&#34;color: #888888&#34;&gt;// Call the getter of _name&lt;/span&gt;
+console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;name getter from a PersonProtected instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtectedInstance.name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;try&lt;/span&gt; {
+  &lt;span style=&#34;color: #888888&#34;&gt;// _name property call gets trapped by the proxy&lt;/span&gt;
+  console.log(&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;_name property from a PersonProtected instance&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; ${ivanPersonProtectedInstance._name}&lt;span style=&#34;color: #FF0000; background-color: #FFAAAA&#34;&gt;`&lt;/span&gt;);
+} &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;catch&lt;/span&gt; (e) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (e.message &lt;span style=&#34;color: #333333&#34;&gt;===&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Accessing to a private property is not allowed&amp;#39;&lt;/span&gt;) {
+    console.log(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Class which proxy `this` did its job!!&amp;#39;&lt;/span&gt;);
+  } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; e;
+  }
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;As you can see in the previous snippet of code, it&amp;rsquo;s as simple as moving the Proxy call inside the constructor and pass &lt;code&gt;this&lt;/code&gt; as a target and returns the returned object by the Proxy call, so it takes advantage of the strange behaviour of Javascript&amp;rsquo;s constructors which has been kept in ES6 Classes.&lt;/p&gt;
+
+&lt;p&gt;It&amp;rsquo;s clean, works and we can keep the Class instantiation syntax as it is, with the ability to define private properties just starting their names with &lt;code&gt;_&lt;/code&gt;, convention that I&amp;rsquo;ve chosen.&lt;/p&gt;
+
+&lt;h3 id=&#34;conclusion:46bc70ab39c75e39f429cfcb3c385c82&#34;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;ES6 Classes don&amp;rsquo;t have any mechanism to define private properties, however with the help of Proxies and the backwards compatibility kept with ES5 we can create a clean mechanism based in naming conventions to define private objects&amp;rsquo; properties.&lt;/p&gt;
+
+&lt;p&gt;Remind you that it&amp;rsquo;s a hack, Proxies aren&amp;rsquo;t even available in iojs, besides I have no clue the performance about this approach, so it isn&amp;rsquo;t for production if you lover yourself.&lt;/p&gt;
+
+&lt;p&gt;All the code of the post, just in case that you&amp;rsquo;d like to check it out, is under this &lt;a href=&#34;https://gist.github.com/ifraixedes/e9311748c961f1dbb93e&#34; target=&#34;_blank&#34;&gt;gist&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Do you have any other idea to get something similar with the features that ES6 brings? if you have, please share them in the comments.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #11</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150501/</link>
+      <pubDate>Fri, 01 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150501/</guid>
+      <description>&lt;p&gt;This week I’m coming back with a 5 tech tweets, moreover I’ve realised that &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; got my heart.&lt;/p&gt;
+
+&lt;p&gt;Amazing blog post about how &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; makes the communication with C easy besides leveraging with its ownership system with zero-cost abstraction. It’s worthwhile to read it to see how it can also helps to create C bindings for other languages as &lt;a href=&#34;https://www.python.org/&#34;&gt;Python&lt;/a&gt;, &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt; and &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/About_JavaScript&#34;&gt;Javascript&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-cards=&#34;hidden&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Rust once, run anywhere: &lt;a href=&#34;http://t.co/AXF2uIFNav&#34;&gt;http://t.co/AXF2uIFNav&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/591653556219809794&#34;&gt;April 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Through this tweet, I found this awesome &lt;a href=&#34;https://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt; module, &lt;a href=&#34;https://github.com/robconery/massive-js&#34;&gt;massive-js&lt;/a&gt;, which allows to deal with &lt;a href=&#34;http://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; in a nice way&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Massive 2.0: A Postgres-Centric Data Access Tool for Node.js - &lt;a href=&#34;https://t.co/6TEBVxhBxS&#34;&gt;https://t.co/6TEBVxhBxS&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/591714326962118657&#34;&gt;April 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice video to watch another opinion about functional programming&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Deconstructing Functional Programming &lt;a href=&#34;http://t.co/nO9ITGfQat&#34;&gt;http://t.co/nO9ITGfQat&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dave Cheney (@davecheney) &lt;a href=&#34;https://twitter.com/davecheney/status/592673793581129733&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice post about writing some code in &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt; using the tooling.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&amp;quot;Rust is improving on many traditional systems languages by encouraging a good package ecosystem from the beginning&amp;quot; &lt;a href=&#34;http://t.co/8S1OEsw7YQ&#34;&gt;http://t.co/8S1OEsw7YQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/592706762861580288&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one is this awesome research paper which tells the implementation of a Unix Kernel with &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt;; they haven’t got the same performance than C, but they are overall happy with the work.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Reenix: Implementing a Unix-Like Operating System in Rust &lt;a href=&#34;http://t.co/ypLvs5aveq&#34;&gt;http://t.co/ypLvs5aveq&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/592743898692321280&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a good weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #8</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150410/</link>
+      <pubDate>Fri, 10 Apr 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150410/</guid>
+      <description>&lt;p&gt;Another short week is almost done and here my 5 favourite tweets of the last 7 days which appeared in my timeline.&lt;/p&gt;
+
+&lt;p&gt;The moment arrived, after several years under development, &lt;strong&gt;&lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; beta&lt;/strong&gt; has been released and the first stable release has been scheduled for 15th of May, so AWESOME&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;Rust 1.0-beta is here!! &lt;a href=&#34;http://t.co/8HTh1jrL69&#34;&gt;http://t.co/8HTh1jrL69&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/584040427508072449&#34;&gt;April 3, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Very nice web resource to see what ES6 brings and how these new features differ from its predecessor ES5&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;nice hands-on resource for learning ES6: &lt;a href=&#34;http://t.co/VB5WcTT4LR&#34;&gt;http://t.co/VB5WcTT4LR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/584403090259906560&#34;&gt;April 4, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve go quite old great blog post about &lt;strong&gt;Open Source&lt;/strong&gt; and how delaying to make it open affects, at least when it&amp;rsquo;s created by a governmental organisation&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;another great post by &lt;a href=&#34;https://twitter.com/kfogel&#34;&gt;@kfogel&lt;/a&gt;: Be Open [Source] From Day One &lt;a href=&#34;http://t.co/8hTihlTZNo&#34;&gt;http://t.co/8hTihlTZNo&lt;/a&gt;&lt;/p&gt;&amp;mdash; Aidan Feldman (@aidanfeldman) &lt;a href=&#34;https://twitter.com/aidanfeldman/status/585831168643170304&#34;&gt;April 8, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A friend of mine tweeted about &lt;strong&gt;[Ghost]&lt;/strong&gt;(&lt;a href=&#34;https://ghost.org/&#34;&gt;https://ghost.org/&lt;/a&gt;) blog post where they&amp;rsquo;ve made public all their revenues metrics, I&amp;rsquo;m very thrilled how some companies, as &lt;strong&gt;Buffer&lt;/strong&gt; &lt;a href=&#34;https://open.bufferapp.com/transparent-pricing-buffer/&#34;&gt;&lt;sup&gt;1&lt;sup&gt;&lt;/a&gt; &lt;a href=&#34;https://open.bufferapp.com/introducing-open-salaries-at-buffer-including-our-transparent-formula-and-all-individual-salaries/&#34;&gt;&lt;sup&gt;2&lt;sup&gt;&lt;/a&gt;, and &lt;strong&gt;Baremetrics&lt;/strong&gt; &lt;a href=&#34;https://baremetrics.com/blog/why-we-spent-250000&#34;&gt;&lt;sup&gt;1&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;https://baremetrics.com/blog/bootstrapped-to-funded&#34;&gt;&lt;sup&gt;2&lt;/sup&gt;&lt;/a&gt; &lt;a href=&#34;https://baremetrics.com/blog/stripe-500000-baremetrics&#34;&gt;&lt;sup&gt;3&lt;/sup&gt;&lt;/a&gt;, are moving toward the transparency&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;$411,000 in ARR and &lt;a href=&#34;https://twitter.com/TryGhost&#34;&gt;@TryGhost&lt;/a&gt; just made all of their revenue metrics completely public: &lt;a href=&#34;http://t.co/SGH5CFmeQE&#34;&gt;http://t.co/SGH5CFmeQE&lt;/a&gt;&lt;/p&gt;&amp;mdash; BROLΛПDO (@orliesaurus) &lt;a href=&#34;https://twitter.com/orliesaurus/status/586157961346678784&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Javascript is moving to take over the stablished Java and .NET enterprise stacks, we&amp;rsquo;ll see what will happen&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34;&gt;&lt;p&gt;JavaScript will lead a massive shift in enterprise development &lt;a href=&#34;http://t.co/07XVzu9LgK&#34;&gt;http://t.co/07XVzu9LgK&lt;/a&gt;&lt;/p&gt;&amp;mdash; Paul Krill (@pjkrill) &lt;a href=&#34;https://twitter.com/pjkrill/status/586194173121794050&#34;&gt;April 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a great weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>JS Test with Mocha, Chai &amp; Sinon Driven by Example</title>
+      <link>http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example</link>
+      <pubDate>Mon, 06 Apr 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/js-test-mocha-chai-sinon-driven-by-example</guid>
+      <description>
+
+&lt;p&gt;I&amp;rsquo;ve decided to write this post after I&amp;rsquo;ve helped a friend of mine, &lt;a href=&#34;https://twitter.com/hyprstack&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;@hyprstack&lt;/a&gt;, to write a 100% coverage test in one of his implementations using &amp;ldquo;spies&amp;rdquo; and &amp;ldquo;stubs&amp;rdquo;.&lt;/p&gt;
+
+&lt;p&gt;As you probably well know &lt;strong&gt;&amp;ldquo;testing&amp;rdquo;&lt;/strong&gt; is one of the general software development &lt;strong&gt;best practices&lt;/strong&gt;, they&amp;rsquo;re highly recommended for any piece of code that has been create beyond a hack and whenever you&amp;rsquo;re a little bit worry the consequences that your code can produce if it doesn&amp;rsquo;t do what you expect.&lt;/p&gt;
+
+&lt;p&gt;Anyway, my friend was doing an implementation of AWS handler for &lt;a href=&#34;http://aws.amazon.com/lambda/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;AWS Lambda&lt;/a&gt; which basically is triggered when a file it&amp;rsquo;s uploaded to S3. The handler (function) has to download the file (if it has a supported file image extension), resize the image file in several defined sizes and upload those new files to S3.&lt;/p&gt;
+
+&lt;p&gt;It may not seem quite complicated, however the most of the operations are performed by third party libraries (&lt;a href=&#34;https://npmjs.org&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;npm modules&lt;/a&gt;), hence its test must be to &amp;ldquo;stub&amp;rdquo; no to rely on S3 as external service and avoid to mess around image files to simulate the resizing, therefore &lt;a href=&#34;https://github.com/aheckmann/gm&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gm (GraphicsMagick &amp;amp; ImageMagick) node module&lt;/a&gt; must be stubbed as well.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;You can refer to this &lt;a href=&#34;http://stackoverflow.com/questions/28881483/nodejs-testing-aws-with-mocha/28915395#28915395&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Stack Overflow question&lt;/a&gt; for more details&lt;/strong&gt; about my friends&amp;rsquo; doubt.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-execution-environment:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;The execution environment&lt;/h2&gt;
+
+&lt;p&gt;AWS Lambda is &lt;strong&gt;naturally iojs/NodeJS asynchronous pattern&lt;/strong&gt;, basically everything here run in iojs/NodeJS.&lt;/p&gt;
+
+&lt;p&gt;As you may know the asynchronous pattern isn&amp;rsquo;t easy to fully understand when you&amp;rsquo;re starting with it, or at least, reaching the point where combining asynchronous callbacks to make it works together are not something that you beat in one fell swoop in the first days, and if you add an extra bit of abstraction by a workflow library, the things can be easily messed up, as you can see as example in that Stack Overflow question; however nothing to worry, I made similar mistakes when I was starting.&lt;/p&gt;
+
+&lt;p&gt;This is one point in favour to be more interested in testing your code as my friend is.&lt;/p&gt;
+
+&lt;h2 id=&#34;testing-with-mocha-chai-and-sinon:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;Testing with Mocha, Chai and Sinon&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://mochajs.org/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;Mocha&lt;/strong&gt;&lt;/a&gt; as test framework running, &lt;a href=&#34;http://chaijs.com/&#34; target=&#34;_blank&#34;&gt;&lt;strong&gt;Chai&lt;/strong&gt; as assertion library and &lt;a href=&#34;http://sinonjs.org/&#34; target=&#34;_blank&#34;&gt;Sinon&lt;/a&gt; as test &amp;ldquo;spies&amp;rdquo;, &amp;ldquo;stubs&amp;rdquo; and &amp;ldquo;mocks&amp;rdquo; are a &lt;strong&gt;good combination to mix together&lt;/strong&gt; if you need all those things.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve used a lot Mocha and Chai, but Sinon, just a bit, due the most of things that I&amp;rsquo;ve been developing haven&amp;rsquo;t need to stub a third party dependency to bypass them for similar reasons that I mentioned in the introduction of this post.&lt;/p&gt;
+
+&lt;p&gt;Stubs are useful, but they&amp;rsquo;re not the easiest thing to assimilate at the first time that you use or read the documentation; again they can be easy to understand, but as the most the things, more the difficult when you have to use properly in a real scenario.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-implementation:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;The implementation&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;m not going to mention what the implementation does, I think that it&amp;rsquo;s easier to take a look to a right implementation that I&amp;rsquo;ve created in this &lt;a href=&#34;https://gist.github.com/ifraixedes/3330ce0edf9286234b04&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt; in case that you&amp;rsquo;re more interested and have better understanding about the following part of the post, hence I just leave here, the pice of code that it can be some more difficult because the issue was still there with the first Stack Overflow reply&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;async.waterfall([
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; download(next) {
+      s3.getObject({
+        Bucket&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; s3Bucket,
+        Key&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; s3Key
+      }, next);
+    },
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; transform(response, next) {
+      async.map(sizesConfigs, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (sizeConfig, mapNext) {
+        gm(response.Body, s3Key)
+        .resize(sizeConfig.width)
+        .toBuffer(imageType, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (err, buffer) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+            mapNext(err);
+            &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt;;
+          }
+
+          s3.putObject({
+            Bucket&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; s3Bucket,
+            Key&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;dst/&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; sizeConfig.destinationPath &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; s3Key,
+            Body&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; buffer,
+            ContentType&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;image/&amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; imageType
+          }, mapNext)
+        });
+      }, next);
+    }
+  ], &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (err) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (err) {
+      console.error(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Error processing image, details %s&amp;#39;&lt;/span&gt;, err.message);
+      context.done(err);
+    } &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;else&lt;/span&gt; {
+      context.done(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Successfully resized images bucket: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; s3Bucket &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; / key: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; s3Key);
+    }
+  });
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The first implementation and the second one provided in the first Stack Overflow reply, messed up with the &lt;a href=&#34;https://github.com/caolan/async#waterfall&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;async.waterfall&lt;/a&gt;; and this uses, as you can see, inside one of the waterfall functions &lt;a href=&#34;https://github.com/caolan/async#map&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;async.map&lt;/a&gt;; for a year an half ago, I&amp;rsquo;m not using async that much, I use &lt;a href=&#34;http://en.wikipedia.org/wiki/Futures_and_promises&#34;&gt;promises&lt;/a&gt;, however I&amp;rsquo;ve tried to introduce the less changes as possible to make it works and clean up a little bit to make the implementation simpler to ease its readability.&lt;/p&gt;
+
+&lt;p&gt;By the way, my friend did another implementation in my first feed back and it solved the issue, however he was confused due the back and forth feedback, and he did another implementation without using async and using in his own, which I think that it&amp;rsquo;s good to learn and understand how async works internally, but the implementation looks neater with &lt;code&gt;async&lt;/code&gt; beyond to be closer to the original one.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-test:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;The test&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve decided to implement the test from scratch, it was not ideal for me to take the test that he and the Stack Overflow responser did and refactor to aim the 100% coverage.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m not going to expose here the test, you can see it, in the &lt;a href=&#34;https://gist.github.com/ifraixedes/3330ce0edf9286234b04&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;; I&amp;rsquo;m going to mention what I&amp;rsquo;ve learn about Sinon when you have to use for several third party dependencies, together with &lt;a href=&#34;https://github.com/thlorenz/proxyquire&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;proxyquire&lt;/a&gt; which I had never used before and it&amp;rsquo;s good not to have to expose or inject third party modules in your modules and having the chance of still using them as usual when you want to stub them.&lt;/p&gt;
+
+&lt;p&gt;Whenever you are using this &amp;ldquo;testing stack&amp;rdquo; (Mocha, Chai and Sinon), &lt;strong&gt;&lt;a href=&#34;https://github.com/domenic/sinon-chai&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;sinon-chai&lt;/a&gt; is king&lt;/strong&gt;, it simplifies and make the test assertions more readable when obviously you use both; my friend was already using it, so I haven&amp;rsquo;t introduced it to the new test, but I&amp;rsquo;ve though that it&amp;rsquo;s a good thing to mention.&lt;/p&gt;
+
+&lt;p&gt;If you read the test, you&amp;rsquo;ll see that there&amp;rsquo;re several stubs (and/or spies) that you must use to be able to test the handler. The tests cases which involve to test all the execution workflow require to test the calls (passsed parameters) and define at callback call for each; they drove me mad at the beginning and in some point I decided to extract the &lt;code&gt;transform&lt;/code&gt; function in the &lt;code&gt;asyn.waterfall&lt;/code&gt; chain to an individual script (a.k.a node module) to be able to create just only one &amp;ldquo;stub&amp;rdquo; for the part with the &lt;code&gt;proxyquire&lt;/code&gt; help and write a second test to test only the &lt;code&gt;transform&lt;/code&gt; module; however I&amp;rsquo;ve failed, I couldn&amp;rsquo;t make &lt;code&gt;proxyquire&lt;/code&gt; work with it, it was still executing the original function than the &lt;code&gt;stub&lt;/code&gt; and at the end, I returned back to the current solution (all in one script/node module), however I&amp;rsquo;ve also thought the easy second solution, to add the &lt;code&gt;transform&lt;/code&gt; function to AWS handler module, however I didn&amp;rsquo;t like to have to export both in the same module and as you can see, I returned back to the first and current approach.&lt;/p&gt;
+
+&lt;p&gt;With the current approach, I&amp;rsquo;ve started to create all the &amp;ldquo;stubs&amp;rdquo; and as I thought at the beginning, it was going to be hard to add every stub with the parameters that each one should receive to test all the calls to &lt;code&gt;gm&lt;/code&gt; module, moreover that a simple mistake (typo, etc.) was not going not to call the chain, making difficult to discover from where the error comes (implementation or test stub and which one), moreover to have to put a lot of expectations in the wrong place &lt;code&gt;begin&lt;/code&gt; Mocha function.&lt;/p&gt;
+
+&lt;p&gt;Thinking for a moment, I&amp;rsquo;ve realised that using Sinon with Chai, it&amp;rsquo;s not needed, to have to define parameters, just defining the position of the callback parameters and the values pass in the &amp;ldquo;stubs&amp;rdquo; are enough and move to chai the assertions checking in the right place, &lt;code&gt;it&lt;/code&gt; Mocha function, so it&amp;rsquo;s more right, simpler and readable, hence better.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:e1912fe5925c5037293d0fc83ae1a114&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Test your code is king, sometime is harder than writing the implementation, in this case I&amp;rsquo;ve spent more time in the test than in the implementation, moreover if you want to have 100% coverage; having the coverage is good to know which parts of your implementations are tested and which ones not, so added whenever you can, as my friend did.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re starting with iojs/NodeJS, I think that the best way is to understand well the asynchronous programming pattern, is through the callback node convention, they&amp;rsquo;re the basis of node and even though the promise approach are increasing fast, I think that it&amp;rsquo;s worth to learn the basis first.&lt;/p&gt;
+
+&lt;p&gt;Testing your code when you&amp;rsquo;re learning it&amp;rsquo;s as good complement for your implementations, you&amp;rsquo;ll learn a lot, and moving forward with spies, stubs and mock it&amp;rsquo;s good to struggle, learn and when you beat them, you&amp;rsquo;ll be ready to use whenever you need then, furthermore to be more experienced.&lt;/p&gt;
+
+&lt;p&gt;If you&amp;rsquo;re learning node, don&amp;rsquo;t miss to check &lt;a href=&#34;http://nodeschool.io/&#34; target=&#34;_blank&#34;&gt;Node School&lt;/a&gt; in case that you haven&amp;rsquo;t heard about it.&lt;/p&gt;
+
+&lt;p&gt;I hope that this read has been useful for you.
+Best!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #4</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</link>
+      <pubDate>Fri, 13 Mar 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150313/</guid>
+      <description>&lt;p&gt;Another 7 days almost gone, hence there it goes the 5 tweets that I&amp;rsquo;ve selected from my Twitter timeline.&lt;/p&gt;
+
+&lt;p&gt;Thanks to &lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt; I&amp;rsquo;ve discovered &lt;a href=&#34;http://en.wikipedia.org/wiki/SSHFS&#34;&gt;SSHFS&lt;/a&gt;, a network file system on top of &lt;a href=&#34;http://en.wikipedia.org/wiki/Secure_Shell&#34;&gt;SSH&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;How To Mount Remote Directory With SSHFS on a Linux &lt;a href=&#34;http://t.co/O0G8MUsXoC&#34;&gt;http://t.co/O0G8MUsXoC&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenBSD?src=hash&#34;&gt;#OpenBSD&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/OpenSSH?src=hash&#34;&gt;#OpenSSH&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/CentOS?src=hash&#34;&gt;#CentOS&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Ubuntu?src=hash&#34;&gt;#Ubuntu&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/Debian?src=hash&#34;&gt;#Debian&lt;/a&gt; &lt;a href=&#34;http://t.co/t3YYVa5W5w&#34;&gt;pic.twitter.com/t3YYVa5W5w&lt;/a&gt;&lt;/p&gt;&amp;mdash; nixCraft  (@nixcraft) &lt;a href=&#34;https://twitter.com/nixcraft/status/574355319184359425&#34;&gt;March 7, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Congratulations to &lt;a href=&#34;https://iojs.org/&#34;&gt;io.js&lt;/a&gt; community to release another version v1.5.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;io.js bugfix release v1.5.1 out now @ &lt;a href=&#34;https://t.co/MKaxWFC8Bn&#34;&gt;https://t.co/MKaxWFC8Bn&lt;/a&gt; CHANGELOG @ &lt;a href=&#34;https://t.co/JwuzQ2hV3B&#34;&gt;https://t.co/JwuzQ2hV3B&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/575000532336668673&#34;&gt;March 9, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Mozilla released another post related with performance, this time related with SIMD.js (&lt;a href=&#34;http://en.wikipedia.org/wiki/SIMD&#34;&gt;Single Instruction Multiple Data&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;The State of SIMD.js Performance in Firefox: &lt;a href=&#34;https://t.co/I4aHZ9SSTv&#34;&gt;https://t.co/I4aHZ9SSTv&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/575352064122970112&#34;&gt;March 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice Open Source (MIT license) &lt;a href=&#34;http://golang.org/&#34;&gt;Golang&lt;/a&gt; library about arbritrary-precision fixed-point decimal library, which has been implemented and used in production for 6 months by &lt;a href=&#34;https://www.shopspring.com/&#34;&gt;Spring&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Decimal: An Arbitrary-Precision Fixed-point Decimal Library - &lt;a href=&#34;http://t.co/Cx3Dm8kPKa&#34;&gt;http://t.co/Cx3Dm8kPKa&lt;/a&gt;&lt;/p&gt;&amp;mdash; Go Newsletter (@golangweekly) &lt;a href=&#34;https://twitter.com/golangweekly/status/576050308616425472&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice post of a great engineering work by &lt;a href=&#34;https://engineering.linkedin.com/&#34;&gt;LinkedIn&lt;/a&gt; to reduce the traffic of their websites over HTTP 1.1&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;great writeup from LinkedIn on SDCH.. &amp;quot;average additional compression across our static content was about 24%&amp;quot; @ &lt;a href=&#34;http://t.co/Vm2XRPfWLc&#34;&gt;http://t.co/Vm2XRPfWLc&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/576078282384228352&#34;&gt;March 12, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Enjoy your weekend hacking around!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>My 5 favourite tweets of the week #1</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150220/</link>
+      <pubDate>Fri, 20 Feb 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150220/</guid>
+      <description>&lt;p&gt;Today, Friday, I&amp;rsquo;ve decided to start this &lt;strong&gt;serie of weekly posts&lt;/strong&gt; where I will publish my &lt;strong&gt;5 favourite tweets&lt;/strong&gt; that I&amp;rsquo;ll have got from my twitter timeline since Friday of previous week until Thursday of the current week.&lt;/p&gt;
+
+&lt;p&gt;You should find here &lt;strong&gt;every Friday, by 1pm&lt;/strong&gt; a post with those 5 tweets that I&amp;rsquo;ve selected, so to check it by Friday afternoon or in your geeky weekend to discover something new that you may have missed.&lt;/p&gt;
+
+&lt;p&gt;This week, I&amp;rsquo;ve selected&lt;/p&gt;
+
+&lt;p&gt;Something cool with &lt;a href=&#34;https://github.com/substack/watchify&#34;&gt;watchify&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;more experiments with &amp;quot;script injection&amp;quot; in Chrome, much faster with watchify &amp;#10;&lt;a href=&#34;https://t.co/6MUwWsNPRZ&#34;&gt;https://t.co/6MUwWsNPRZ&lt;/a&gt;&amp;#10;/ &lt;a href=&#34;https://twitter.com/substack&#34;&gt;@substack&lt;/a&gt; &lt;a href=&#34;https://twitter.com/dan_abramov&#34;&gt;@dan_abramov&lt;/a&gt;&lt;/p&gt;&amp;mdash; Matt DesLauriers (@mattdesl) &lt;a href=&#34;https://twitter.com/mattdesl/status/566790923884183552&#34;&gt;February 15, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;iojs is looking forward to adding HTTP2&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;With Chrome ditching SPDY and going full on HTTP2, io.js &lt;em&gt;may&lt;/em&gt; follow with core HTTP2 support, discussion here: &lt;a href=&#34;https://t.co/pVcyyQ1Vyw&#34;&gt;https://t.co/pVcyyQ1Vyw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rod Vagg.js (@rvagg) &lt;a href=&#34;https://twitter.com/rvagg/status/564973319942721537&#34;&gt;February 10, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A very good and deep technical post about the final semantics of ECMAScript 6 classes&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;Classes in ECMAScript 6: The Final Semantics - &lt;a href=&#34;http://t.co/56RQIkUYAN&#34;&gt;http://t.co/56RQIkUYAN&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/567665264469508096&#34;&gt;February 17, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Being aware about security stuff is never time wasted, then check those 10 immutable Laws of Security&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;10 immutable Laws of Security: &lt;a href=&#34;http://t.co/WDj66fXI9A&#34;&gt;http://t.co/WDj66fXI9A&lt;/a&gt; - great read, lots of hard won wisdom.&lt;/p&gt;&amp;mdash; Ilya Grigorik (@igrigorik) &lt;a href=&#34;https://twitter.com/igrigorik/status/568098163933868032&#34;&gt;February 18, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A very nice tool to analyse web logs, written in &lt;a href=&#34;http://golang.org/&#34;&gt;golang&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p&gt;GoAccess – Terminal-Based Visual Web Log Analyzer - &lt;a href=&#34;http://t.co/VnwgBT9pxP&#34;&gt;http://t.co/VnwgBT9pxP&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/golang?src=hash&#34;&gt;#golang&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/sysadmin?src=hash&#34;&gt;#sysadmin&lt;/a&gt; (cc &lt;a href=&#34;https://twitter.com/nixcraft&#34;&gt;@nixcraft&lt;/a&gt;)&lt;/p&gt;&amp;mdash; Nabil ZADVAT (@NabilZADVAT) &lt;a href=&#34;https://twitter.com/NabilZADVAT/status/568107738951233537&#34;&gt;February 18, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;I hope one of them was in your interests.&lt;/p&gt;
+
+&lt;p&gt;Have a nice weekend.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>3 Little Things in NodeJS which Help When You Have to Refactor</title>
+      <link>http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor</link>
+      <pubDate>Mon, 02 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/3-little-things-nodejs-help-to-refactor</guid>
+      <description>
+
+&lt;p&gt;We can say that in software development the concept of &lt;a href=&#34;http://martinfowler.com/books/refactoring.html&#34; target=&#34;_blank&#34;&gt;refactoring&lt;/a&gt; is present all the time; it seems that is in its nature.&lt;/p&gt;
+
+&lt;p&gt;We refactor code for several purposes, having a list with all of them, can be tricky, however here there are some:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We are building a prototype and we iterate over it to add, remove or change features.&lt;/li&gt;
+&lt;li&gt;We must clean code which was created in some point in a rush or it was created in the prototype cycle.&lt;/li&gt;
+&lt;li&gt;We must fix a bug.&lt;/li&gt;
+&lt;li&gt;We must upgrade dependencies which have changed the exposed API.&lt;/li&gt;
+&lt;li&gt;We must fix a performance issue.&lt;/li&gt;
+&lt;li&gt;We&amp;rsquo;ve come up with a new way/idea to get a cleaner or optimised implementation.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In my case, we are doing code refactoring almost everyday, even though, in my case, when I&amp;rsquo;m working in a new feature over a existent code base, sometimes I find some existent part which may have a little refactoring, and then I do, or if I&amp;rsquo;m working in a totally new implementation, I usually start from a roughly idea, which I &lt;a href=&#34;http://www.extremeprogramming.org/rules/spike.html&#34; target=&#34;_blank&#34;&gt;create a spike&lt;/a&gt; and then I refactor iteratively.&lt;/p&gt;
+
+&lt;p&gt;In this post, I&amp;rsquo;m going to mention 3 little things that I&amp;rsquo;ve learnt of refactoring NodeJS code bases, personal and professional ones, therefore I&amp;rsquo;ve learnt some of them from my own mistakes.&lt;/p&gt;
+
+&lt;h2 id=&#34;extracting-options-object-parameter-at-the-beginning-of-the-function:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Extracting &lt;code&gt;options&lt;/code&gt; object parameter at the beginning of the function&lt;/h2&gt;
+
+&lt;p&gt;One of the common implementation pattern that I use a lot in NodeJS is creating scripts that expose a function which receives only one parameter, an options object, e.g.&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #888888&#34;&gt;// @param {Object} opts&lt;/span&gt;
+  module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (opts) {
+    &lt;span style=&#34;color: #888888&#34;&gt;// Do whatever&lt;/span&gt;
+
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+      tell&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; tell
+    };
+  };
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; tell(somebody, message) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Hey &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; somebody &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;, Ivan wants to tell you: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; message;
+  }
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This pattern help me to prototype implementations because I can add more functionalities which require some options without changing the expose signature of the function, nonetheless don&amp;rsquo;t take me how it has to be used everywhere or keep it as the pattern to use to expose any API.&lt;/p&gt;
+
+&lt;p&gt;Ok, the pattern is great and if the function only has a few lines it is easy to take it to use in another prototype which may reuse it, however if the implementation is larger in number of lines or complex, for example it performs asynchronous operations (if you use callbacks then I would add, to the function of the example, a second parameter to pass the callback) then, knowing what options the function requires is painful, if they are accessed any where in the function.&lt;/p&gt;
+
+&lt;p&gt;One solution for that is to add a block comment on top of the function declaration with all the options parameters required and optional, nonetheless it isn&amp;rsquo;t in my likes, because if you&amp;rsquo;re prototyping, it&amp;rsquo;ll require to keep update when one parameter is added, removed or swapped from required to optional or vice versa, therefore it is prone to be outdated, hence useless.&lt;/p&gt;
+
+&lt;p&gt;A second solution, which is in my preferences, is extracting the options parameters just at the beginning of the function, just after you make all the validations of the required options or having a function with that purpose, which returns an opts object with the required values if opts pass the needed validations; you may already know what I mean, nonetheless let&amp;rsquo;s see an example:&lt;/p&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #888888&#34;&gt;// @param {Object} opts&lt;/span&gt;
+module.exports &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (opts) {
+  &lt;span style=&#34;color: #888888&#34;&gt;// Having a helper function for the validations is&lt;/span&gt;
+  &lt;span style=&#34;color: #888888&#34;&gt;// worthwhile when there are several options to check&lt;/span&gt;
+  &lt;span style=&#34;color: #888888&#34;&gt;// values and/or types&lt;/span&gt;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #333333&#34;&gt;!&lt;/span&gt;opts) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;opts is required&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; greeting &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; opts.greeting &lt;span style=&#34;color: #333333&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Hey&amp;#39;&lt;/span&gt;;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; teller &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; opts.teller &lt;span style=&#34;color: #333333&#34;&gt;||&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Ivan&amp;#39;&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+    tell&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; tell.bind(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, greeting, teller)
+  };
+};
+
+&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; tell(greeting, teller, somebody, message) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; greeting &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; somebody &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;, &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; teller &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39; wants to tell you: &amp;#39;&lt;/span&gt; &lt;span style=&#34;color: #333333&#34;&gt;+&lt;/span&gt; message;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If the function is used internally and the options values are set by our implementation, validations are very basic, then extracting is clearer; hence as a rule of thumb keep the extraction in only one place because, with a quick glance, you can figure out in the future what option parameters the function needs.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, the good news is that ECMAScript 6 (ES6) will bring a destructuring feature, which allow to do something like this but compacted in the function signature, besides other cool stuff. You can read about it in the awesome Alex Rauschmayer blog post called &lt;a href=&#34;http://www.2ality.com/2015/01/es6-destructuring.html&#34; target=&#34;_blank&#34;&gt;Destructuring and parameter handling in ECMAScript 6&lt;/a&gt; to know deeply about ES6 destructuring and &lt;a href=&#34;http://www.2ality.com/2015/01/es6-destructuring.html#simulating_named_parameters_in_javascript&#34; href=&#34;_blank&#34;&gt;Simulating Named Parameters in JavaScript&lt;/a&gt; section to see the exposed case.&lt;/p&gt;
+
+&lt;h2 id=&#34;environment-variables-can-be-evil:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Environment variables can be evil&lt;/h2&gt;
+
+&lt;p&gt;Environment variables can be very useful to parametrise your applications and change the application behaviour however using too many or not to add them into documentation easy to find, can be a nightmare if they are accessed across all the code base.&lt;/p&gt;
+
+&lt;p&gt;However if they are used with awareness, only using a few and very identified then, they avoid to have a burden configuration file which has to be versioned for different environments.&lt;/p&gt;
+
+&lt;p&gt;In NodeJS, there is the famous NODE_ENV environment variable and it&amp;rsquo;s fine to define change the behaviour of your application or library (if it is justified), however I&amp;rsquo;ve found that not always is good to rely on it due that some npm packages use it to operate differently in production than development or testing environments.&lt;/p&gt;
+
+&lt;p&gt;The cases that I&amp;rsquo;ve found they are better to use other variable than NODE_ENV to specify the environment is when you have something that only has to run exclusively in production, for example, you  would like to set NODE_ENV to production to do load testing of your application, but you don&amp;rsquo;t want to send errors message to a central service that you use to collect them, because obviously you&amp;rsquo;re testing it in a controlled environment and don&amp;rsquo;t want to pollute your productions logs.&lt;/p&gt;
+
+&lt;p&gt;Anyway if your implementations need environment variables, I would pull all of them out in one place and would spread them as a property of an options object parameter, similar what I exposed in the previous section; unifying to one place where the application take them, eases to see in quick view what environment variables your application needs and what default values are assigned if they could be not specified, then know easily what values to set in other environments when the default values aren&amp;rsquo;t appropriated.&lt;/p&gt;
+
+&lt;h2 id=&#34;use-absolute-url-computed-into-variables:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Use absolute URL computed into variables&lt;/h2&gt;
+
+&lt;p&gt;This is a recommendation bound to &lt;a href=&#34;http://expressjs.com/4x/api.html&#34; target=&#34;_blank&#34;&gt;express 4.x&lt;/a&gt;, specifically to &lt;a href=&#34;http://expressjs.com/4x/api.html#router&#34; target=&#34;_blank&#34;&gt;Router&lt;/a&gt; feature which is available since version 4, nonetheless it may apply for others Web frameworks in a similar way.&lt;/p&gt;
+
+&lt;p&gt;Router is one of the awesome features that express 4 has brought, it allows to create mini-applications which specify their routes, middlewares included; they offer the possibility to reuse your implemented routes in different applications, obviously if they are quite generic and you developed them bearing in mind that autonomy.&lt;/p&gt;
+
+&lt;p&gt;However, I created some of them bearing in mind that, but I missed one thing. My routes render views rather than to send JSON, however it could apply to JSON if you have to send URLs to follow, and they need to link one to another and vice versa.&lt;/p&gt;
+
+&lt;p&gt;Because route can be mounted by other &lt;a href=&#34;http://expressjs.com/4x/api.html#app.use&#34; target=&#34;_blank&#34;&gt;Routers and a App&lt;/a&gt; you cannot hardcode an absolute URL, then I thought use relative URLs.&lt;/p&gt;
+
+&lt;p&gt;For example, having this two routes in a router:&lt;/p&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  router.get(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/user/:id&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res, next) { ... });
+  router.get(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;/group/:id&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (req, res, next) { ... })
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Then each route view has a link to each other, e.g.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;user view&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;a&lt;/span&gt; &lt;span style=&#34;color: #0000CC&#34;&gt;href=&lt;/span&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;group/10&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #007700&#34;&gt;&amp;gt;&lt;/span&gt;NodeJS developers&lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;group view&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;  &lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;a&lt;/span&gt; &lt;span style=&#34;color: #0000CC&#34;&gt;href=&lt;/span&gt;&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;quot;user/0&amp;quot;&lt;/span&gt;&lt;span style=&#34;color: #007700&#34;&gt;&amp;gt;&lt;/span&gt;Group Administrator&lt;span style=&#34;color: #007700&#34;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Then I got in troubles because the links don&amp;rsquo;t work, because if you are, for example, in a users view, your browser url could be something &lt;code&gt;http://communi.ty/user/10&lt;/code&gt;, then when you press the link to the group &amp;ldquo;NodeJS developers&amp;rdquo; your browser will request &lt;code&gt;http://communi.ty/user/group/10&lt;/code&gt;, then the URL does not match with the &amp;ldquo;group&amp;rdquo; route of the Router.&lt;/p&gt;
+
+&lt;p&gt;In front of it, you can think to use absolute URLs, however if you use that Router in another application or your mount it in another path, then they won&amp;rsquo;t work. Perhaps, you decide that the views are not portable and they have to be implemented on each application, well&amp;hellip; that make sense, views are very bound to the application and they cannot probably be reused but you still have the issue that if you mount the Router under another path in the same application, because you are prototyping then you could realise that a new path fits better, then you would have to update your views without haven&amp;rsquo;t ported your router to another application; even worse, in the JSON case that I mentioned above, using relative URLs will require to update the Router, then it wouldn&amp;rsquo;t be reusable.&lt;/p&gt;
+
+&lt;p&gt;The solutions is easy, always compute the links with their absolute URL in the route and pass them to the render as variables, and likewise when you send JSON.&lt;/p&gt;
+
+&lt;p&gt;You can get the absolute URL even though you are in a Router&amp;rsquo;s route with &lt;a href=&#34;http://expressjs.com/4x/api.html#req.originalUrl&#34; target=&#34;_blank&#34;&gt;&lt;code&gt;req.originalUrl&lt;/code&gt;&lt;/a&gt; and then you can compute the URLs to the other routes; in this example, stripping &amp;ldquo;/group/&lt;em&gt;&amp;rdquo; and &amp;ldquo;/user/&lt;/em&gt;&amp;rdquo; and after appending whatever is needed in each case would be enough to get the expected result.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:2c29a7760b52cbec7c90eef041aacf02&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;As software developers, we are refactoring all the time, software always can be better or it has to change for any reason; sometimes we have to prototype and move the prototypes to a product as soon as possible hence we don&amp;rsquo;t have time enough to spend thinking all the cases that our applications will face, even we&amp;rsquo;d have it, we&amp;rsquo;d probably fail, for that reason I guess that agile methodologies appeared; then in front of of this situation, we can craft software as better as we can and apply tiny things that we learn throughout our experience to make those refactoring less painful.&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading it.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Performance Execution on JS Objects Created in Different Ways</title>
+      <link>http://blog.fraixed.es/post/performance-js-objects-created-different-ways</link>
+      <pubDate>Mon, 26 Jan 2015 11:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/post/performance-js-objects-created-different-ways</guid>
+      <description>
+
+&lt;p&gt;In JS (javascript) there are different approaches to create objects which differ in somehow not only syntax but in small things that you can achieve.&lt;/p&gt;
+
+&lt;p&gt;My aim in this post is not to talk of those different approaches in the sense how they differ in terms of &lt;a href=&#34;http://en.wikipedia.org/wiki/Information_hiding&#34; target=&#34;_blank&#34;&gt;encapsulation&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code&#34; target=&#34;_blank&#34;&gt;code readability&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Programming_paradigm&#34; target=&#34;_blank&#34;&gt;programming paradigm&lt;/a&gt; approach, best practices, likes and preferences; I think that there are enough posts, articles, resources, etc, with full details, well explained and good quality about this topic on Internet.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;m going to show some &lt;strong&gt;basic performance tests&lt;/strong&gt; that I&amp;rsquo;ve done with an object created with those different approaches; just to have fund and because I was curious about it.&lt;/p&gt;
+
+&lt;h2 id=&#34;test-implementations:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Test implementations&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve implemented a silly example of those different approaches and after I executed a performance test in different platforms (Browsers, &lt;a href=&#34;http://nodejs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;Node&lt;/a&gt; and &lt;a href=&#34;https://iojs.org/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;iojs&lt;/a&gt;); let&amp;rsquo;s see first the used object creation approaches implementations:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Usual Constructor Function&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPrototype() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+}
+
+ContentPrototype.prototype.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; text;
+};
+
+ContentPrototype.prototype.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text;
+};
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Usual Constructor Function &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPrototypeNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+}
+
+ContentPrototypeNull.prototype.__proto__ &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+ContentPrototypeNull.prototype.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+  }
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; text;
+};
+
+ContentPrototypeNull.prototype.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (text) {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;.text;
+};
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Constructor Function which uses &lt;code&gt;Object.defineProperty&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentProperty() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.defineProperty(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;content&amp;#39;&lt;/span&gt;, {
+    set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+      }
+
+      text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+    },
+    get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Constructor Function which uses &lt;code&gt;Object.defineProperty&lt;/code&gt; &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; ContentPropertyNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.defineProperty(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;this&lt;/span&gt;, &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;content&amp;#39;&lt;/span&gt;, {
+    set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+      }
+
+      text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+    },
+    get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+    }
+  });
+}
+
+ContentPropertyNull.prototype.__proto__ &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Usual Object Literal&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunction() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+            &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+  };
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object Literal &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; obj &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;);
+
+  obj.set &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+      &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+    }
+
+    text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+  };
+
+  obj.get &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+    &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+  };
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; obj;
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object created by &lt;code&gt;Object.create&lt;/code&gt; defining properties&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionObjCreate() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;, {
+    content&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Function which returns an Object created by &lt;code&gt;Object.create&lt;/code&gt; defining properties &lt;strong&gt;without&lt;/strong&gt; Object Prototype&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;div class=&#34;highlight&#34; style=&#34;background: #ffffff&#34;&gt;&lt;pre style=&#34;line-height: 125%&#34;&gt;&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; contentFunctionObjCreateNull() {
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;var&lt;/span&gt; text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;;
+
+  &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Object&lt;/span&gt;.create(&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;null&lt;/span&gt;, {
+    content&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; {
+      set&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; (c) {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;typeof&lt;/span&gt; c &lt;span style=&#34;color: #333333&#34;&gt;!==&lt;/span&gt; &lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;string&amp;#39;&lt;/span&gt;) {
+          &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color: #007020&#34;&gt;Error&lt;/span&gt;(&lt;span style=&#34;background-color: #fff0f0&#34;&gt;&amp;#39;Content mus be a string&amp;#39;&lt;/span&gt;);
+        }
+
+        text &lt;span style=&#34;color: #333333&#34;&gt;=&lt;/span&gt; c;
+      },
+      get&lt;span style=&#34;color: #333333&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;function&lt;/span&gt; () {
+        &lt;span style=&#34;color: #008800; font-weight: bold&#34;&gt;return&lt;/span&gt; text;
+      }
+    }
+  });
+}
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;After I wrote those examples, I also wrote little test for each one to check that they have the same behaviour in both operations (read and write), however I haven&amp;rsquo;t added here to avoid noise.&lt;/p&gt;
+
+&lt;h2 id=&#34;performance-execution-tests:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Performance Execution Tests&lt;/h2&gt;
+
+&lt;p&gt;Thereafter I&amp;rsquo;ve created two performance test scripts to run in Node and iojs in my laptop (8 cores):&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;My own simple implementation which basically execute each operation a bunch of times in a loop, stores the individual values and calculates the time execution average; you can find it in this &lt;a href=&#34;https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-simple-average-time-metrics-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Another one which uses &lt;a href=&#34;http://benchmarkjs.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;benchmark.js&lt;/a&gt; with &lt;a href=&#34;https://github.com/wadey/node-microtime&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;microtime&lt;/a&gt; whose script you can find in this &lt;a href=&#34;https://gist.github.com/ifraixedes/d9af03a3b67a8aba4a5c#file-benchmark-metics-js&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;gist&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;In the case of the browsers, I&amp;rsquo;ve used &lt;a href=&#34;http://jsperf.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;jsperf&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then I&amp;rsquo;ve executed the performance execution test in the mentioned platforms to see how the objects, created with each different approach, perform in terms of writing and reading an object&amp;rsquo;s property value.&lt;/p&gt;
+
+&lt;h3 id=&#34;iojs:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;iojs&lt;/h3&gt;
+
+&lt;p&gt;I used the last iojs version available so far, which is 1.1.0.&lt;/p&gt;
+
+&lt;p&gt;My own script returned these results&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;iojs v1.1.0 simple average time&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/65/d6/66/65d666c5bf4aa1063ba2b42e299ceba8.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Benchmarjs script returned these ones&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;iojs v1.1.0 benchmark&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/9a/76/18/9a7618386ca59477e6069f1b086f1be5.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;node:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Node&lt;/h3&gt;
+
+&lt;p&gt;I used the last production Node version available so far, which is 0.12.0, YES v0.12 has been finally released.&lt;/p&gt;
+
+&lt;p&gt;My own script returned these results&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;node v0.12.0 simple average time&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/f1/b1/9a/f1b19a2b89f0daf73ee83ebbcc3c5165.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;Benchmarjs script returned these ones&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;node v0.12.0 benchmark&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/de/36/a1/de36a16e9216edaf3f6e4afaaafa0b81.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h3 id=&#34;browser:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Browser&lt;/h3&gt;
+
+&lt;p&gt;In the browser you can find two tests, which are the same than the iojs and Node ones, but I had to split them in two, one to run the writing property operation and another for the reading one, to offer better results readability.&lt;/p&gt;
+
+&lt;p&gt;I&amp;rsquo;ve run each one in three browsers, Chrome, Firefox and Safari and two different versions in the case of Chrome, one of them the current Chrome Canary; however &lt;strong&gt;I encourage you to run with your browsers&lt;/strong&gt; to have more samples of the same borwser/version and/or new ones from different browsers/versions.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://jsperf.com/proto-defineprop-obj-set/2&#34; target=&#34;_blank&#34;&gt;writing property value test&lt;/a&gt; showed me the next chart which I took an screenshot&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;browsers writing property jsperf chart&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/84/97/7e/84977e5a4415963462f7aa98c72f9e54.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&#34;http://jsperf.com/prototype-vs-defineproperty-vs-object-get/3&#34; target=&#34;_blank&#34;&gt;reading property value test&lt;/a&gt; and its screenshot that I took&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt=&#34;browsers reading property jsperf chart&#34; src=&#34;https://s-media-cache-ak0.pinimg.com/originals/d6/21/d2/d621d29ce5176a6a119d4b65abca3e84.jpg&#34; class=&#34;graphic-medium graphic-medium-centre&#34;&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;my-analysis:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;My Analysis&lt;/h2&gt;
+
+&lt;p&gt;Due that Node and iojs benchmark don&amp;rsquo;t make more difference between running the benchmark test asynchronous and synchronous, I&amp;rsquo;ve just needed to take one of them in both cases to compare.&lt;/p&gt;
+
+&lt;p&gt;Having the comparison of writing and reading an object property value between them using benchmark script is not quite clear about the differences, more or less they perform similar and one is a little bit faster than other in some cases and vice versa.&lt;/p&gt;
+
+&lt;p&gt;If I have to asses them using &lt;strong&gt;my own script&lt;/strong&gt;, I can see that overall, &lt;strong&gt;Node performs around 5% faster than iojs&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;However both are consistent in what create object approaches perform faster in terms of writing and reading values.&lt;/p&gt;
+
+&lt;p&gt;We can see that Node and iojs, writes and reads perform better with objects whose properties have been defined using &lt;code&gt;Object.defineProperty&lt;/code&gt; or defining them through &lt;code&gt;Object.create&lt;/code&gt;; the approach that performs worse is any kind of constructors and in the middle we have the object literals; we cannot see much difference between inherit from Object prototype than without.&lt;/p&gt;
+
+&lt;p&gt;Having the &lt;strong&gt;difference between the best approach and the worst one&lt;/strong&gt; we can get gains around &lt;strong&gt;40% in writing&lt;/strong&gt; and &lt;strong&gt;200% in reading&lt;/strong&gt;, so not bad to have thought.&lt;/p&gt;
+
+&lt;p&gt;In the case of the browsers, we&amp;rsquo;ve got that the performance between the different approaches is the same for writing and reading.&lt;/p&gt;
+
+&lt;p&gt;Between them, &lt;strong&gt;Firefox and Safari perform very good with object literals&lt;/strong&gt;; Firefox does, in second place with constructors and so bad with objects created with &lt;code&gt;Object.create&lt;/code&gt; and/or having the properties set by &lt;code&gt;Object.defineProperty&lt;/code&gt; and Safari the opposite.&lt;/p&gt;
+
+&lt;p&gt;Surprisingly &lt;strong&gt;Chrome performs equally with all of them less object literals&lt;/strong&gt;, and &lt;strong&gt;Chrome Canary&lt;/strong&gt; increases those with constructors, maintains the same with object literals and &lt;strong&gt;decrease so much with objects created by &lt;code&gt;Object.create&lt;/code&gt;&lt;/strong&gt; which define their properties with it.&lt;/p&gt;
+
+&lt;p&gt;In the browser, you can see easily, thanks to the charts showed by &lt;a href=&#34;http://jsperf.com/&#34; target=&#34;_blank&#34; rel=&#34;nofollow&#34;&gt;jsperf&lt;/a&gt;, the roughly percentage of gain between approaches and browsers.&lt;/p&gt;
+
+&lt;h2 id=&#34;conclusion:6714155ea9f1aa8bfca3db0c3355ca1c&#34;&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;Having these result you can decide what approach to use in your implementations to boost the performance, however you may only get a benefit of it if you are writing and reading values on objects properties that you&amp;rsquo;ve created their implementation; nonetheless I only assessed CPU so, profiling the amount of memory spend with the different approaches when you have to create a lot of them, would also be important to keep the best balance.&lt;/p&gt;
+
+&lt;p&gt;Moreover in the time being the results are those, but mostly, browsers are updated fast and these results may change in the near future.&lt;/p&gt;
+
+&lt;p&gt;From my point of view, &lt;strong&gt;it isn&amp;rsquo;t worthwhile to focus in performance&lt;/strong&gt; and &lt;strong&gt;forget &lt;a href=&#34;http://en.wikipedia.org/wiki/Computer_programming#Readability_of_source_code&#34; target=&#34;_blank&#34;&gt;code readability&lt;/a&gt;, &lt;a href=&#34;http://en.wikipedia.org/wiki/Programming_paradigm&#34; target=&#34;_blank&#34;&gt;programming paradigm&lt;/a&gt; and best practices&lt;/strong&gt; to keep the implementation simple and clear to ease the maintainability; hence after I&amp;rsquo;ve written it, I suggest to read these two rules of the Unix philosophy:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.faqs.org/docs/artu/ch01s06.html#id2877610&#34; target=&#34;_blank&#34;&gt;Rule of Clarity: Clarity is better than cleverness&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;http://www.faqs.org/docs/artu/ch01s06.html#rule_of_optimization&#34; target=&#34;_blank&#34;&gt;Rule of Optimization: Prototype before polishing. Get it working before you optimize it&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I hope that you&amp;rsquo;ve enjoyed.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Functional Programming on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/functional-programming/</link>
+    <description>Recent content in Functional Programming on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Fri, 01 May 2015 13:00:00 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/functional-programming/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>My 5 favourite tweets of the week #11</title>
+      <link>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150501/</link>
+      <pubDate>Fri, 01 May 2015 13:00:00 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/tweet-hub/weekly-5-favourites-20150501/</guid>
+      <description>&lt;p&gt;This week I’m coming back with a 5 tech tweets, moreover I’ve realised that &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; got my heart.&lt;/p&gt;
+
+&lt;p&gt;Amazing blog post about how &lt;a href=&#34;http://www.rust-lang.org/&#34;&gt;Rust&lt;/a&gt; makes the communication with C easy besides leveraging with its ownership system with zero-cost abstraction. It’s worthwhile to read it to see how it can also helps to create C bindings for other languages as &lt;a href=&#34;https://www.python.org/&#34;&gt;Python&lt;/a&gt;, &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt; and &lt;a href=&#34;https://developer.mozilla.org/en-US/docs/Web/JavaScript/About_JavaScript&#34;&gt;Javascript&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-cards=&#34;hidden&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Rust once, run anywhere: &lt;a href=&#34;http://t.co/AXF2uIFNav&#34;&gt;http://t.co/AXF2uIFNav&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/591653556219809794&#34;&gt;April 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Through this tweet, I found this awesome &lt;a href=&#34;https://nodejs.org/&#34;&gt;NodeJS&lt;/a&gt; module, &lt;a href=&#34;https://github.com/robconery/massive-js&#34;&gt;massive-js&lt;/a&gt;, which allows to deal with &lt;a href=&#34;http://www.postgresql.org/&#34;&gt;PostgreSQL&lt;/a&gt; in a nice way&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Massive 2.0: A Postgres-Centric Data Access Tool for Node.js - &lt;a href=&#34;https://t.co/6TEBVxhBxS&#34;&gt;https://t.co/6TEBVxhBxS&lt;/a&gt;&lt;/p&gt;&amp;mdash; JavaScript Daily (@JavaScriptDaily) &lt;a href=&#34;https://twitter.com/JavaScriptDaily/status/591714326962118657&#34;&gt;April 24, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice video to watch another opinion about functional programming&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Deconstructing Functional Programming &lt;a href=&#34;http://t.co/nO9ITGfQat&#34;&gt;http://t.co/nO9ITGfQat&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dave Cheney (@davecheney) &lt;a href=&#34;https://twitter.com/davecheney/status/592673793581129733&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A nice post about writing some code in &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt; using the tooling.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;&amp;quot;Rust is improving on many traditional systems languages by encouraging a good package ecosystem from the beginning&amp;quot; &lt;a href=&#34;http://t.co/8S1OEsw7YQ&#34;&gt;http://t.co/8S1OEsw7YQ&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/592706762861580288&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;And the last one is this awesome research paper which tells the implementation of a Unix Kernel with &lt;a href=&#34;https://www.ruby-lang.org/&#34;&gt;Ruby&lt;/a&gt;; they haven’t got the same performance than C, but they are overall happy with the work.&lt;/p&gt;
+
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet tw-align-center&#34; data-partner=&#34;tweetdeck&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Reenix: Implementing a Unix-Like Operating System in Rust &lt;a href=&#34;http://t.co/ypLvs5aveq&#34;&gt;http://t.co/ypLvs5aveq&lt;/a&gt;&lt;/p&gt;&amp;mdash; Rust Language (@rustlang) &lt;a href=&#34;https://twitter.com/rustlang/status/592743898692321280&#34;&gt;April 27, 2015&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;//platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Have a good weekend!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

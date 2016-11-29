@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="After I took a look to Mercury README long time ago, I&#39;ve got my hands dirty with it during a 24 hours Hackathon, so here you can read my thoughts">
+  <link href="http://blog.fraixed.es/index.xml" rel="alternate" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <link href="http://blog.fraixed.es/index.xml" rel="feed" type="application/rss+xml" title="Ivan Fraixedes&#39; Blog" />
+  <meta property="og:locale" content="en_GB">
+  <meta property="og:site_name" content="Ivan Fraixedes&#39; Blog">
+  <meta property="og:title" content="Mercury &amp; its marvelous modularity">
+  <meta property="og:url" content="http://blog.fraixed.es/post/mercury-and-its-marvelous-modularity">
+  <meta property="og:description" content="After I took a look to Mercury README long time ago, I&#39;ve got my hands dirty with it during a 24 hours Hackathon, so here you can read my thoughts">
+  <meta name="twitter:site" content="@ifraixedes">
+  <meta name="twitter:creator" content="@ifraixedes">
+  
+    <meta property="og:image" content="https://avatars0.githubusercontent.com/u/1731633">
+  
+  
+    
+      <meta property="og:type" content="article">
+      <meta property="og:author" content="Ivan Fraixedes">
+      <meta property="og:published_time" content="0001-01-01T00:00:00Z">
+      <meta property="og:modified_time" content="0001-01-01T00:00:00Z">
+      
+      
+        <meta property="og:tag" content="frontend">
+      
+        <meta property="og:tag" content="javascript">
+      
+        <meta property="og:tag" content="virtual-dom">
+      
+        <meta property="og:tag" content="modularity">
+      
+        <meta property="og:tag" content="Hackathon">
+      
+      <meta name="twitter:card" content="summary_large_image">
+    
+  
+  <link rel="canonical" href="http://blog.fraixed.es/post/mercury-and-its-marvelous-modularity">
+  <link rel="stylesheet" href="/styles/main.css">
+  <title>Mercury &amp; its marvelous modularity</title>
+</head>
+<body>
+
+<div class="l-container">
+  <a href="http://blog.fraixed.es/post/mercury-and-its-marvelous-modularity"><h1 class="l-title title">Mercury &amp; its marvelous modularity</h1></a>
+  <div class="l-main content">
+    
+    <a href="http://blog.fraixed.es" class="horiz-sep"><img src="http://blog.fraixed.es/img/home.png"></a>
+      <span>|</span>
+      
+      
+        <a href="https://twitter.com/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">t</a>
+        <span>|</span>
+      
+        <a href="https://uk.linkedin.com/in/ifraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="LinkedIn">lk</a>
+        <span>|</span>
+      
+        <a href="https://plus.google.com/&#43;IvanFraixedes" target="_blank" rel="nofollow" class="important-link horiz-sep" title="Follow me!!">g&#43;</a>
+        
+      
+    
+    <span class="timestamp">30-06-2015</span>
+    <br>
+    
+
+<p>Long time ago, I&rsquo;ve discovered <a target="_blank" href="https://github.com/Raynos/mercury" rel="nofollow">Mercury</a>; at that moment, Virtual-DOM started to be hot due the increasing popularity of React, highly influenced by the world wide known Facebook, and I got curious to search if there was anything else which also take advantage of the Virtual-DOM mechanism.</p>
+
+<p>As it isn&rsquo;t surprisingly, there were at that moment <a target="_blank" href="http://facebook.github.io/react/">React</a> and <a target="__blank_" href="https://github.com/Raynos/mercury" rel="nofollow">Mercury</a> and also a bunch of others<sup>1</sup>.</p>
+
+<p><strong>Disclaimer</strong>: I&rsquo;m not experienced in React, I&rsquo;ve just read several post of it and things related with it and watched some videos, on the other hand, this post isn&rsquo;t about XXX is better than YYY, there&rsquo;re always some subjective aspects of choosing frameworks, tools, etc, as other important non-technical stuff, as the aim to achieve, which strongly influence on what to choose/use to do that what actually really matters, to achieve the goal.</p>
+
+<h2 id="the-context:a771e8a24eee240aa67739db0ed27f5c">The Context</h2>
+
+<p>My first step into Mercury has only been to implement a <strong>very tiny</strong> <a target="_blank" href="https://en.wikipedia.org/wiki/Single-page_application"> SPA (single web application)</a> for the  topic of the hackathon which I participated; <strong>tiny</strong> because 24 hours it isn&rsquo;t much time and moreover when we were a two people team, with all the development load for one of them, in this case my self.</p>
+
+<p>Anyway, the hackathon isn&rsquo;t important for the purpose of this post, it&rsquo;s only to put you in context about the first time which I stepped into <a target="_blank" href="https://github.com/Raynos/mercury" rel="nofollow">Mercury</a>.</p>
+
+<h2 id="modularity-matters:a771e8a24eee240aa67739db0ed27f5c">Modularity Matters</h2>
+
+<p>I&rsquo;m into modularity, it&rsquo;s my choice and it doesn&rsquo;t to be the best choice, as every approach, philosophy or whatever else has its tradeoffs, so depending of the situation, personality, relations, influence and so on, you prefer one over another because you feel that you get less painful situations, solve better your problems, fulfill your requirements or basically you&rsquo;re more comfortable, but again, I&rsquo;m as well into &ldquo;the right tool for each case&rdquo;.</p>
+
+<p>In <a target="_blank" href="https://github.com/Raynos/mercury" rel="nofollow">Mercury</a> modularity is something that <strong>nobody can say that it&rsquo;s bullshit marketing</strong>, just take a look to <a target="_blank" href="https://github.com/Raynos/mercury/blob/649410edca7236c5b99ec45f5b139c01528022d8/index.js#L13L66" rel="nofollow">the main module file</a>.</p>
+
+<p>Basically, Mercury, at the time of this blog, is <a target="_blank" href="https://github.com/Raynos/mercury/blob/649410edca7236c5b99ec45f5b139c01528022d8/index.js" rel="nofollow">just a javascript file of 126 LOC</a> which basically export a bunch of other tiny modules (each one exactly does one thing).</p>
+
+<p>Its modularity has been one of the main points to actually want to spend my <strong>spare time</strong> hacking with it in front of any other one which isn&rsquo;t pure modular.</p>
+
+<h2 id="how-to-start:a771e8a24eee240aa67739db0ed27f5c">How to Start</h2>
+
+<p><a target="_blank" href="https://github.com/Raynos/mercury" rel="nofollow">Mercury</a> doesn&rsquo;t have a shiny website, a thorough documentation or bunch of people messing around with it, so you have to start in the <strong><em>hard way</em></strong>.</p>
+
+<p>There&rsquo;re <a target="_blank" href="https://github.com/Raynos/mercury/tree/master/examples/" rel="nofollow">several examples in the same repository</a>, however no tons of documentation, so you basically must read the code.</p>
+
+<p>I think that the best way to start, it&rsquo;s reading the simple easiest implemented examples, which are only a few lines of code, so they&rsquo;re not that hard to having a overall understanding how it works.</p>
+
+<p>After that or at the same time, you can check some of the <a target="_blank" href="https://github.com/Raynos/mercury/tree/master/docs" rel="nofollow">docs</a>, not all of them, because there&rsquo;re some which are advance topics that you shouldn&rsquo;t use for your first step into; however if you have time, having a quick read doesn&rsquo;t hurt; in my case so far I skipped the docs in &ldquo;modules&rdquo; subdirectory.</p>
+
+<p>After that, you should start to implement a tiny application, probably bigger that a &ldquo;Hello World&rdquo;, integrating some functionality as pull some data from a server and displaying in a table or a structured HTML than inside of a DOM element as <code>p</code>, to get the chance to taste the Virtual-DOM and probably <a target="_blank" href="https://github.com/Matt-Esch/virtual-dom#example---creating-a-vtree-using-virtual-hyperscript" rel="nofollow">Virtual-Hyperscript</a>.</p>
+
+<p>During your implementation, you&rsquo;ll probably check the code of the examples and the docs several times; you may also try some changes that you may feel that it&rsquo;d be nice if they work because they allow to organise and structure better your code, however if something stop to work, you&rsquo;ll have to spend time finding what is wrong and why actually it doesn&rsquo;t work, nonetheless I believe that it&rsquo;s the best way to learn because you&rsquo;ll discover things that they don&rsquo;t work and if you&rsquo;re curious, as I&rsquo;m, you&rsquo;ll try to understand why they don&rsquo;t work than solving it with no clue why it&rsquo;s started to work again.</p>
+
+<h2 id="advantages-of-its-modularity:a771e8a24eee240aa67739db0ed27f5c">Advantages of its Modularity</h2>
+
+<p>As I&rsquo;ve mentioned above, Mercury isn&rsquo;t a popular framework as many other are, you probably think to skipped due the lack of tons of documentation, shiny website and all this kind of stuff.</p>
+
+<p>I think that even though all those stuff are important, I feel that I haven&rsquo;t needed them, I could jump into it and used only with the examples and docs and checking its code and submodules, which are exactly where the meat is, to have an overall understanding in how to use it and its internals.</p>
+
+<p>Being at that level of modularity allows to browser the code and find very easily each module which does actually one thing, so you can dig more on each modules when you feel that you want to know more about the internals, without getting lost as I&rsquo;ve felt several times with big code bases, which are not composed by several modules and in case that they&rsquo;re, the most of the times, they don&rsquo;t reach this level due that the modules have been build for the purpose of the code base hence they lose the concept of module when they aren&rsquo;t thought to be used out of the main code base.</p>
+
+<h2 id="my-footprint:a771e8a24eee240aa67739db0ed27f5c">My Footprint</h2>
+
+<p>As I&rsquo;ve mentioned before, the implementation that I&rsquo;ve done with <a target="_blank" href="https://github.com/Raynos/mercury">Mercury</a> was for a topic of a hackathon, because I always want to have some reward of my time, in this case at the end, only, has been the learning one.</p>
+
+<p>The application isn&rsquo;t fancy at all, in terms of any thing, I had to do all the implementation, server, a little bit the styling and the frontend in Mercury, so I had to learn it as well.</p>
+
+<p>I got the first issues that everybody may have which are how you organise your code and make it more modular to avoid a massive large scripts, I did some splitting and no a lot of more for two reasons:</p>
+
+<ol>
+<li>We had to rush up to to be able to present.</li>
+<li>At that moment, I didn&rsquo;t know how to split more, however after the hackathon has finished, I had a second read to the docs and I had a better understanding of some parts which in my first read I couldn&rsquo;t get them, hence now I&rsquo;ve got them and I&rsquo;ve known how to do it ;D</li>
+</ol>
+
+<p>If you&rsquo;re interested you can see the code in this <a target="_blank" href="https://github.com/ifraixedes/hack-destination-london-2015" rel="nofollow">repository</a>, however, bear in mind that the examples in <a target="_blank" href="https://github.com/Raynos/mercury" rel="nofollow">Mercury</a> repository may be more useful.</p>
+
+<h2 id="conclusion:a771e8a24eee240aa67739db0ed27f5c">Conclusion</h2>
+
+<p>Modularity is something very important for me at the moment to choose a framework, because it allow me to understand the internals in less time. I believe that knowing the internals is king to solve future problems, do crazy stuff or increase the performance when you need it.</p>
+
+<p>Now, I totally agree with the sentence which appear in the README, <strong><em>&ldquo;A truly modular frontend framework&rdquo;</em></strong>, <a target="_blank" href="https://github.com/Raynos/mercury" rel="nofollow">Mercury</a> is about that, it isn&rsquo;t bullshit marketing.</p>
+
+<p>Getting into it, allowed me to achieve my aim, which was having a better understanding about Virtual-DOM strategy and how it works than using a framework to build something and just only learn the public interface of the framework, because I don&rsquo;t see that much value on it if I&rsquo;m not going to use for several projects, which isn&rsquo;t too bad if they have another aim, as making money, fulfill a business requirement and so on.</p>
+
+<p>Hope that you find this post more interesting than another massive post about something related with one of the currently famous framework, being good or bad.</p>
+
+<p>Have you tinkered with <a target="_blank" href="https://github.com/Raynos/mercury" rel="nofollow">Mercury</a>? please share you comments if you have.</p>
+
+<hr />
+
+<p><p class="definition"><sup>1</sup> I may have realised very late of React, it may have been there for a while, but at least people surrounding myself in the virtual/physical world weren&rsquo;t talking about it as they&rsquo;re talking at this time.<p></p>
+
+  </div>
+  
+    <div id="disqus_thread" class="content"></div>
+<script type="text/javascript">
+(function() {
+    
+    
+    if (window.location.hostname == "localhost") return;
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//blog-ifraixedes.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  
+</div>
+<div class="l-footer">@2015 by
+  
+  <a href="http://ivan.fraixed.es" target="_blank" class="important-link">Ivan Fraixedes</a>
+  
+</div>
+
+
+  <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', "UA-54405610-2", 'auto');
+    ga('send', 'pageview');
+  </script>
+
+
+</body>

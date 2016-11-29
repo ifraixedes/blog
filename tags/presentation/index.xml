@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Presentation on Ivan Fraixedes&#39; Blog</title>
+    <link>http://blog.fraixed.es/tags/presentation/</link>
+    <description>Recent content in Presentation on Ivan Fraixedes&#39; Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <copyright>This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license</copyright>
+    <lastBuildDate>Sat, 09 Jan 2016 16:03:58 +0000</lastBuildDate>
+    <atom:link href="http://blog.fraixed.es/tags/presentation/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Introduction to Generators (ES2015) &amp; Async Functions (ES2016)</title>
+      <link>http://blog.fraixed.es/slides/bcnjs-201601/</link>
+      <pubDate>Sat, 09 Jan 2016 16:03:58 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/slides/bcnjs-201601/</guid>
+      <description>
+
+&lt;p&gt;class: center, middle&lt;/p&gt;
+
+&lt;h1 id=&#34;generators-async-functions:0b093bde575808c0579ae260d3684b89&#34;&gt;Generators &amp;amp; Async Functions&lt;/h1&gt;
+
+&lt;p&gt;by Ivan Fraixedes&lt;/p&gt;
+
+&lt;p&gt;Twitter/Github: @ifraixedes&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://ivan.fraixed.es&#34;&gt;ivan.fraixed.es&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;class: middle&lt;/p&gt;
+
+&lt;h1 id=&#34;agenda:0b093bde575808c0579ae260d3684b89&#34;&gt;Agenda&lt;/h1&gt;
+
+&lt;h4 id=&#34;1-introduction-to-generators-functions:0b093bde575808c0579ae260d3684b89&#34;&gt;1. Introduction to Generators Functions&lt;/h4&gt;
+
+&lt;h4 id=&#34;2-introduction-to-async-functions:0b093bde575808c0579ae260d3684b89&#34;&gt;2. Introduction to Async Functions&lt;/h4&gt;
+
+&lt;h4 id=&#34;3-using-generators-as-async-functions:0b093bde575808c0579ae260d3684b89&#34;&gt;3. Using Generators as Async functions&lt;/h4&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;generators-functions:0b093bde575808c0579ae260d3684b89&#34;&gt;Generators Functions&lt;/h1&gt;
+
+&lt;p&gt;Generators has been standardized in EcmaScript 2015
+Function generators can be created in two manners&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;with the &lt;code&gt;function *&lt;/code&gt; declaration (syntax);
+&lt;code&gt;js
+function* myGenerator(...) {...}
+&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;using GeneratorFucntions constructor. The performance is worse because they are parsed a the execution time than with the reset of the code; they are a similar thing as &lt;code&gt;eval()&lt;/code&gt;
+&lt;code&gt;js
+// GeneratorFunction is NOT a global object
+var GeneratorFunction = Object.getPrototypeOf(function*(){}).constructor
+var g = new GeneratorFunction(&amp;quot;a&amp;quot;, &amp;quot;yield a * 2&amp;quot;);
+&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;???&lt;/p&gt;
+
+&lt;p&gt;We can think in generators as &lt;strong&gt;functions witch can be exited at specified points of the execution and continue from the last exited point&lt;/strong&gt; when they are called again keeping the context between them as a normal function does during its execution.&lt;/p&gt;
+
+&lt;p&gt;Generators return values before they finish using the statement &lt;strong&gt;&lt;code&gt;yield&lt;/code&gt;&lt;/strong&gt;; iterators execution finish when they reach the end of the &amp;ldquo;function&amp;rdquo; or execute &amp;ldquo;return&amp;rdquo; as an usual function does.&lt;/p&gt;
+
+&lt;p&gt;There is also the statement &lt;strong&gt;&lt;code&gt;yield*&lt;/code&gt;&lt;/strong&gt; to subrogate the execution to other generator; hence when that happens the caller generator give the flow to the callee generator and when it finishes the caller follows from that point.&lt;/p&gt;
+
+&lt;p&gt;Generators can be used to create iterables and get the same result in easy way than complex iterators; however this is out the context of this talk.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;class: center, middle&lt;/p&gt;
+
+&lt;h1 id=&#34;generators-function-demo:0b093bde575808c0579ae260d3684b89&#34;&gt;Generators Function Demo&lt;/h1&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;async-functions:0b093bde575808c0579ae260d3684b89&#34;&gt;Async Functions&lt;/h1&gt;
+
+&lt;p&gt;Async functions is a proposal for EcmaScript 2016, which is in draft.&lt;/p&gt;
+
+&lt;p&gt;Async functions are normal functions which can be suspended to await for promises.&lt;/p&gt;
+
+&lt;p&gt;The syntax looks as&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;  async function myAsyncFunc(...) {
+    // do whatever
+    let result = await iReturnAPromise();
+    // more things todo after the promise is resolved
+  }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;class: center, middle&lt;/p&gt;
+
+&lt;h1 id=&#34;async-functions-demo:0b093bde575808c0579ae260d3684b89&#34;&gt;Async Functions Demo&lt;/h1&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;class: center, middle&lt;/p&gt;
+
+&lt;h1 id=&#34;generators-as-async-functions:0b093bde575808c0579ae260d3684b89&#34;&gt;Generators as Async functions&lt;/h1&gt;
+
+&lt;p&gt;We can use &lt;strong&gt;Function Generators&lt;/strong&gt; as &lt;strong&gt;Async Functions&lt;/strong&gt;, so we can think &lt;strong&gt;Async Functions&lt;/strong&gt; as syntax sugar&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Let&amp;rsquo;s see how&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;???
+&lt;a href=&#34;http://www.ecma-international.org/ecma-262/6.0/#sec-generator.prototype.next&#34;&gt;http://www.ecma-international.org/ecma-262/6.0/#sec-generator.prototype.next&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;class: center, middle&lt;/p&gt;
+
+&lt;h1 id=&#34;credits:0b093bde575808c0579ae260d3684b89&#34;&gt;Credits&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://developer.mozilla.org/&#34;&gt;Mozilla Developers Network&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://tc39.github.io/ecmascript-asyncawait/&#34;&gt;Async functions proposal&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;resources:0b093bde575808c0579ae260d3684b89&#34;&gt;Resources&lt;/h1&gt;
+
+&lt;p&gt;Presentation: &lt;a href=&#34;http://blog.fraixed.es/slides/bcnjs-201601&#34;&gt;goo.gl/ZKSkTV&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Source code (gist): &lt;a href=&#34;https://gist.github.com/ifraixedes/62a7155b87e7e7d0c71d&#34;&gt;goo.gl/4ZqC6z&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;ndash;
+count: false&lt;/p&gt;
+
+&lt;h1 id=&#34;feedback:0b093bde575808c0579ae260d3684b89&#34;&gt;Feedback&lt;/h1&gt;
+
+&lt;p&gt;I&amp;rsquo;d love &lt;strong&gt;to hear from you&lt;/strong&gt;, say hi! on&lt;/p&gt;
+
+&lt;p&gt;Twitter: @ifraixedes&lt;/p&gt;
+
+&lt;p&gt;email: ivan@fraixed.es&lt;/p&gt;
+
+&lt;h2 id=&#34;or-any-other-way-that-you-know-that-you-can-reach-me:0b093bde575808c0579ae260d3684b89&#34;&gt;Or any other way that you know that you can reach me!&lt;/h2&gt;
+
+&lt;p&gt;count: false
+&lt;p style=&#34;color:red;font-weight:bold;font-size:1.3em;text-align:center&#34;&gt;I&amp;rsquo;m currently accepting projects&lt;p&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Introduction to Lovefield, a cross-browser SQL-Like Query Engine</title>
+      <link>http://blog.fraixed.es/slides/bcnjs-201510/</link>
+      <pubDate>Fri, 09 Oct 2015 10:01:52 +0000</pubDate>
+      
+      <guid>http://blog.fraixed.es/slides/bcnjs-201510/</guid>
+      <description>
+
+&lt;p&gt;class: center, middle&lt;/p&gt;
+
+&lt;h1 id=&#34;an-introduction-to-lovefield:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;An introduction to Lovefield&lt;/h1&gt;
+
+&lt;h2 id=&#34;cross-browser-sql-like-relational-query-engine:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;cross-browser SQL-Like relational query engine&lt;/h2&gt;
+
+&lt;p&gt;by Ivan Fraixedes&lt;/p&gt;
+
+&lt;p&gt;@ifraixedes&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://ivan.fraixed.es&#34;&gt;http://ivan.fraixed.es&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;agenda:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Agenda&lt;/h1&gt;
+
+&lt;p&gt;#### 1. Introduction&lt;/p&gt;
+
+&lt;h4 id=&#34;2-data-store:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;2. Data Store&lt;/h4&gt;
+
+&lt;h4 id=&#34;3-schema:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;3. Schema&lt;/h4&gt;
+
+&lt;h4 id=&#34;4-query:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;4. Query&lt;/h4&gt;
+
+&lt;h4 id=&#34;5-transactions:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;5. Transactions&lt;/h4&gt;
+
+&lt;h4 id=&#34;5-architecture-implementation:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;5. Architecture &amp;amp; Implementation&lt;/h4&gt;
+
+&lt;h4 id=&#34;6-sql-js:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;6. sql.js&lt;/h4&gt;
+
+&lt;p&gt;#### 7. Demo&lt;/p&gt;
+
+&lt;h4 id=&#34;8-credits:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;8. Credits&lt;/h4&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;class: center, middle&lt;/p&gt;
+
+&lt;h1 id=&#34;introduction:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;???&lt;/p&gt;
+
+&lt;p&gt;The main goal is to provide a &lt;strong&gt;relational query engine for web apps&lt;/strong&gt; after WebSQL was deprecated (end of 2010) and apps need to work online &amp;amp; offline and the &lt;strong&gt;current standard (IndexedDB)&lt;/strong&gt; achieve that goal however it is a key-value store.&lt;/p&gt;
+
+&lt;p&gt;IndexedDB is a perfect solution for use cases where a key-value store fits very well however there are use cases which requires to select and sort data by multiple columns or make relations between different data entities, which can be also achieved by a key-value store but make the implementation more complex and larger, hence less maintainable and increasing the development time not just for the itself implementation but testing as well.&lt;/p&gt;
+
+&lt;p&gt;Those mentioned use cases fit very well to relational database (a.k.a SQL databases) and for this reason Lovefield has been created.&lt;/p&gt;
+
+&lt;p&gt;Lovefield provides structural data queries besides transactions making more attractive to be used for these kind of web apps.&lt;/p&gt;
+
+&lt;p&gt;Assumptions:
+ * At most 2GB.
+ * Limited subset of SQL-2003.
+ * It doesn&amp;rsquo;t provide storage technology, uses existing ones.&lt;/p&gt;
+
+&lt;p&gt;Mentioned goodness:
+ * SQL-Lie relational db query engine which covers most uses cases supported by WebSQL.
+ * Chrome Apps v2 compliant.
+ * Drop-in library.
+ * Can be used as a component.
+ * Can be used in several JS frameworks: Closure, jQuery, Polymer, AngularJS, etc.
+ * cross-browser.
+ * Low-end device support.
+ * It can be used with different storages.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;# Data Store&lt;/p&gt;
+
+&lt;p&gt;No data store is provided, it uses existing data stores
+ Currently supported:
+- IndexedDB
+- Memory (not persistent)
+- Firebase (cloud hosted, non-local)
+- WebSQL&lt;sup&gt;&lt;em&gt;&lt;/sup&gt; (For Safari compatibility)
+- LocalStore&lt;sup&gt;&lt;/em&gt;&lt;/sup&gt; (PoC)&lt;/p&gt;
+
+&lt;p&gt;&lt;sup&gt;*&lt;/sup&gt; Experimental&lt;/p&gt;
+
+&lt;p&gt;???&lt;/p&gt;
+
+&lt;p&gt;Lovefield doesn&amp;rsquo;t provide a data store, it uses existing data stores; it abstracts data persistence into classes to make it adaptive to different storage media and technologies besides to help to decouple storage from the query engine.&lt;/p&gt;
+
+&lt;p&gt;Internally it uses rows as data unit but the &lt;code&gt;select&lt;/code&gt; queries return plain JS objects. For &lt;code&gt;insert&lt;/code&gt; statements the JS plain object must be converted in row data units; Lovefield provide helper &lt;code&gt;createRow&lt;/code&gt; function to do that.&lt;/p&gt;
+
+&lt;p&gt;Data is organised to optimise the performance of the data store, so it cannot guarantee the raw data readability; moreover specific data store requirements as authentication (e.g. Firebase), allocated size aren&amp;rsquo;t managed by Lovefield.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;schema:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Schema&lt;/h1&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A schema is created with a schema builder which is instantiated through a &lt;strong&gt;schema builder&lt;/strong&gt; with &lt;code&gt;lf.schema.create()&lt;/code&gt; static function.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A schema builder instance has two functions &lt;code&gt;createTable()&lt;/code&gt; and &lt;code&gt;connect()&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;???
+As a usual SQL database the schema is the the definition of the tables, their columns which and constraints.
+Database name must abide a specific naming rule and a version must be specified as an integer greater than 0; any schema update requires to increase this number otherwise won&amp;rsquo;t be update or if is smaller it will thrown an error;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;lf.schema.create()&lt;/code&gt; static function provides a single point of truth and prevents the document from being outdated.
+&lt;strong&gt;Schema builder&lt;/strong&gt; instances is stateful: &amp;ldquo;building&amp;rdquo; and &amp;ldquo;finalised&amp;rdquo;; schema can only be modified in building state.&lt;/p&gt;
+
+&lt;p&gt;Columns can be nullable by they aren&amp;rsquo;t by default, so there are default values for each type except &lt;code&gt;ARRAY_BUFFER&lt;/code&gt; and &lt;code&gt;OBJECT&lt;/code&gt; whose default value is null. Indexes key can only be set on &amp;ldquo;STRING&amp;rdquo; and &amp;ldquo;NUMBER&amp;rdquo; the reset of them are converted to those with the exception of &lt;code&gt;ARRAY_BUFFER&lt;/code&gt; and &lt;code&gt;OBJECT&lt;/code&gt; cannot put as index or have any constraint nor they aren&amp;rsquo;t searchable (use on &lt;code&gt;WHERE&lt;/code&gt; clauses).&lt;/p&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;As SQL columns are specified with a name, type and optional constraints&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;???
+Constraints available are: primary key, foreign key, unique (multiple column accepted), Null &amp;amp; Not-nullable.&lt;/p&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;// Begin schema creation.
+var schemaBuilder = lf.schema.create(&#39;crdb&#39;, 1);
+
+schemaBuilder.createTable(&#39;Asset&#39;).
+    addColumn(&#39;id&#39;, lf.Type.STRING).
+    addColumn(&#39;asset&#39;, lf.Type.STRING).
+    addColumn(&#39;timestamp&#39;, lf.Type.INTEGER).
+    addPrimaryKey([&#39;id&#39;]);
+
+// Schema is defined, now connect to the database instance.
+schemaBuilder.connect().then(
+    function(db) {
+      // Schema is not mutable once the connection to DB has established.
+    }, console.error);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;???
+Lovefield implements its own indexes, it &lt;strong&gt;doesn not use&lt;/strong&gt; any index system provided by the store; it uses by default a B+ Tree structure and only index non-null and indexable types. By default indexes aren&amp;rsquo;t persisted to the store and they&amp;rsquo;re build in memory during loading; they can be persisted with &lt;code&gt;persistentIndex()&lt;/code&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;query:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Query&lt;/h1&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Lovefiled offers 4 types of queries as we expect to find in a persitent storage; the famous CRUD acronym&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Queries &lt;strong&gt;ARE NOT&lt;/strong&gt; created with raw SQL statements; they are created though a &lt;strong&gt;query builder&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;The queries are composed with a &amp;ldquo;chainable pattern&amp;rdquo;
+???&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All the operations are performed as a chain; we execute a function which define the operation (select, create, etc.) to perform and we get a query builder instance which has available a set of functions to specify the query that we desire; each function specify define a different part of the operations (for example the tables, conditions, etc.) and returns the same query builder instance to be chainable.&lt;/p&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Only a few functions (depending of the operation) can be called more than once&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;exec&lt;/code&gt; function executes the query and returns a &lt;strong&gt;promise&lt;/strong&gt; which resolve with the results or reject in case of error
+???&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;When the query is specified as we want, we must call &lt;code&gt;exec&lt;/code&gt; to execute it;&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;query-insert-create-c:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Query: Insert/Create &amp;copy;&lt;/h1&gt;
+
+&lt;p&gt;Insert depends of another function &lt;code&gt;createRow&lt;/code&gt; which transform a plain JS object in a Lovefield Row object&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;var infoCard = db.getSchema().table(&#39;InfoCard&#39;);
+
+var row = infoCard.createRow({
+  &#39;id&#39;: &#39;something&#39;,
+  &#39;lang&#39;: 140
+});
+
+db.insertOrReplace().
+  into(infoCard).
+  values([row]).
+  exec().
+  catch(console.error);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;query-select-r:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Query: Select &amp;reg;&lt;/h1&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Select function receive the COLUMNS which we want to retrieve&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Only supports  &lt;strong&gt;&lt;em&gt;inner joins&lt;/em&gt;&lt;/strong&gt; and &lt;strong&gt;left outer joins&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;???&lt;/p&gt;
+
+&lt;h2 id=&#34;there-are-2-functions-to-perform-them-however-inner-join-can-be-done-with-where-clause-as-sql:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;There are 2 functions to perform them however INNER JOIN can be done with WHERE clause as SQL&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;from&lt;/code&gt; function to specify the TABLE(s)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;where&lt;/code&gt; function to specify CONDITION(s)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;limit&lt;/code&gt; &amp;amp; &lt;code&gt;skip&lt;/code&gt; functions for PAGINATION&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;orderBy&lt;/code&gt; function to SORT (it can be called more than once)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;groupBy&lt;/code&gt; function for aggregation (HAVING operation is &lt;strong&gt;not supported&lt;/strong&gt;)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;query-select-r-example:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Query: Select &amp;reg; // EXAMPLE&lt;/h1&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;var infoCard = db.getSchema().table(&#39;InfoCard&#39;);
+var asset = db.getSchema().table(&#39;Asset&#39;);
+var q = db.select(infoCard.id, infoCard.itag, asset.timestamp).
+    from(infoCard.as(card))
+    innerJoin(asset, asset.id.eq(infoCard.id)).
+    where(asset.id.eq(&#39;1&#39;)).
+    exec().then(function(rows) {
+      // Prefixed columns, context involves two tables
+      console.log(
+	rows[0][&#39;card&#39;][&#39;id&#39;],
+	rows[0][&#39;card&#39;][&#39;tag&#39;],
+	rows[0][&#39;Asset&#39;][&#39;timestamp&#39;]);
+    }).
+    catch(console.error);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;???
+Mention ALIAS and how the results format.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;query-update-u:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Query: Update (U)&lt;/h1&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;// UPDATE order SET amount = 51, currency = &#39;EUR&#39;
+//   WHERE currency = &#39;DEM&#39; AND amount = 100;
+
+var order = db.getSchema().table(&#39;order&#39;);
+db.update(order).
+    set(order.amount, 51).
+    set(order.currency, &#39;EUR&#39;).
+    where(lf.op.and(
+	order.currency.eq(&#39;DEM&#39;), order.amount.eq(100))).
+    exec().
+    catch(console.error);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;???&lt;/p&gt;
+
+&lt;p&gt;Mention that &lt;code&gt;set&lt;/code&gt; can be called more than once.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;query-delete-d:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Query: Delete (D)&lt;/h1&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;// DELETE FROM infoCard WHERE lang = &#39;es&#39;;
+db.delete().
+  from(infoCard).
+  where(infoCard.lang.eq(&#39;es&#39;)).
+  exec().
+  catch(console.error);
+
+db.delete().
+  from(infoCard).
+  exec().
+  catch(console.error); // Delete everything in infoCard
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;query-extras-parametrised-queries:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Query: Extras // Parametrised Queries&lt;/h1&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;var p = db.getSchema().table(&#39;Photo&#39;);
+// UPDATE Photo SET timestamp = ?1, local = ?2 WHERE id = ?0;
+var q2 = db.
+    update(p).
+    set(p.timestamp, lf.bind(1)).
+    set(p.local, lf.bind(2)).
+    where(p.id.eq(lf.bind(0)));
+
+q2.bind([&#39;id3&#39;, 345, false]).
+  exec().
+  catch(console.error);  // update without reconstructing query
+
+q2.bind([&#39;id4&#39;, 2222, true]).
+  exec().
+  catch(console.error);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;???
+LIMIT and SKIP can also be parametrized&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;query-extras-observers:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Query: Extras // Observers&lt;/h1&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;var p = db.getSchema().table(&#39;Photo&#39;);
+var query = db.select().from(p).where(p.id.eq(&#39;1&#39;));
+
+// Handler shares exactly same syntax as the handler for Array.observe.
+var handler = function(changes) {
+  // Will be called every time there is a change until db.unobserve is called.
+};
+db.observe(query, handler);
+
+// The call below will trigger changes to the observed select. Internally
+// Lovefield will run the query again if the scope overlaps, therefore please
+// be aware of performance consequences of complex SELECT.
+db.update(p).set(p.title, &#39;New Title&#39;).where(p.id.eq(&#39;1&#39;)).exec();
+
+// Remember to release observer to avoid leaking.
+db.unobserve(query, handler);
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;???
+Lovefield supports data observation for select queries, and the syntax is very similar to ES7 Array.observe()
+Combining parametrized query with Observers can be used to handle a common scenario of updating data in MVC environment&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;transactions:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Transactions&lt;/h1&gt;
+
+&lt;p&gt;It also has transactions; 2 types:
+ 1. Implicit: Created automatically when &lt;code&gt;exec&lt;/code&gt; is called.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;Explicit: similar to SQL &lt;code&gt;BEGIN&lt;/code&gt; =&amp;gt; &lt;code&gt;COMMIT&lt;/code&gt; or &lt;code&gt;ROLLBACK&lt;/code&gt; and they are executed through a transaction object which is created with &lt;code&gt;db.createTransaction&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Lovefield can execute, in a transaction, queries which are referencing data from results of previous queries using &lt;code&gt;tx.attach()&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;???&lt;/p&gt;
+
+&lt;p&gt;All queries are executed inside of a transaction, its cycle is:
+ 1. Creation
+ 2. Binding (optional) in case of paremetrised values
+ 3. Execution within a transaction context
+ 4. Finalise, commit or rollback&lt;/p&gt;
+
+&lt;p&gt;When a transaction (either implicit or explicit) is resolved, no further queries can be made with it.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;architecture-implementation:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Architecture &amp;amp; Implementation&lt;/h1&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Its architecture has been very affected by IndexedDB specification&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;???
+Lovefield specification has been affected by some caveats in IndexedDB specification:
+ * Auto commit when a transaction has gone outside of its message loop. e.g XHR call in IndexedDB event callback.
+ * Upgrade schema can only be upgraded on &lt;code&gt;onupgradeneeded&lt;/code&gt; event so it can be only on initialisation time and it isn&amp;rsquo;t possible to rename tables and the only workaround it&amp;rsquo;s recreate the table with the exact content and delete the old one which cannot be done safely so user must be do it manually outside of the onUpgrade function.
+ * Close the conneciton is not guaranteed because the IndexedDB doesn&amp;rsquo;t guarantee that if there&amp;rsquo;re connections open, so Lovefield doens&amp;rsquo;t offer a reliable way to close and reopen to upgrade the schema.
+ * First writer win due IndexedDB allows multiple connections from different processes/tabs but it doesn&amp;rsquo;t offer a general blocking; hence the first writer to reach the DB wins and the others, with conflict scope, will be aborted. Moreover it doesn&amp;rsquo;t offer observer/events cross sessions/processes/tabs.&lt;/p&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Tables are mapped to IndexedDB stores and rows to objects.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;???
+The storage format is on the left Lovefield and on the right the IndexedDB equivalent
+ * Database - Database
+ * Table - Object store
+ * Row - Object in object store&lt;/p&gt;
+
+&lt;p&gt;Lovefield&amp;rsquo;s rows are two fields: an ID (unique row accross DB) and value which is an object where each field represents a column.&lt;/p&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Efforts are focused on IndexedDB as store due it&amp;rsquo;s been declared standard&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;???
+There is an &lt;strong&gt;experimental Bundled&lt;/strong&gt; mode where the difference is that an object in IndexedDB&amp;rsquo;s object store contains up to 512 Lovefield&amp;rsquo;s rows. The test done suggest that it&amp;rsquo;s better for 10k+ rows; it&amp;rsquo;s always slow on write/update but it&amp;rsquo;s faster on read operations however for smaller databases than 10+rows this mode may experience slower performance. Data is harder to inspect via web developer tools and to convert from one format to another, requires to export, delete all, connect and import back.&lt;/p&gt;
+
+&lt;p&gt;Other stores are structured different and they have different caveats.&lt;/p&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Assumption that there is only one connection at given time.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;???&lt;/p&gt;
+
+&lt;p&gt;All of these things has specified that for now Lovefield assume to have only one connection to database instance at a given time; having several can produce data inconsistency; Lovefield&amp;rsquo;s team is working on this issue evaluating several proposals, right now the best practices is to use a background process (background page, WebWorker or ServiceWorker) to connect to db and the clients use postMessage to that component to perform the operations.&lt;/p&gt;
+
+&lt;p&gt;&amp;ndash;&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Results are references to the object in the cache, NO COPIES.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;???&lt;/p&gt;
+
+&lt;p&gt;All the objects returned in the results are references, &lt;strong&gt;no copies&lt;/strong&gt; of the objects stored in the Lovefield internal cache, so &lt;strong&gt;NOT TO MODIFY&lt;/strong&gt; those objects is &lt;strong&gt;a RULE&lt;/strong&gt; that developer must follow.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;sql-js:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;sql.js&lt;/h1&gt;
+
+&lt;h3 id=&#34;sql-js-is-a-port-of-sqlite-to-javascript-by-compiling-the-sqlite-c-code-with-emscripten-no-c-bindings-or-node-gyp-compilation-here:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;sql.js is a port of SQLite to JavaScript, by compiling the SQLite C code with Emscripten. no C bindings or node-gyp compilation here.&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-js&#34;&gt;//Create the database
+var db = new SQL.Database();
+// Run a query without reading the results
+db.run(&amp;quot;CREATE TABLE test (col1, col2);&amp;quot;);
+// Insert two rows: (1,111) and (2,222)
+db.run(&amp;quot;INSERT INTO test VALUES (?,?), (?,?)&amp;quot;, [1,111,2,222]);
+
+// Prepare a statement
+var stmt = db.prepare(&amp;quot;SELECT * FROM test WHERE col1 BETWEEN $start AND $end&amp;quot;);
+stmt.getAsObject({$start:1, $end:1}); // {col1:1, col2:111}
+
+// Bind new values
+stmt.bind({$start:1, $end:2});
+while(stmt.step()) { //
+    var row = stmt.getAsObject();
+    // [...] do something with the row of result
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;???&lt;/p&gt;
+
+&lt;p&gt;The API is quite small and all the queries are done using &amp;ldquo;standard&amp;rdquo; SQL (SQLite compatbile) so we don&amp;rsquo;t have to learn a new API as in Lovefield, even though its API is similar to SQL.&lt;/p&gt;
+
+&lt;p&gt;The tradeoff is that I&amp;rsquo;m not really sure how it performs and if it&amp;rsquo;s exactly possible to store the database in an IndexedDB field for example and retrieve the SQLite DB each time that user access to manage it and how efficient it can be because I to avoid to lose data each write should persist the SQLite DB to IndexedDB so it would require to store the whole data for any small modification.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&#34;credits:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Credits&lt;/h1&gt;
+
+&lt;h4 id=&#34;lovefield-project-https-google-github-io-lovefield-where-i-ve-stolen-all-of-this-information-related-with-it-p:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;Lovefield project (&lt;a href=&#34;https://google.github.io/lovefield/&#34;&gt;https://google.github.io/lovefield/&lt;/a&gt;) where I&amp;rsquo;ve stolen all of this information related with it :P&lt;/h4&gt;
+
+&lt;h4 id=&#34;sql-js-project-https-github-com-kripken-sql-js-for-part-of-this-material-related-with-it:e59f8908fb106ecc213fa9dcc1e34863&#34;&gt;sql.js project (&lt;a href=&#34;https://github.com/kripken/sql.js/&#34;&gt;https://github.com/kripken/sql.js/&lt;/a&gt;) for part of this material related with it.&lt;/h4&gt;
+
+&lt;p&gt;This material is heavily taken form the resources listed above, in case of any modification or addition the same LICENSE than the original work is applied. Lovelfield documentation and code snippets have been taken from Lovefield project which is under &lt;strong&gt;&lt;em&gt;Apache License&lt;/em&gt;&lt;/strong&gt; and sql.js documentation and code snippets have been taken from sql.js project which is under &lt;strong&gt;MIT License&lt;/strong&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
