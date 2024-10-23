@@ -9,6 +9,11 @@ categories = [
 ]
 +++
 
+This post is part of series of posts about installing  and configuring Arch Linux in a [Slimbook](https://slimbook.com/en/) Executive 14". They are created from a collection of personal notes, that I thought that may be some useful for others, so I published them through these series.
+
+1. Base Arch Linux installation
+2. [Arch Linux network configuration]({{< ref "arch-linux-network-configuration" >}})
+
 I installed Arch Linux in my new laptop, an [Slimbook](https://slimbook.com/en/) Executive 14".
 I followed the [official installation guide](https://wiki.archlinux.org/title/Installation_guide), however, I had to quite a lot of more to installed on the way that I want.
 
@@ -25,9 +30,10 @@ The laptop has 1 TB of NVMe (Non-Volatile Memory Express) and I deliberately wan
 
 The `dm-crypt` scenario that I've chosen is [LVM on LUKS with encrypted boot partition](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Encrypted_boot_partition_(GRUB)) over:
 - The cool [Secure Boot and the Trusted Platform Module option](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition_with_TPM2_and_Secure_Boot) because, despite, I have to annoyingly type a password every time that I boot the machine, it will be protected from boot [cool boot attacks](https://en.wikipedia.org/wiki/Cold_boot_attack)
-- The [LVM on LUKS](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LVM_on_LUKS) because I want to have everything encrypted, included the boot partition (which contains the [initramfs](https://wiki.archlinux.org/title/Arch_boot_process#initramfs)and the kernel).
+- The [LVM on LUKS](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LVM_on_LUKS) because I want to have everything encrypted, included the boot partition (which contains the [initramfs](https://wiki.archlinux.org/title/Arch_boot_process#initramfs) and the kernel).
 
 I used  the ancient [`fdisk`](https://www.man7.org/linux/man-pages/man8/fdisk.8.html) to create in the only disk that the laptop has, which is mapped to the device `/dev/nvme0n1`, all the partitions indicated in [the "preparing the disk" section of LVM on LUKS with encrypted boot partition](https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#Preparing_the_disk_6). The partitions ended up as:
+
 ```
 Disk /dev/nvme0n1: 931.51 GiB, 1000204886016 bytes, 1953525168 sectors
 Disk model: Samsung SSD 980 PRO 1TB
@@ -44,11 +50,13 @@ Device           Start        End    Sectors   Size Type
 ```
 
 Let's encrypt the second partition
+
 ```
 # cyptsetup luksFormat --type luks1 /dev/nvme0n1p3
 ```
 
 Now let's mount it on `/dev/mapper/cyrptlvm`
+
 ```
 # cryptsetup open /dev/nvme0n1p3 cryptlvm
 ```
@@ -57,16 +65,19 @@ Now let's mount it on `/dev/mapper/cyrptlvm`
 Now we start with the LVM ceremony
 
 First of all, I create a  physical volume because I only have one hard disk
+
 ```
 # pvcreate /dev/mapper/cryptlvm
 ```
 
 Secondly, one logical groups because I don't need an extra degree of isolation between volumes and it's more storage efficient than having multiples groups
+
 ```
 # vgcreate main /dev/mapper/cryptlvm
 ```
 
 And last, but not least, three logical volumes, one for swap, one for the root partition, and one for the home directory
+
 ```
 # lvcreate -L 64G main -n swap
 # lvcreate -L 430G main -n root
@@ -78,6 +89,7 @@ You may wonder why I'm booking 64 Gb for memory swap. It isn't because I'm scare
 Time to format the partitions, for the swap partition is a snap. For the other two, I decided to be conservative and use ext4, despite of the cool features that btrfs, I went for ensuring maturity and stability over better data integrity and error recovering and I don't need btrfs RAID, volume management, snapshots, and rollbacks because I already have LVM for them.
 
 So the boring stuff for that is
+
 ```
 # mkfs.ext4 /dev/main/root
 # mkfs.ext4 /dev/main/home
@@ -88,6 +100,7 @@ So the boring stuff for that is
 ```
 
 I chose to boot in UEFI mode, so mounted the partition in `/efi` for compatibility with `grup-install`
+
 ```
 # mkfs.fat -F32 -n EFI /dev/nvme0n1p2
 # mount --mkdir /dev/nvme0n1p2 /mnt/efi
@@ -108,6 +121,7 @@ I ensured that the system clock is accurate with `timedateclt`.
 ## Essential configurations
 
 I generate the `fstab` file from the current mounted volumes
+
 ```
 # genfstab -U /mnt >> /mnt/etc/fstab
 ```
@@ -119,17 +133,20 @@ Then I changed the root directory to the root mounted volume, where we are insta
 ```
 
 I installed Neovim, which is the editor that I usually use, and I need one to be able to modify and create some configuration files
+
 ```
 # pacman -S neovim
 ```
 
 Set the timezone
+
 ```
 # ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime
 # hwclock --systohc
 ```
 
 I uncommented the `ca_ES.UTF-8 UTF-8`, `es_ES.UTF-8 UTF-8`, and `en_US.UTF-8 UTF-8` from `/etc/locale.gen` and generated the locales with
+
 ```
 # locale-gen
 ```
@@ -139,15 +156,19 @@ I created the file `/etc/locale.conf` and write inside `LANG=en_US.UTF-8` to set
 I configured the hostname writing `blacksmoke` in `/etc/hostname`, yes the laptop is called `blacksmoke`.
 
 I installed the `iwd` network manager
+
 ```
 # pacman -S iwd
 ```
 
 I've decided to use a _systemd-based initramfs_, so I  changed the [`mkinitcpio.conf`](https://wiki.archlinux.org/title/Mkinitcpio#Configuration)  (`/etc/mkinitcpio.conf`)  from
+
 ```
 HOOKS=(base udev autodetect microcode modconf kms keyboard keymap consolefont block filesystems fsck)
 ```
+
 to
+
 ```
 HOOKS=(base systemd autodetect microcode modconf kms keyboard block sd-encrypt lvm2 filesystems fsck)
 ```
@@ -161,37 +182,48 @@ and I installed LVM because it's obviously needed due to my partitions are on to
 ```
 
 Right after, I regenerated the _initramfs_ running
+
 ```
 # mkinitcpio -P
 ```
 
 But I saw through the warnings printed in the console that Im missing a few firmwares. As commented in [Mkinitcpio wiki page about "possible missing firmware for module XXXX](https://wiki.archlinux.org/title/Mkinitcpio#Possibly_missing_firmware_for_module_XXXX), I had to install the Linux firmwares package
+
 ```
 # pacman -S linux-firmware linux-firmware-qlogic
 ```
 
-however, it wasn't enough, and I had to install other firmwares from AUR packages, so let's go for them.
+However, it wasn't enough, and I had to install other firmwares from AUR packages, so let's go for them.
 
 As you may know, [installing package from AUR repositories](https://wiki.archlinux.org/title/Arch_User_Repository) is totally different story than doing from main stream repositories, they are several tools that simplify the process by automating several manual steps, however, and I like them, but I want to decide which one to use, once I have the OS working, not at the installation time, so I installed them manually.
 
 First, I installed the required packages to build AUR packages
+
 ```
 # pacman -S base-devel sudo git
 ```
 
 I authorized all the users in the `wheel` group creating the following file `/etc/sudoers.d/00-wheel-users`
+
 ```
 %wheel ALL=(ALL:ALL) ALL
 ```
 
+And I ensured that only root can access to it
+
+```
+  chmod -c 0660 /etc/sudoers.d/00-wheel-users
+```
+
 [`makepkg` requires `sudo`](https://wiki.archlinux.org/title/Makepkg#Usage), so it was the time to create my regular user and set it's password
+
 ```
 # useradd -c "Ivan Fraixedes" -m -U -G wheel ivan
 # passwd ivan
 ```
 
-
 I adjusted `/etc/makepkg.conf` following the [tips & trics](https://wiki.archlinux.org/title/Makepkg#Tips_and_tricks), creating `/etc/makepkg.conf.d/makepkg.conf` with the following content
+
 ```
 MAKEFLAGS="-j$(nproc)"
 
@@ -202,6 +234,7 @@ LOGDEST=~/.local/makepkg/logs
 ```
 
 I logged with my user and created the directories that I configured for `makepkg`
+
 ```
 # su ivan
 # cd ~
@@ -211,6 +244,7 @@ I logged with my user and created the directories that I configured for `makepkg
 ```
 
 I installed the following firmware from AUR doing (as `ivan` user)
+
 ```
 # mkdir -p tmp/aur
 # cd tmp/aur
@@ -223,6 +257,7 @@ The same package installation call `mkinitcpio` and I saw that there isn't a war
 I repeated the same process for the following AUR firmwares [`ast`](https://aur.archlinux.org/packages/ast-firmware/), [`aic94xxx`](https://aur.archlinux.org/packages/aic94xx-firmware), and [`wd719x`](https://aur.archlinux.org/packages/wd719x-firmware). Cha-ching no more warning when building the _initramfs_ with `mkinitcpio`.
 
 I installed the [GRUB](https://wiki.archlinux.org/title/GRUB) boot loader and the [`efibootmgr`](https://linux.die.net/man/8/efibootmgr) which is required by GRUB for UEFI systems
+
 ```
 # pacman -S grub efibootmgr
 ```
@@ -240,6 +275,7 @@ What disk UUID should you add in the above GRUB's configuration? I think that's 
 It has to be the UUID of the LUKS partition where the `/boot` is placed, NOT the LVM one! In my case is `/dev/nvme0n1p3` and to find out UUID, you can do `ls -l /dev/disk/by-uuid` and the link name that points to it is the UUID.
 
 I installed GRUB to be mounted ESP for UEFI booting and generated the GRUB's configuration file
+
 ```
 # grub-install --target=x86_64-efi --efi-directory=/efi --bootloader-id=GRUB --recheck
 # grub-mkconfig -o /boot/grub/grub.cfg
@@ -254,6 +290,7 @@ I did a couple of more things which I consider that they are part of the base in
 2. Add a _keyfile_ to the LUKS partition, so it can be used to decrypted automatically by GRUB and not having to type the LUKS passphrase twice.
 
 After booting up, I login with my regular user `ivan` and then, I access as root and change its password.
+
 ```
 # sudo su
 # passwd
@@ -262,6 +299,7 @@ After booting up, I login with my regular user `ivan` and then, I access as root
 Using the root login, I set up the _keyfile_ for the LUKS volume following the ["With a keyfile embedded in the initramfs" section of "dm-crypt/Device encryption" page](https://wiki.archlinux.org/title/Dm-crypt/Device_encryption#With_a_keyfile_embedded_in_the_initramfs).
 
 First, I created the _keyfile_
+
 ```
 # dd bs=512 count=4 if=/dev/random of=/root/cryptlvm.keyfile iflag=fullblock
 # chmod 000 /root/cryptlvm.keyfile
@@ -269,34 +307,43 @@ First, I created the _keyfile_
 ```
 
 I added the _keyfile_ to the _initramfs_ image, that's just updating the `/etc/mkinicpio.conf`, adding the file path to the `FILES` list, in my case, `FILES` was empty, so it changed from
+
 ```
 FILES=()
 ```
+
 to
+
 ```
 FILES=(/root/cryptlvm.keyfile)
 ```
 
 Recreate the _initramfs_
+
 ```
 # mkinitcpio -P
 ```
 
 Secure the access to the embedded _keyfile_
+
 ```
 # chmod 600 /boot/initramfs-linux*
 ```
 
 Update GRUB's configuration (i.e. `/etc/default/grub`) to point to the _keyfile_. Remember, that in my case, I'm using _systemd-based initramfs_ (i.e. `sd-encrypt` hook). I my case, I added `rd.luks.key=a199a1d7-acc0-4910-babb-e0059dec293b=/root/cryptlvm.key` to the `GRUB_CMDLINE_LINUX`, so it changed from
+
 ```
 GRUB_CMDLINE_LINUX="rd.luks.name=a199a1d7-acc0-4910-babb-e0059dec293b=cryptlvm"
 ```
+
 to
+
 ```
 GRUB_CMDLINE_LINUX="rd.luks.name=a199a1d7-acc0-4910-babb-e0059dec293b=cryptlvm rd.luks.key=a199a1d7-acc0-4910-babb-e0059dec293b=/root/cryptlvm.key"
 ```
 
 And regenerate the GRUB's configuration
+
 ```
 # grub-mkconfig -o /boot/grub/grub.cfg
 ```
