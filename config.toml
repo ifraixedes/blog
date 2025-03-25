@@ -14,6 +14,9 @@ pageSize = 1000
   [markup.highlight]
   style = "catppuccin-mocha"
 
+  [markup.goldmark.renderer]
+  unsafe = true
+
 [permalinks]
 post = "/post/:filename"
 
