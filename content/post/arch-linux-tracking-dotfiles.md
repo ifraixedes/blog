@@ -7,7 +7,6 @@ tags = ["linux-arch", "git", "pgp"]
 categories = [
   "linux"
 ]
-draft = true
 +++
 
 This post is part of a series of posts about installing and configuring Arch Linux in a [Slimbook](https://slimbook.com/en/) Executive 14". I created them from a collection of personal notes, that I thought may be useful for others, so I published them through these series.
