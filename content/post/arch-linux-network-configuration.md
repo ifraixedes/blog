@@ -13,6 +13,7 @@ This post is part of a series of posts about installing and configuring Arch Lin
 
 1. [Base Arch Linux installation ]({{< ref "arch-linux-base-installation" >}})
 2. Arch Linux network configuration
+3. [Tracking dotfiles]{{< ref "arch-linux-tracking-dotfiles" >}}
 
 NOTE because all the operations require root permissions, I logged as root with `sudo su`, so all the commands in this post don't execute with `sudo`.
 
