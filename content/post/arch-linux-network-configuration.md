@@ -9,7 +9,7 @@ categories = [
 ]
 +++
 
-This post is part of series of posts about installing  and configuring Arch Linux in a [Slimbook](https://slimbook.com/en/) Executive 14". They are created from a collection of personal notes, that I thought that may be some useful for others, so I published them through these series.
+This post is part of a series of posts about installing and configuring Arch Linux in a [Slimbook](https://slimbook.com/en/) Executive 14". I created them from a collection of personal notes, that I thought may be useful for others, so I published them through these series.
 
 1. [Base Arch Linux installation ]({{< ref "arch-linux-base-installation" >}})
 2. Arch Linux network configuration
