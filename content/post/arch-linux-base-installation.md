@@ -14,6 +14,7 @@ This post is part of a series of posts about installing and configuring Arch Lin
 1. Base Arch Linux installation
 2. [Arch Linux network configuration]({{< ref "arch-linux-network-configuration" >}})
 3. [Tracking dotfiles]({{< ref "arch-linux-tracking-dotfiles" >}})
+4. [Arch Linux essential tweaks & applications]({{< ref "arch-linux-essential-tweaks-applications" >}})
 
 I installed Arch Linux in my new laptop, an [Slimbook](https://slimbook.com/en/) Executive 14".
 I followed the [official installation guide](https://wiki.archlinux.org/title/Installation_guide), however, I had to dig through different pages to install it how I wanted.
