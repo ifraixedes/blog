@@ -1,6 +1,6 @@
 +++
 description = "PGP and Git configurations to start tracking my dotfiles"
-date = "2025-06-21T16:07:45Z"
+date = "2025-06-21T14:29:45Z"
 title = "Tracking dotfiles"
 social_image = "https://i.pinimg.com/originals/89/b7/d5/89b7d54e3f6fca2f413f4596a4436262.png"
 tags = ["linux-arch", "git", "pgp"]
