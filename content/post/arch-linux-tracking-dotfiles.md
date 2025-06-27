@@ -14,6 +14,7 @@ This post is part of a series of posts about installing and configuring Arch Lin
 1. [Base Arch Linux installation ]({{< ref "arch-linux-base-installation" >}})
 2. [Arch Linux network configuration]({{< ref "arch-linux-network-configuration" >}})
 3. Tracking dotfiles
+4. [Arch Linux essential tweaks & applications]({{< ref "arch-linux-essential-tweaks-applications" >}})
 
 This post isn't specifically related to Arch Linux, however, I dit it before I started to add and modify more configuration files on my home directory (a.k.a _dotfiles_) , I wanted to start tracking them in a Git repository.
 
