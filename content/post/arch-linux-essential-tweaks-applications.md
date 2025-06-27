@@ -13,7 +13,7 @@ This post is part of a series of posts about installing and configuring Arch Lin
 
 1. [Base Arch Linux installation ]({{< ref "arch-linux-base-installation" >}})
 2. [Arch Linux network configuration]({{< ref "arch-linux-network-configuration" >}})
-3. [Tracking dotfiles]{{< ref "arch-linux-tracking-dotfiles" >}}
+3. [Tracking dotfiles]({{< ref "arch-linux-tracking-dotfiles" >}})
 4. Arch Linux essential tweaks & applications
 
 This post and the next are related to personalize my recently installed Arch Linux. Although in the previous one, I already made some choices, they are not as personalized as the ones to come.
