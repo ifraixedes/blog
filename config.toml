@@ -1,6 +1,6 @@
 baseurl = "http://blog.fraixed.es"
 theme = "archie"
-languageCode = "en-us"
+locale = "en-us"
 copyright = "This works is license under a Creative Commons Attribution-ShareAlike 4.0 International license"
 title = "Ivan Fraixedes' Blog"
 
@@ -44,3 +44,7 @@ katex = false # disable KaTeX support
   name = "LinkedIn"
   icon = "linkedin"
   url = "https://bit.ly/ifraixedes_blog_lk"
+
+[security]
+  # Allow any content-type (e.g. text/html, text/org, etc.).
+  allowContent = ['.*']
